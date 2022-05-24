@@ -1,6 +1,8 @@
 import React from 'react';
-import {View} from 'react-native';
+import {ScrollView} from 'react-native';
 
-const PageLayout = ({children}) => <View>{children}</View>;
+const PageLayout = ({children}) => (
+  <ScrollView contentInsetAdjustmentBehavior="automatic">{children}</ScrollView>
+);
 
 export default PageLayout;

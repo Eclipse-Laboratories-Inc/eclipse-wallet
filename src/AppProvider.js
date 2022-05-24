@@ -1,5 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
 import ThemProvider from './component-library/Theme/ThemeProvider';
+import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
 
 export const AppContext = createContext({});
@@ -12,7 +13,9 @@ const AppProvider = ({children}) => {
   }, []);
   return (
     <AppContext.Provider value={[appState, appActions]}>
-      <ThemProvider>{children}</ThemProvider>
+      <RoutesProvider>
+        <ThemProvider>{children}</ThemProvider>
+      </RoutesProvider>
     </AppContext.Provider>
   );
 };
