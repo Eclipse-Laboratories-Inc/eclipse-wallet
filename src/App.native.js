@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppProvider from './AppProvider';
 import WelcomePage from './pages/Welcome/WelcomePage';
 import OnboardingPage from './pages/Onboarding/OnboardingPage';
+import WalletPage from './pages/Wallet/WalletPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,7 @@ const App = () => (
         initialRouteName="welcome">
         <Stack.Screen name="welcome" component={WelcomePage} />
         <Stack.Screen name="onboarding" component={OnboardingPage} />
+        <Stack.Screen name="wallet" component={WalletPage} />
       </Stack.Navigator>
     </SafeAreaView>
   </AppProvider>

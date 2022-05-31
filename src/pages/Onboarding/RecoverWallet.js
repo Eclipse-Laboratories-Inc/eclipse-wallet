@@ -1,10 +1,14 @@
 import React, {useState} from 'react';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
+import BasicCard from '../../component-library/Card/BasicCard';
+import AvatarImage from '../../component-library/Image/AvatarImage';
 import TextArea from '../../component-library/Input/TextArea';
 import TextInput from '../../component-library/Input/TextInput';
 import PageLayout from '../../component-library/Layout/PageLayout';
+import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
+import {useNavigation} from '../../routes/hooks';
 
 const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
   const [pass, setPass] = useState('');
@@ -36,11 +40,35 @@ const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
   );
 };
 
-const SelectAccounts = () => {
-  return <></>;
+const SelectAccounts = ({onComplete}) => {
+  return (
+    <>
+      <Box px={10} py={10}>
+        <BasicCard
+          actions={[
+            <Button onClick={() => {}}>Send</Button>,
+            <Button onClick={() => {}}>Receive</Button>,
+          ]}
+          headerAction={<TextParagraph>$0.00</TextParagraph>}
+          headerIcon={
+            <AvatarImage
+              url="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png"
+              size={48}
+            />
+          }
+          headerTitle="SOLANA"
+          headerSubtitle="100"
+        />
+      </Box>
+      <Box px={10} py={10}>
+        <Button onClick={() => onComplete()}>Continue</Button>
+      </Box>
+    </>
+  );
 };
 
 const RecoverWallet = () => {
+  const navigate = useNavigation();
   const [step, setStep] = useState(1);
   const [seedPhrase, setSeedPhrase] = useState('');
   return (
@@ -52,7 +80,7 @@ const RecoverWallet = () => {
           onComplete={() => setStep(2)}
         />
       )}
-      {step === 2 && <SelectAccounts onComplete={() => setStep(0)} />}
+      {step === 2 && <SelectAccounts onComplete={() => navigate('/wallet')} />}
     </PageLayout>
   );
 };

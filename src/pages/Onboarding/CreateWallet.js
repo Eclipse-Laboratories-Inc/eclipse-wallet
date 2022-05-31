@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
+import {generateMnemonicAndSeed} from '@4m/wallet-adapter/services/seed-service';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import FormDialog from '../../component-library/Dialog/FormDialog';
@@ -7,6 +8,7 @@ import TextInput from '../../component-library/Input/TextInput';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
+import {useNavigation} from '../../routes/hooks';
 
 const Message = ({onNext}) => (
   <>
@@ -27,6 +29,7 @@ const Message = ({onNext}) => (
 );
 
 const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
+  const {mnemonic, seed} = useMemo(() => generateMnemonicAndSeed(), []);
   const [showModal, setShowModal] = useState(false);
   return (
     <>
@@ -37,8 +40,8 @@ const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
         <TextArea
           label="Seed Words"
           lines={5}
-          value={seedPhrase}
-          setValue={setSeedPhrase}
+          value={mnemonic}
+          disabled={true}
         />
       </Box>
       <Box px={10} py={10}>
@@ -88,10 +91,9 @@ const Password = ({onComplete}) => {
 };
 
 const CreateWallet = () => {
+  const navigate = useNavigation();
   const [step, setStep] = useState(1);
-  const [seedPhrase, setSeedPhrase] = useState(
-    'asd asd asdas asd asd asd asd asd asd asd asd',
-  );
+  const [seedPhrase, setSeedPhrase] = useState('');
   return (
     <PageLayout>
       {step === 1 && <Message onNext={() => setStep(2)} />}
@@ -102,7 +104,7 @@ const CreateWallet = () => {
           onComplete={() => setStep(3)}
         />
       )}
-      {step === 3 && <Password onComplete={() => setStep(0)} />}
+      {step === 3 && <Password onComplete={() => navigate('/wallet')} />}
     </PageLayout>
   );
 };

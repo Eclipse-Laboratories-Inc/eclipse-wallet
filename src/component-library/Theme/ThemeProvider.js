@@ -6,9 +6,8 @@ import {
 
 const theme = createMuiTheme({
   palette: {
-    text: {
-      primary: '#A0F',
-    },
+    mode: 'dark',
+    main: 'blue',
   },
 });
 
