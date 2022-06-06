@@ -8,6 +8,7 @@ import TextInput from '../../component-library/Input/TextInput';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
+import {ROUTES_MAP} from '../../routes/app-routes';
 import {useNavigation} from '../../routes/hooks';
 
 const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
@@ -46,8 +47,12 @@ const SelectAccounts = ({onComplete}) => {
       <Box px={10} py={10}>
         <BasicCard
           actions={[
-            <Button onClick={() => {}}>Send</Button>,
-            <Button onClick={() => {}}>Receive</Button>,
+            <Button key="btn-send" onClick={() => {}}>
+              Send
+            </Button>,
+            <Button key="btn-receive" onClick={() => {}}>
+              Receive
+            </Button>,
           ]}
           headerAction={<TextParagraph>$0.00</TextParagraph>}
           headerIcon={
@@ -80,7 +85,9 @@ const RecoverWallet = () => {
           onComplete={() => setStep(2)}
         />
       )}
-      {step === 2 && <SelectAccounts onComplete={() => navigate('/wallet')} />}
+      {step === 2 && (
+        <SelectAccounts onComplete={() => navigate(ROUTES_MAP.WALLET)} />
+      )}
     </PageLayout>
   );
 };

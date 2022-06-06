@@ -6,6 +6,7 @@ import PageLayout from '../../component-library/Layout/PageLayout';
 import TextTitle from '../../component-library/Text/TextTitle';
 import Logo from '../../images/logo.png';
 import {useNavigation} from '../../routes/hooks';
+import {ROUTES_MAP} from './routes';
 
 const SelectOptions = () => {
   const navigate = useNavigation();
@@ -21,10 +22,14 @@ const SelectOptions = () => {
         <TextTitle>SOLANA</TextTitle>
       </Box>
       <Box px={10} py={10}>
-        <Button onClick={() => navigate('create')}>Crear wallet</Button>
+        <Button onClick={() => navigate(ROUTES_MAP.ONBOARDING_CREATE)}>
+          Crear wallet
+        </Button>
       </Box>
       <Box px={10} py={10}>
-        <Button onClick={() => navigate('recover')}>Recuperar wallet</Button>
+        <Button onClick={() => navigate(ROUTES_MAP.ONBOARDING_RECOVER)}>
+          Recuperar wallet
+        </Button>
       </Box>
     </PageLayout>
   );

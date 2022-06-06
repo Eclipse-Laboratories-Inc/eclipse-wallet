@@ -1,5 +1,7 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {createAccount} from '@4m/wallet-adapter';
 import {generateMnemonicAndSeed} from '@4m/wallet-adapter/services/seed-service';
+import chains from '@4m/wallet-adapter/constants/chains';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import FormDialog from '../../component-library/Dialog/FormDialog';
@@ -9,6 +11,7 @@ import PageLayout from '../../component-library/Layout/PageLayout';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
 import {useNavigation} from '../../routes/hooks';
+import {ROUTES_MAP} from '../../routes/app-routes';
 
 const Message = ({onNext}) => (
   <>
@@ -29,7 +32,12 @@ const Message = ({onNext}) => (
 );
 
 const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
-  const {mnemonic, seed} = useMemo(() => generateMnemonicAndSeed(), []);
+  const [data, setData] = useState({});
+  useEffect(() => {
+    generateMnemonicAndSeed().then(d => {
+      setData(d);
+    });
+  }, []);
   const [showModal, setShowModal] = useState(false);
   return (
     <>
@@ -37,12 +45,7 @@ const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
         <TextTitle>Keep your seed safe!</TextTitle>
       </Box>
       <Box px={10} py={10}>
-        <TextArea
-          label="Seed Words"
-          lines={5}
-          value={mnemonic}
-          disabled={true}
-        />
+        <TextArea lines={5} value={data.mnemonic} disabled />
       </Box>
       <Box px={10} py={10}>
         <Button>Download Key</Button>
@@ -93,18 +96,19 @@ const Password = ({onComplete}) => {
 const CreateWallet = () => {
   const navigate = useNavigation();
   const [step, setStep] = useState(1);
-  const [seedPhrase, setSeedPhrase] = useState('');
+  const handleOnPasswordComplete = async () => {
+    const account = await createAccount(chains.SOLANA, {
+      endpoint: 'https://solana-api.projectserum.com/',
+    });
+    const tokens = await account.getTokens();
+    console.log(tokens);
+    navigate(ROUTES_MAP.WALLET);
+  };
   return (
     <PageLayout>
       {step === 1 && <Message onNext={() => setStep(2)} />}
-      {step === 2 && (
-        <Form
-          seedPhrase={seedPhrase}
-          setSeedPhrase={setSeedPhrase}
-          onComplete={() => setStep(3)}
-        />
-      )}
-      {step === 3 && <Password onComplete={() => navigate('/wallet')} />}
+      {step === 2 && <Form onComplete={() => setStep(3)} />}
+      {step === 3 && <Password onComplete={() => handleOnPasswordComplete()} />}
     </PageLayout>
   );
 };

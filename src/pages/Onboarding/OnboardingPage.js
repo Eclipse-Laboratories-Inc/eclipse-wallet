@@ -1,17 +1,7 @@
 import React from 'react';
 import RoutesBuilder from '../../routes/RoutesBuilder';
-import CreateWallet from './CreateWallet';
-import RecoverWallet from './RecoverWallet';
-import SelectOptions from './SelectOptions';
+import routes from './routes';
 
-const OnboardingPage = () => (
-  <RoutesBuilder
-    routes={[
-      {name: 'home', path: '', Component: SelectOptions, default: true},
-      {name: 'create', path: 'create', Component: CreateWallet},
-      {name: 'recover', path: 'recover', Component: RecoverWallet},
-    ]}
-  />
-);
+const OnboardingPage = () => <RoutesBuilder routes={routes} />;
 
 export default OnboardingPage;

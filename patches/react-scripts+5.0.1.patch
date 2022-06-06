@@ -1,0 +1,32 @@
+diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
+index e465d8e..28f05fd 100644
+--- a/node_modules/react-scripts/config/webpack.config.js
++++ b/node_modules/react-scripts/config/webpack.config.js
+@@ -303,6 +303,16 @@ module.exports = function (webpackEnv) {
+       ],
+     },
+     resolve: {
++      fallback: {
++        "buffer": require.resolve("buffer"),
++        "crypto": require.resolve("crypto-browserify"),
++        "stream": require.resolve("stream-browserify"),
++        "assert": require.resolve("assert"),
++        "http": require.resolve("stream-http"),
++        "https": require.resolve("https-browserify"),
++        "os": require.resolve("os-browserify"),
++        "url": require.resolve("url")
++      },
+       // This allows you to set a fallback for where webpack should look for modules.
+       // We placed these paths second because we want `node_modules` to "win"
+       // if there are any conflicts. This matches Node resolution mechanism.
+@@ -604,6 +614,10 @@ module.exports = function (webpackEnv) {
+       ].filter(Boolean),
+     },
+     plugins: [
++      new webpack.ProvidePlugin({
++        process: 'process/browser',
++        Buffer: ['buffer', 'Buffer']
++      }),
+       // Generates an `index.html` file with the <script> injected.
+       new HtmlWebpackPlugin(
+         Object.assign(

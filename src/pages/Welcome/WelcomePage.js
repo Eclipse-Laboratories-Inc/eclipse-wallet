@@ -4,6 +4,7 @@ import Card from '../../component-library/Card/Card';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import {useNavigation} from '../../routes/hooks';
 import Logo from '../../images/logo.png';
+import {ROUTES_MAP} from '../../routes/app-routes';
 
 const WelcomePage = () => {
   const navigate = useNavigation();
@@ -20,7 +21,7 @@ const WelcomePage = () => {
     {title: 'bbb', content: 'bbb'},
     {title: 'ccc', content: 'ccc'},
   ];
-  const goToOnboarding = () => navigate('/onboarding');
+  const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);
 
   return (
     <PageLayout>

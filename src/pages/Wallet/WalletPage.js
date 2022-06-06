@@ -8,11 +8,16 @@ import TextParagraph from '../../component-library/Text/TextParagraph';
 const WalletPage = () => (
   <PageLayout>
     <>
-      {[{}, {}].map(() => (
+      {[{id: 1}, {id: 2}].map(({id}) => (
         <BasicCard
+          key={`card-${id}`}
           actions={[
-            <Button onClick={() => {}}>Send</Button>,
-            <Button onClick={() => {}}>Receive</Button>,
+            <Button key="btn-send" onClick={() => {}}>
+              Send
+            </Button>,
+            <Button key="btn-receive" onClick={() => {}}>
+              Receive
+            </Button>,
           ]}
           headerAction={<TextParagraph>$0.00</TextParagraph>}
           headerIcon={

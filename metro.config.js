@@ -4,8 +4,17 @@
  *
  * @format
  */
+const defaultSourceExts =
+  require('metro-config/src/defaults/defaults').sourceExts;
 
 module.exports = {
+  resolver: {
+    extraNodeModules: {
+      stream: require.resolve('readable-stream'),
+      crypto: require.resolve('react-native-crypto-js'),
+    },
+    sourceExts: [...defaultSourceExts, 'cjs'],
+  },
   transformer: {
     getTransformOptions: async () => ({
       transform: {
