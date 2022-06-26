@@ -16,11 +16,13 @@ const Card = ({
   actions,
 }) => (
   <MUICard>
-    <CardHeader
-      {...(headerAction ? {action: headerAction} : {})}
-      title={headerTitle}
-      subheader={headerSubtitle}
-    />
+    {headerTitle && (
+      <CardHeader
+        {...(headerAction ? {action: headerAction} : {})}
+        title={headerTitle}
+        subheader={headerSubtitle}
+      />
+    )}
     {media && (
       <CardMedia
         component="img"
@@ -29,15 +31,19 @@ const Card = ({
         alt={media.alt}
       />
     )}
-    <CardContent>
-      <Typography sx={{fontSize: 24}} color="text.primary" gutterBottom>
-        {title}
-      </Typography>
-      <Typography sx={{fontSize: 22}} color="text.secondary" gutterBottom>
-        {content}
-      </Typography>
-    </CardContent>
-    <CardActions>{actions && actions.map(action => action)}</CardActions>
+    {content && (
+      <CardContent>
+        <Typography sx={{fontSize: 24}} color="text.primary" gutterBottom>
+          {title}
+        </Typography>
+        <Typography sx={{fontSize: 22}} color="text.secondary" gutterBottom>
+          {content}
+        </Typography>
+      </CardContent>
+    )}
+    {actions && (
+      <CardActions>{actions && actions.map(action => action)}</CardActions>
+    )}
   </MUICard>
 );
 

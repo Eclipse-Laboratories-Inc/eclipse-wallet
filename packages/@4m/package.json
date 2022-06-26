@@ -1,0 +1,6 @@
+{
+  "name": "@4m/wallet-adapter",
+  "version": "0.0.3",
+  "description": "Solana / Near wallet adapter",
+  "main": "index.js"
+}

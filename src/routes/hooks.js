@@ -1,17 +1,26 @@
-import {useNavigate} from 'react-router-dom';
-import find from 'lodash/find';
+import React from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {globalRoutes} from './app-routes';
+import {getRoute} from './utils';
 
-const getRoute = routeKey =>
-  find(globalRoutes, route => route.key === routeKey);
+const buildRouteWithParams = (route, params) =>
+  Object.keys(params).reduce(
+    (path, param) => path.replace(`:${param}`, params[param]),
+    route,
+  );
 export const useNavigation = () => {
   const navigate = useNavigate();
-  return to => {
-    const toRoute = getRoute(to);
+  return (to, params = {}) => {
+    const toRoute = getRoute(globalRoutes, to);
     if (toRoute) {
-      navigate(toRoute.route);
+      navigate(buildRouteWithParams(toRoute.route, params));
     } else {
       console.warn(`route not found ${to}`);
     }
   };
+};
+
+export const withParams = Component => props => {
+  const params = useParams();
+  return <Component {...props} params={params} />;
 };

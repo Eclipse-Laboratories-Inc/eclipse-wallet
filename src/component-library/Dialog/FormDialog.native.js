@@ -10,6 +10,7 @@ const FormDialog = ({
   labelCancel,
   labelSubmit,
   children,
+  isDisabledSubmit,
 }) => (
   <Portal>
     <Dialog visible={isOpen} onDismiss={onClose}>
@@ -20,7 +21,9 @@ const FormDialog = ({
       </Dialog.Content>
       <Dialog.Actions>
         <Button onPress={onClose}>{labelCancel}</Button>
-        <Button onPress={onSubmit}>{labelSubmit}</Button>
+        <Button onPress={onSubmit} disabled={isDisabledSubmit}>
+          {labelSubmit}
+        </Button>
       </Dialog.Actions>
     </Dialog>
   </Portal>

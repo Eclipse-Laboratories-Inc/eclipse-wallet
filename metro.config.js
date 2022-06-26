@@ -12,6 +12,7 @@ module.exports = {
     extraNodeModules: {
       stream: require.resolve('readable-stream'),
       crypto: require.resolve('react-native-crypto-js'),
+      zlib: require.resolve('react-zlib-js'),
     },
     sourceExts: [...defaultSourceExts, 'cjs'],
   },

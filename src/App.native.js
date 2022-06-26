@@ -1,16 +1,21 @@
 import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import AppProvider from './AppProvider';
-import routes from './routes/app-routes';
-import RoutesBuilder from './routes/RoutesBuilder';
+import AppRoutes from './AppRoutes';
 
 const App = () => (
   <AppProvider>
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'light-content'} />
-      <RoutesBuilder routes={routes} />
+      <AppRoutes />
     </SafeAreaView>
   </AppProvider>
 );
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;

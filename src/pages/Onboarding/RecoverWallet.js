@@ -1,20 +1,23 @@
-import React, {useState} from 'react';
+import React, {useContext, useState, useMemo} from 'react';
+import {AppContext} from '../../AppProvider';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
-import BasicCard from '../../component-library/Card/BasicCard';
-import AvatarImage from '../../component-library/Image/AvatarImage';
 import TextArea from '../../component-library/Input/TextArea';
-import TextInput from '../../component-library/Input/TextInput';
 import PageLayout from '../../component-library/Layout/PageLayout';
-import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
 import {ROUTES_MAP} from '../../routes/app-routes';
 import {useNavigation} from '../../routes/hooks';
+import {
+  getDefaultChain,
+  recoverAccount,
+  validateSeedPhrase,
+} from '../../utils/wallet';
+import Password from './components/Password';
+import {ROUTES_MAP as ROUTES_ONBOARDING} from './routes';
 
-const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
-
+const Form = ({onComplete}) => {
+  const [seedPhrase, setSeedPhrase] = useState('');
+  const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
   return (
     <>
       <Box px={10} py={10}>
@@ -29,64 +32,53 @@ const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
         />
       </Box>
       <Box px={10} py={10}>
-        <TextInput label="Password" value={pass} setValue={setPass} />
-      </Box>
-      <Box px={10} py={10}>
-        <TextInput label="Re Password" value={repass} setValue={setRepass} />
-      </Box>
-      <Box px={10} py={10}>
-        <Button onClick={() => onComplete()}>Continue</Button>
+        <Button onClick={() => onComplete(seedPhrase)} disabled={!isValid}>
+          Continue
+        </Button>
       </Box>
     </>
   );
 };
 
-const SelectAccounts = ({onComplete}) => {
-  return (
-    <>
-      <Box px={10} py={10}>
-        <BasicCard
-          actions={[
-            <Button key="btn-send" onClick={() => {}}>
-              Send
-            </Button>,
-            <Button key="btn-receive" onClick={() => {}}>
-              Receive
-            </Button>,
-          ]}
-          headerAction={<TextParagraph>$0.00</TextParagraph>}
-          headerIcon={
-            <AvatarImage
-              url="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png"
-              size={48}
-            />
-          }
-          headerTitle="SOLANA"
-          headerSubtitle="100"
-        />
-      </Box>
-      <Box px={10} py={10}>
-        <Button onClick={() => onComplete()}>Continue</Button>
-      </Box>
-    </>
-  );
-};
+const Success = ({goToWallet, goToDerived}) => (
+  <>
+    <Box>
+      <TextTitle>Success</TextTitle>
+    </Box>
+    <Box>
+      <Button onClick={goToWallet}>Go to my Wallet</Button>
+      <Button onClick={goToDerived}>Select Derivable</Button>
+    </Box>
+  </>
+);
 
 const RecoverWallet = () => {
   const navigate = useNavigation();
+  const [{selectedEndpoints}, {addWallet}] = useContext(AppContext);
+  const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
-  const [seedPhrase, setSeedPhrase] = useState('');
+  const handleRecover = async seedPhrase => {
+    const a = await recoverAccount(
+      getDefaultChain(),
+      seedPhrase,
+      selectedEndpoints[getDefaultChain()],
+    );
+    setAccount(a);
+    setStep(2);
+  };
+  const handleOnPasswordComplete = async password => {
+    await addWallet(account, password, getDefaultChain());
+    setStep(3);
+  };
+  const goToWallet = () => navigate(ROUTES_MAP.WALLET);
+  const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
+
   return (
     <PageLayout>
-      {step === 1 && (
-        <Form
-          seedPhrase={seedPhrase}
-          setSeedPhrase={setSeedPhrase}
-          onComplete={() => setStep(2)}
-        />
-      )}
-      {step === 2 && (
-        <SelectAccounts onComplete={() => navigate(ROUTES_MAP.WALLET)} />
+      {step === 1 && <Form onComplete={handleRecover} />}
+      {step === 2 && <Password onComplete={handleOnPasswordComplete} />}
+      {step === 3 && (
+        <Success goToWallet={goToWallet} goToDerived={goToDerived} />
       )}
     </PageLayout>
   );

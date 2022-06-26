@@ -1,11 +1,10 @@
 import React from 'react';
 import AppProvider from './AppProvider';
-import routes from './routes/app-routes';
-import RoutesBuilder from './routes/RoutesBuilder';
+import AppRoutes from './AppRoutes';
 
 const App = () => (
   <AppProvider>
-    <RoutesBuilder routes={routes} />
+    <AppRoutes />
   </AppProvider>
 );
 

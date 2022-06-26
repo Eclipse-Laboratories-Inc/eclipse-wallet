@@ -1,4 +1,5 @@
 import CreateWallet from './CreateWallet';
+import DerivedAccounts from './DerivedAccounts';
 import RecoverWallet from './RecoverWallet';
 import SelectOptions from './SelectOptions';
 
@@ -6,6 +7,7 @@ export const ROUTES_MAP = {
   ONBOARDING_HOME: 'ONBOARDING_HOME',
   ONBOARDING_CREATE: 'ONBOARDING_CREATE',
   ONBOARDING_RECOVER: 'ONBOARDING_RECOVER',
+  ONBOARDING_DERIVED: 'ONBOARDING_DERIVED',
 };
 
 const routes = [
@@ -30,6 +32,14 @@ const routes = [
     path: 'recover',
     route: '/onboarding/recover',
     Component: RecoverWallet,
+  },
+  {
+    key: ROUTES_MAP.ONBOARDING_DERIVED,
+    name: 'onboardingDerived',
+    path: 'derived',
+    route: '/onboarding/derived',
+    Component: DerivedAccounts,
+    default: true,
   },
 ];
 

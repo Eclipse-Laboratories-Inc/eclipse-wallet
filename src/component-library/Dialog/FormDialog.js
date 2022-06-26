@@ -15,6 +15,7 @@ const FormDialog = ({
   labelCancel,
   labelSubmit,
   children,
+  isDisabledSubmit,
 }) => (
   <Dialog open={isOpen} onClose={onClose}>
     <DialogTitle>{title}</DialogTitle>
@@ -24,7 +25,9 @@ const FormDialog = ({
     </DialogContent>
     <DialogActions>
       <Button onClick={onClose}>{labelCancel}</Button>
-      <Button onClick={onSubmit}>{labelSubmit}</Button>
+      <Button onClick={onSubmit} disabled={isDisabledSubmit}>
+        {labelSubmit}
+      </Button>
     </DialogActions>
   </Dialog>
 );

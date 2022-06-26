@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {createAccount} from '@4m/wallet-adapter';
-import {generateMnemonicAndSeed} from '@4m/wallet-adapter/services/seed-service';
-import chains from '@4m/wallet-adapter/constants/chains';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
-import FormDialog from '../../component-library/Dialog/FormDialog';
 import TextArea from '../../component-library/Input/TextArea';
-import TextInput from '../../component-library/Input/TextInput';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
 import {useNavigation} from '../../routes/hooks';
 import {ROUTES_MAP} from '../../routes/app-routes';
+import {createAccount, getDefaultChain} from '../../utils/wallet';
+import clipboard from '../../utils/clipboard';
+import Password from './components/Password';
+import {AppContext} from '../../AppProvider';
+import TextInput from '../../component-library/Input/TextInput';
 
 const Message = ({onNext}) => (
   <>
@@ -31,63 +31,61 @@ const Message = ({onNext}) => (
   </>
 );
 
-const Form = ({seedPhrase, setSeedPhrase, onComplete}) => {
-  const [data, setData] = useState({});
-  useEffect(() => {
-    generateMnemonicAndSeed().then(d => {
-      setData(d);
-    });
-  }, []);
-  const [showModal, setShowModal] = useState(false);
-  return (
-    <>
-      <Box px={10} py={10}>
-        <TextTitle>Keep your seed safe!</TextTitle>
-      </Box>
-      <Box px={10} py={10}>
-        <TextArea lines={5} value={data.mnemonic} disabled />
-      </Box>
-      <Box px={10} py={10}>
-        <Button>Download Key</Button>
-      </Box>
-      <Box px={10} py={10}>
-        <Button onClick={() => setShowModal(true)}>Continue</Button>
-      </Box>
-      <FormDialog
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={() => {
-          setShowModal(false);
-          onComplete();
-        }}
-        title="Check"
-        text="Text"
-        labelCancel="Cancel"
-        labelSubmit="Continue">
-        <TextArea
-          label="Seed Words"
-          lines={5}
-          value={seedPhrase}
-          setValue={setSeedPhrase}
-        />
-      </FormDialog>
-    </>
-  );
-};
+const Form = ({account, onComplete}) => (
+  <>
+    <Box px={10} py={10}>
+      <TextTitle>Keep your seed safe!</TextTitle>
+    </Box>
+    <Box px={10} py={10}>
+      <TextArea lines={5} value={account.mnemonic} disabled />
+    </Box>
+    <Box px={10} py={10}>
+      <Button onClick={() => clipboard.copy(account.mnemonic)}>Copy Key</Button>
+    </Box>
+    <Box px={10} py={10}>
+      <Button onClick={onComplete}>I've backed up my seed phrase</Button>
+    </Box>
+  </>
+);
 
-const Password = ({onComplete}) => {
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
+const ValidateSeed = ({account, onComplete}) => {
+  const [positions, setPositions] = useState([]);
+  const [phrases, setPhrases] = useState(['', '', '']);
+  useEffect(() => {
+    const random = [2, 11, 22];
+    setPositions(random);
+  }, []);
+  const isValid = useMemo(
+    () =>
+      positions.every(
+        (pos, index) => phrases[index] === account.mnemonic.split(' ')[pos - 1],
+      ),
+    [positions, phrases, account],
+  );
+  const setPhrasePos = (value, index) =>
+    setPhrases([
+      ...[...phrases].splice(0, index),
+      value,
+      ...[...phrases].splice(index + 1, phrases.length),
+    ]);
   return (
     <>
       <Box px={10} py={10}>
-        <TextInput label="Password" value={pass} setValue={setPass} />
+        <TextTitle>Confirm Seed Phrase</TextTitle>
       </Box>
+      {positions.map((pos, index) => (
+        <Box key={`phrase-${pos}`}>
+          <TextInput
+            label={pos}
+            setValue={value => setPhrasePos(value, index)}
+            value={phrases[index]}
+          />
+        </Box>
+      ))}
       <Box px={10} py={10}>
-        <TextInput label="Re Password" value={repass} setValue={setRepass} />
-      </Box>
-      <Box px={10} py={10}>
-        <Button onClick={() => onComplete()}>Continue</Button>
+        <Button onClick={onComplete} disabled={!isValid}>
+          Continue
+        </Button>
       </Box>
     </>
   );
@@ -95,21 +93,34 @@ const Password = ({onComplete}) => {
 
 const CreateWallet = () => {
   const navigate = useNavigation();
+  const [{selectedEndpoints}, {addWallet}] = useContext(AppContext);
   const [step, setStep] = useState(1);
-  const handleOnPasswordComplete = async () => {
-    const account = await createAccount(chains.SOLANA, {
-      endpoint: 'https://solana-api.projectserum.com/',
-    });
-    const tokens = await account.getTokens();
-    console.log(tokens);
+  const [account, setAccount] = useState(null);
+  useEffect(() => {
+    if (!account) {
+      createAccount(
+        // TODO: default chain should be the selected in previous step
+        getDefaultChain(),
+        selectedEndpoints[getDefaultChain()],
+      ).then(d => {
+        setAccount(d);
+      });
+    }
+  }, [selectedEndpoints, account]);
+  const handleOnPasswordComplete = async password => {
+    await addWallet(account, password, getDefaultChain());
     navigate(ROUTES_MAP.WALLET);
   };
   return (
     <PageLayout>
       {step === 1 && <Message onNext={() => setStep(2)} />}
-      {step === 2 && <Form onComplete={() => setStep(3)} />}
-      {step === 3 && <Password onComplete={() => handleOnPasswordComplete()} />}
+      {step === 2 && <Form account={account} onComplete={() => setStep(3)} />}
+      {step === 3 && (
+        <ValidateSeed account={account} onComplete={() => setStep(4)} />
+      )}
+      {step === 4 && <Password onComplete={handleOnPasswordComplete} />}
     </PageLayout>
   );
 };
+
 export default CreateWallet;

@@ -1,16 +1,18 @@
 import React from 'react';
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import {DarkTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const theme = {
-  ...DefaultTheme,
+  ...DarkTheme,
+  dark: true,
+  mode: 'adaptative',
   colors: {
-    ...DefaultTheme.colors,
-    primary: '#A0F',
+    ...DarkTheme.colors,
+    background: '#121212',
   },
 };
 
-const ThemProvider = ({children}) => (
+const ThemeProvider = ({children}) => (
   <PaperProvider theme={theme}>{children}</PaperProvider>
 );
 
-export default ThemProvider;
+export default ThemeProvider;

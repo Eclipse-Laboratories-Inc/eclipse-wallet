@@ -11,8 +11,9 @@ const BasicCard = ({
   headerSubtitle,
   children,
   actions,
+  ...props
 }) => (
-  <MUICard>
+  <MUICard {...props}>
     <CardHeader
       {...(headerIcon ? {avatar: headerIcon} : {})}
       {...(headerAction ? {action: headerAction} : {})}
