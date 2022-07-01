@@ -8,10 +8,47 @@ import {CssBaseline} from '@mui/material';
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: '#121212',
+      default: '#171B27',
+      paper: 'rgba(0,0,0,0)',
     },
     mode: 'dark',
     main: 'blue',
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#ffffff',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      light: '#0066ff',
+      main: '#2A384E',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: '#ffffff',
+    },
+    tertiary: {
+      light: '#808799',
+      main: '#808799',
+      contrastText: '#808799',
+    },
+  },
+  typography: {
+    fontFamily: 'Montserrat',
+    h1: {
+      fontFamily: 'Montserrat',
+    },
+    button: {
+      fontSize: '1rem',
+      fontFamily: 'Montserrat',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
   },
 });
 
