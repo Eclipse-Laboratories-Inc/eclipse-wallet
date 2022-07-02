@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
-import {withTheme} from 'react-native-paper';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { withTheme } from 'react-native-paper';
 import Button from '../Button/Button';
 
-export const BottomTabs = ({tabs}) => (
+export const BottomTabs = ({ tabs }) => (
   <View style={styles.tabsContainer}>
     {tabs.map(t => (
       <Button key={`btn-${t.title}`} onClick={t.onClick}>
@@ -13,7 +13,7 @@ export const BottomTabs = ({tabs}) => (
   </View>
 );
 
-const BottomTabsLayout = ({children, tabs, theme}) => (
+const BottomTabsLayout = ({ children, tabs, theme }) => (
   <View style={styles.container}>{children}</View>
 );
 
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pageContainer: {},
-  tabsContainer: {flexDirection: 'row'},
+  tabsContainer: { flexDirection: 'row' },
 });
 
 export default withTheme(BottomTabsLayout);

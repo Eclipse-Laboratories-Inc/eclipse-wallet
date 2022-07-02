@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const BottomTabs = ({tabs}) => (
+export const BottomTabs = ({ tabs }) => (
   <div style={styles.tabsContainer}>
     {tabs.map(t => (
       <button onClick={t.onClick} key={`btn-${t.title}`}>
@@ -10,7 +10,7 @@ export const BottomTabs = ({tabs}) => (
   </div>
 );
 
-const BottomTabsLayout = ({children, tabs}) => (
+const BottomTabsLayout = ({ children, tabs }) => (
   <div style={styles.container}>
     <div style={styles.container}>{children}</div>
     <BottomTabs tabs={tabs} />
@@ -25,7 +25,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
   },
-  pageContainer: {flexGrow: 1, overflow: 'scroll'},
+  pageContainer: { flexGrow: 1, overflow: 'scroll' },
   tabsContainer: {},
 };
 

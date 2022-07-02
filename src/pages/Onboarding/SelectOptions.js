@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import Image from '../../component-library/Image/Image';
@@ -6,8 +6,8 @@ import PageLayout from '../../component-library/Layout/PageLayout';
 import BasicSelect from '../../component-library/Selects/BasicSelect';
 import TextTitle from '../../component-library/Text/TextTitle';
 import Logo from '../../images/logo.png';
-import {useNavigation} from '../../routes/hooks';
-import {ROUTES_MAP} from './routes';
+import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP } from './routes';
 
 const SelectOptions = () => {
   const navigate = useNavigation();
@@ -25,7 +25,7 @@ const SelectOptions = () => {
           value={chainCode}
           setValue={setChainCode}
           label="Chain"
-          options={[{value: 'SOLANA', label: 'Solana'}]}
+          options={[{ value: 'SOLANA', label: 'Solana' }]}
         />
       </Box>
       <Box px={10} py={10}>

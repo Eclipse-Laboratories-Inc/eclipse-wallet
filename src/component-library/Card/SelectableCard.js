@@ -15,11 +15,11 @@ const SelectableCard = ({
   onSelect,
   selected,
 }) => (
-  <MUICard {...(selected ? {variant: 'outlined'} : {})}>
+  <MUICard {...(selected ? { variant: 'outlined' } : {})}>
     <CardActionArea onClick={() => onSelect(!selected)}>
       <CardHeader
-        {...(headerIcon ? {avatar: headerIcon} : {})}
-        {...(headerAction ? {action: headerAction} : {})}
+        {...(headerIcon ? { avatar: headerIcon } : {})}
+        {...(headerAction ? { action: headerAction } : {})}
         title={headerTitle}
         subheader={headerSubtitle}
       />

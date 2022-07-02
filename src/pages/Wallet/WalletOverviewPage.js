@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {AppContext} from '../../AppProvider';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../AppProvider';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import PageLayout from '../../component-library/Layout/PageLayout';
@@ -7,12 +7,12 @@ import TextTitle from '../../component-library/Text/TextTitle';
 import TokenList from '../../features/TokenList/TokenList';
 import NtfsList from '../../features/NtfsList/NtfsList';
 import WalletBalanceCard from '../../features/WalletBalanceCard/WalletBalanceCard';
-import {useNavigation} from '../../routes/hooks';
-import {ROUTES_MAP} from '../../routes/app-routes';
+import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP } from '../../routes/app-routes';
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
-  const [{activeWallet}] = useContext(AppContext);
+  const [{ activeWallet }] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
@@ -35,7 +35,7 @@ const WalletOverviewPage = () => {
   const goToSend = () => {};
   const goToReceive = () => {};
   const goToTokenDetail = t =>
-    navigate(ROUTES_MAP.TOKEN_DETAIL, {tokenId: t.address});
+    navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
   return (
     loaded && (
       <PageLayout>

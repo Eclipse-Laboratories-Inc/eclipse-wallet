@@ -1,11 +1,11 @@
-import React, {useContext} from 'react';
-import {AppContext} from '../../AppProvider';
+import React, { useContext } from 'react';
+import { AppContext } from '../../AppProvider';
 import TextTitle from '../../component-library/Text/TextTitle';
-import {useNavigation, withParams} from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import BackButtonPage from '../../component-library/Layout/BackButtonPage';
-import {ROUTES_MAP} from '../../routes/app-routes';
+import { ROUTES_MAP } from '../../routes/app-routes';
 
-const TokenDetailPage = ({params}) => {
+const TokenDetailPage = ({ params }) => {
   const navigate = useNavigation();
   const [] = useContext(AppContext);
   return (

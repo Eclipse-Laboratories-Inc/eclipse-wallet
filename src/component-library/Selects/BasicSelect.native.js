@@ -1,8 +1,8 @@
 import React from 'react';
-import {View} from 'react-native';
-import {RadioButton} from 'react-native-paper';
+import { View } from 'react-native';
+import { RadioButton } from 'react-native-paper';
 
-const BasicSelect = ({value, setValue, options, label, disabled}) => (
+const BasicSelect = ({ value, setValue, options, label, disabled }) => (
   <View>
     {options.map(option => (
       <RadioButton

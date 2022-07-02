@@ -1,19 +1,19 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import TextArea from '../../component-library/Input/TextArea';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';
-import {useNavigation} from '../../routes/hooks';
-import {ROUTES_MAP} from '../../routes/app-routes';
-import {createAccount, getDefaultChain} from '../../utils/wallet';
+import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP } from '../../routes/app-routes';
+import { createAccount, getDefaultChain } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 import Password from './components/Password';
-import {AppContext} from '../../AppProvider';
+import { AppContext } from '../../AppProvider';
 import TextInput from '../../component-library/Input/TextInput';
 
-const Message = ({onNext}) => (
+const Message = ({ onNext }) => (
   <>
     <Box px={10} py={10}>
       <TextTitle>Keep your seed safe!</TextTitle>
@@ -31,7 +31,7 @@ const Message = ({onNext}) => (
   </>
 );
 
-const Form = ({account, onComplete}) => (
+const Form = ({ account, onComplete }) => (
   <>
     <Box px={10} py={10}>
       <TextTitle>Keep your seed safe!</TextTitle>
@@ -48,7 +48,7 @@ const Form = ({account, onComplete}) => (
   </>
 );
 
-const ValidateSeed = ({account, onComplete}) => {
+const ValidateSeed = ({ account, onComplete }) => {
   const [positions, setPositions] = useState([]);
   const [phrases, setPhrases] = useState(['', '', '']);
   useEffect(() => {
@@ -93,7 +93,7 @@ const ValidateSeed = ({account, onComplete}) => {
 
 const CreateWallet = () => {
   const navigate = useNavigation();
-  const [{selectedEndpoints}, {addWallet}] = useContext(AppContext);
+  const [{ selectedEndpoints }, { addWallet }] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
   useEffect(() => {

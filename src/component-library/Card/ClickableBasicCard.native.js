@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from 'react-native-paper';
+import { Card } from 'react-native-paper';
 
 const ClickableBasicCard = ({
   headerIcon,
@@ -13,8 +13,8 @@ const ClickableBasicCard = ({
     <Card.Title
       title={headerTitle}
       subtitle={headerSubtitle}
-      {...(headerIcon ? {left: () => headerIcon} : {})}
-      {...(headerAction ? {right: () => headerAction} : {})}
+      {...(headerIcon ? { left: () => headerIcon } : {})}
+      {...(headerAction ? { right: () => headerAction } : {})}
     />
     <Card.Content>{children}</Card.Content>
   </Card>

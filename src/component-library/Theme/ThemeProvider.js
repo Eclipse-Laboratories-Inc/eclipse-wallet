@@ -3,7 +3,7 @@ import {
   ThemeProvider as MUIThemeProvider,
   unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@mui/material/styles';
-import {CssBaseline} from '@mui/material';
+import { CssBaseline } from '@mui/material';
 
 const theme = createMuiTheme({
   palette: {
@@ -52,7 +52,7 @@ const theme = createMuiTheme({
   },
 });
 
-const ThemeProvider = ({children}) => (
+const ThemeProvider = ({ children }) => (
   <MUIThemeProvider theme={theme}>
     <CssBaseline />
     {children}

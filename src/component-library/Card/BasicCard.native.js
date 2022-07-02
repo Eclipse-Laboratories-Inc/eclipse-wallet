@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from 'react-native-paper';
+import { Card } from 'react-native-paper';
 
 const BasicCard = ({
   headerIcon,
@@ -13,8 +13,8 @@ const BasicCard = ({
     <Card.Title
       title={headerTitle}
       subtitle={headerSubtitle}
-      {...(headerIcon ? {left: () => headerIcon} : {})}
-      {...(headerAction ? {right: () => headerAction} : {})}
+      {...(headerIcon ? { left: () => headerIcon } : {})}
+      {...(headerAction ? { right: () => headerAction } : {})}
     />
     <Card.Content>{children}</Card.Content>
     <Card.Actions>{actions && actions.map(action => action)}</Card.Actions>

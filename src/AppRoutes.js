@@ -1,10 +1,10 @@
-import React, {useContext} from 'react';
-import {AppContext} from './AppProvider';
-import routes, {ROUTES_MAP} from './routes/app-routes';
+import React, { useContext } from 'react';
+import { AppContext } from './AppProvider';
+import routes, { ROUTES_MAP } from './routes/app-routes';
 import RoutesBuilder from './routes/RoutesBuilder';
 
 const AppRoutes = () => {
-  const [{wallets}] = useContext(AppContext);
+  const [{ wallets }] = useContext(AppContext);
   return (
     <RoutesBuilder
       routes={routes}

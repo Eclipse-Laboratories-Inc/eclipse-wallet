@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useReducer} from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
 import isNil from 'lodash/isNil';
 import ThemProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
@@ -27,19 +27,19 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.CHANGE_ENDPOINT:
-      return {...state, selectedEndpoint: action.value};
+      return { ...state, selectedEndpoint: action.value };
     case ACTIONS.SET_LOGGEDIN:
-      return {...state, isLogged: action.value};
+      return { ...state, isLogged: action.value };
     case ACTIONS.INITIATE_DONE:
-      return {...state, ...action.value, ready: true};
+      return { ...state, ...action.value, ready: true };
     case ACTIONS.LOGOUT:
-      return {...initialState, ready: true};
+      return { ...initialState, ready: true };
     default:
       return state;
   }
 };
 
-const AppProvider = ({children}) => {
+const AppProvider = ({ children }) => {
   const [walletState, walletActions] = useWallets();
   const [appState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
@@ -47,7 +47,7 @@ const AppProvider = ({children}) => {
       splash.hide();
       dispatch({
         type: ACTIONS.INITIATE_DONE,
-        value: {isLogged: !isNil(walletState.active)},
+        value: { isLogged: !isNil(walletState.active) },
       });
     }
   }, [walletState.ready, walletState.active, appState.ready]);
@@ -65,7 +65,8 @@ const AppProvider = ({children}) => {
 
   return (
     appState.ready && (
-      <AppContext.Provider value={[{...appState, ...walletState}, appActions]}>
+      <AppContext.Provider
+        value={[{ ...appState, ...walletState }, appActions]}>
         <RoutesProvider>
           <ThemProvider>{children}</ThemProvider>
         </RoutesProvider>

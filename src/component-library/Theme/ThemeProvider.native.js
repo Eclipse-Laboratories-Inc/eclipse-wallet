@@ -1,5 +1,5 @@
 import React from 'react';
-import {DarkTheme, Provider as PaperProvider} from 'react-native-paper';
+import { DarkTheme, Provider as PaperProvider } from 'react-native-paper';
 
 const theme = {
   ...DarkTheme,
@@ -11,7 +11,7 @@ const theme = {
   },
 };
 
-const ThemeProvider = ({children}) => (
+const ThemeProvider = ({ children }) => (
   <PaperProvider theme={theme}>{children}</PaperProvider>
 );
 

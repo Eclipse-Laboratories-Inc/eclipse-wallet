@@ -1,4 +1,4 @@
-import {PBKDF2} from 'react-native-crypto-js';
+import { PBKDF2 } from 'react-native-crypto-js';
 // import {randomBytes, secretbox} from 'tweetnacl';
 // import bs58 from 'bs58';
 

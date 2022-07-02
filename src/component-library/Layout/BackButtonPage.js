@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BackButtonPage = ({children, onBack}) => (
+const BackButtonPage = ({ children, onBack }) => (
   <div style={styles.container}>
     <button onClick={onBack}>BACK</button>
     {children}
@@ -8,7 +8,7 @@ const BackButtonPage = ({children, onBack}) => (
 );
 
 const styles = {
-  container: {flexDirection: 'column', padding: '12px 12px'},
+  container: { flexDirection: 'column', padding: '12px 12px' },
 };
 
 export default BackButtonPage;

@@ -1,8 +1,8 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
-import {lock} from '../utils/password';
-import {getChains, getDefaultEndpoint, recoverAccount} from '../utils/wallet';
+import { lock } from '../utils/password';
+import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
 
 const STORAGE_KEYS = {
   WALLETS: 'wallets',
@@ -12,7 +12,10 @@ const STORAGE_KEYS = {
 
 const buildEndpoints = () =>
   getChains().reduce(
-    (endpoints, chain) => ({...endpoints, [chain]: getDefaultEndpoint(chain)}),
+    (endpoints, chain) => ({
+      ...endpoints,
+      [chain]: getDefaultEndpoint(chain),
+    }),
     {},
   );
 
@@ -97,7 +100,7 @@ const useWallets = () => {
   };
 
   return [
-    {ready, wallets, activeWallet, selectedEndpoints},
+    { ready, wallets, activeWallet, selectedEndpoints },
     {
       setWallets,
       setActiveWallet,

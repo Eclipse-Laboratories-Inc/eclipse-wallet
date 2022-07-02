@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 
-const TextArea = ({value, setValue, lines, label, disabled}) => {
+const TextArea = ({ value, setValue, lines, label, disabled }) => {
   const handleChange = event => {
     setValue(event.target.value);
   };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Card, Title, Paragraph} from 'react-native-paper';
+import { Card, Title, Paragraph } from 'react-native-paper';
 
 const MyComponent = ({
   headerTitle,
@@ -14,7 +14,7 @@ const MyComponent = ({
     <Card.Title
       title={headerTitle}
       subtitle={headerSubtitle}
-      {...(headerAction ? {right: () => headerAction} : {})}
+      {...(headerAction ? { right: () => headerAction } : {})}
     />
     {media && <Card.Cover source={media.url} />}
     <Card.Content>

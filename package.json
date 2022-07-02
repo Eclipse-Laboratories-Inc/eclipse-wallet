@@ -33,7 +33,6 @@
     "react-native-url-polyfill": "^1.3.0",
     "react-native-vector-icons": "^9.1.0",
     "react-native-web": "^0.18.2",
-    "react-refresh": "^0.14.0",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",
@@ -69,7 +68,8 @@
     "start:ios": "react-native run-ios",
     "start:native": "react-native start",
     "test:native": "jest",
-    "lint": "eslint .",
+    "lint": "eslint \"src/**/*.js\"",
+    "lint:fix": "eslint \"src/**/*.js\" --fix",
     "postinstall": "yarn patch-package"
   },
   "eslintConfig": {

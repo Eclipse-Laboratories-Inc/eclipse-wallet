@@ -1,7 +1,7 @@
-import React, {useContext} from 'react';
-import {NavigationContext} from '@react-navigation/native';
-import {globalRoutes} from './app-routes';
-import {getRoute} from './utils';
+import React, { useContext } from 'react';
+import { NavigationContext } from '@react-navigation/native';
+import { globalRoutes } from './app-routes';
+import { getRoute } from './utils';
 
 export const useNavigation = () => {
   const navigation = useContext(NavigationContext);
@@ -17,7 +17,7 @@ export const useNavigation = () => {
 
 export const withParams =
   Component =>
-  ({route = {}, ...props}) => {
+  ({ route = {}, ...props }) => {
     const params = route.params;
     return <Component {...props} params={params} />;
   };

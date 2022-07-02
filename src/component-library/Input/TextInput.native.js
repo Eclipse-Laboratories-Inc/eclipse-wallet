@@ -1,7 +1,7 @@
 import React from 'react';
-import {TextInput as PaperTextInput} from 'react-native-paper';
+import { TextInput as PaperTextInput } from 'react-native-paper';
 
-const TextInput = ({label, value, setValue}) => {
+const TextInput = ({ label, value, setValue }) => {
   const handleChange = text => {
     setValue(text);
   };

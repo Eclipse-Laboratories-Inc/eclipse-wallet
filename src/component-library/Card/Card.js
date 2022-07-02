@@ -21,7 +21,7 @@ const Card = ({
   <MUICard elevation={0}>
     {headerTitle && (
       <CardHeader
-        {...(headerAction ? {action: headerAction} : {})}
+        {...(headerAction ? { action: headerAction } : {})}
         title={headerTitle}
         subheader={headerSubtitle}
       />
@@ -37,14 +37,14 @@ const Card = ({
     {content && (
       <CardContent>
         <Typography
-          sx={{fontSize: 26}}
+          sx={{ fontSize: 26 }}
           color="text.primary"
           gutterBottom
           style={titleStyles}>
           {title}
         </Typography>
         <Typography
-          sx={{fontSize: 16}}
+          sx={{ fontSize: 16 }}
           color="text.secondary"
           gutterBottom
           style={contentStyles}>

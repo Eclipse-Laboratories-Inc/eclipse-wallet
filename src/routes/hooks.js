@@ -1,7 +1,7 @@
 import React from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import {globalRoutes} from './app-routes';
-import {getRoute} from './utils';
+import { useNavigate, useParams } from 'react-router-dom';
+import { globalRoutes } from './app-routes';
+import { getRoute } from './utils';
 
 const buildRouteWithParams = (route, params) =>
   Object.keys(params).reduce(

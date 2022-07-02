@@ -1,7 +1,7 @@
 import React from 'react';
 import MUIButton from '@mui/material/Button';
 
-const Button = ({children, onClick, disabled, ...props}) => (
+const Button = ({ children, onClick, disabled, ...props }) => (
   <MUIButton
     variant="contained"
     onClick={onClick}
@@ -12,7 +12,7 @@ const Button = ({children, onClick, disabled, ...props}) => (
   </MUIButton>
 );
 
-export const ButtonText = ({text, onClick, disabled, ...props}) => (
+export const ButtonText = ({ text, onClick, disabled, ...props }) => (
   <MUIButton
     variant="text"
     onClick={onClick}

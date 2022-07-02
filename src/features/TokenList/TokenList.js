@@ -4,7 +4,7 @@ import ClickableBasicCard from '../../component-library/Card/ClickableBasicCard'
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 
-const TokenList = ({tokens, onDetail}) => (
+const TokenList = ({ tokens, onDetail }) => (
   <Box>
     {tokens.map(t => (
       <ClickableBasicCard

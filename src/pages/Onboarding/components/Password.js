@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Box from '../../../component-library/Box/Box';
 import Button from '../../../component-library/Button/Button';
 import TextInput from '../../../component-library/Input/TextInput';
 
-const Password = ({onComplete}) => {
+const Password = ({ onComplete }) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
   const isValid = (!!pass && pass === repass) || (!pass && !repass);

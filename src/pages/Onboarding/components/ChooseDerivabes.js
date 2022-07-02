@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Box from '../../../component-library/Box/Box';
 import Button from '../../../component-library/Button/Button';
-import {SelectableWalletCard} from '../../../features/WalletCard/WalletCard';
+import { SelectableWalletCard } from '../../../features/WalletCard/WalletCard';
 
-const ChooseDerivabes = ({accounts, onComplete}) => {
+const ChooseDerivabes = ({ accounts, onComplete }) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {
@@ -15,7 +15,7 @@ const ChooseDerivabes = ({accounts, onComplete}) => {
   return (
     <>
       <Box px={10} py={10}>
-        {accounts.map(({index}) => (
+        {accounts.map(({ index }) => (
           <SelectableWalletCard
             key={`wallet-${index}`}
             onSelect={status => updateSelected(index, status)}

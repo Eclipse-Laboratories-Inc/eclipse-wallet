@@ -1,7 +1,7 @@
 import * as React from 'react';
 import MUIBox from '@mui/material/Box';
 
-const Box = ({children, px = 0, py = 0}) => {
+const Box = ({ children, px = 0, py = 0 }) => {
   return (
     <MUIBox
       sx={{

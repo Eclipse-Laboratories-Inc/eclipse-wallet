@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {AppContext} from '../../AppProvider';
-import {getDefaultChain, getDerivedAccounts} from '../../utils/wallet';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../AppProvider';
+import { getDefaultChain, getDerivedAccounts } from '../../utils/wallet';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import ChooseDerivabes from './components/ChooseDerivabes';
-import {useNavigation} from '../../routes/hooks';
-import {ROUTES_MAP} from '../../routes/app-routes';
+import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP } from '../../routes/app-routes';
 
 const DerivedAccounts = () => {
   const navigate = useNavigation();
-  const [{activeWallet, selectedEndpoints}, {addDerivedAccounts}] =
+  const [{ activeWallet, selectedEndpoints }, { addDerivedAccounts }] =
     useContext(AppContext);
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {

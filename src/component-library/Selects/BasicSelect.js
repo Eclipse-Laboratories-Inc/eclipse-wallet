@@ -2,7 +2,7 @@ import React from 'react';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-const BasicSelect = ({value, setValue, options, label, disabled}) => {
+const BasicSelect = ({ value, setValue, options, label, disabled }) => {
   const handleChange = event => {
     setValue(event.target.value);
   };

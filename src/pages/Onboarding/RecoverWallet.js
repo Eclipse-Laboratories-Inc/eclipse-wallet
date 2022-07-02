@@ -1,21 +1,21 @@
-import React, {useContext, useState, useMemo} from 'react';
-import {AppContext} from '../../AppProvider';
+import React, { useContext, useState, useMemo } from 'react';
+import { AppContext } from '../../AppProvider';
 import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import TextArea from '../../component-library/Input/TextArea';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextTitle from '../../component-library/Text/TextTitle';
-import {ROUTES_MAP} from '../../routes/app-routes';
-import {useNavigation} from '../../routes/hooks';
+import { ROUTES_MAP } from '../../routes/app-routes';
+import { useNavigation } from '../../routes/hooks';
 import {
   getDefaultChain,
   recoverAccount,
   validateSeedPhrase,
 } from '../../utils/wallet';
 import Password from './components/Password';
-import {ROUTES_MAP as ROUTES_ONBOARDING} from './routes';
+import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
 
-const Form = ({onComplete}) => {
+const Form = ({ onComplete }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
   return (
@@ -40,7 +40,7 @@ const Form = ({onComplete}) => {
   );
 };
 
-const Success = ({goToWallet, goToDerived}) => (
+const Success = ({ goToWallet, goToDerived }) => (
   <>
     <Box>
       <TextTitle>Success</TextTitle>
@@ -54,7 +54,7 @@ const Success = ({goToWallet, goToDerived}) => (
 
 const RecoverWallet = () => {
   const navigate = useNavigation();
-  const [{selectedEndpoints}, {addWallet}] = useContext(AppContext);
+  const [{ selectedEndpoints }, { addWallet }] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const handleRecover = async seedPhrase => {

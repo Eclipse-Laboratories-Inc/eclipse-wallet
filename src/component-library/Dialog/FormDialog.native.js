@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
+import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 const FormDialog = ({
   title,

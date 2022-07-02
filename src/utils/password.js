@@ -1,5 +1,5 @@
-import {pbkdf2} from 'crypto-browserify';
-import {randomBytes, secretbox} from 'tweetnacl';
+import { pbkdf2 } from 'crypto-browserify';
+import { randomBytes, secretbox } from 'tweetnacl';
 import bs58 from 'bs58';
 
 const deriveEncryptionKey = async (password, salt, iterations, digest) => {

@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-import {ButtonText} from '../../component-library/Button/Button';
+import { ButtonText } from '../../component-library/Button/Button';
 import Card from '../../component-library/Card/Card';
 import PageLayout from '../../component-library/Layout/PageLayout';
-import {useNavigation} from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import Logo from '../../images/logo.png';
-import {ROUTES_MAP} from '../../routes/app-routes';
+import { ROUTES_MAP } from '../../routes/app-routes';
 
 const styles = StyleSheet.create({
   textButton: {
@@ -47,8 +47,8 @@ const WelcomePage = () => {
       content:
         '2 lines max Excepteur sint occaecat cupidatat non proident, sunt ',
     },
-    {title: 'bbb', content: 'bbb'},
-    {title: 'ccc', content: 'ccc'},
+    { title: 'bbb', content: 'bbb' },
+    { title: 'ccc', content: 'ccc' },
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);
 
@@ -65,7 +65,7 @@ const WelcomePage = () => {
           onClick={goToOnboarding}
         />
       }
-      media={{url: Logo, height: '200', alt: 'logo'}}
+      media={{ url: Logo, height: '200', alt: 'logo' }}
       title={steps[step].title}
       content={steps[step].content}
       actions={[
