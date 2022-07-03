@@ -11,17 +11,23 @@ const MyComponent = ({
   actions,
 }) => (
   <Card>
-    <Card.Title
-      title={headerTitle}
-      subtitle={headerSubtitle}
-      {...(headerAction ? { right: () => headerAction } : {})}
-    />
+    {headerTitle && (
+      <Card.Title
+        title={headerTitle}
+        subtitle={headerSubtitle}
+        {...(headerAction ? { right: () => headerAction } : {})}
+      />
+    )}
     {media && <Card.Cover source={media.url} />}
-    <Card.Content>
-      <Title>{title}</Title>
-      <Paragraph>{content}</Paragraph>
-    </Card.Content>
-    <Card.Actions>{actions && actions.map(action => action)}</Card.Actions>
+    {content && (
+      <Card.Content>
+        <Title>{title}</Title>
+        <Paragraph>{content}</Paragraph>
+      </Card.Content>
+    )}
+    {actions && (
+      <Card.Actions>{actions && actions.map(action => action)}</Card.Actions>
+    )}
   </Card>
 );
 
