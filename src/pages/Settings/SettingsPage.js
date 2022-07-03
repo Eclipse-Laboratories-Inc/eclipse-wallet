@@ -14,9 +14,13 @@ const SettingsPage = () => {
     logout();
     navigate(ROUTES_MAP.ONBOARDING);
   };
+  const goToNetwork = () => navigate(ROUTES_MAP.ONBOARDING);
   return (
     <PageLayout>
       <TextTitle>Settings</TextTitle>
+      <Box>
+        <Button onClick={goToNetwork}>Change Network</Button>
+      </Box>
       <Box>
         <Button onClick={handleLogout}>Logout</Button>
       </Box>

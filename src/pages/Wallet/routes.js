@@ -1,6 +1,6 @@
 import WalletOvewiew from './WalletOverviewPage';
 import NtfsPage from './NtfsPage';
-import SettingsPage from './SettingsPage';
+import SettingsPage from '../Settings/SettingsPage';
 export const ROUTES_MAP = {
   WALLET_OVERVIEW: 'WALLET_OVERVIEW',
   WALLET_NTFS: 'WALLET_NTFS',
