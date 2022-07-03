@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@4m/wallet-adapter": "./packages/@4m/",
+    "@4m/wallet-adapter": "^0.0.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.7.0",
@@ -64,6 +64,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "start:packager": "react-native start",    
     "start:android": "react-native run-android",
     "start:ios": "react-native run-ios",
     "start:native": "react-native start",
