@@ -1,31 +1,7 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../../AppProvider';
-import Box from '../../component-library/Box/Box';
-import Button from '../../component-library/Button/Button';
-import PageLayout from '../../component-library/Layout/PageLayout';
-import TextTitle from '../../component-library/Text/TextTitle';
-import { ROUTES_MAP } from '../../routes/app-routes';
-import { useNavigation } from '../../routes/hooks';
+import React from 'react';
+import RoutesBuilder from '../../routes/RoutesBuilder';
+import routes from './routes';
 
-const SettingsPage = () => {
-  const navigate = useNavigation();
-  const [, { logout }] = useContext(AppContext);
-  const handleLogout = () => {
-    logout();
-    navigate(ROUTES_MAP.ONBOARDING);
-  };
-  const goToNetwork = () => navigate(ROUTES_MAP.ONBOARDING);
-  return (
-    <PageLayout>
-      <TextTitle>Settings</TextTitle>
-      <Box>
-        <Button onClick={goToNetwork}>Change Network</Button>
-      </Box>
-      <Box>
-        <Button onClick={handleLogout}>Logout</Button>
-      </Box>
-    </PageLayout>
-  );
-};
+const SettingsPage = () => <RoutesBuilder routes={routes} />;
 
 export default SettingsPage;

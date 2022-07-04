@@ -99,12 +99,18 @@ const useWallets = () => {
     await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
   };
 
+  const changeEndpoint = (chain, value) =>
+    setSelectedEndpoints({
+      ...selectedEndpoints,
+      [chain]: value,
+    });
+
   return [
     { ready, wallets, activeWallet, selectedEndpoints },
     {
       setWallets,
       setActiveWallet,
-      setSelectedEndpoints,
+      changeEndpoint,
       addWallet,
       addDerivedAccounts,
     },

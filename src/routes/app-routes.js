@@ -46,6 +46,7 @@ export const globalRoutes = [
   ...routes,
   ...require('../pages/Onboarding/routes').default,
   ...require('../pages/Wallet/routes').default,
+  ...require('../pages/Settings/routes').default,
 ];
 
 export default routes;

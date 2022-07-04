@@ -27,7 +27,7 @@ const routes = [
   {
     key: ROUTES_MAP.WALLET_SETTINGS,
     name: 'walletSettings',
-    path: 'settings',
+    path: 'settings/*',
     route: '/wallet/settings',
     Component: SettingsPage,
     default: false,
