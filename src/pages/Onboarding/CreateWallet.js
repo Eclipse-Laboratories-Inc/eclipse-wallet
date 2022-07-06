@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import randomNumber from 'lodash/random';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -145,9 +146,14 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
   const [positions, setPositions] = useState([]);
   const [phrases, setPhrases] = useState(['', '', '']);
   useEffect(() => {
-    const random = [2, 11, 22];
+    const length = account.mnemonic.split(' ').length;
+    const random = [
+      randomNumber(1, Math.floor(length / 3)),
+      randomNumber(Math.floor(length / 3) + 1, Math.floor(length / 3) * 2),
+      randomNumber(Math.floor(length / 3) * 2 + 1, length),
+    ];
     setPositions(random);
-  }, []);
+  }, [account]);
   const isValid = useMemo(
     () =>
       positions.every(
