@@ -9,11 +9,11 @@ const TokenList = ({ tokens, onDetail }) => (
   <>
     {tokens.map(t => (
       <GlobalButtonCard
-        key={t.address}
+        key={t.mint}
         onPress={() => onDetail(t)}
         icon={<AvatarImage url={t.logo} size={48} />}
-        title={t.name}
-        description={`${t.decimals} ${t.symbol}`}
+        title={t.mint}
+        description={t.uiAmount}
         actions={<GlobalText type="body2">$0.00</GlobalText>}
       />
     ))}
