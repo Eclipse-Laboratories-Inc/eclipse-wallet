@@ -3,6 +3,7 @@ import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
 import { lock } from '../utils/password';
 import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
+import { act } from 'react-test-renderer';
 
 const STORAGE_KEYS = {
   WALLETS: 'wallets',
@@ -103,11 +104,13 @@ const useWallets = () => {
     await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
   };
 
-  const changeEndpoint = (chain, value) =>
+  const changeEndpoint = (chain, value) => {
     setSelectedEndpoints({
       ...selectedEndpoints,
       [chain]: value,
     });
+    activeWallet.setNetwork(value);
+  };
 
   return [
     { ready, wallets, activeWallet, selectedEndpoints, walletNumber },
