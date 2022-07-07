@@ -20,7 +20,8 @@ const BottomTabsLayout = ({ children, tabs }) => (
 const styles = {
   container: {
     height: '100vh',
-    overflow: 'scroll',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
     padding: '12px 12px',
     display: 'flex',
     flexDirection: 'column',

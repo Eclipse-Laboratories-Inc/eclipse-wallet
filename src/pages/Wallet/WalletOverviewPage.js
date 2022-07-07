@@ -4,15 +4,17 @@ import Box from '../../component-library/Box/Box';
 import Button from '../../component-library/Button/Button';
 import PageLayout from '../../component-library/Layout/PageLayout';
 import TextTitle from '../../component-library/Text/TextTitle';
+import TextParagraph from '../../component-library/Text/TextParagraph';
 import TokenList from '../../features/TokenList/TokenList';
 import NtfsList from '../../features/NtfsList/NtfsList';
 import WalletBalanceCard from '../../features/WalletBalanceCard/WalletBalanceCard';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
+import { getWalletName } from '../../utils/wallet';
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeWallet, walletNumber }] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
@@ -39,6 +41,10 @@ const WalletOverviewPage = () => {
   return (
     loaded && (
       <PageLayout>
+        <Box>
+          <TextTitle>{getWalletName(activeWallet, walletNumber)}</TextTitle>
+          <TextParagraph>{activeWallet.getReceiveAddress()}</TextParagraph>
+        </Box>
         <WalletBalanceCard
           balance={totalBalance}
           messages={[]}

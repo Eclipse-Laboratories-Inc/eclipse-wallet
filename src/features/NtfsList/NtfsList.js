@@ -8,7 +8,7 @@ const NtfsList = ({ ntfs }) => (
     spacing={0.5}
     columns={2}
     items={ntfs.map(ntf => (
-      <Card key={ntf.url} media={getMediaRemoteUrl(ntf.uri)} />
+      <Card key={ntf.url} media={getMediaRemoteUrl(ntf.image)} />
     ))}
   />
 );

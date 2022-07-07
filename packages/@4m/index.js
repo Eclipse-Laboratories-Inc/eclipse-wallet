@@ -35,28 +35,36 @@ const tokens = [
 
 const nfts = [
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
   {
-    uri: 'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
+    image:
+      'https://cryptohasbullanft.com/wp-content/uploads/2022/05/fuffy2.jpg',
   },
 ];
 
@@ -66,8 +74,7 @@ module.exports = {
       mnemonic:
         'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
       path: "m/44'/501'/0'/0",
-      getReceiveAddress: () =>
-        Promise.resolve('EgDXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU'),
+      getReceiveAddress: () => 'EgDXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU',
       getBalance: () =>
         Promise.resolve({
           usdTotal: '1,100.02',
@@ -80,8 +87,7 @@ module.exports = {
       mnemonic:
         'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
       path: "m/44'/501'/0'/0",
-      getReceiveAddress: () =>
-        Promise.resolve('2PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU'),
+      getReceiveAddress: () => '2PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU',
       getBalance: () =>
         Promise.resolve({
           usdTotal: '1,200.02',
@@ -96,24 +102,21 @@ module.exports = {
         mnemonic:
           'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
         path: "m/44'/501'/0'/0",
-        getReceiveAddress: () =>
-          Promise.resolve('0PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU'),
+        getReceiveAddress: () => '0PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU',
       },
       {
         index: 1,
         mnemonic:
           'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
         path: "m/44'/501'/0'/1",
-        getReceiveAddress: () =>
-          Promise.resolve('1PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU'),
+        getReceiveAddress: () => '1PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU',
       },
       {
         index: 2,
         mnemonic:
           'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
         path: "m/44'/501'/0'/2",
-        getReceiveAddress: () =>
-          Promise.resolve('2PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU'),
+        getReceiveAddress: () => '2PeXCQsXyomDckpX2eeBfSLQfNQa3kW3NKttXFN6QLPU',
       },
     ]),
 };

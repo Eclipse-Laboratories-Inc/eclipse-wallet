@@ -34,3 +34,5 @@ export const validateSeedPhrase = seedPhrase =>
   seedPhrase.length &&
   QTY_WORDS.includes(seedPhrase.split(' ').length) &&
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
+
+export const getWalletName = (wallet, number) => `Wallet ${number}`;
