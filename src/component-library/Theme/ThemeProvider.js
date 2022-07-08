@@ -32,13 +32,13 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Montserrat',
+    fontFamily: 'DM Sans',
     h1: {
-      fontFamily: 'Montserrat',
+      fontFamily: 'DM Sans',
     },
     button: {
       fontSize: '1rem',
-      fontFamily: 'Montserrat',
+      fontFamily: 'DM Sans',
     },
   },
   components: {

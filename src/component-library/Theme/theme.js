@@ -1,0 +1,206 @@
+import { Platform, Dimensions, Appearance } from 'react-native';
+
+const calculateResponsivePadding = () => {
+  let padding = 10;
+  if (Dimensions.get('window').width > 320) {
+    padding = 15;
+  }
+  if (Dimensions.get('window').width > 375) {
+    padding = 20;
+  }
+  if (Dimensions.get('window').width > 720) {
+    padding = 25;
+  }
+  return padding;
+};
+
+const APPBAR_HEIGHT = Platform.select({ ios: 44, android: 56 });
+const STATUSBAR_HEIGHT = Platform.select({ ios: 20, android: 0 });
+const HEADER_HEIGHT = STATUSBAR_HEIGHT + APPBAR_HEIGHT;
+
+const variables = {
+  APPBAR_HEIGHT,
+  STATUSBAR_HEIGHT,
+  HEADER_HEIGHT,
+
+  mobileWidth: 375,
+  tabletWidth: 690,
+};
+
+const debug = {
+  borderColor: 'red',
+  borderWidth: 1,
+};
+
+const fonts = {
+  primary: 'DMSans-Regular',
+  dmSansRegular: 'DMSans-Regular',
+  dmSansMedium: 'DMSans-Medium',
+  dmSansBold: 'DMSans-Bold',
+};
+
+const fontSize = {
+  fontSizeXS: 9,
+  fontSizeSM: 12,
+  fontSizeNormal: 16,
+  fontSizeMD: 21,
+  fontSizeLG: 26,
+  fontSizeXL: 48,
+};
+
+const lineHeight = {
+  lineHeightXS: 12,
+  lineHeightSM: 16,
+  lineHeightNormal: 24,
+  lineHeightMD: 27,
+  lineHeightLG: 32,
+  lineHeightXL: 58,
+};
+
+const gutters = {
+  margin: 5,
+  responsivePadding: calculateResponsivePadding(),
+  paddingXS: 5,
+  paddingSM: 10,
+  paddingNormal: 16,
+  paddingMD: 20,
+  paddingLG: 25,
+  paddingXL: 40,
+  paddingXXL: 50,
+};
+
+const borderRadius = {
+  borderRadiusSM: 4,
+  borderRadiusNormal: 8,
+  borderRadiusLG: 16,
+  borderRadiusXL: 20,
+  borderRadiusPill: 25,
+};
+
+const staticColor = {
+  alwaysWhite: '#fff',
+  alwaysBlack: '#000',
+  transparent: 'transparent',
+};
+
+const themes = {
+  light: {
+    white: '#fff',
+    black: '#000000',
+
+    white100: 'rgba(255, 255, 255, 0.1)',
+    white200: 'rgba(255, 255, 255, 0.2)',
+    white300: 'rgba(255, 255, 255, 0.3)',
+    white400: 'rgba(255, 255, 255, 0.4)',
+    white500: 'rgba(255, 255, 255, 0.5)',
+    white600: 'rgba(255, 255, 255, 0.6)',
+    white700: 'rgba(255, 255, 255, 0.7)',
+    white800: 'rgba(255, 255, 255, 0.8)',
+    white850: 'rgba(255, 255, 255, 0.85)',
+    white900: 'rgba(255, 255, 255, 0.9)',
+
+    black100: 'rgba(0, 0, 0, 0.1)',
+    black150: 'rgba(0, 0, 0, 0.15)',
+    black200: 'rgba(0, 0, 0, 0.2)',
+    black300: 'rgba(0, 0, 0, 0.3)',
+    black400: 'rgba(0, 0, 0, 0.4)',
+    black500: 'rgba(0, 0, 0, 0.5)',
+    black600: 'rgba(0, 0, 0, 0.6)',
+    black700: 'rgba(0, 0, 0, 0.7)',
+    black800: 'rgba(0, 0, 0, 0.8)',
+    black850: 'rgba(0, 0, 0, 0.85)',
+    black900: 'rgba(0, 0, 0, 0.9)',
+
+    bgDarken: '#10131C',
+    bgLight: 'hsla(223, 34%, 13%, 1)',
+    cards: 'rgba(42, 56, 78, 1)',
+
+    labelPrimary: 'hsla(0, 0%, 99%, 1)',
+    labelSecondary: 'rgba(191, 197, 210, 1)',
+    labelTertiary: 'rgba(128, 135, 153, 1)',
+
+    accentPrimary: 'hsla(7, 100%, 64%, 1)',
+    accentSecondary: 'hsla(0, 59%, 40%, 1)',
+    accentTertiary: 'hsla(0, 100%, 86%, 1)',
+
+    success: '#07b114',
+    info: '#006EC5',
+    warning: '#ea772b',
+    danger: '#dc3545',
+
+    niceSuccess: '#d1e7dd',
+    niceSuccessText: '#0f5132',
+    niceWarning: '#fff3cd',
+    niceWarningText: '#856404',
+    niceDanger: '#f8d7da',
+    niceDangerText: '#842029',
+  },
+  dark: {
+    white: '#1f1f1f',
+    black: '#FFFFFF',
+
+    white100: 'rgba(0, 0, 0, 0.1)',
+    white200: 'rgba(0, 0, 0, 0.2)',
+    white300: 'rgba(0, 0, 0, 0.3)',
+    white400: 'rgba(0, 0, 0, 0.4)',
+    white500: 'rgba(0, 0, 0, 0.5)',
+    white600: 'rgba(0, 0, 0, 0.6)',
+    white700: 'rgba(0, 0, 0, 0.7)',
+    white800: 'rgba(0, 0, 0, 0.8)',
+    white850: 'rgba(0, 0, 0, 0.85)',
+    white900: 'rgba(0, 0, 0, 0.9)',
+
+    black100: 'rgba(255, 255, 255, 0.1)',
+    black150: 'rgba(255, 255, 255, 0.15)',
+    black200: 'rgba(255, 255, 255, 0.2)',
+    black300: 'rgba(255, 255, 255, 0.3)',
+    black400: 'rgba(255, 255, 255, 0.4)',
+    black500: 'rgba(255, 255, 255, 0.5)',
+    black600: 'rgba(255, 255, 255, 0.6)',
+    black700: 'rgba(255, 255, 255, 0.7)',
+    black800: 'rgba(255, 255, 255, 0.8)',
+    black850: 'rgba(255, 255, 255, 0.85)',
+    black900: 'rgba(255, 255, 255, 0.9)',
+
+    bgDarken: '#10131C',
+    bgLight: 'hsla(223, 34%, 13%, 1)',
+    cards: 'rgba(42, 56, 78, 1)',
+
+    labelPrimary: 'hsla(0, 0%, 99%, 1)',
+    labelSecondary: 'rgba(191, 197, 210, 1)',
+    labelTertiary: 'rgba(128, 135, 153, 1)',
+
+    accentPrimary: 'hsla(7, 100%, 64%, 1)',
+    accentSecondary: 'hsla(0, 59%, 40%, 1)',
+    accentTertiary: 'hsla(0, 100%, 86%, 1)',
+
+    success: '#07b114',
+    info: '#006EC5',
+    warning: '#ea772b',
+    danger: '#dc3545',
+
+    niceSuccess: '#d1e7dd',
+    niceSuccessText: '#0f5132',
+    niceWarning: '#fff3cd',
+    niceWarningText: '#856404',
+    niceDanger: '#f8d7da',
+    niceDangerText: '#842029',
+  },
+};
+
+const colorTheme =
+  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
+
+const theme = {
+  variables,
+  debug,
+  fonts,
+  fontSize,
+  lineHeight,
+  gutters,
+  borderRadius,
+  staticColor,
+  colors: colorTheme,
+};
+
+export default theme;
