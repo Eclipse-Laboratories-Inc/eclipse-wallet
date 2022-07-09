@@ -6,7 +6,7 @@ import {
 import chains from '@4m/wallet-adapter/constants/chains';
 import ENDPOINTS from '../config/endpoints';
 
-const QTY_WORDS = 24;
+const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
 
 export const LOGOS = {
@@ -32,5 +32,7 @@ export const getDefaultEndpoint = chain => ENDPOINTS[chain].MAIN;
 
 export const validateSeedPhrase = seedPhrase =>
   seedPhrase.length &&
-  seedPhrase.split(' ').length === QTY_WORDS &&
+  QTY_WORDS.includes(seedPhrase.split(' ').length) &&
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
+
+export const getWalletName = (wallet, number) => `Wallet ${number}`;

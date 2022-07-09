@@ -14,6 +14,7 @@ import NtfsList from '../../features/NtfsList/NtfsList';
 import WalletBalanceCard from '../../features/WalletBalanceCard/WalletBalanceCard';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
+import { getWalletName } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeWallet, walletNumber }] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
@@ -70,6 +71,11 @@ const WalletOverviewPage = () => {
   return (
     loaded && (
       <GlobalLayoutForTabScreen styles={styles.container}>
+        <GlobalText type="headline2">
+          {getWalletName(activeWallet, walletNumber)}
+        </GlobalText>
+        <GlobalText type="body1">{activeWallet.getReceiveAddress()}</GlobalText>
+
         <WalletBalanceCard
           balance={totalBalance}
           messages={[]}

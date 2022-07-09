@@ -31,6 +31,7 @@ const getWalletAccount = async (index, wallets, endpoints) => {
 const useWallets = () => {
   const [wallets, setWallets] = useState([]);
   const [activeWallet, setActiveWallet] = useState(null);
+  const [walletNumber, setWalletNumber] = useState();
   const [ready, setReady] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState({});
   useEffect(() => {
@@ -51,6 +52,7 @@ const useWallets = () => {
               activeEndpoints,
             );
             setActiveWallet(account);
+            setWalletNumber(activeIndex + 1);
           } catch (error) {
             await storage.removeItem(STORAGE_KEYS.WALLETS);
           }
@@ -75,21 +77,23 @@ const useWallets = () => {
         mnemonic: account.mnemonic,
       },
     ];
-    await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+    if (password) {
+      const encryptedWallets = await lock(storedWallets, password);
+      await storage.setItem(STORAGE_KEYS.WALLETS, encryptedWallets);
+    } else {
+      await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+    }
     await storage.setItem(STORAGE_KEYS.ACTIVE, storedWallets.length - 1);
+    setWalletNumber(storedWallets.length);
   };
 
   const addDerivedAccounts = async (accounts, password, chain) => {
-    const derivedAccounts = await Promise.all(
-      accounts.map(account =>
-        account.getReceiveAddress().then(address => ({
-          address,
-          path: account.path,
-          chain,
-          mnemonic: activeWallet.mnemonic,
-        })),
-      ),
-    );
+    const derivedAccounts = accounts.map(account => ({
+      address: account.getReceiveAddress(),
+      path: account.path,
+      chain,
+      mnemonic: activeWallet.mnemonic,
+    }));
     const storedWallets = [
       ...wallets.filter(
         w => !derivedAccounts.some(da => da.address === w.address),
@@ -106,7 +110,7 @@ const useWallets = () => {
     });
 
   return [
-    { ready, wallets, activeWallet, selectedEndpoints },
+    { ready, wallets, activeWallet, selectedEndpoints, walletNumber },
     {
       setWallets,
       setActiveWallet,
