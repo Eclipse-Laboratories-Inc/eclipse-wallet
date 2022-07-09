@@ -4,16 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 
-import theme from '../../component-library/Theme/theme';
-import GlobalLayout from '../../component-library/Layout/GlobalLayout';
-import GlobalText from '../../component-library/Text/GlobalText';
-import GlobalImage from '../../component-library/Image/GlobalImage';
-import GlobalButton from '../../component-library/Button/GlobalButton';
+import theme from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalImage from '../../component-library/Global/GlobalImage';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
+import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
 import IconSuccessGradient from '../../assets/images/IconSuccessGradient.png';
-import DividerM from '../../assets/images/DividerM.png';
-import PaginationOn from '../../assets/images/PaginationOn.png';
-import PaginationOff from '../../assets/images/PaginationOff.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,22 +40,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  divider: {
-    marginVertical: theme.gutters.paddingXL,
-    width: 56,
-    height: 8,
-  },
   bigIcon: {
     width: 219,
     height: 219,
   },
   pagination: {
     flexDirection: 'row',
-  },
-  paginationDot: {
-    margin: 10,
-    width: 6,
-    height: 6,
   },
 });
 
@@ -86,13 +76,6 @@ const WelcomePage = () => {
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);
 
-  const PaginationDot = ({ active }) => (
-    <GlobalImage
-      source={active ? PaginationOn : PaginationOff}
-      style={styles.paginationDot}
-    />
-  );
-
   return (
     <GlobalLayout>
       <View style={styles.container}>
@@ -108,16 +91,20 @@ const WelcomePage = () => {
         <View style={styles.inner}>
           <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
 
-          <GlobalImage source={DividerM} style={styles.divider} />
+          <GlobalPadding size="2xl" />
+
+          <GlobalDivider />
 
           <GlobalText type="headline2">{steps[step].title}</GlobalText>
 
           <GlobalText type="body1">{steps[step].content}</GlobalText>
 
+          <GlobalPadding size="md" />
+
           <View style={styles.pagination}>
-            <PaginationDot active={step === 0} />
-            <PaginationDot active={step === 1} />
-            <PaginationDot active={step === 2} />
+            <GlobalPageDot active={step === 0} />
+            <GlobalPageDot active={step === 1} />
+            <GlobalPageDot active={step === 2} />
           </View>
         </View>
 

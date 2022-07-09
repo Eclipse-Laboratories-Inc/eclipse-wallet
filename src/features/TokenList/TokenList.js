@@ -1,22 +1,23 @@
 import React from 'react';
-import Box from '../../component-library/Box/Box';
-import ClickableBasicCard from '../../component-library/Card/ClickableBasicCard';
+
+import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import GlobalText from '../../component-library/Global/GlobalText';
+
 import AvatarImage from '../../component-library/Image/AvatarImage';
-import TextParagraph from '../../component-library/Text/TextParagraph';
 
 const TokenList = ({ tokens, onDetail }) => (
-  <Box>
+  <>
     {tokens.map(t => (
-      <ClickableBasicCard
+      <GlobalButtonCard
         key={t.address}
-        headerAction={<TextParagraph>$0.00</TextParagraph>}
-        headerIcon={<AvatarImage url={t.logo} size={48} />}
-        headerTitle={t.name}
-        headerSubtitle={`${t.decimals} ${t.symbol}`}
-        onClick={() => onDetail(t)}
+        onPress={() => onDetail(t)}
+        icon={<AvatarImage url={t.logo} size={48} />}
+        title={t.name}
+        description={`${t.decimals} ${t.symbol}`}
+        actions={<GlobalText type="body2">$0.00</GlobalText>}
       />
     ))}
-  </Box>
+  </>
 );
 
 export default TokenList;

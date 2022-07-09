@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import Box from '../../../component-library/Box/Box';
-import Button from '../../../component-library/Button/Button';
-import { SelectableWalletCard } from '../../../features/WalletCard/WalletCard';
+
+import { GlobalLayoutForTabScreen } from '../../../component-library/Global/GlobalLayout';
+import GlobalButton from '../../../component-library/Global/GlobalButton';
+import GlobalButtonCard from '../../../component-library/Global/GlobalButtonCard';
+import GlobalPadding from '../../../component-library/Global/GlobalPadding';
+import GlobalText from '../../../component-library/Global/GlobalText';
+
+import AvatarImage from '../../../component-library/Image/AvatarImage';
+import { getDefaultChain, LOGOS } from '../../../utils/wallet';
 
 const ChooseDerivabes = ({ accounts, onComplete }) => {
   const [selected, setSelected] = useState([]);
@@ -13,20 +19,40 @@ const ChooseDerivabes = ({ accounts, onComplete }) => {
     }
   };
   return (
-    <>
-      <Box px={10} py={10}>
-        {accounts.map(({ index }) => (
-          <SelectableWalletCard
-            key={`wallet-${index}`}
-            onSelect={status => updateSelected(index, status)}
-            selected={selected.includes(index)}
-          />
-        ))}
-      </Box>
-      <Box px={10} py={10}>
-        <Button onClick={() => onComplete(selected)}>Continue</Button>
-      </Box>
-    </>
+    <GlobalLayoutForTabScreen>
+      <GlobalPadding />
+
+      <GlobalText type="headline2" center>
+        Derivable Accounts
+      </GlobalText>
+
+      <GlobalText type="body1" center>
+        m/44´/501/...
+      </GlobalText>
+
+      <GlobalPadding size="xl" />
+
+      {accounts.map(({ index }) => (
+        <GlobalButtonCard
+          key={`wallet-${index}`}
+          active={selected.includes(index)}
+          title="Public Key"
+          description="0.0000.00"
+          actions={<GlobalText type="body2">$0.000.000</GlobalText>}
+          onPress={status => updateSelected(index, status)}
+          icon={<AvatarImage url={LOGOS[getDefaultChain()]} size={48} />}
+        />
+      ))}
+
+      <GlobalPadding />
+
+      <GlobalButton
+        type="primary"
+        wide
+        title="Recover"
+        onPress={() => onComplete(selected)}
+      />
+    </GlobalLayoutForTabScreen>
   );
 };
 

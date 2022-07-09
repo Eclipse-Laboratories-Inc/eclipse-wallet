@@ -1,14 +1,26 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    padding: 12,
+  },
+});
 
 const BackButtonPage = ({ children, onBack }) => (
-  <div style={styles.container}>
-    <button onClick={onBack}>BACK</button>
-    {children}
-  </div>
-);
+  <View style={styles.container}>
+    <GlobalPadding />
 
-const styles = {
-  container: { flexDirection: 'column', padding: '12px 12px' },
-};
+    <GlobalButton type="primary" title="Back" onPress={onBack} />
+
+    <GlobalPadding />
+
+    {children}
+  </View>
+);
 
 export default BackButtonPage;

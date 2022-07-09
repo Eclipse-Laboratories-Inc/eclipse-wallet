@@ -1,16 +1,24 @@
 import React, { useContext } from 'react';
+
 import { AppContext } from '../../AppProvider';
-import TextTitle from '../../component-library/Text/TextTitle';
 import { useNavigation, withParams } from '../../routes/hooks';
-import BackButtonPage from '../../component-library/Layout/BackButtonPage';
 import { ROUTES_MAP } from '../../routes/app-routes';
+
+import GlobalText from '../../component-library/Global/GlobalText';
+
+import BackButtonPage from '../../component-library/Layout/BackButtonPage';
 
 const TokenDetailPage = ({ params }) => {
   const navigate = useNavigation();
   const [] = useContext(AppContext);
   return (
     <BackButtonPage onBack={() => navigate(ROUTES_MAP.WALLET)}>
-      <TextTitle>Token Detail {params.tokenId}</TextTitle>
+      <GlobalText type="headline2" center>
+        Token Detail
+      </GlobalText>
+      <GlobalText type="body1" center>
+        {params.tokenId}
+      </GlobalText>
     </BackButtonPage>
   );
 };

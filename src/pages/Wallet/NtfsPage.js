@@ -1,11 +1,14 @@
 import React from 'react';
-import PageLayout from '../../component-library/Layout/PageLayout';
-import TextTitle from '../../component-library/Text/TextTitle';
+
+import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const NtfsPage = () => (
-  <PageLayout>
-    <TextTitle>NTFS</TextTitle>
-  </PageLayout>
+  <GlobalLayoutForTabScreen>
+    <GlobalText type="headline2" center>
+      NFT
+    </GlobalText>
+  </GlobalLayoutForTabScreen>
 );
 
 export default NtfsPage;

@@ -33,7 +33,7 @@ const debug = {
 };
 
 const fonts = {
-  primary: 'DMSans-Regular',
+  primary: 'DMSansRegular',
   dmSansRegular: 'DMSans-Regular',
   dmSansMedium: 'DMSans-Medium',
   dmSansBold: 'DMSans-Bold',
@@ -60,18 +60,22 @@ const lineHeight = {
 const gutters = {
   margin: 5,
   responsivePadding: calculateResponsivePadding(),
-  paddingXS: 5,
-  paddingSM: 10,
+  paddingXXS: 4,
+  paddingXS: 8,
+  paddingSM: 12,
   paddingNormal: 16,
   paddingMD: 20,
-  paddingLG: 25,
-  paddingXL: 40,
-  paddingXXL: 50,
+  paddingLG: 24,
+  paddingXL: 32,
+  padding2XL: 40,
+  padding3XL: 48,
+  padding4XL: 56,
 };
 
 const borderRadius = {
   borderRadiusSM: 4,
   borderRadiusNormal: 8,
+  borderRadiusMD: 10,
   borderRadiusLG: 16,
   borderRadiusXL: 20,
   borderRadiusPill: 25,
@@ -111,6 +115,8 @@ const themes = {
     black850: 'rgba(0, 0, 0, 0.85)',
     black900: 'rgba(0, 0, 0, 0.9)',
 
+    // bgPrimary: 'hsla(225, 25%, 25%, 1)',
+    bgPrimary: 'hsla(225, 27%, 9%, 1)',
     bgDarken: '#10131C',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
