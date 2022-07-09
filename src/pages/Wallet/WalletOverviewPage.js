@@ -72,9 +72,11 @@ const WalletOverviewPage = () => {
     loaded && (
       <GlobalLayoutForTabScreen styles={styles.container}>
         <GlobalText type="headline2">
-          {getWalletName(activeWallet, walletNumber)}
+          {getWalletName(activeWallet, walletNumber)[0]}
         </GlobalText>
-        <GlobalText type="body1">{activeWallet.getReceiveAddress()}</GlobalText>
+        <GlobalText type="body1">
+          {activeWallet.getReceiveAddress()[0]}
+        </GlobalText>
 
         <WalletBalanceCard
           balance={totalBalance}

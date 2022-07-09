@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
-// import { lock } from '../utils/password';
+import { lock } from '../utils/password';
 import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
 
 const STORAGE_KEYS = {
