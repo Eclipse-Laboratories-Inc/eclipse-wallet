@@ -245,7 +245,7 @@ const Password = ({ onComplete }) => {
           wide
           title="Create Wallet"
           onPress={onContinue}
-          disabled={isValid}
+          disabled={!isValid}
         />
       </View>
     </>

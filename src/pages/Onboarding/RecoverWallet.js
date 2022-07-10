@@ -178,7 +178,7 @@ const Success = ({ goToWallet, goToDerived }) => (
 const Password = ({ onComplete }) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
-  // const isValid = (!!pass && pass === repass) || (!pass && !repass);
+  const isValid = (!!pass && pass === repass) || (!pass && !repass);
   const onContinue = () => {
     onComplete(pass);
   };
@@ -227,7 +227,7 @@ const Password = ({ onComplete }) => {
           wide
           title="Recover Wallet"
           onPress={onContinue}
-          // disabled={!isValid}
+          disabled={!isValid}
         />
       </View>
     </>

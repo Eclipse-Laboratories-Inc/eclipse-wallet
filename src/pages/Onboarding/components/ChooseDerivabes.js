@@ -39,7 +39,7 @@ const ChooseDerivabes = ({ accounts, onComplete }) => {
           title="Public Key"
           description="0.0000.00"
           actions={<GlobalText type="body2">$0.000.000</GlobalText>}
-          onPress={status => updateSelected(index, status)}
+          onPress={() => updateSelected(index, !selected.includes(index))}
           icon={<AvatarImage url={LOGOS[getDefaultChain()]} size={48} />}
         />
       ))}
