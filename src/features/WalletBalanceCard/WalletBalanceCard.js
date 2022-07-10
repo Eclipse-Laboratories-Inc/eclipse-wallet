@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Box from '../../component-library/Box/Box';
 import TextParagraph from '../../component-library/Text/TextParagraph';
 import TextTitle from '../../component-library/Text/TextTitle';

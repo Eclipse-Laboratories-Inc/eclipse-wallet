@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
+
 import { AppContext } from '../../AppProvider';
-import Box from '../../component-library/Box/Box';
-import Button from '../../component-library/Button/Button';
-import PageLayout from '../../component-library/Layout/PageLayout';
-import TextTitle from '../../component-library/Text/TextTitle';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
+
+import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const SettingsOptionsPage = () => {
   const navigate = useNavigation();
@@ -18,15 +20,27 @@ const SettingsOptionsPage = () => {
   const goToNetwork = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   return (
-    <PageLayout>
-      <TextTitle>Settings</TextTitle>
-      <Box>
-        <Button onClick={goToNetwork}>Change Network</Button>
-      </Box>
-      <Box>
-        <Button onClick={handleLogout}>Logout</Button>
-      </Box>
-    </PageLayout>
+    <GlobalLayoutForTabScreen>
+      <GlobalText type="headline2" center>
+        Settings
+      </GlobalText>
+
+      <GlobalButton
+        type="primary"
+        block
+        title="Change Network"
+        onPress={goToNetwork}
+      />
+
+      <GlobalPadding />
+
+      <GlobalButton
+        type="secondary"
+        block
+        title="Logout"
+        onPress={handleLogout}
+      />
+    </GlobalLayoutForTabScreen>
   );
 };
 

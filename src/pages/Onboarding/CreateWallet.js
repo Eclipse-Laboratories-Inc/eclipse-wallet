@@ -1,50 +1,133 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import Box from '../../component-library/Box/Box';
-import Button from '../../component-library/Button/Button';
-import TextArea from '../../component-library/Input/TextArea';
-import PageLayout from '../../component-library/Layout/PageLayout';
-import TextParagraph from '../../component-library/Text/TextParagraph';
-import TextTitle from '../../component-library/Text/TextTitle';
+import { StyleSheet, View } from 'react-native';
+
+import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { createAccount, getDefaultChain } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
-import Password from './components/Password';
-import { AppContext } from '../../AppProvider';
+import { createAccount, getDefaultChain } from '../../utils/wallet';
+
+import theme from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
+import GlobalDivider from '../../component-library/Global/GlobalDivider';
+
+import Box from '../../component-library/Box/Box';
+import TextArea from '../../component-library/Input/TextArea';
 import TextInput from '../../component-library/Input/TextInput';
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    paddingHorizontal: theme.gutters.paddingSM,
+    paddingVertical: 40,
+    maxWidth: theme.variables.mobileWidth,
+    minHeight: '100%',
+  },
+  headerActions: {
+    width: '100%',
+  },
+  inner: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding2XL,
+    maxWidth: 375,
+  },
+  footerActions: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  divider: {
+    marginVertical: theme.gutters.paddingXL,
+    width: 56,
+    height: 8,
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  textAreaWrapper: {
+    width: '100%',
+    height: 284,
+  },
+  inputWrapper: {
+    width: '90%',
+  },
+});
 
 const Message = ({ onNext }) => (
   <>
-    <Box px={10} py={10}>
-      <TextTitle>Keep your seed safe!</TextTitle>
-    </Box>
-    <Box px={10} py={10}>
-      <TextParagraph>
+    <GlobalPadding size="md" />
+
+    <View style={styles.inner}>
+      <GlobalDivider />
+
+      <GlobalText type="headline2">Keep your seed safe!</GlobalText>
+
+      <GlobalText type="body1">
         Your private keys are only stored on your current computer or device.
         You will need these words to restore your wallet if your browser's
         storage is cleared or your device is damaged or lost.
-      </TextParagraph>
-    </Box>
-    <Box px={10} py={10}>
-      <Button onClick={onNext}>Continue</Button>
-    </Box>
+      </GlobalText>
+    </View>
+
+    <View style={styles.footerActions}>
+      <GlobalButton type="primary" wide title="Continue" onPress={onNext} />
+    </View>
   </>
 );
 
 const Form = ({ account, onComplete }) => (
   <>
-    <Box px={10} py={10}>
-      <TextTitle>Keep your seed safe!</TextTitle>
-    </Box>
-    <Box px={10} py={10}>
-      <TextArea lines={5} value={account.mnemonic} disabled />
-    </Box>
-    <Box px={10} py={10}>
-      <Button onClick={() => clipboard.copy(account.mnemonic)}>Copy Key</Button>
-    </Box>
-    <Box px={10} py={10}>
-      <Button onClick={onComplete}>I've backed up my seed phrase</Button>
-    </Box>
+    <View style={styles.headerActions}>
+      <View style={styles.pagination}>
+        <GlobalPageDot active />
+        <GlobalPageDot />
+        <GlobalPageDot />
+      </View>
+    </View>
+
+    <GlobalPadding size="md" />
+
+    <View style={styles.inner}>
+      <GlobalText type="headline2">Your Seed Phrase</GlobalText>
+
+      <GlobalText type="body1">
+        Your private keys are only stored on your current computer or device.
+        You will need these words to restore your wallet.
+      </GlobalText>
+
+      <GlobalPadding size="md" />
+
+      <View style={styles.textAreaWrapper}>
+        <TextArea lines={5} value={account.mnemonic} disabled />
+      </View>
+    </View>
+
+    <View style={styles.footerActions}>
+      <GlobalButton
+        type="secondary"
+        wide
+        title="Copy Key"
+        onPress={() => clipboard.copy(account.mnemonic)}
+      />
+
+      <GlobalPadding size="md" />
+
+      <GlobalButton
+        type="primary"
+        wide
+        title="I´ve backed up seed phrase"
+        onPress={onComplete}
+      />
+    </View>
   </>
 );
 
@@ -70,23 +153,101 @@ const ValidateSeed = ({ account, onComplete }) => {
     ]);
   return (
     <>
-      <Box px={10} py={10}>
-        <TextTitle>Confirm Seed Phrase</TextTitle>
-      </Box>
-      {positions.map((pos, index) => (
-        <Box key={`phrase-${pos}`}>
+      <View style={styles.headerActions}>
+        <View style={styles.pagination}>
+          <GlobalPageDot />
+          <GlobalPageDot active />
+          <GlobalPageDot />
+        </View>
+      </View>
+
+      <GlobalPadding size="md" />
+
+      <View style={styles.inner}>
+        <GlobalText type="headline2">Confirm Seed Phrase</GlobalText>
+
+        <GlobalText type="body1">
+          Prese re-enter seed phrase to confirm tha you have save it
+        </GlobalText>
+
+        <GlobalPadding size="md" />
+
+        {positions.map((pos, index) => (
+          <Box key={`phrase-${pos}`}>
+            <TextInput
+              label={pos}
+              setValue={value => setPhrasePos(value, index)}
+              value={phrases[index]}
+            />
+            <GlobalPadding size="md" />
+          </Box>
+        ))}
+      </View>
+
+      <View style={styles.footerActions}>
+        <GlobalButton
+          type={isValid ? 'primary' : 'secondary'}
+          wide
+          title="Continue"
+          onPress={onComplete}
+          disabled={!isValid}
+        />
+      </View>
+    </>
+  );
+};
+
+const Password = ({ onComplete }) => {
+  const [pass, setPass] = useState('');
+  const [repass, setRepass] = useState('');
+  const isValid = (!!pass && pass === repass) || (!pass && !repass);
+  const onContinue = () => {
+    onComplete(pass);
+  };
+
+  return (
+    <>
+      <View style={styles.headerActions}>
+        <View style={styles.pagination}>
+          <GlobalPageDot />
+          <GlobalPageDot />
+          <GlobalPageDot active />
+        </View>
+      </View>
+
+      <View style={styles.inner}>
+        <GlobalText type="headline2">Choose a Password</GlobalText>
+
+        <GlobalText type="body1">
+          Prese re-enter seed phrase to confirm tha you have save it
+        </GlobalText>
+
+        <GlobalPadding size="md" />
+
+        <View style={styles.inputWrapper}>
+          <TextInput label="New Password" value={pass} setValue={setPass} />
+        </View>
+
+        <GlobalPadding size="md" />
+
+        <View style={styles.inputWrapper}>
           <TextInput
-            label={pos}
-            setValue={value => setPhrasePos(value, index)}
-            value={phrases[index]}
+            label="Repeat New Password"
+            value={repass}
+            setValue={setRepass}
           />
-        </Box>
-      ))}
-      <Box px={10} py={10}>
-        <Button onClick={onComplete} disabled={!isValid}>
-          Continue
-        </Button>
-      </Box>
+        </View>
+      </View>
+
+      <View style={styles.footerActions}>
+        <GlobalButton
+          type="secondary"
+          wide
+          title="Create Wallet"
+          onPress={onContinue}
+          disabled={isValid}
+        />
+      </View>
     </>
   );
 };
@@ -112,14 +273,16 @@ const CreateWallet = () => {
     navigate(ROUTES_MAP.WALLET);
   };
   return (
-    <PageLayout>
-      {step === 1 && <Message onNext={() => setStep(2)} />}
-      {step === 2 && <Form account={account} onComplete={() => setStep(3)} />}
-      {step === 3 && (
-        <ValidateSeed account={account} onComplete={() => setStep(4)} />
-      )}
-      {step === 4 && <Password onComplete={handleOnPasswordComplete} />}
-    </PageLayout>
+    <GlobalLayout>
+      <View style={styles.container}>
+        {step === 1 && <Message onNext={() => setStep(2)} />}
+        {step === 2 && <Form account={account} onComplete={() => setStep(3)} />}
+        {step === 3 && (
+          <ValidateSeed account={account} onComplete={() => setStep(4)} />
+        )}
+        {step === 4 && <Password onComplete={handleOnPasswordComplete} />}
+      </View>
+    </GlobalLayout>
   );
 };
 

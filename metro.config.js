@@ -16,7 +16,6 @@ module.exports = {
     },
     sourceExts: [...defaultSourceExts, 'cjs'],
   },
-  assets: ['./assets/fonts/'],
   transformer: {
     getTransformOptions: async () => ({
       transform: {

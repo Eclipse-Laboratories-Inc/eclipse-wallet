@@ -1,16 +1,45 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+
 import { AppContext } from '../../AppProvider';
-import Box from '../../component-library/Box/Box';
-import Button from '../../component-library/Button/Button';
-import PageLayout from '../../component-library/Layout/PageLayout';
-import TextTitle from '../../component-library/Text/TextTitle';
-import TextParagraph from '../../component-library/Text/TextParagraph';
+
+import theme from '../../component-library/Global/theme';
+import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
+
 import TokenList from '../../features/TokenList/TokenList';
 import NtfsList from '../../features/NtfsList/NtfsList';
 import WalletBalanceCard from '../../features/WalletBalanceCard/WalletBalanceCard';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { getWalletName } from '../../utils/wallet';
+
+const styles = StyleSheet.create({
+  container: {
+    padding: theme.gutters.paddingMD,
+  },
+  sendReceiveButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  buttonTouchable: {
+    flex: 1,
+    // width: '100%',
+  },
+  button: {
+    // flex: 1,
+    // width: '100%',
+    alignSelf: 'stretch',
+  },
+  buttonLeft: {
+    marginRight: theme.gutters.paddingXS,
+  },
+  buttonRight: {
+    marginLeft: theme.gutters.paddingXS,
+  },
+});
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
@@ -38,34 +67,58 @@ const WalletOverviewPage = () => {
   const goToReceive = () => {};
   const goToTokenDetail = t =>
     navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
+
   return (
     loaded && (
-      <PageLayout>
-        <Box>
-          <TextTitle>{getWalletName(activeWallet, walletNumber)}</TextTitle>
-          <TextParagraph>{activeWallet.getReceiveAddress()}</TextParagraph>
-        </Box>
+      <GlobalLayoutForTabScreen styles={styles.container}>
+        <GlobalText type="headline2">
+          {getWalletName(activeWallet, walletNumber)[0]}
+        </GlobalText>
+        <GlobalText type="body1">
+          {activeWallet.getReceiveAddress()[0]}
+        </GlobalText>
+
         <WalletBalanceCard
           balance={totalBalance}
           messages={[]}
-          actions={[
-            <Button key={'send-button'} onClick={goToSend}>
-              Send
-            </Button>,
-            <Button key={'receive-button'} onClick={goToReceive}>
-              Receive
-            </Button>,
-          ]}
+          actions={
+            <View style={styles.sendReceiveButtons}>
+              <GlobalButton
+                type="primary"
+                flex
+                title="Send"
+                onPress={goToSend}
+                key={'send-button'}
+                style={[styles.button, styles.buttonLeft]}
+                touchableStyles={styles.buttonTouchable}
+              />
+
+              <GlobalButton
+                type="primary"
+                flex
+                title="Receive"
+                onPress={goToReceive}
+                style={[styles.button, styles.buttonRight]}
+                touchableStyles={styles.buttonTouchable}
+              />
+            </View>
+          }
         />
-        <Box>
-          <TextTitle>Tokens</TextTitle>
-          <TokenList tokens={tokenList} onDetail={goToTokenDetail} />
-        </Box>
-        <Box>
-          <TextTitle>NTF's</TextTitle>
-          <NtfsList ntfs={ntfsList} />
-        </Box>
-      </PageLayout>
+
+        <GlobalPadding />
+
+        <GlobalText type="headline2">Tokens</GlobalText>
+
+        <TokenList tokens={tokenList} onDetail={goToTokenDetail} />
+
+        <GlobalPadding />
+
+        <GlobalText type="headline2">NTF's</GlobalText>
+
+        <NtfsList ntfs={ntfsList} />
+
+        <GlobalPadding />
+      </GlobalLayoutForTabScreen>
     )
   );
 };

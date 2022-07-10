@@ -1,11 +1,16 @@
 import React from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: { paddingHorizontal: 12, paddingVertical: 12 },
+});
 
 const PageLayout = ({ children }) => (
-  <div style={styles.container}>{children}</div>
+  <ScrollView
+    contentInsetAdjustmentBehavior="automatic"
+    style={{ ...styles.container }}>
+    {children}
+  </ScrollView>
 );
-
-const styles = {
-  container: { padding: '12px 12px' },
-};
 
 export default PageLayout;
