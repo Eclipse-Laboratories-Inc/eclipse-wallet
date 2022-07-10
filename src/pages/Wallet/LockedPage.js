@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import theme from '../../component-library/Global/theme';
@@ -7,6 +7,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 import TextInput from '../../component-library/Input/TextInput';
+import { AppContext } from '../../AppProvider';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -39,8 +40,19 @@ const styles = StyleSheet.create({
 });
 
 const LockedPage = () => {
+  const [, { unlockWallets }] = useContext(AppContext);
   const [pass, setPass] = useState('');
-
+  const [error, setError] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+  const unlock = async () => {
+    setError(false);
+    setUnlocking(true);
+    const result = await unlockWallets(pass);
+    if (!result) {
+      setError(true);
+      setUnlocking(false);
+    }
+  };
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
@@ -57,6 +69,7 @@ const LockedPage = () => {
               value={pass}
               setValue={setPass}
             />
+            {error && <GlobalText type="body1">password error</GlobalText>}
           </View>
         </View>
       </View>
@@ -65,8 +78,8 @@ const LockedPage = () => {
           type="primary"
           wide
           title="Unlock"
-          onPress={() => {}}
-          disabled={!pass}
+          onPress={unlock}
+          disabled={!pass || unlocking}
         />
       </View>
     </View>

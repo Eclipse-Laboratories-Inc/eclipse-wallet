@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet, walletNumber }] = useContext(AppContext);
+  const [{ activeWallet, walletNumber, selectedEndpoints }] =
+    useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
@@ -51,18 +52,16 @@ const WalletOverviewPage = () => {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     if (activeWallet) {
-      Promise.all([
-        activeWallet.getBalance(),
-        activeWallet.getTokens(),
-        activeWallet.getAllNfts(),
-      ]).then(([balance, tokens, ntfs]) => {
-        setTotalBalance(balance);
-        setTokenList(tokens);
-        setNtfsList(ntfs);
-        setLoaded(true);
-      });
+      Promise.all([activeWallet.getBalance(), activeWallet.getAllNfts()]).then(
+        ([balance, ntfs]) => {
+          setTotalBalance(balance);
+          setTokenList(balance.items);
+          setNtfsList(ntfs);
+          setLoaded(true);
+        },
+      );
     }
-  }, [activeWallet]);
+  }, [activeWallet, selectedEndpoints]);
   const goToSend = () => {};
   const goToReceive = () => {};
   const goToTokenDetail = t =>

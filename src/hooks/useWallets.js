@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
-import { lock } from '../utils/password';
+import { lock, unlock } from '../utils/password';
 import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
-import { act } from 'react-test-renderer';
 
 const STORAGE_KEYS = {
   WALLETS: 'wallets',
   ENDPOINTS: 'endpoints',
   ACTIVE: 'active',
 };
+
+const noIndex = idx => idx === -1;
 
 const buildEndpoints = () =>
   getChains().reduce(
@@ -34,7 +35,46 @@ const useWallets = () => {
   const [activeWallet, setActiveWallet] = useState(null);
   const [walletNumber, setWalletNumber] = useState();
   const [ready, setReady] = useState(false);
+  const [locked, setLocked] = useState(false);
+  const [requiredLock, setRequiredLock] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState({});
+  const waitUntilUnlock = async w => {
+    setRequiredLock(true);
+    setLocked(true);
+    setWallets(w);
+  };
+  const unlockWallets = async password => {
+    try {
+      const unlockedWallets = await unlock(wallets, password);
+      const activeIndex = await storage.getItem(STORAGE_KEYS.ACTIVE);
+      setWallets(unlockedWallets);
+      if (!isNil(activeIndex)) {
+        try {
+          const account = await getWalletAccount(
+            activeIndex,
+            unlockedWallets,
+            selectedEndpoints,
+          );
+          setActiveWallet(account);
+          setWalletNumber(activeIndex + 1);
+        } catch (error) {
+          // await storage.removeItem(STORAGE_KEYS.WALLETS);
+          console.log(error);
+        }
+      }
+      setLocked(false);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+  const lockWallets = async () => {
+    const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    setWallets(storedWallets.wallets);
+    setLocked(true);
+  };
+
   useEffect(() => {
     Promise.all([
       storage.getItem(STORAGE_KEYS.WALLETS),
@@ -43,49 +83,72 @@ const useWallets = () => {
     ]).then(async ([storedWallets, activeIndex, endpoints]) => {
       const activeEndpoints = endpoints || buildEndpoints();
       setSelectedEndpoints(activeEndpoints);
-      if (storedWallets) {
-        setWallets(storedWallets);
-        if (!isNil(activeIndex)) {
-          try {
-            const account = await getWalletAccount(
-              activeIndex,
-              storedWallets,
-              activeEndpoints,
-            );
-            setActiveWallet(account);
-            setWalletNumber(activeIndex + 1);
-          } catch (error) {
-            await storage.removeItem(STORAGE_KEYS.WALLETS);
+      if (storedWallets && storedWallets.wallets) {
+        if (!storedWallets.passwordRequired) {
+          setWallets(storedWallets.wallets);
+          if (!isNil(activeIndex)) {
+            try {
+              const account = await getWalletAccount(
+                activeIndex,
+                storedWallets.wallets,
+                activeEndpoints,
+              );
+              setActiveWallet(account);
+              setWalletNumber(activeIndex + 1);
+            } catch (error) {
+              // await storage.removeItem(STORAGE_KEYS.WALLETS);
+              console.log(error);
+            }
           }
+        } else {
+          waitUntilUnlock(storedWallets.wallets);
         }
+        setReady(true);
+      } else {
+        // NO WALLETS, MOVE TO WELCOME
+        setReady(true);
       }
-      setReady(true);
     });
   }, []);
 
   const addWallet = async (account, password, chain) => {
-    // TODO: LOCK storedWallets (unlock and lock)
-    // await lock(storedWallets, password)
     setActiveWallet(account);
     const address = await account.getReceiveAddress();
     const path = account.path;
+    const currentIndex = wallets.findIndex(w => w.address !== address);
     const storedWallets = [
-      ...wallets.filter(w => w.address !== address),
-      {
-        address,
-        path,
-        chain,
-        mnemonic: account.mnemonic,
-      },
+      ...wallets,
+      ...(noIndex(currentIndex)
+        ? [
+            {
+              address,
+              path,
+              chain,
+              mnemonic: account.mnemonic,
+            },
+          ]
+        : []),
     ];
     if (password) {
       const encryptedWallets = await lock(storedWallets, password);
-      await storage.setItem(STORAGE_KEYS.WALLETS, encryptedWallets);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: true,
+        wallets: encryptedWallets,
+      });
+      setRequiredLock(true);
     } else {
-      await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: false,
+        wallets: storedWallets,
+      });
     }
-    await storage.setItem(STORAGE_KEYS.ACTIVE, storedWallets.length - 1);
-    setWalletNumber(storedWallets.length);
+    await storage.setItem(
+      STORAGE_KEYS.ACTIVE,
+      noIndex(currentIndex) ? storedWallets.length - 1 : currentIndex,
+    );
+    setWalletNumber(
+      noIndex(currentIndex) ? storedWallets.length : currentIndex + 1,
+    );
   };
 
   const addDerivedAccounts = async (accounts, password, chain) => {
@@ -113,13 +176,23 @@ const useWallets = () => {
   };
 
   return [
-    { ready, wallets, activeWallet, selectedEndpoints, walletNumber },
+    {
+      ready,
+      locked,
+      wallets,
+      activeWallet,
+      selectedEndpoints,
+      walletNumber,
+      requiredLock,
+    },
     {
       setWallets,
       setActiveWallet,
       changeEndpoint,
       addWallet,
       addDerivedAccounts,
+      unlockWallets,
+      lockWallets,
     },
   ];
 };

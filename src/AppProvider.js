@@ -1,11 +1,13 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import isNil from 'lodash/isNil';
-import ThemProvider from './component-library/Theme/ThemeProvider';
+import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
 import ENDPOINTS from './config/endpoints';
 import useWallets from './hooks/useWallets';
 import storage from './utils/storage';
+import LockedPage from './pages/Wallet/LockedPage';
+import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 
 export const AppContext = createContext([]);
 
@@ -64,14 +66,22 @@ const AppProvider = ({ children }) => {
   };
 
   return (
-    appState.ready && (
-      <AppContext.Provider
-        value={[{ ...appState, ...walletState }, appActions]}>
-        <RoutesProvider>
-          <ThemProvider>{children}</ThemProvider>
-        </RoutesProvider>
-      </AppContext.Provider>
-    )
+    <AppContext.Provider value={[{ ...appState, ...walletState }, appActions]}>
+      {appState.ready && !walletState.locked && (
+        <InactivityCheck
+          onIdle={walletActions.lockWallets}
+          active={walletState.requiredLock}>
+          <RoutesProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </RoutesProvider>
+        </InactivityCheck>
+      )}
+      {walletState.locked && (
+        <ThemeProvider>
+          <LockedPage />
+        </ThemeProvider>
+      )}
+    </AppContext.Provider>
   );
 };
 
