@@ -9,28 +9,27 @@ import { createAccount, getDefaultChain } from '../../utils/wallet';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
-import Box from '../../component-library/Box/Box';
-import TextArea from '../../component-library/Input/TextArea';
-import TextInput from '../../component-library/Input/TextInput';
-
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'space-between',
     alignSelf: 'center',
     paddingHorizontal: theme.gutters.paddingSM,
     paddingVertical: 40,
-    maxWidth: theme.variables.mobileWidth,
+    maxWidth: theme.variables.mobileWidthLG,
+    width: '100%',
     minHeight: '100%',
   },
   headerActions: {
-    width: '100%',
+    // width: '100%',
   },
   inner: {
     flexGrow: 1,
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: theme.gutters.paddingNormal,
     paddingBottom: theme.gutters.padding2XL,
-    maxWidth: 375,
   },
   footerActions: {
     alignItems: 'center',
@@ -62,16 +60,20 @@ const styles = StyleSheet.create({
   },
 });
 
-const Message = ({ onNext }) => (
+const Message = ({ onNext, onBack }) => (
   <>
-    <GlobalPadding size="md" />
+    <View style={styles.headerActions}>
+      <GlobalBackTitle onBack={() => onBack()} />
+    </View>
 
     <View style={styles.inner}>
       <GlobalDivider />
 
-      <GlobalText type="headline2">Keep your seed safe!</GlobalText>
+      <GlobalText type="headline2" center>
+        Keep your seed safe!
+      </GlobalText>
 
-      <GlobalText type="body1">
+      <GlobalText type="body1" center>
         Your private keys are only stored on your current computer or device.
         You will need these words to restore your wallet if your browser's
         storage is cleared or your device is damaged or lost.
@@ -84,31 +86,39 @@ const Message = ({ onNext }) => (
   </>
 );
 
-const Form = ({ account, onComplete }) => (
+const Form = ({ account, onComplete, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <View style={styles.pagination}>
-        <GlobalPageDot active />
-        <GlobalPageDot />
-        <GlobalPageDot />
-      </View>
+      <GlobalBackTitle onBack={() => onBack()}>
+        <View style={styles.pagination}>
+          <GlobalPageDot active />
+          <GlobalPageDot />
+          <GlobalPageDot />
+        </View>
+      </GlobalBackTitle>
     </View>
 
-    <GlobalPadding size="md" />
-
     <View style={styles.inner}>
-      <GlobalText type="headline2">Your Seed Phrase</GlobalText>
+      <GlobalText type="headline2" center>
+        Your Seed Phrase
+      </GlobalText>
 
-      <GlobalText type="body1">
+      <GlobalText type="body1" center>
         Your private keys are only stored on your current computer or device.
         You will need these words to restore your wallet.
       </GlobalText>
 
-      <GlobalPadding size="md" />
+      <GlobalPadding size="xl" />
 
-      <View style={styles.textAreaWrapper}>
-        <TextArea lines={5} value={account.mnemonic} disabled />
-      </View>
+      <GlobalInput
+        value={account.mnemonic}
+        readonly
+        seedphrase
+        multiline
+        numberOfLines={8}
+        complete={false}
+        invalid={false}
+      />
     </View>
 
     <View style={styles.footerActions}>
@@ -131,7 +141,7 @@ const Form = ({ account, onComplete }) => (
   </>
 );
 
-const ValidateSeed = ({ account, onComplete }) => {
+const ValidateSeed = ({ account, onComplete, onBack }) => {
   const [positions, setPositions] = useState([]);
   const [phrases, setPhrases] = useState(['', '', '']);
   useEffect(() => {
@@ -154,33 +164,39 @@ const ValidateSeed = ({ account, onComplete }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <View style={styles.pagination}>
-          <GlobalPageDot />
-          <GlobalPageDot active />
-          <GlobalPageDot />
-        </View>
+        <GlobalBackTitle onBack={() => onBack()}>
+          <View style={styles.pagination}>
+            <GlobalPageDot />
+            <GlobalPageDot active />
+            <GlobalPageDot />
+          </View>
+        </GlobalBackTitle>
       </View>
 
-      <GlobalPadding size="md" />
-
       <View style={styles.inner}>
-        <GlobalText type="headline2">Confirm Seed Phrase</GlobalText>
+        <GlobalText type="headline2" center>
+          Confirm Seed Phrase
+        </GlobalText>
 
-        <GlobalText type="body1">
+        <GlobalText type="body1" center>
           Prese re-enter seed phrase to confirm tha you have save it
         </GlobalText>
 
-        <GlobalPadding size="md" />
+        <GlobalPadding size="2xl" />
 
         {positions.map((pos, index) => (
-          <Box key={`phrase-${pos}`}>
-            <TextInput
-              label={pos}
+          <React.Fragment key={`phrase-${pos}`}>
+            <GlobalInput
+              startLabel={pos}
+              placeholder={'Enter Word #' + pos}
               setValue={value => setPhrasePos(value, index)}
-              value={phrases[index]}
+              // value={phrases[index]}
+              value={account.mnemonic.split(' ')[pos - 1]}
+              complete={false}
+              invalid={false}
             />
-            <GlobalPadding size="md" />
-          </Box>
+            <GlobalPadding />
+          </React.Fragment>
         ))}
       </View>
 
@@ -190,14 +206,14 @@ const ValidateSeed = ({ account, onComplete }) => {
           wide
           title="Continue"
           onPress={onComplete}
-          disabled={!isValid}
+          disabled={isValid}
         />
       </View>
     </>
   );
 };
 
-const Password = ({ onComplete }) => {
+const Password = ({ onComplete, onBack }) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
   const isValid = (!!pass && pass === repass) || (!pass && !repass);
@@ -208,35 +224,45 @@ const Password = ({ onComplete }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <View style={styles.pagination}>
-          <GlobalPageDot />
-          <GlobalPageDot />
-          <GlobalPageDot active />
-        </View>
+        <GlobalBackTitle onBack={() => onBack()}>
+          <View style={styles.pagination}>
+            <GlobalPageDot />
+            <GlobalPageDot />
+            <GlobalPageDot active />
+          </View>
+        </GlobalBackTitle>
       </View>
 
       <View style={styles.inner}>
-        <GlobalText type="headline2">Choose a Password</GlobalText>
+        <GlobalText type="headline2" center>
+          Choose a Password
+        </GlobalText>
 
-        <GlobalText type="body1">
+        <GlobalText type="body1" center>
           Prese re-enter seed phrase to confirm tha you have save it
         </GlobalText>
 
-        <GlobalPadding size="md" />
+        <GlobalPadding size="2xl" />
 
-        <View style={styles.inputWrapper}>
-          <TextInput label="New Password" value={pass} setValue={setPass} />
-        </View>
+        <GlobalInput
+          placeholder="New Password"
+          value={pass}
+          setValue={setPass}
+          complete={false}
+          invalid={false}
+          autoComplete="new-password"
+        />
 
-        <GlobalPadding size="md" />
+        <GlobalPadding />
 
-        <View style={styles.inputWrapper}>
-          <TextInput
-            label="Repeat New Password"
-            value={repass}
-            setValue={setRepass}
-          />
-        </View>
+        <GlobalInput
+          placeholder="Repeat New Password"
+          value={repass}
+          setValue={setRepass}
+          complete={false}
+          invalid={false}
+          autoComplete="new-password"
+        />
       </View>
 
       <View style={styles.footerActions}>
@@ -275,12 +301,32 @@ const CreateWallet = () => {
   return (
     <GlobalLayout>
       <View style={styles.container}>
-        {step === 1 && <Message onNext={() => setStep(2)} />}
-        {step === 2 && <Form account={account} onComplete={() => setStep(3)} />}
-        {step === 3 && (
-          <ValidateSeed account={account} onComplete={() => setStep(4)} />
+        {step === 1 && (
+          <Message
+            onNext={() => setStep(2)}
+            onBack={() => navigate(ROUTES_MAP.ONBOARDING)}
+          />
         )}
-        {step === 4 && <Password onComplete={handleOnPasswordComplete} />}
+        {step === 2 && (
+          <Form
+            account={account}
+            onComplete={() => setStep(3)}
+            onBack={() => setStep(1)}
+          />
+        )}
+        {step === 3 && (
+          <ValidateSeed
+            account={account}
+            onComplete={() => setStep(4)}
+            onBack={() => setStep(2)}
+          />
+        )}
+        {step === 4 && (
+          <Password
+            onComplete={handleOnPasswordComplete}
+            onBack={() => setStep(3)}
+          />
+        )}
       </View>
     </GlobalLayout>
   );

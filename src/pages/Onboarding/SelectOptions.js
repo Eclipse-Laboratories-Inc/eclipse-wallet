@@ -3,10 +3,12 @@ import { StyleSheet, View } from 'react-native';
 
 import { useNavigation } from '../../routes/hooks';
 import { getChains, LOGOS } from '../../utils/wallet';
+import { ROUTES_MAP as ROUTES_MAP_APP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
@@ -21,21 +23,20 @@ import AppTitle from '../../assets/images/AppTitle.png';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'space-between',
     alignSelf: 'center',
-    paddingVertical: 56,
+    paddingVertical: 40,
     paddingHorizontal: theme.gutters.paddingSM,
-    maxWidth: theme.variables.mobileWidth,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
   },
   headerActions: {
-    width: '100%',
+    // width: '100%',
   },
   inner: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.gutters.paddingNormal,
-    maxWidth: 375,
   },
   footerActions: {
     alignItems: 'center',
@@ -49,6 +50,9 @@ const styles = StyleSheet.create({
   appTitleImage: {
     width: 124,
     height: 26,
+  },
+  touchable: {
+    minWidth: theme.variables.buttonMaxWidth,
   },
 });
 
@@ -89,12 +93,14 @@ const SelectAction = ({ onNext }) => (
   </>
 );
 
-const SelectChain = ({ onNext, blockChains }) => {
+const SelectChain = ({ onNext, blockChains, onBack }) => {
   const [selected, setSelected] = useState(0);
 
   return (
     <>
       <View style={styles.headerActions}>
+        <GlobalBackTitle onBack={() => onBack()} />
+
         <GlobalText type="headline3" center>
           Select Blockchain
         </GlobalText>
@@ -109,6 +115,7 @@ const SelectChain = ({ onNext, blockChains }) => {
             icon={<AvatarImage url={LOGOS[chain]} size={48} />}
             title={chain}
             description={chain}
+            touchableStyles={styles.touchable}
           />
         ))}
       </View>
@@ -144,9 +151,18 @@ const SelectOptions = () => {
   return (
     <GlobalLayout>
       <View style={styles.container}>
-        {step === 0 && <SelectAction onNext={onSelectAction} />}
+        {step === 0 && (
+          <SelectAction
+            onNext={onSelectAction}
+            onBack={() => navigate(ROUTES_MAP_APP.ONBOARDING)}
+          />
+        )}
         {step === 1 && (
-          <SelectChain onNext={onSelectChain} blockChains={getChains()} />
+          <SelectChain
+            onNext={onSelectChain}
+            blockChains={getChains()}
+            onBack={() => setStep(0)}
+          />
         )}
       </View>
     </GlobalLayout>

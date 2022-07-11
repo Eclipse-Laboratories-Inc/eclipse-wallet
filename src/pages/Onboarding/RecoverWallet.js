@@ -8,16 +8,15 @@ import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
+import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 
 import IconTransactionsMark from '../../assets/images/IconTransactionsMark.png';
-
-import TextArea from '../../component-library/Input/TextArea';
-import TextInput from '../../component-library/Input/TextInput';
 
 import {
   getDefaultChain,
@@ -27,12 +26,13 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'space-between',
     alignSelf: 'center',
     paddingHorizontal: theme.gutters.paddingSM,
     paddingVertical: 40,
-    maxWidth: theme.variables.mobileWidth,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
     minHeight: '100%',
   },
   headerActions: {
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: theme.gutters.paddingNormal,
     paddingBottom: theme.gutters.padding2XL,
-    maxWidth: 375,
   },
   footerActions: {
     alignItems: 'center',
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Form = ({ onComplete }) => {
+const Form = ({ onComplete, onBack }) => {
   const [seedPhrase, setSeedPhrase] = useState(
     'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
   );
@@ -81,14 +80,14 @@ const Form = ({ onComplete }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <View style={styles.pagination}>
-          <GlobalPageDot active />
-          <GlobalPageDot />
-          <GlobalPageDot />
-        </View>
+        <GlobalBackTitle onBack={() => onBack()}>
+          <View style={styles.pagination}>
+            <GlobalPageDot active />
+            <GlobalPageDot />
+            <GlobalPageDot />
+          </View>
+        </GlobalBackTitle>
       </View>
-
-      <GlobalPadding size="md" />
 
       <View style={styles.inner}>
         <GlobalText type="headline2" center>
@@ -101,16 +100,16 @@ const Form = ({ onComplete }) => {
 
         <GlobalPadding size="xl" />
 
-        <View style={styles.textAreaWrapper}>
-          <TextArea
-            label="Seed Words"
-            lines={5}
-            value={seedPhrase}
-            setValue={setSeedPhrase}
-          />
-        </View>
+        <GlobalInput
+          value={seedPhrase}
+          setValue={setSeedPhrase}
+          seedphrase
+          multiline
+          numberOfLines={8}
+          complete={false}
+          invalid={false}
+        />
       </View>
-
       <View style={styles.footerActions}>
         {!isValid && (
           <GlobalButton
@@ -128,6 +127,73 @@ const Form = ({ onComplete }) => {
             onPress={() => onComplete(seedPhrase)}
           />
         )}
+      </View>
+    </>
+  );
+};
+
+const Password = ({ onComplete, onBack }) => {
+  const [pass, setPass] = useState('');
+  const [repass, setRepass] = useState('');
+  const isValid = (!!pass && pass === repass) || (!pass && !repass);
+  const onContinue = () => {
+    onComplete(pass);
+  };
+
+  return (
+    <>
+      <View style={styles.headerActions}>
+        <GlobalBackTitle onBack={() => onBack()}>
+          <View style={styles.pagination}>
+            <GlobalPageDot />
+            <GlobalPageDot active />
+            <GlobalPageDot />
+          </View>
+        </GlobalBackTitle>
+      </View>
+
+      <View style={styles.inner}>
+        <GlobalText type="headline2" center>
+          Create Password
+        </GlobalText>
+
+        <GlobalText type="body1" center>
+          3 lines max Excepteur sint occaecat cupidatat non proident, sunt
+        </GlobalText>
+
+        <GlobalPadding size="2xl" />
+
+        <GlobalInput
+          placeholder="New Password"
+          value={pass}
+          setValue={setPass}
+          complete={false}
+          invalid={false}
+          autoComplete="new-password"
+          secureTextEntry
+        />
+
+        <GlobalPadding />
+
+        <GlobalInput
+          placeholder="Repeat New Password"
+          value={repass}
+          setValue={setRepass}
+          complete={false}
+          invalid={false}
+          autoComplete="new-password"
+          secureTextEntry
+        />
+      </View>
+
+      <View style={styles.footerActions}>
+        <GlobalButton
+          type="primary"
+          wide
+          title="Recover Wallet"
+          onPress={onContinue}
+          disabled={!isValid}
+        />
       </View>
     </>
   );
@@ -175,65 +241,6 @@ const Success = ({ goToWallet, goToDerived }) => (
   </>
 );
 
-const Password = ({ onComplete }) => {
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
-  const isValid = (!!pass && pass === repass) || (!pass && !repass);
-  const onContinue = () => {
-    onComplete(pass);
-  };
-
-  return (
-    <>
-      <View style={styles.headerActions}>
-        <View style={styles.pagination}>
-          <GlobalPageDot />
-          <GlobalPageDot />
-          <GlobalPageDot active />
-        </View>
-      </View>
-
-      <View style={styles.inner}>
-        <GlobalPadding size="md" />
-
-        <GlobalText type="headline2" center>
-          Create Password
-        </GlobalText>
-
-        <GlobalText type="body1" center>
-          3 lines max Excepteur sint occaecat cupidatat non proident, sunt
-        </GlobalText>
-
-        <GlobalPadding size="xl" />
-
-        <View style={styles.inputWrapper}>
-          <TextInput label="New Password" value={pass} setValue={setPass} />
-        </View>
-
-        <GlobalPadding size="md" />
-
-        <View style={styles.inputWrapper}>
-          <TextInput
-            label="Repeat New Password"
-            value={repass}
-            setValue={setRepass}
-          />
-        </View>
-      </View>
-
-      <View style={styles.footerActions}>
-        <GlobalButton
-          type="primary"
-          wide
-          title="Recover Wallet"
-          onPress={onContinue}
-          disabled={!isValid}
-        />
-      </View>
-    </>
-  );
-};
-
 const RecoverWallet = () => {
   const navigate = useNavigation();
   const [{ selectedEndpoints }, { addWallet }] = useContext(AppContext);
@@ -258,10 +265,24 @@ const RecoverWallet = () => {
   return (
     <GlobalLayout>
       <View style={styles.container}>
-        {step === 1 && <Form onComplete={handleRecover} />}
-        {step === 2 && <Password onComplete={handleOnPasswordComplete} />}
+        {step === 1 && (
+          <Form
+            onComplete={handleRecover}
+            onBack={() => navigate(ROUTES_MAP.ONBOARDING)}
+          />
+        )}
+        {step === 2 && (
+          <Password
+            onComplete={handleOnPasswordComplete}
+            onBack={() => setStep(1)}
+          />
+        )}
         {step === 3 && (
-          <Success goToWallet={goToWallet} goToDerived={goToDerived} />
+          <Success
+            goToWallet={goToWallet}
+            goToDerived={goToDerived}
+            onBack={() => setStep(2)}
+          />
         )}
       </View>
     </GlobalLayout>

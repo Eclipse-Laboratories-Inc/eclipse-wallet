@@ -23,7 +23,9 @@ const variables = {
   STATUSBAR_HEIGHT,
   HEADER_HEIGHT,
 
+  buttonMaxWidth: 375,
   mobileWidth: 375,
+  mobileWidthLG: 425,
   tabletWidth: 690,
 };
 
@@ -128,6 +130,11 @@ const themes = {
     accentPrimary: 'hsla(7, 100%, 64%, 1)',
     accentSecondary: 'hsla(0, 59%, 40%, 1)',
     accentTertiary: 'hsla(0, 100%, 86%, 1)',
+
+    btnHover: 'hsla(0, 79%, 53%, 1)',
+    btnOnClick: 'hsla(14, 55%, 21%, 1)',
+    btnBrandDark: 'hsla(224, 19%, 27%, 1)',
+    btnBrandLight: 'hsla(224, 18%, 49%, 1)',
 
     success: '#07b114',
     info: '#006EC5',

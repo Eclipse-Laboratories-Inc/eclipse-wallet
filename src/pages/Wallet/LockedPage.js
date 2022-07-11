@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: theme.gutters.paddingNormal,
     paddingBottom: theme.gutters.padding2XL,
-    maxWidth: 375,
   },
   inputWrapper: {
     width: '90%',

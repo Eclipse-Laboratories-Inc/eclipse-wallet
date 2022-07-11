@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
+
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+
 import { AppContext } from '../../AppProvider';
 import { getDefaultChain, getDerivedAccounts } from '../../utils/wallet';
-import PageLayout from '../../component-library/Layout/PageLayout';
 import ChooseDerivabes from './components/ChooseDerivabes';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
@@ -29,9 +31,9 @@ const DerivedAccounts = () => {
     navigate(ROUTES_MAP.WALLET);
   };
   return (
-    <PageLayout>
+    <GlobalLayout>
       <ChooseDerivabes accounts={accounts} onComplete={onComplete} />
-    </PageLayout>
+    </GlobalLayout>
   );
 };
 
