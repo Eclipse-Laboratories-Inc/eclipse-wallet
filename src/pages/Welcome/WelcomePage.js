@@ -17,13 +17,17 @@ import IconSuccessGradient from '../../assets/images/IconSuccessGradient.png';
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flex: 1,
     alignSelf: 'center',
-    paddingHorizontal: theme.gutters.paddingSM,
+    justifyContent: 'space-between',
     paddingVertical: 40,
-    maxWidth: theme.variables.mobileWidth,
-    minHeight: '100%',
+    paddingHorizontal: theme.gutters.paddingSM,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+  },
+  containerTop: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   headerActions: {
     width: '100%',
@@ -33,7 +37,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.gutters.paddingNormal,
-    maxWidth: 375,
   },
   footerActions: {
     paddingVertical: theme.gutters.responsivePadding,
@@ -63,15 +66,15 @@ const WelcomePage = () => {
     {
       title: '3 lines max Lorem ipsum dolor sit amet, consectetur adipiscing',
       content:
-        '2 lines max Excepteur sint occaecat cupidatat non proident, sunt ',
+        '2 lines max Excepteur sint occaecat cupidatat non proident, sunt',
     },
     {
       title: '2. lines max consectetur adipiscing',
-      content: '2. lines max cupidatat non proident, sunt ',
+      content: '2. lines max cupidatat non proident, sunt',
     },
     {
       title: '3. lines max Lorem ipsum dolor sit amet,',
-      content: '3. lines max Excepteur sint occaecat ',
+      content: '3. lines max Excepteur sint occaecat',
     },
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);
@@ -79,36 +82,42 @@ const WelcomePage = () => {
   return (
     <GlobalLayout>
       <View style={styles.container}>
-        <View style={styles.headerActions}>
-          <GlobalButton
-            type="text"
-            color="secondary"
-            title="Skip"
-            onPress={goToOnboarding}
-          />
+        <View style={styles.containerTop}>
+          <View style={styles.headerActions}>
+            <GlobalButton
+              type="text"
+              color="secondary"
+              title="Skip"
+              onPress={goToOnboarding}
+            />
+          </View>
+
+          <View style={styles.inner}>
+            <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
+
+            <GlobalPadding size="2xl" />
+
+            <GlobalDivider />
+
+            <GlobalText type="headline2" center>
+              {steps[step].title}
+            </GlobalText>
+
+            <GlobalText type="body1" center>
+              {steps[step].content}
+            </GlobalText>
+          </View>
         </View>
 
-        <View style={styles.inner}>
-          <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
-
-          <GlobalPadding size="2xl" />
-
-          <GlobalDivider />
-
-          <GlobalText type="headline2">{steps[step].title}</GlobalText>
-
-          <GlobalText type="body1">{steps[step].content}</GlobalText>
-
-          <GlobalPadding size="md" />
-
+        <View style={styles.footerActions}>
           <View style={styles.pagination}>
             <GlobalPageDot active={step === 0} />
             <GlobalPageDot active={step === 1} />
             <GlobalPageDot active={step === 2} />
           </View>
-        </View>
 
-        <View style={styles.footerActions}>
+          <GlobalPadding size="md" />
+
           <GlobalButton
             type="secondary"
             wide

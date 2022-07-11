@@ -39,6 +39,18 @@ const styles = {
     color: theme.colors.labelPrimary,
     fontFamily: theme.fonts.dmSansBold,
   },
+  subtitle1: {
+    fontSize: theme.fontSize.fontSizeMD,
+    lineHeight: theme.lineHeight.lineHeightMD,
+    color: theme.colors.labelPrimary,
+    fontFamily: theme.fonts.dmSansRegular,
+  },
+  subtitle2: {
+    fontSize: theme.fontSize.fontSizeMD,
+    lineHeight: theme.lineHeight.lineHeightMD,
+    color: theme.colors.labelPrimary,
+    fontFamily: theme.fonts.dmSansBold,
+  },
   body1: {
     fontSize: theme.fontSize.fontSizeNormal,
     lineHeight: theme.lineHeight.lineHeightNormal,
@@ -92,6 +104,8 @@ const GlobalText = ({
       type === 'headline1' && styles.headline1,
       type === 'headline2' && styles.headline2,
       type === 'headline3' && styles.headline3,
+      type === 'subtitle1' && styles.subtitle1,
+      type === 'subtitle2' && styles.subtitle2,
       type === 'body1' && styles.body1,
       type === 'body2' && styles.body2,
       type === 'button' && styles.button,

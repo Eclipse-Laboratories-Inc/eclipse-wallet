@@ -18,11 +18,12 @@ const styles = StyleSheet.create({
   },
   scrollViewForTabsInner: {
     flex: 1,
+    alignSelf: 'center',
     width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
     minHeight: '100%',
     padding: theme.gutters.paddingNormal,
     backgroundColor: theme.colors.bgPrimary,
-    // maxWidth: theme.variables.mobileWidth,
   },
   scrollView: {
     // height: '100%',

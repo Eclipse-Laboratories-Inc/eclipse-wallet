@@ -7,6 +7,7 @@ import theme from './theme';
 
 const styles = StyleSheet.create({
   buttonCard: {
+    width: '100%',
     marginBottom: theme.gutters.paddingNormal,
     flexDirection: 'row',
     alignItems: 'center',
@@ -37,14 +38,15 @@ const GlobalButtonCard = ({
   active,
   actions,
   onPress,
+  touchableStyles,
 }) => (
   <GlobalButton
     type="card"
     color={active ? 'active' : null}
-    block
     title={!children ? title : null}
     onPress={onPress}
-    style={[styles.buttonCard, title && description && styles.buttonCardLarge]}>
+    style={[styles.buttonCard, title && description && styles.buttonCardLarge]}
+    touchableStyles={touchableStyles}>
     <View style={styles.cardContent}>
       {icon && <View style={styles.icon}>{icon}</View>}
       <View style={styles.main}>
