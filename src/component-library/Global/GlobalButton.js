@@ -111,6 +111,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.staticColor.transparent,
   },
   wide: {
+    width: '100%',
+    flexGrow: 1,
     maxWidth: theme.variables.buttonMaxWidth,
   },
   icon: {
@@ -186,7 +188,10 @@ const GlobalButton = ({
   };
 
   return (
-    <TouchableOpacity disabled={disabled} style={touchableStyles} {...props}>
+    <TouchableOpacity
+      disabled={disabled}
+      style={[touchableStyles, wide && styles.wide]}
+      {...props}>
       <View style={[styles.button, buttonStyle, style]}>
         {icon && (
           <GlobalImage
