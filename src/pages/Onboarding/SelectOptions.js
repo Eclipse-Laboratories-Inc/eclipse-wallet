@@ -93,48 +93,30 @@ const SelectAction = ({ onNext }) => (
   </>
 );
 
-const SelectChain = ({ onNext, blockChains, onBack }) => {
-  const [selected, setSelected] = useState(0);
+const SelectChain = ({ onNext, blockChains, onBack }) => (
+  <>
+    <View style={styles.headerActions}>
+      <GlobalBackTitle onBack={() => onBack()} />
 
-  return (
-    <>
-      <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()} />
-
-        <GlobalText type="headline3" center>
-          Select Blockchain
-        </GlobalText>
-
-        <GlobalPadding size="xs" />
-
-        {blockChains.map((chain, index) => (
-          <GlobalButtonCard
-            key={chain}
-            active={index === selected}
-            onPress={() => setSelected(index)}
-            icon={<AvatarImage url={LOGOS[chain]} size={48} />}
-            title={chain}
-            description={chain}
-            touchableStyles={styles.touchable}
-          />
-        ))}
-      </View>
+      <GlobalText type="headline3" center>
+        Select Blockchain
+      </GlobalText>
 
       <GlobalPadding size="xs" />
 
-      <View style={styles.footerActions}>
-        <GlobalPadding />
-
-        <GlobalButton
-          type="primary"
-          wide
-          title="Continue"
-          onPress={() => onNext(blockChains[selected])}
+      {blockChains.map((chain, index) => (
+        <GlobalButtonCard
+          key={chain}
+          onPress={() => onNext(blockChains[index])}
+          icon={<AvatarImage url={LOGOS[chain]} size={48} />}
+          title={chain}
+          description={chain}
+          touchableStyles={styles.touchable}
         />
-      </View>
-    </>
-  );
-};
+      ))}
+    </View>
+  </>
+);
 
 const SelectOptions = () => {
   const navigate = useNavigation();

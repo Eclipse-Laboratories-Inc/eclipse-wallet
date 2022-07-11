@@ -72,9 +72,8 @@ const styles = StyleSheet.create({
 });
 
 const Form = ({ onComplete, onBack }) => {
-  const [seedPhrase, setSeedPhrase] = useState(
-    'dilemma usage defy sad adapt balcony olive obey glare pole push surprise risk useful calm ketchup mouse side bulb race hole excess finger address',
-  );
+  const [seedPhrase, setSeedPhrase] = useState('');
+
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
 
   return (

@@ -16,13 +16,13 @@ export const LOGOS = {
 };
 
 export const createAccount = (chain, endpoint) =>
-  createAccount4m(chains[chain], { endpoint });
+  createAccount4m(chains[chain], { networkId: endpoint });
 
 export const recoverAccount = (chain, mnemonic, endpoint) =>
-  restoreAccount(chains[chain], mnemonic, { endpoint });
+  restoreAccount(chains[chain], mnemonic, { networkId: endpoint });
 
 export const getDerivedAccounts = (chain, mnemonic, endpoint) =>
-  restoreDerivedAccounts(chains[chain], mnemonic, { endpoint });
+  restoreDerivedAccounts(chains[chain], mnemonic, { networkId: endpoint });
 
 export const getChains = () => Object.keys(chains);
 

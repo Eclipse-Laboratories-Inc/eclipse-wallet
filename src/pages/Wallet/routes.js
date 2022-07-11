@@ -16,7 +16,6 @@ export const ROUTES_MAP = {
   WALLET_SWAP: 'WALLET_SWAP',
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
   WALLET_SETTINGS: 'WALLET_SETTINGS',
-  LOCK_SCREEN: 'LOCK_SCREEN',
 };
 
 const routes = [
@@ -65,14 +64,6 @@ const routes = [
     default: false,
     icon: IconSettings,
   },
-  // {
-  //   key: ROUTES_MAP.LOCK_SCREEN,
-  //   name: 'Lock',
-  //   path: 'lock',
-  //   route: '/wallet/lock',
-  //   Component: LockedPage,
-  //   default: false,
-  // },
 ];
 
 export default routes;
