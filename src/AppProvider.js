@@ -6,7 +6,7 @@ import * as splash from './utils/splash';
 import ENDPOINTS from './config/endpoints';
 import useWallets from './hooks/useWallets';
 import storage from './utils/storage';
-import LockedPage from './pages/Wallet/LockedPage';
+import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 
 export const AppContext = createContext([]);
