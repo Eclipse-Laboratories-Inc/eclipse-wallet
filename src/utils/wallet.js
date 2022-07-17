@@ -36,3 +36,15 @@ export const validateSeedPhrase = seedPhrase =>
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
 
 export const getWalletName = (wallet, number) => `Wallet ${number}`;
+
+export const getWalletChain = wallet => {
+  const type = wallet.constructor.name;
+  switch (type) {
+    case 'SolanaAccount':
+      return 'SOLANA';
+    case 'NearAccount':
+      return 'NEAR';
+    default:
+      return getDefaultChain();
+  }
+};

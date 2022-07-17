@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
-
+import isString from 'lodash/isString';
 import theme from './theme';
 import GlobalText from './GlobalText';
 import GlobalImage from './GlobalImage';
@@ -90,7 +90,9 @@ const GlobalInput = ({
   ...props
 }) => {
   const handleChange = event => {
-    setValue ? setValue(event.target.value) : null;
+    if (setValue) {
+      setValue(event.nativeEvent.text);
+    }
   };
   const [isFocused, setIsFocused] = useState(false);
 
@@ -108,7 +110,7 @@ const GlobalInput = ({
           style,
         ]}
         value={value}
-        onChange={handleChange ? handleChange : () => {}}
+        onChange={handleChange}
         placeholder={placeholder}
         maxFontSizeMultiplier={1.4}
         autoCorrect={false}

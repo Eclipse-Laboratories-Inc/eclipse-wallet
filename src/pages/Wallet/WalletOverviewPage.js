@@ -68,14 +68,13 @@ const WalletOverviewPage = () => {
     navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
 
   return (
-    loaded && (
+    loaded &&
+    activeWallet && (
       <GlobalLayoutForTabScreen styles={styles.container}>
         <GlobalText type="headline2">
-          {getWalletName(activeWallet, walletNumber)[0]}
+          {getWalletName(activeWallet, walletNumber)}
         </GlobalText>
-        <GlobalText type="body1">
-          {activeWallet.getReceiveAddress()[0]}
-        </GlobalText>
+        <GlobalText type="body1">{activeWallet.getReceiveAddress()}</GlobalText>
 
         <WalletBalanceCard
           balance={totalBalance}

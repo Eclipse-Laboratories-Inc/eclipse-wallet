@@ -3,6 +3,8 @@ import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
 import TokenDetailPage from '../pages/Token/TokenDetailPage';
 
+const getRoutesWithParent = (routes, parent) =>
+  routes.map(r => ({ ...r, parent }));
 export const ROUTES_MAP = {
   WELCOME: 'WELCOME',
   ONBOARDING: 'ONBOARDING',
@@ -44,7 +46,10 @@ const routes = [
 
 export const globalRoutes = [
   ...routes,
-  ...require('../pages/Onboarding/routes').default,
+  ...getRoutesWithParent(
+    require('../pages/Onboarding/routes').default,
+    ROUTES_MAP.ONBOARDING,
+  ),
   ...require('../pages/Wallet/routes').default,
   ...require('../pages/Settings/routes').default,
 ];

@@ -8,7 +8,15 @@ export const useNavigation = () => {
   return (to, params = {}) => {
     const toRoute = getRoute(globalRoutes, to);
     if (toRoute) {
-      navigation.navigate(toRoute.name, params);
+      if (toRoute.parent) {
+        const parentRoute = getRoute(globalRoutes, toRoute.parent);
+        navigation.navigate(parentRoute.name, {
+          params,
+          screen: toRoute.name,
+        });
+      } else {
+        navigation.navigate(toRoute.name, params);
+      }
     } else {
       console.warn(`route not found ${to}`);
     }

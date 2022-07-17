@@ -5,27 +5,34 @@ import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalL
 import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import { getDefaultChain } from '../../utils/wallet';
+import { getWalletChain } from '../../utils/wallet';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP } from './routes';
 
 const ChangeNetworkPage = () => {
-  const [{ activeWallet }, { changeEndpoint }] = useContext(AppContext);
+  const navigate = useNavigation();
+  const [{ activeWallet, selectedEndpoints }, { changeEndpoint }] =
+    useContext(AppContext);
   const onSelect = value => {
-    changeEndpoint(getDefaultChain(), value);
+    changeEndpoint(getWalletChain(activeWallet), value);
   };
+  const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalPadding />
-
-      <GlobalText type="headline2" center>
-        Select Token
-      </GlobalText>
+      <GlobalBackTitle onBack={onBack}>
+        <GlobalText type="headline2" center>
+          Select Network
+        </GlobalText>
+      </GlobalBackTitle>
 
       <GlobalPadding />
 
       {activeWallet.getNetworks().map(({ cluster: label, endpoint }) => (
         <GlobalButtonCard
           key={label}
-          active={label === activeWallet.getCurrentNetwork().cluster}
+          active={label === selectedEndpoints[getWalletChain(activeWallet)]}
           onPress={() => onSelect(label)}
           title={label}
           description={endpoint}

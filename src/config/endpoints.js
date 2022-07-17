@@ -6,7 +6,7 @@ const ENDPOINTS = {
     SYNDICA: 'syndica',
   },
   NEAR: {
-    MAIN: 'mainnet-beta',
+    MAIN: 'mainnet',
     TEST: 'testnet',
     DEV: 'devnet',
   },

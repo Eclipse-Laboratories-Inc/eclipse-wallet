@@ -104,10 +104,10 @@ const SelectChain = ({ onNext, blockChains, onBack }) => (
 
       <GlobalPadding size="xs" />
 
-      {blockChains.map((chain, index) => (
+      {blockChains.map(chain => (
         <GlobalButtonCard
           key={chain}
-          onPress={() => onNext(blockChains[index])}
+          onPress={() => onNext(chain)}
           icon={<AvatarImage url={LOGOS[chain]} size={48} />}
           title={chain}
           description={chain}
@@ -127,7 +127,8 @@ const SelectOptions = () => {
     setStep(1);
   };
   const onSelectChain = chain => {
-    navigate(actionRoute);
+    navigate(actionRoute, { chainCode: chain });
+    setStep(0);
   };
 
   return (

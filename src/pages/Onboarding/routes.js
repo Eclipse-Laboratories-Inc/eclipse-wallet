@@ -22,15 +22,15 @@ const routes = [
   {
     key: ROUTES_MAP.ONBOARDING_CREATE,
     name: 'onboardingCreate',
-    path: 'create',
-    route: '/onboarding/create',
+    path: 'create/:chainCode',
+    route: '/onboarding/create/:chainCode',
     Component: CreateWallet,
   },
   {
     key: ROUTES_MAP.ONBOARDING_RECOVER,
     name: 'onboardingRecover',
-    path: 'recover',
-    route: '/onboarding/recover',
+    path: 'recover/:chainCode',
+    route: '/onboarding/recover/:chainCode',
     Component: RecoverWallet,
   },
   {

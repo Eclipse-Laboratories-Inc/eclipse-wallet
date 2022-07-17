@@ -43,6 +43,15 @@ const useWallets = () => {
     setLocked(true);
     setWallets(w);
   };
+  const checkPassword = async password => {
+    try {
+      const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+      await unlock(storedWallets.wallets, password);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
   const unlockWallets = async password => {
     try {
       const unlockedWallets = await unlock(wallets, password);
@@ -115,7 +124,7 @@ const useWallets = () => {
     setActiveWallet(account);
     const address = await account.getReceiveAddress();
     const path = account.path;
-    const currentIndex = wallets.findIndex(w => w.address !== address);
+    const currentIndex = wallets.findIndex(w => w.address === address);
     const storedWallets = [
       ...wallets,
       ...(noIndex(currentIndex)
@@ -142,6 +151,7 @@ const useWallets = () => {
         wallets: storedWallets,
       });
     }
+    setWallets(storedWallets);
     await storage.setItem(
       STORAGE_KEYS.ACTIVE,
       noIndex(currentIndex) ? storedWallets.length - 1 : currentIndex,
@@ -167,14 +177,33 @@ const useWallets = () => {
     await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
   };
 
-  const changeEndpoint = (chain, value) => {
-    setSelectedEndpoints({
-      ...selectedEndpoints,
-      [chain]: value,
-    });
-    activeWallet.setNetwork(value);
+  const changeActiveWallet = async walletIndex => {
+    const account = await getWalletAccount(
+      walletIndex,
+      wallets,
+      selectedEndpoints,
+    );
+    await storage.setItem(STORAGE_KEYS.ACTIVE, walletIndex);
+    setActiveWallet(account);
+    setWalletNumber(walletIndex + 1);
   };
 
+  const changeEndpoint = async (chain, value) => {
+    const endpoints = {
+      ...selectedEndpoints,
+      [chain]: value,
+    };
+    setSelectedEndpoints(endpoints);
+    await storage.setItem(STORAGE_KEYS.ENDPOINTS, endpoints);
+    activeWallet.setNetwork(value);
+  };
+  const removeAllWallets = async () => {
+    await storage.clear();
+    setWallets([]);
+    setActiveWallet(null);
+    setWalletNumber();
+    setRequiredLock(false);
+  };
   return [
     {
       ready,
@@ -187,12 +216,14 @@ const useWallets = () => {
     },
     {
       setWallets,
-      setActiveWallet,
+      changeActiveWallet,
       changeEndpoint,
       addWallet,
       addDerivedAccounts,
       unlockWallets,
       lockWallets,
+      checkPassword,
+      removeAllWallets,
     },
   ];
 };

@@ -131,12 +131,24 @@ const Form = ({ onComplete, onBack }) => {
   );
 };
 
-const Password = ({ onComplete, onBack }) => {
+const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
-  const isValid = (!!pass && pass === repass) || (!pass && !repass);
-  const onContinue = () => {
-    onComplete(pass);
+  const [wrongpass, setWrongpass] = useState(false);
+  const isValid =
+    (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
+    (requiredLock && pass);
+  const onContinue = async () => {
+    if (requiredLock) {
+      const result = await checkPassword(pass);
+      if (!result) {
+        setWrongpass(true);
+      } else {
+        onComplete(pass);
+      }
+    } else {
+      onComplete(pass);
+    }
   };
 
   return (
@@ -150,41 +162,58 @@ const Password = ({ onComplete, onBack }) => {
           </View>
         </GlobalBackTitle>
       </View>
+      {requiredLock && (
+        <View style={styles.inner}>
+          <GlobalText type="headline2" center>
+            Insert password
+          </GlobalText>
+          <GlobalPadding size="2xl" />
 
-      <View style={styles.inner}>
-        <GlobalText type="headline2" center>
-          Create Password
-        </GlobalText>
+          <GlobalInput
+            placeholder="Password"
+            value={pass}
+            setValue={setPass}
+            complete={false}
+            invalid={wrongpass}
+            autoComplete="password-new"
+          />
+        </View>
+      )}
+      {!requiredLock && (
+        <View style={styles.inner}>
+          <GlobalText type="headline2" center>
+            Create Password
+          </GlobalText>
 
-        <GlobalText type="body1" center>
-          3 lines max Excepteur sint occaecat cupidatat non proident, sunt
-        </GlobalText>
+          <GlobalText type="body1" center>
+            3 lines max Excepteur sint occaecat cupidatat non proident, sunt
+          </GlobalText>
 
-        <GlobalPadding size="2xl" />
+          <GlobalPadding size="2xl" />
 
-        <GlobalInput
-          placeholder="New Password"
-          value={pass}
-          setValue={setPass}
-          complete={false}
-          invalid={false}
-          autoComplete="new-password"
-          secureTextEntry
-        />
+          <GlobalInput
+            placeholder="New Password"
+            value={pass}
+            setValue={setPass}
+            complete={false}
+            invalid={false}
+            autoComplete="password-new"
+            secureTextEntry
+          />
 
-        <GlobalPadding />
+          <GlobalPadding />
 
-        <GlobalInput
-          placeholder="Repeat New Password"
-          value={repass}
-          setValue={setRepass}
-          complete={false}
-          invalid={false}
-          autoComplete="new-password"
-          secureTextEntry
-        />
-      </View>
-
+          <GlobalInput
+            placeholder="Repeat New Password"
+            value={repass}
+            setValue={setRepass}
+            complete={false}
+            invalid={false}
+            autoComplete="password-new"
+            secureTextEntry
+          />
+        </View>
+      )}
       <View style={styles.footerActions}>
         <GlobalButton
           type="primary"
@@ -242,7 +271,10 @@ const Success = ({ goToWallet, goToDerived }) => (
 
 const RecoverWallet = () => {
   const navigate = useNavigation();
-  const [{ selectedEndpoints }, { addWallet }] = useContext(AppContext);
+  const [
+    { selectedEndpoints, requiredLock, wallets },
+    { addWallet, checkPassword },
+  ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const handleRecover = async seedPhrase => {
@@ -267,13 +299,15 @@ const RecoverWallet = () => {
         {step === 1 && (
           <Form
             onComplete={handleRecover}
-            onBack={() => navigate(ROUTES_MAP.ONBOARDING)}
+            onBack={() => navigate(ROUTES_ONBOARDING.ONBOARDING_HOME)}
           />
         )}
         {step === 2 && (
           <Password
             onComplete={handleOnPasswordComplete}
             onBack={() => setStep(1)}
+            requiredLock={requiredLock}
+            checkPassword={checkPassword}
           />
         )}
         {step === 3 && (

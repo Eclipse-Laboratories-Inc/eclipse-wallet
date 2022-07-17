@@ -3,10 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import randomNumber from 'lodash/random';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation } from '../../routes/hooks';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { useNavigation, withParams } from '../../routes/hooks';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP } from './routes';
 import clipboard from '../../utils/clipboard';
-import { createAccount, getDefaultChain } from '../../utils/wallet';
+import { createAccount } from '../../utils/wallet';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -219,12 +220,24 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
   );
 };
 
-const Password = ({ onComplete, onBack }) => {
+const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
   const [pass, setPass] = useState('');
   const [repass, setRepass] = useState('');
-  const isValid = (!!pass && pass === repass) || (!pass && !repass);
-  const onContinue = () => {
-    onComplete(pass);
+  const [wrongpass, setWrongpass] = useState(false);
+  const isValid =
+    (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
+    (requiredLock && pass);
+  const onContinue = async () => {
+    if (requiredLock) {
+      const result = await checkPassword(pass);
+      if (!result) {
+        setWrongpass(true);
+      } else {
+        onComplete(pass);
+      }
+    } else {
+      onComplete(pass);
+    }
   };
 
   return (
@@ -238,39 +251,56 @@ const Password = ({ onComplete, onBack }) => {
           </View>
         </GlobalBackTitle>
       </View>
+      {requiredLock && (
+        <View style={styles.inner}>
+          <GlobalText type="headline2" center>
+            Insert password
+          </GlobalText>
+          <GlobalPadding size="2xl" />
 
-      <View style={styles.inner}>
-        <GlobalText type="headline2" center>
-          Choose a Password
-        </GlobalText>
+          <GlobalInput
+            placeholder="Password"
+            value={pass}
+            setValue={setPass}
+            complete={false}
+            invalid={wrongpass}
+            autoComplete="password-new"
+          />
+        </View>
+      )}
+      {!requiredLock && (
+        <View style={styles.inner}>
+          <GlobalText type="headline2" center>
+            Choose a Password
+          </GlobalText>
 
-        <GlobalText type="body1" center>
-          Prese re-enter seed phrase to confirm tha you have save it
-        </GlobalText>
+          <GlobalText type="body1" center>
+            Prese re-enter seed phrase to confirm tha you have save it
+          </GlobalText>
 
-        <GlobalPadding size="2xl" />
+          <GlobalPadding size="2xl" />
 
-        <GlobalInput
-          placeholder="New Password"
-          value={pass}
-          setValue={setPass}
-          complete={false}
-          invalid={false}
-          autoComplete="new-password"
-        />
+          <GlobalInput
+            placeholder="New Password"
+            value={pass}
+            setValue={setPass}
+            complete={false}
+            invalid={false}
+            autoComplete="password-new"
+          />
 
-        <GlobalPadding />
+          <GlobalPadding />
 
-        <GlobalInput
-          placeholder="Repeat New Password"
-          value={repass}
-          setValue={setRepass}
-          complete={false}
-          invalid={false}
-          autoComplete="new-password"
-        />
-      </View>
-
+          <GlobalInput
+            placeholder="Repeat New Password"
+            value={repass}
+            setValue={setRepass}
+            complete={false}
+            invalid={false}
+            autoComplete="password-new"
+          />
+        </View>
+      )}
       <View style={styles.footerActions}>
         <GlobalButton
           type="secondary"
@@ -284,25 +314,26 @@ const Password = ({ onComplete, onBack }) => {
   );
 };
 
-const CreateWallet = () => {
+const CreateWallet = ({ params }) => {
   const navigate = useNavigation();
-  const [{ selectedEndpoints }, { addWallet }] = useContext(AppContext);
+  const [
+    { selectedEndpoints, requiredLock, wallets },
+    { addWallet, checkPassword },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
   useEffect(() => {
     if (!account) {
-      createAccount(
-        // TODO: default chain should be the selected in previous step
-        getDefaultChain(),
-        selectedEndpoints[getDefaultChain()],
-      ).then(d => {
-        setAccount(d);
-      });
+      createAccount(params.chainCode, selectedEndpoints[params.chainCode]).then(
+        d => {
+          setAccount(d);
+        },
+      );
     }
-  }, [selectedEndpoints, account]);
+  }, [selectedEndpoints, account, params.chainCode]);
   const handleOnPasswordComplete = async password => {
-    await addWallet(account, password, getDefaultChain());
-    navigate(ROUTES_MAP.WALLET);
+    await addWallet(account, password, params.chainCode);
+    navigate(APP_ROUTES_MAP.WALLET);
   };
   return (
     <GlobalLayout>
@@ -310,7 +341,7 @@ const CreateWallet = () => {
         {step === 1 && (
           <Message
             onNext={() => setStep(2)}
-            onBack={() => navigate(ROUTES_MAP.ONBOARDING)}
+            onBack={() => navigate(ROUTES_MAP.ONBOARDING_HOME)}
           />
         )}
         {step === 2 && (
@@ -331,6 +362,8 @@ const CreateWallet = () => {
           <Password
             onComplete={handleOnPasswordComplete}
             onBack={() => setStep(3)}
+            requiredLock={requiredLock}
+            checkPassword={checkPassword}
           />
         )}
       </View>
@@ -338,4 +371,4 @@ const CreateWallet = () => {
   );
 };
 
-export default CreateWallet;
+export default withParams(CreateWallet);

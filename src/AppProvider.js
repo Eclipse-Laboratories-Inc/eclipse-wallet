@@ -5,7 +5,6 @@ import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
 import ENDPOINTS from './config/endpoints';
 import useWallets from './hooks/useWallets';
-import storage from './utils/storage';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 
@@ -54,7 +53,7 @@ const AppProvider = ({ children }) => {
     }
   }, [walletState.ready, walletState.active, appState.ready]);
   const logout = async () => {
-    await storage.clear();
+    await walletActions.removeAllWallets();
     dispatch({
       type: ACTIONS.LOGOUT,
     });
