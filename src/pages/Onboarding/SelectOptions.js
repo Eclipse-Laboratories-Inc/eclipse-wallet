@@ -110,7 +110,6 @@ const SelectChain = ({ onNext, blockChains, onBack }) => (
           onPress={() => onNext(chain)}
           icon={<AvatarImage url={LOGOS[chain]} size={48} />}
           title={chain}
-          description={chain}
           touchableStyles={styles.touchable}
         />
       ))}
