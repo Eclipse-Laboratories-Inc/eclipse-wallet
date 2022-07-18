@@ -107,7 +107,7 @@ const WalletOverviewPage = () => {
       <GlobalLayoutForTabScreen styles={styles.container}>
         <View style={styles.avatarWalletAddressActions}>
           <View style={styles.avatarWalletAddress}>
-            <AvatarImage url={Avatar} size={42} />
+            <AvatarImage src={Avatar} size={42} />
 
             <View style={styles.walletNameAddress}>
               <GlobalText
