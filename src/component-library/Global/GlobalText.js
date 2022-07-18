@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import theme from './theme';
 
-const styles = {
+const styles = StyleSheet.create({
   default: {
-    fontSize: theme.variables.fontSizeNormal,
+    fontSize: theme.fontSize.fontSizeNormal,
     color: theme.colors.black,
     backgroundColor: 'transparent',
   },
@@ -17,6 +17,9 @@ const styles = {
   },
   bold: {
     fontWeight: 'bold',
+  },
+  nospace: {
+    marginBottom: 0,
   },
   headline1: {
     marginBottom: theme.gutters.responsivePadding,
@@ -87,7 +90,19 @@ const styles = {
   labelPrimary: {
     color: theme.colors.labelPrimary,
   },
-};
+  positiveBright: {
+    color: theme.colors.positiveBright,
+  },
+  negativeBright: {
+    color: theme.colors.negativeBright,
+  },
+  labelTertiary: {
+    color: theme.colors.labelTertiary,
+  },
+  labelSecondary: {
+    color: theme.colors.labelSecondary,
+  },
+});
 
 const GlobalText = ({
   type,
@@ -95,6 +110,7 @@ const GlobalText = ({
   inverse,
   center,
   bold,
+  nospace,
   style,
   ...props
 }) => (
@@ -111,10 +127,15 @@ const GlobalText = ({
       type === 'button' && styles.button,
       type === 'caption' && styles.caption,
       type === 'overline' && styles.overline,
-      color === 'labelPrimary' && styles.labelPrimary,
+      color === 'primary' && styles.labelPrimary,
+      color === 'secondary' && styles.labelSecondary,
+      color === 'tertiary' && styles.labelTertiary,
+      color === 'positive' && styles.positiveBright,
+      color === 'negative' && styles.negativeBright,
       inverse && styles.inverse,
       center && styles.center,
       bold && styles.bold,
+      nospace && styles.nospace,
       style,
     ]}
     maxFontSizeMultiplier={1.25}

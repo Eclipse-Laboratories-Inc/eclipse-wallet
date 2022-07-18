@@ -22,7 +22,7 @@ const ChangeNetworkPage = () => {
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="headline2" center>
+        <GlobalText type="headline2" center nospace>
           Select Network
         </GlobalText>
       </GlobalBackTitle>
@@ -33,9 +33,10 @@ const ChangeNetworkPage = () => {
         <GlobalButtonCard
           key={label}
           active={label === selectedEndpoints[getWalletChain(activeWallet)]}
-          onPress={() => onSelect(label)}
+          complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
           title={label}
           description={endpoint}
+          onPress={() => onSelect(label)}
         />
       ))}
     </GlobalLayoutForTabScreen>

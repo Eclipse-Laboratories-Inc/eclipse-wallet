@@ -7,6 +7,7 @@ import { useNavigation } from '../../routes/hooks';
 
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import WalletButton from '../../features/WalletButton/WalletButton';
@@ -41,14 +42,56 @@ const SettingsOptionsPage = () => {
 
       <GlobalPadding />
 
-      <GlobalButton
-        type="primary"
-        block
+      <GlobalButtonCard
+        title="Address Book"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalButtonCard
+        title="Display Language"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalButtonCard
         title="Change Network"
+        description="Lorem impsum"
+        goToButton
         onPress={goToNetwork}
       />
 
-      <GlobalPadding />
+      <GlobalButtonCard
+        title="Security"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalButtonCard
+        title="Notifications"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalButtonCard
+        title="Trusted Apps"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalButtonCard
+        title="Help & Support"
+        description="Lorem impsum"
+        goToButton
+        onPress={() => {}}
+      />
+
+      <GlobalPadding size="4xl" />
 
       <GlobalButton
         type="secondary"
@@ -56,6 +99,8 @@ const SettingsOptionsPage = () => {
         title="Logout"
         onPress={handleLogout}
       />
+
+      <GlobalPadding size="lg" />
     </GlobalLayoutForTabScreen>
   );
 };

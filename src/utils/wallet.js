@@ -48,3 +48,6 @@ export const getWalletChain = wallet => {
       return getDefaultChain();
   }
 };
+
+export const getShortAddress = address =>
+  `${address.substr(0, 4)}...${address.substr(-4)}`;
