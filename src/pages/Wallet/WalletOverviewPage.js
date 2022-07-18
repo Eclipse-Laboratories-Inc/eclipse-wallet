@@ -6,38 +6,58 @@ import { AppContext } from '../../AppProvider';
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import GlobalText from '../../component-library/Global/GlobalText';
+
+import AvatarImage from '../../component-library/Image/AvatarImage';
+import Avatar from '../../assets/images/Avatar.png';
+import IconNotifications from '../../assets/images/IconNotifications.png';
+import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 
 import TokenList from '../../features/TokenList/TokenList';
 import NtfsList from '../../features/NtfsList/NtfsList';
-import WalletBalanceCard from '../../features/WalletBalanceCard/WalletBalanceCard';
+import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { getWalletName } from '../../utils/wallet';
+import { getWalletName, getShortAddress } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
     padding: theme.gutters.paddingMD,
   },
-  sendReceiveButtons: {
+  avatarWalletAddressActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: theme.gutters.paddingNormal,
+    marginBottom: theme.gutters.paddingXL,
+    marginRight: theme.gutters.paddingXS * -1,
   },
-  buttonTouchable: {
+  avatarWalletAddress: {
     flex: 1,
-    // width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  button: {
-    // flex: 1,
-    // width: '100%',
-    alignSelf: 'stretch',
+  walletNameAddress: {
+    flex: 1,
+    alignItems: 'flex-start',
+    marginLeft: theme.gutters.paddingSM,
   },
-  buttonLeft: {
-    marginRight: theme.gutters.paddingXS,
+  walletName: {
+    lineHeight: theme.fontSize.fontSizeNormal + 4,
   },
-  buttonRight: {
-    marginLeft: theme.gutters.paddingXS,
+  walletAddress: {
+    lineHeight: theme.fontSize.fontSizeNormal + 4,
+  },
+  walletActions: {
+    flexDirection: 'row',
+  },
+  narrowBtn: {
+    paddingHorizontal: theme.gutters.paddingXS,
   },
 });
 
@@ -48,8 +68,10 @@ const WalletOverviewPage = () => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
+  const [hasNotifications, setHasNotifications] = useState(false);
 
   const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([activeWallet.getBalance(), activeWallet.getAllNfts()]).then(
@@ -62,58 +84,88 @@ const WalletOverviewPage = () => {
       );
     }
   }, [activeWallet, selectedEndpoints]);
+
   const goToSend = () => {};
+
   const goToReceive = () => {};
+
   const goToTokenDetail = t =>
-    navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
+    navigate(ROUTES_MAP.TOKEN_DETAIL, {
+      tokenId: t.address,
+    });
+
+  const goToNotifications = () => setHasNotifications(!hasNotifications);
+
+  const goToQR = t => navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
+
+  const goToNFTs = t =>
+    navigate(WALLET_MAP.WALLET_NTFS, { tokenId: t.address });
 
   return (
     loaded &&
     activeWallet && (
       <GlobalLayoutForTabScreen styles={styles.container}>
-        <GlobalText type="headline2">
-          {getWalletName(activeWallet, walletNumber)}
-        </GlobalText>
-        <GlobalText type="body1">{activeWallet.getReceiveAddress()}</GlobalText>
+        <View style={styles.avatarWalletAddressActions}>
+          <View style={styles.avatarWalletAddress}>
+            <AvatarImage url={Avatar} size={42} />
+
+            <View style={styles.walletNameAddress}>
+              <GlobalText
+                type="body2"
+                style={styles.walletName}
+                numberOfLines={1}>
+                {getWalletName(activeWallet, walletNumber)}
+              </GlobalText>
+
+              <GlobalText
+                type="body1"
+                color="tertiary"
+                style={styles.walletAddress}
+                numberOfLines={1}>
+                ({getShortAddress(activeWallet.getReceiveAddress())})
+              </GlobalText>
+            </View>
+          </View>
+
+          <View style={styles.walletActions}>
+            <GlobalButton
+              type="icon"
+              transparent
+              icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
+              style={styles.narrowBtn}
+              onPress={goToNotifications}
+            />
+            <GlobalButton
+              type="icon"
+              transparent
+              icon={IconQRCodeScanner}
+              style={styles.narrowBtn}
+              onPress={goToQR}
+            />
+          </View>
+        </View>
 
         <WalletBalanceCard
           balance={totalBalance}
+          positiveTotal="$2.30"
+          negativeTotal="$2.30"
           messages={[]}
           actions={
-            <View style={styles.sendReceiveButtons}>
-              <GlobalButton
-                type="primary"
-                flex
-                title="Send"
-                onPress={goToSend}
-                key={'send-button'}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
-              />
-
-              <GlobalButton
-                type="primary"
-                flex
-                title="Receive"
-                onPress={goToReceive}
-                style={[styles.button, styles.buttonRight]}
-                touchableStyles={styles.buttonTouchable}
-              />
-            </View>
+            <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
           }
         />
 
         <GlobalPadding />
 
-        <GlobalText type="headline2">Tokens</GlobalText>
-
-        <TokenList tokens={tokenList} onDetail={goToTokenDetail} />
+        <GlobalCollapse title="My Tokens" isOpen>
+          <TokenList tokens={tokenList} onDetail={goToTokenDetail} />
+        </GlobalCollapse>
 
         <GlobalPadding />
 
-        <GlobalText type="headline2">NTF's</GlobalText>
-
-        <NtfsList ntfs={ntfsList} />
+        <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
+          <NtfsList ntfs={ntfsList} />
+        </GlobalCollapse>
 
         <GlobalPadding />
       </GlobalLayoutForTabScreen>

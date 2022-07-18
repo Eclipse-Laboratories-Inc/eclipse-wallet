@@ -136,6 +136,9 @@ const themes = {
     btnBrandDark: 'hsla(224, 19%, 27%, 1)',
     btnBrandLight: 'hsla(224, 18%, 49%, 1)',
 
+    positiveBright: 'hsla(105, 100%, 66%, 1)',
+    negativeBright: 'hsla(0, 100%, 55%, 1)',
+
     success: '#07b114',
     info: '#006EC5',
     warning: '#ea772b',
@@ -175,6 +178,7 @@ const themes = {
     black850: 'rgba(255, 255, 255, 0.85)',
     black900: 'rgba(255, 255, 255, 0.9)',
 
+    bgPrimary: 'hsla(225, 27%, 9%, 1)',
     bgDarken: '#10131C',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
@@ -186,6 +190,14 @@ const themes = {
     accentPrimary: 'hsla(7, 100%, 64%, 1)',
     accentSecondary: 'hsla(0, 59%, 40%, 1)',
     accentTertiary: 'hsla(0, 100%, 86%, 1)',
+
+    btnHover: 'hsla(0, 79%, 53%, 1)',
+    btnOnClick: 'hsla(14, 55%, 21%, 1)',
+    btnBrandDark: 'hsla(224, 19%, 27%, 1)',
+    btnBrandLight: 'hsla(224, 18%, 49%, 1)',
+
+    positiveBright: 'hsla(105, 100%, 66%, 1)',
+    negativeBright: 'hsla(0, 100%, 55%, 1)',
 
     success: '#07b114',
     info: '#006EC5',

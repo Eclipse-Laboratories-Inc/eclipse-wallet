@@ -1,24 +1,33 @@
 import React, { useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
 import groupBy from 'lodash/groupBy';
 
 import { AppContext } from '../../AppProvider';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalButton from '../../component-library/Global/GlobalButton';
-import { useNavigation } from '../../routes/hooks';
-import WalletButton from '../../features/WalletButton/WalletButton';
+import { getWalletName, LOGOS } from '../../utils/wallet';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP } from './routes';
+import { useNavigation } from '../../routes/hooks';
 
-import { StyleSheet, View } from 'react-native';
-import AvatarImage from '../../component-library/Image/AvatarImage';
-import { getWalletName, LOGOS } from '../../utils/wallet';
+import theme from '../../component-library/Global/theme';
+import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import GlobalImage from '../../component-library/Global/GlobalImage';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
+
+import WalletButton from '../../features/WalletButton/WalletButton';
 
 const styles = StyleSheet.create({
-  chainContainer: {
+  sectionTitle: {
     flexDirection: 'row',
+    marginBottom: theme.gutters.paddingSM,
+  },
+  chainImg: {
+    marginRight: theme.gutters.paddingXS,
+    width: 24,
+    height: 24,
   },
 });
 
@@ -35,32 +44,41 @@ const SelectAccountPage = () => {
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="headline2" center>
+        <GlobalText type="subtitle2" center nospace>
           Your Wallets
         </GlobalText>
       </GlobalBackTitle>
 
       <GlobalPadding />
 
-      {Object.keys(groupedWallets).map(chain => (
-        <>
-          <View style={styles.chainContainer}>
-            <AvatarImage url={LOGOS[chain]} size={48} />
-            <GlobalText type="title">{chain}</GlobalText>
-          </View>
-          <View>
-            {groupedWallets[chain].map(wallet => (
-              <WalletButton
-                name={getWalletName(wallet, getWalletIndex(wallet) + 1)}
-                address={wallet.address}
-                chain={wallet.chain}
-                onClick={() => selectWallet(wallet)}
-                active={activeWallet.getReceiveAddress() === wallet.address}
-              />
-            ))}
-          </View>
-        </>
-      ))}
+      {Object.keys(groupedWallets).map(chain => {
+        console.log(LOGOS[chain]);
+
+        return (
+          <React.Fragment key={chain.address}>
+            <View style={styles.sectionTitle}>
+              <GlobalImage source={LOGOS[chain]} style={styles.chainImg} />
+              <GlobalText type="body1" color="secondary">
+                {chain}
+              </GlobalText>
+            </View>
+            <>
+              {groupedWallets[chain].map(wallet => (
+                <GlobalButtonCard
+                  key={wallet.address}
+                  type="wallet"
+                  active={activeWallet.getReceiveAddress() === wallet.address}
+                  image={LOGOS[wallet.chain]}
+                  title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
+                  description={wallet.address}
+                  goToButton
+                  onPress={() => selectWallet(wallet)}
+                />
+              ))}
+            </>
+          </React.Fragment>
+        );
+      })}
 
       <GlobalPadding />
 

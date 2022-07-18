@@ -16,7 +16,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 
-import IconTransactionsMark from '../../assets/images/IconTransactionsMark.png';
+import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
 
 import {
   getDefaultChain,
@@ -236,7 +236,7 @@ const Success = ({ goToWallet, goToDerived }) => (
     <View style={styles.inner}>
       <GlobalPadding size="md" />
 
-      <GlobalImage source={IconTransactionsMark} style={styles.bigIcon} />
+      <GlobalImage source={IconInteractionGreen} style={styles.bigIcon} />
 
       <GlobalPadding size="xl" />
 

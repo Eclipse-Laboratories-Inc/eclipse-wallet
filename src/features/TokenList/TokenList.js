@@ -19,7 +19,7 @@ const TokenList = ({ tokens, onDetail }) => (
             {showAmount(t.usdBalance)}
           </GlobalText>,
           t.last24HoursChange && (
-            <GlobalText key={'perc-action'} type="body2">
+            <GlobalText key={'perc-action'} type="body2" color="positive">
               {showPercentage(t.last24HoursChange.perc)}
             </GlobalText>
           ),

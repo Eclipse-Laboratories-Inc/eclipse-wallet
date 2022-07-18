@@ -14,10 +14,11 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.cards,
     alignSelf: 'center',
     paddingHorizontal: theme.gutters.responsivePadding * 0.5,
-    fontSize: theme.fontSize.fontSizeNormal,
     borderRadius: theme.borderRadius.borderRadiusNormal,
   },
   defaultText: {
+    fontFamily: theme.fonts.dmSansBold,
+    fontSize: theme.fontSize.fontSizeNormal,
     textAlign: 'center',
   },
   buttonMD: {
@@ -201,6 +202,7 @@ const GlobalButton = ({
               type === 'tabbar' && color === 'tertiary'
                 ? styles.iconIdle
                 : null,
+              iconStyle,
             ]}
           />
         )}

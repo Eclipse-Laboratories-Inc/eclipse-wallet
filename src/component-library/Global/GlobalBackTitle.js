@@ -25,7 +25,9 @@ const GlobalBackTitle = ({ children, onBack }) => (
       icon={IconArrowBack}
       onPress={onBack}
     />
+
     {children}
+
     <View style={styles.buttonSize} />
   </View>
 );
