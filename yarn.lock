@@ -2,11 +2,12 @@
 # yarn lockfile v1
 
 
-"@4m/wallet-adapter@^0.0.6":
-  version "0.0.6"
-  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.6.tgz#868f3b295c78592d0d74146a26c2760c00ffa940"
-  integrity sha512-/xIVQyuGmDQ8zQGtEHDuYTjOqnawmbdDQrA5wIObIbAzk2TY9C1Gx1sy7aES7Sk5N0IOiWbxYyxrauZu9dkpcw==
+"@4m/wallet-adapter@^0.0.7":
+  version "0.0.7"
+  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.7.tgz#2ec30fa5152f5eba7eabc5a48243f5bbd3e75719"
+  integrity sha512-WFdgTjLFxf9Pxpa5eJsjuVyAXsFkUB6EHTsDgZxQMXppeRxzoIeTGi5Fol2Ne8Z47GRXaTRhIwpR8ThkiJcpzQ==
   dependencies:
+    "@bonfida/spl-name-service" "^0.1.40"
     "@metaplex-foundation/js-next" "^0.10.0"
     "@project-serum/serum" "^0.13.65"
     "@solana/spl-token" "^0.2.0"
@@ -17,6 +18,8 @@
     ed25519-hd-key "^1.2.0"
     near-api-js "^0.44.2"
     qs "^6.10.3"
+    ts-node "^10.8.2"
+    typescript "^4.7.4"
 
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
@@ -2039,6 +2042,26 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bonfida/name-offers@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@bonfida/name-offers/-/name-offers-0.0.1.tgz#8a52700eb3031e01dd9314fab55dec0a7275a5bb"
+  integrity sha512-R0GJ/+R5OXfm4KfiKEjHx88QnQxw+kzDA8O4pHouev1voPJueOzzo5x+YLowMpk3/2maqEwkNPWiWIlSExjdug==
+  dependencies:
+    "@bonfida/spl-name-service" "^0.1.24"
+    "@solana/spl-token" "0.1.8"
+    "@solana/web3.js" "^1.30.2"
+    bn.js "^5.2.0"
+    borsh "^0.6.0"
+    bs58 "4.0.1"
+
+"@bonfida/spl-name-service@^0.1.24", "@bonfida/spl-name-service@^0.1.40":
+  version "0.1.41"
+  resolved "https://registry.yarnpkg.com/@bonfida/spl-name-service/-/spl-name-service-0.1.41.tgz#2d3c95d23324a9068657b8e215031c4f7c5bee0d"
+  integrity sha512-pp1mt4YqMM7k7BvrU91LAm3x6Wbs6uykVa8PIKV851/rXrTs6Cz24858SRpTuo4Y/Wj7UpQTAr8N1KHadriW3A==
+  dependencies:
+    "@bonfida/name-offers" "^0.0.1"
+    "@ethersproject/sha2" "^5.5.0"
+
 "@bundlr-network/client@^0.7.3":
   version "0.7.15"
   resolved "https://registry.yarnpkg.com/@bundlr-network/client/-/client-0.7.15.tgz#099c5edf287878465686bd01e29638958badabb1"
@@ -4057,7 +4080,7 @@
   dependencies:
     cross-fetch "3.0.6"
 
-"@solana/spl-token@^0.1.6":
+"@solana/spl-token@0.1.8", "@solana/spl-token@^0.1.6":
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@solana/spl-token/-/spl-token-0.1.8.tgz#f06e746341ef8d04165e21fc7f555492a2a0faa6"
   integrity sha512-LZmYCKcPQDtJgecvWOgT/cnoIQPWjdH+QVyzPcFvyDUiT0DiRjZaam4aqNUyvchLFhzgunv3d9xOoyE34ofdoQ==
@@ -4086,7 +4109,7 @@
   dependencies:
     eventemitter3 "^4.0.0"
 
-"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.31.0", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.43.1", "@solana/web3.js@^1.43.3", "@solana/web3.js@^1.44.0":
+"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.30.2", "@solana/web3.js@^1.31.0", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.43.1", "@solana/web3.js@^1.43.3", "@solana/web3.js@^1.44.0":
   version "1.48.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.48.0.tgz#331281b2d80640431fb3b6fdc6b704ec325917aa"
   integrity sha512-Gb6XvdhGjGI7CdAXLmlMIEvEYvrwqc78JOtwCsSrTqzz7Ek/BhJpZ/Cv89gxRDrWxf6kHegAfaN2FxwuYMmDZQ==
@@ -6140,7 +6163,7 @@ browserslist@^4.0.0, browserslist@^4.14.5, browserslist@^4.16.6, browserslist@^4
     node-releases "^2.0.3"
     picocolors "^1.0.0"
 
-bs58@^4.0.0, bs58@^4.0.1:
+bs58@4.0.1, bs58@^4.0.0, bs58@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/bs58/-/bs58-4.0.1.tgz"
   integrity sha512-Ok3Wdf5vOIlBrgCvTq96gBkJw+JUEzdBgyaza5HLtPm7yTHkjRy8+JzNyHF7BHa0bNWOQIp3m5YF0nnFcOIKLw==
@@ -15462,7 +15485,7 @@ tryer@^1.0.1:
   resolved "https://registry.npmjs.org/tryer/-/tryer-1.0.1.tgz"
   integrity sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==
 
-ts-node@^10.5.0:
+ts-node@^10.5.0, ts-node@^10.8.2:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
   integrity sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==
@@ -15581,6 +15604,11 @@ typeforce@^1.11.5:
   version "1.18.0"
   resolved "https://registry.npmjs.org/typeforce/-/typeforce-1.18.0.tgz"
   integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==
+
+typescript@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
+  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 u3@^0.1.1:
   version "0.1.1"
