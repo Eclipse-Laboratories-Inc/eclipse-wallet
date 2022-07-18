@@ -87,7 +87,9 @@ const TokenDetailPage = ({ params }) => {
           <GlobalPadding />
         </GlobalCollapse>
       </View>
+
       <GlobalPadding size="lg" />
+
       <GlobalCollapse
         title="Recent Activity"
         viewAllAction={() => {}}

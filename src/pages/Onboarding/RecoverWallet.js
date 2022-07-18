@@ -176,6 +176,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             complete={false}
             invalid={wrongpass}
             autoComplete="password-new"
+            secureTextEntry
           />
         </View>
       )}

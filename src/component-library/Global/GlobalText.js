@@ -102,6 +102,9 @@ const styles = StyleSheet.create({
   labelSecondary: {
     color: theme.colors.labelSecondary,
   },
+  bgLight: {
+    color: theme.colors.bgLight,
+  },
 });
 
 const GlobalText = ({
@@ -132,6 +135,7 @@ const GlobalText = ({
       color === 'tertiary' && styles.labelTertiary,
       color === 'positive' && styles.positiveBright,
       color === 'negative' && styles.negativeBright,
+      color === 'bgLight' && styles.bgLight,
       inverse && styles.inverse,
       center && styles.center,
       bold && styles.bold,

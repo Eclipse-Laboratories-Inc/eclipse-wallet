@@ -10,6 +10,7 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalNftList from '../../component-library/Global/GlobalNftList';
 
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import Avatar from '../../assets/images/Avatar.png';
@@ -18,7 +19,6 @@ import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 
 import TokenList from '../../features/TokenList/TokenList';
-import NtfsList from '../../features/NtfsList/NtfsList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
@@ -164,7 +164,7 @@ const WalletOverviewPage = () => {
         <GlobalPadding />
 
         <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
-          <NtfsList ntfs={ntfsList} />
+          <GlobalNftList nonFungibleTokens={ntfsList} />
         </GlobalCollapse>
 
         <GlobalPadding />
