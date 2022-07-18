@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import theme from '../../component-library/Global/theme';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 import TextInput from '../../component-library/Input/TextInput';
@@ -11,14 +12,21 @@ import { AppContext } from '../../AppProvider';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    paddingHorizontal: theme.gutters.paddingSM,
+    paddingVertical: 40,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+    minHeight: '100%',
+  },
   wrapper: {
     flex: 1,
     paddingTop: 168,
     paddingBottom: theme.gutters.padding4XL,
     alignItems: 'center',
-  },
-  container: {
-    flex: 1,
   },
   footerActions: {
     alignItems: 'center',
@@ -56,25 +64,32 @@ const LockedPage = () => {
   };
   return (
     <GlobalLayout>
-      <View style={styles.wrapper}>
-        <View style={styles.container}>
-          <View style={styles.inner}>
-            <GlobalText type="headline2">
-              2 lines max Enter Your Password
-            </GlobalText>
-
-            <GlobalPadding size="md" />
-
-            <View style={styles.inputWrapper}>
-              <TextInput
-                label="Enter Your Password"
-                value={pass}
-                setValue={setPass}
-              />
-              {error && <GlobalText type="body1">password error</GlobalText>}
-            </View>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.headerActions}>
+          <GlobalPadding size="4xl" />
         </View>
+
+        <View style={styles.inner}>
+          <GlobalText type="headline2" center>
+            2 lines max Enter Your Password
+          </GlobalText>
+
+          <GlobalPadding size="md" />
+
+          <GlobalInput
+            placeholder="Enter Your Password"
+            value={pass}
+            setValue={setPass}
+            secureTextEntry
+            autocomplete={false}
+          />
+          {error && (
+            <GlobalText type="body1" color="negative">
+              password error
+            </GlobalText>
+          )}
+        </View>
+
         <View style={styles.footerActions}>
           <GlobalButton
             type="primary"

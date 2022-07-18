@@ -265,6 +265,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             complete={false}
             invalid={wrongpass}
             autoComplete="password-new"
+            secureTextEntry
           />
         </View>
       )}
@@ -287,6 +288,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             complete={false}
             invalid={false}
             autoComplete="password-new"
+            secureTextEntry
           />
 
           <GlobalPadding />
@@ -298,6 +300,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             complete={false}
             invalid={false}
             autoComplete="password-new"
+            secureTextEntry
           />
         </View>
       )}

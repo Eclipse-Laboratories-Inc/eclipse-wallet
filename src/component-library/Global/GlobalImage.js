@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
+  block: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 const GlobalImage = ({ name, source, size, resizeMode, style, ...props }) => {
@@ -25,6 +29,7 @@ const GlobalImage = ({ name, source, size, resizeMode, style, ...props }) => {
     ...(size === 'sm' ? styles.sizeSM : {}),
     ...(size === 'md' ? styles.sizeMD : {}),
     ...(size === 'xl' ? styles.sizeXL : {}),
+    ...(size === 'block' ? styles.block : {}),
   };
 
   return (

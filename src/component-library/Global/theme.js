@@ -75,7 +75,8 @@ const gutters = {
 };
 
 const borderRadius = {
-  borderRadiusSM: 4,
+  borderRadiusXS: 4,
+  borderRadiusSM: 6,
   borderRadiusNormal: 8,
   borderRadiusMD: 10,
   borderRadiusLG: 16,
