@@ -6,3 +6,5 @@ export const showAmount = (amount, decimals = 2) =>
 
 export const showPercentage = perc =>
   `${perc > 0 ? '+' : ''}${round(perc * 100, 2).toFixed(2)}%`;
+
+export const hiddenValue = '·······';

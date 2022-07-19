@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import theme from './theme';
@@ -11,7 +11,7 @@ import IconVisibilityShow from '../../assets/images/IconVisibilityShow.png';
 import IconBalanceUp from '../../assets/images/IconBalancetUp.png';
 import IconBalanceDown from '../../assets/images/IconBalanceDown.png';
 
-import { showAmount } from '../../utils/amount';
+import { hiddenValue, showAmount } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   container: {},
@@ -46,63 +46,53 @@ const WalletBalanceCard = ({
   positiveTotal,
   messages,
   actions,
-}) => {
-  const [showBalance, setShowBalance] = useState(true);
-  const goHideBalance = () => {
-    setShowBalance(!showBalance);
-  };
+  showBalance,
+  onToggleShow,
+}) => (
+  <View style={styles.container}>
+    <View style={styles.bigTotal}>
+      <GlobalText type="headline1" center nospace>
+        {showBalance && <>{showAmount(balance.usdTotal)}</>}
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.bigTotal}>
-        <GlobalText type="headline1" center nospace>
-          {showBalance && <>{showAmount(balance.usdTotal)}</>}
+        {!showBalance && <>$ {hiddenValue} </>}
 
-          {!showBalance && <>$ ······· </>}
-
-          <GlobalButton
-            type="icon"
-            transparent
-            icon={showBalance ? IconVisibilityShow : IconVisibilityHidden}
-            onPress={goHideBalance}
-          />
-        </GlobalText>
-      </View>
-
-      <View style={styles.inline}>
-        {neutralTotal && (
-          <GlobalText type="body2" style={styles.upDownTotals}>
-            {neutralTotal}
-          </GlobalText>
-        )}
-
-        {negativeTotal && (
-          <>
-            <GlobalImage source={IconBalanceDown} style={styles.iconUpDown} />
-            <GlobalText
-              type="body2"
-              color="negative"
-              style={styles.upDownTotals}>
-              - {negativeTotal}
-            </GlobalText>
-          </>
-        )}
-
-        {positiveTotal && (
-          <>
-            <GlobalImage source={IconBalanceUp} style={styles.iconUpDown} />
-            <GlobalText
-              type="body2"
-              color="positive"
-              style={styles.upDownTotals}>
-              + {positiveTotal}
-            </GlobalText>
-          </>
-        )}
-      </View>
-
-      {actions}
+        <GlobalButton
+          type="icon"
+          transparent
+          icon={showBalance ? IconVisibilityShow : IconVisibilityHidden}
+          onPress={onToggleShow}
+        />
+      </GlobalText>
     </View>
-  );
-};
+
+    <View style={styles.inline}>
+      {neutralTotal && (
+        <GlobalText type="body2" style={styles.upDownTotals}>
+          {neutralTotal}
+        </GlobalText>
+      )}
+
+      {negativeTotal && (
+        <>
+          <GlobalImage source={IconBalanceDown} style={styles.iconUpDown} />
+          <GlobalText type="body2" color="negative" style={styles.upDownTotals}>
+            - {negativeTotal}
+          </GlobalText>
+        </>
+      )}
+
+      {positiveTotal && (
+        <>
+          <GlobalImage source={IconBalanceUp} style={styles.iconUpDown} />
+          <GlobalText type="body2" color="positive" style={styles.upDownTotals}>
+            + {positiveTotal}
+          </GlobalText>
+        </>
+      )}
+    </View>
+
+    {actions}
+  </View>
+);
+
 export default WalletBalanceCard;

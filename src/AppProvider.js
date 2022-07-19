@@ -3,7 +3,6 @@ import isNil from 'lodash/isNil';
 import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
-import ENDPOINTS from './config/endpoints';
 import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
@@ -13,28 +12,31 @@ export const AppContext = createContext([]);
 const ACTIONS = {
   ADD_WALLET: 'addWallet',
   CHANGE_WALLET: 'changeWallet',
-  CHANGE_ENDPOINT: 'changeEndpoint',
   SET_LOGGEDIN: 'setLoggedIn',
   INITIATE_DONE: 'initiateDone',
+  HIDE_BALANCE: 'hideBalance',
+  SHOW_BALANCE: 'showBalance',
   LOGOUT: 'logout',
 };
 
 const initialState = {
-  selectedEndpoint: ENDPOINTS.MAIN,
   isLogged: false,
   ready: false,
+  hiddenBalance: false,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case ACTIONS.CHANGE_ENDPOINT:
-      return { ...state, selectedEndpoint: action.value };
     case ACTIONS.SET_LOGGEDIN:
       return { ...state, isLogged: action.value };
     case ACTIONS.INITIATE_DONE:
       return { ...state, ...action.value, ready: true };
     case ACTIONS.LOGOUT:
-      return { ...initialState, ready: true };
+      return { ...state, ready: true };
+    case ACTIONS.HIDE_BALANCE:
+      return { ...state, hiddenBalance: true };
+    case ACTIONS.SHOW_BALANCE:
+      return { ...state, hiddenBalance: false };
     default:
       return state;
   }
@@ -58,10 +60,17 @@ const AppProvider = ({ children }) => {
       type: ACTIONS.LOGOUT,
     });
   };
-
+  const toggleHideBalance = () => {
+    dispatch({
+      type: appState.hiddenBalance
+        ? ACTIONS.SHOW_BALANCE
+        : ACTIONS.HIDE_BALANCE,
+    });
+  };
   const appActions = {
     ...walletActions,
     logout,
+    toggleHideBalance,
   };
 
   return (

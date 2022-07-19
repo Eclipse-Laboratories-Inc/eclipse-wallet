@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@4m/wallet-adapter@^0.0.7":
-  version "0.0.7"
-  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.7.tgz#2ec30fa5152f5eba7eabc5a48243f5bbd3e75719"
-  integrity sha512-WFdgTjLFxf9Pxpa5eJsjuVyAXsFkUB6EHTsDgZxQMXppeRxzoIeTGi5Fol2Ne8Z47GRXaTRhIwpR8ThkiJcpzQ==
+"@4m/wallet-adapter@^0.0.10":
+  version "0.0.10"
+  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.10.tgz#0124e091541c6c48cac9a86ff28e63ed0bce0db1"
+  integrity sha512-Qe2ACkcoJThMmD0sYocMo+ce3tCZOIbhuE3ie16OAYyI676sq7GsrXusR4++cCuitzKV8iErWm95fYJYDkTlYg==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@metaplex-foundation/js-next" "^0.10.0"
     "@project-serum/serum" "^0.13.65"
     "@solana/spl-token" "^0.2.0"
     "@solana/spl-token-registry" "^0.2.4151"
-    "@solana/web3.js" "^1.43.1"
+    "@solana/web3.js" "^1.47.3"
     axios "^0.27.2"
     bip39 "^3.0.4"
     ed25519-hd-key "^1.2.0"
@@ -4109,7 +4109,7 @@
   dependencies:
     eventemitter3 "^4.0.0"
 
-"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.30.2", "@solana/web3.js@^1.31.0", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.43.1", "@solana/web3.js@^1.43.3", "@solana/web3.js@^1.44.0":
+"@solana/web3.js@^1.17.0", "@solana/web3.js@^1.21.0", "@solana/web3.js@^1.30.2", "@solana/web3.js@^1.31.0", "@solana/web3.js@^1.32.0", "@solana/web3.js@^1.35.1", "@solana/web3.js@^1.36.0", "@solana/web3.js@^1.43.3", "@solana/web3.js@^1.44.0", "@solana/web3.js@^1.47.3":
   version "1.48.0"
   resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.48.0.tgz#331281b2d80640431fb3b6fdc6b704ec325917aa"
   integrity sha512-Gb6XvdhGjGI7CdAXLmlMIEvEYvrwqc78JOtwCsSrTqzz7Ek/BhJpZ/Cv89gxRDrWxf6kHegAfaN2FxwuYMmDZQ==

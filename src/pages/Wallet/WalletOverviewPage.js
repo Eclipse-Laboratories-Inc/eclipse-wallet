@@ -63,8 +63,10 @@ const styles = StyleSheet.create({
 
 const WalletOverviewPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet, walletNumber, selectedEndpoints }] =
-    useContext(AppContext);
+  const [
+    { activeWallet, walletNumber, selectedEndpoints, hiddenBalance },
+    { toggleHideBalance },
+  ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
@@ -74,14 +76,15 @@ const WalletOverviewPage = () => {
 
   useEffect(() => {
     if (activeWallet) {
-      Promise.all([activeWallet.getBalance(), activeWallet.getAllNfts()]).then(
-        ([balance, ntfs]) => {
-          setTotalBalance(balance);
-          setTokenList(balance.items);
-          setNtfsList(ntfs);
-          setLoaded(true);
-        },
-      );
+      Promise.all([
+        activeWallet.getBalance(),
+        Promise.resolve([]) /*activeWallet.getAllNfts()*/,
+      ]).then(([balance, ntfs]) => {
+        setTotalBalance(balance);
+        setTokenList(balance.items);
+        setNtfsList(ntfs);
+        setLoaded(true);
+      });
     }
   }, [activeWallet, selectedEndpoints]);
 
@@ -150,6 +153,8 @@ const WalletOverviewPage = () => {
           positiveTotal="$2.30"
           negativeTotal="$2.30"
           messages={[]}
+          showBalance={!hiddenBalance}
+          onToggleShow={toggleHideBalance}
           actions={
             <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
           }
@@ -158,7 +163,11 @@ const WalletOverviewPage = () => {
         <GlobalPadding />
 
         <GlobalCollapse title="My Tokens" isOpen>
-          <TokenList tokens={tokenList} onDetail={goToTokenDetail} />
+          <TokenList
+            tokens={tokenList}
+            onDetail={goToTokenDetail}
+            hiddenBalance={hiddenBalance}
+          />
         </GlobalCollapse>
 
         <GlobalPadding />

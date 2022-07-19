@@ -29,16 +29,18 @@ const ChangeNetworkPage = () => {
 
       <GlobalPadding />
 
-      {activeWallet.getNetworks().map(({ cluster: label, endpoint }) => (
-        <GlobalButtonCard
-          key={label}
-          active={label === selectedEndpoints[getWalletChain(activeWallet)]}
-          complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
-          title={label}
-          description={endpoint}
-          onPress={() => onSelect(label)}
-        />
-      ))}
+      {activeWallet
+        .getNetworks()
+        .map(({ networkId: label, nodeUrl: endpoint }) => (
+          <GlobalButtonCard
+            key={label}
+            active={label === selectedEndpoints[getWalletChain(activeWallet)]}
+            complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
+            title={label}
+            description={endpoint}
+            onPress={() => onSelect(label)}
+          />
+        ))}
     </GlobalLayoutForTabScreen>
   );
 };
