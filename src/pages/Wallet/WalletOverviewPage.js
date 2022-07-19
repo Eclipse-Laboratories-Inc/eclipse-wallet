@@ -24,6 +24,7 @@ import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { getWalletName, getShortAddress } from '../../utils/wallet';
+import { cache, CACHE_TYPES } from '../../utils/cache';
 
 const styles = StyleSheet.create({
   container: {
@@ -77,8 +78,16 @@ const WalletOverviewPage = () => {
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
-        activeWallet.getBalance(),
-        Promise.resolve([]) /*activeWallet.getAllNfts()*/,
+        cache(
+          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          CACHE_TYPES.BALANCE,
+          () => activeWallet.getBalance(),
+        ),
+        cache(
+          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          CACHE_TYPES.NTFS,
+          () => activeWallet.getAllNfts(),
+        ),
       ]).then(([balance, ntfs]) => {
         setTotalBalance(balance);
         setTokenList(balance.items);

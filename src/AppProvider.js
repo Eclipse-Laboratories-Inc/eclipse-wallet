@@ -6,6 +6,7 @@ import * as splash from './utils/splash';
 import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
+import GlobalError from './features/ErrorHandler/GlobalError';
 
 export const AppContext = createContext([]);
 
@@ -75,20 +76,22 @@ const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={[{ ...appState, ...walletState }, appActions]}>
-      {appState.ready && !walletState.locked && (
-        <InactivityCheck
-          onIdle={walletActions.lockWallets}
-          active={walletState.requiredLock}>
-          <RoutesProvider>
-            <ThemeProvider>{children}</ThemeProvider>
-          </RoutesProvider>
-        </InactivityCheck>
-      )}
-      {walletState.locked && (
-        <ThemeProvider>
-          <LockedPage />
-        </ThemeProvider>
-      )}
+      <GlobalError>
+        {appState.ready && !walletState.locked && (
+          <InactivityCheck
+            onIdle={walletActions.lockWallets}
+            active={walletState.requiredLock}>
+            <RoutesProvider>
+              <ThemeProvider>{children}</ThemeProvider>
+            </RoutesProvider>
+          </InactivityCheck>
+        )}
+        {walletState.locked && (
+          <ThemeProvider>
+            <LockedPage />
+          </ThemeProvider>
+        )}
+      </GlobalError>
     </AppContext.Provider>
   );
 };

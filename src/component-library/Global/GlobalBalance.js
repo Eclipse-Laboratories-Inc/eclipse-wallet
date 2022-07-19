@@ -53,7 +53,6 @@ const WalletBalanceCard = ({
     <View style={styles.bigTotal}>
       <GlobalText type="headline1" center nospace>
         {showBalance && <>{showAmount(balance.usdTotal)}</>}
-        {JSON.stringify(balance)}
         {!showBalance && <>$ {hiddenValue} </>}
 
         <GlobalButton
