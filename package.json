@@ -74,7 +74,7 @@
     "lint": "eslint \"src/**/*.js\"",
     "lint:fix": "eslint \"src/**/*.js\" --fix",
     "postinstall": "yarn patch-package",
-    "login:4m": "aws codeartifact login --tool npm --repository npm-modules --domain four-m --domain-owner 363894166745 --profile four-m"
+    "login:4m": "aws codeartifact login --tool npm --repository npm-modules --domain four-m --domain-owner 363894166745 --namespace '@4m' --profile salmon --region us-east-1"
   },
   "eslintConfig": {
     "extends": [
