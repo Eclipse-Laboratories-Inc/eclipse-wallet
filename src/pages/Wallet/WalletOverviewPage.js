@@ -69,12 +69,11 @@ const WalletOverviewPage = () => {
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
-  const [tokenList, setTokenList] = useState([]);
+  const [tokenList, setTokenList] = useState(null);
   const [ntfsList, setNtfsList] = useState([]);
   const [hasNotifications, setHasNotifications] = useState(false);
 
   const [loaded, setLoaded] = useState(false);
-
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -114,7 +113,6 @@ const WalletOverviewPage = () => {
     navigate(WALLET_MAP.WALLET_NTFS, { tokenId: t.address });
 
   return (
-    loaded &&
     activeWallet && (
       <GlobalLayoutForTabScreen styles={styles.container}>
         <View style={styles.avatarWalletAddressActions}>
@@ -156,18 +154,22 @@ const WalletOverviewPage = () => {
             />
           </View>
         </View>
-
-        <WalletBalanceCard
-          balance={totalBalance}
-          positiveTotal="$2.30"
-          negativeTotal="$2.30"
-          messages={[]}
-          showBalance={!hiddenBalance}
-          onToggleShow={toggleHideBalance}
-          actions={
-            <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
-          }
-        />
+        {totalBalance && (
+          <WalletBalanceCard
+            balance={totalBalance}
+            positiveTotal="$2.30"
+            negativeTotal="$2.30"
+            messages={[]}
+            showBalance={!hiddenBalance}
+            onToggleShow={toggleHideBalance}
+            actions={
+              <GlobalSendReceive
+                goToSend={goToSend}
+                goToReceive={goToReceive}
+              />
+            }
+          />
+        )}
 
         <GlobalPadding />
 
