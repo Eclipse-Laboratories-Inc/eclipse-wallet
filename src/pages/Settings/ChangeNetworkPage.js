@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import { getWalletChain } from '../../utils/wallet';
@@ -21,18 +21,14 @@ const ChangeNetworkPage = () => {
 
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="headline2" center nospace>
-          Select Network
-        </GlobalText>
-      </GlobalBackTitle>
+      <GlobalBackTitle onBack={onBack} title="Select Network" />
 
       <GlobalPadding />
 
       {activeWallet
         .getNetworks()
         .map(({ networkId: label, nodeUrl: endpoint }) => (
-          <GlobalButtonCard
+          <CardButton
             key={label}
             active={label === selectedEndpoints[getWalletChain(activeWallet)]}
             complete={label === selectedEndpoints[getWalletChain(activeWallet)]}

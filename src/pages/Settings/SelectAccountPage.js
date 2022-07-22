@@ -12,12 +12,10 @@ import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-
-import WalletButton from '../../features/WalletButton/WalletButton';
+import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -41,13 +39,10 @@ const SelectAccountPage = () => {
     wallets.findIndex(w => w.address === wallet.address);
   const selectWallet = wallet => changeActiveWallet(getWalletIndex(wallet));
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="subtitle2" center nospace>
-          Your Wallets
-        </GlobalText>
-      </GlobalBackTitle>
+      <GlobalBackTitle onBack={onBack} title="Your Wallets" />
 
       <GlobalPadding />
 
@@ -64,15 +59,13 @@ const SelectAccountPage = () => {
             </View>
             <>
               {groupedWallets[chain].map(wallet => (
-                <GlobalButtonCard
-                  key={wallet.address}
-                  type="wallet"
-                  active={activeWallet.getReceiveAddress() === wallet.address}
-                  image={LOGOS[wallet.chain]}
+                <CardButtonWallet
                   title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
-                  description={wallet.address}
-                  goToButton
+                  address={wallet.address}
+                  chain={wallet.chain}
+                  active={activeWallet.getReceiveAddress() === wallet.address}
                   onPress={() => selectWallet(wallet)}
+                  onEdit={() => selectWallet(wallet)}
                 />
               ))}
             </>

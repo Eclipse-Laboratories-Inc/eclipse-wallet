@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalText from '../../component-library/Global/GlobalText';
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import { hiddenValue, showAmount, showPercentage } from '../../utils/amount';
@@ -8,7 +8,7 @@ import { hiddenValue, showAmount, showPercentage } from '../../utils/amount';
 const TokenList = ({ tokens, onDetail, hiddenBalance }) => (
   <>
     {tokens.map(t => (
-      <GlobalButtonCard
+      <CardButton
         key={t.mint}
         onPress={() => onDetail(t)}
         icon={<AvatarImage url={t.logo} size={48} />}

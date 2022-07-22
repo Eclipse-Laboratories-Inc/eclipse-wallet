@@ -79,7 +79,7 @@ const Form = ({ onComplete, onBack }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot active />
             <GlobalPageDot />
@@ -154,7 +154,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot active />
@@ -198,7 +198,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             setValue={setPass}
             complete={false}
             invalid={false}
-            autoComplete="password-new"
+            autoComplete="off"
             secureTextEntry
           />
 
@@ -210,7 +210,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             setValue={setRepass}
             complete={false}
             invalid={false}
-            autoComplete="password-new"
+            autoComplete="off"
             secureTextEntry
           />
         </View>

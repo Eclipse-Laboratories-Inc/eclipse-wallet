@@ -3,11 +3,9 @@ import { StyleSheet } from 'react-native';
 
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
-import GlobalText from '../../component-library/Global/GlobalText';
-
-import { getShortAddress } from '../../utils/wallet';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const styles = StyleSheet.create({
   titleStyle: {
@@ -17,92 +15,50 @@ const styles = StyleSheet.create({
 
 const TransactionsPage = () => (
   <GlobalLayoutForTabScreen>
-    <GlobalText type="headline2" center>
-      Your Transactions
-    </GlobalText>
+    <GlobalBackTitle title="Your Transactions" />
 
     <GlobalCollapse
       title="Recent Activity"
       titleStyle={styles.titleStyle}
       hideCollapse
       isOpen>
-      <GlobalButtonCard
+      <CardButtonTransaction
         transaction="sent"
-        description={`To: ${getShortAddress(
-          'AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S',
-        )}`}
-        actions={[
-          <GlobalText key={'amount-action'} type="body2" color="positive">
-            +1 SOL
-          </GlobalText>,
-          <GlobalText key={'perc-action'} type="caption" color="secondary">
-            +0000%
-          </GlobalText>,
-        ].filter(Boolean)}
+        address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
+        amount="+1 SOL"
+        percentage="+0000%"
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButtonTransaction
         transaction="received"
-        description={`To: ${getShortAddress(
-          'AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S',
-        )}`}
-        actions={[
-          <GlobalText key={'amount-action'} type="body2" color="positive">
-            +1 SOL
-          </GlobalText>,
-          <GlobalText key={'perc-action'} type="caption" color="secondary">
-            +0000%
-          </GlobalText>,
-        ].filter(Boolean)}
+        address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
+        amount="+2 SOL"
+        percentage="+0000%"
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButtonTransaction
         transaction="swap"
-        description={`To: ${getShortAddress(
-          'AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S',
-        )}`}
-        actions={[
-          <GlobalText key={'amount-action'} type="body2" color="positive">
-            +1 SOL
-          </GlobalText>,
-          <GlobalText key={'perc-action'} type="caption" color="secondary">
-            +0000%
-          </GlobalText>,
-        ].filter(Boolean)}
+        address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
+        amount="+3 SOL"
+        percentage="+0000%"
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButtonTransaction
         transaction="interaction"
-        description={`To: ${getShortAddress(
-          'AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S',
-        )}`}
-        actions={[
-          <GlobalText key={'amount-action'} type="body2" color="positive">
-            +1 SOL
-          </GlobalText>,
-          <GlobalText key={'perc-action'} type="caption" color="secondary">
-            +0000%
-          </GlobalText>,
-        ].filter(Boolean)}
+        address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
+        amount="+4 SOL"
+        percentage="+0000%"
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButtonTransaction
         transaction="paid"
-        description={`To: ${getShortAddress(
-          'AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S',
-        )}`}
-        actions={[
-          <GlobalText key={'amount-action'} type="body2" color="positive">
-            +1 SOL
-          </GlobalText>,
-          <GlobalText key={'perc-action'} type="caption" color="secondary">
-            +0000%
-          </GlobalText>,
-        ].filter(Boolean)}
+        address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
+        amount="+5 SOL"
+        percentage="+0000%"
         onPress={() => {}}
       />
     </GlobalCollapse>
