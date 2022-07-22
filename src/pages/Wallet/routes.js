@@ -1,5 +1,5 @@
 import WalletOverview from './WalletOverviewPage';
-import NtfsPage from './NtfsPage';
+import NftsPage from './NftsPage';
 import SwapPage from './SwapPage';
 import TransactionsPage from './TransactionsPage';
 import SettingsPage from '../Settings/SettingsPage';
@@ -33,7 +33,7 @@ const routes = [
     name: 'NFT',
     path: 'ntfs',
     route: '/wallet/ntfs',
-    Component: NtfsPage,
+    Component: NftsPage,
     default: false,
     icon: IconNFT,
   },
