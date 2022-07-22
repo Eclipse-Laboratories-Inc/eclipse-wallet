@@ -7,11 +7,6 @@ import GlobalImage from './GlobalImage';
 import GlobalText from './GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
-import IconTransactionSent from '../../assets/images/IconTransactionSent.png';
-import IconTransactionReceived from '../../assets/images/IconTransactionReceived.png';
-import IconTransactionSwap from '../../assets/images/IconTransactionSwap.png';
-import IconTransactionInteraction from '../../assets/images/IconTransactionInteraction.png';
-import IconTransactionPaid from '../../assets/images/IconTransactionPaid.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 
 const styles = StyleSheet.create({

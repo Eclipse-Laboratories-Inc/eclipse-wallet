@@ -17,8 +17,6 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 
-import WalletButton from '../../features/WalletButton/WalletButton';
-
 const styles = StyleSheet.create({
   sectionTitle: {
     flexDirection: 'row',

@@ -7,7 +7,6 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
-import TextInput from '../../component-library/Input/TextInput';
 import { AppContext } from '../../AppProvider';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 

@@ -7,8 +7,6 @@ import GlobalTransaction from '../../component-library/Global/GlobalTransaction'
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalText from '../../component-library/Global/GlobalText';
 
-import { getShortAddress } from '../../utils/wallet';
-
 const styles = StyleSheet.create({
   titleStyle: {
     lineHeight: theme.gutters.padding3XL,
