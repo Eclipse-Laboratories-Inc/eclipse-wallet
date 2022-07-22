@@ -31,10 +31,11 @@ const SettingsOptionsPage = () => {
 
       {activeWallet && (
         <CardButtonWallet
-          name={getWalletName(activeWallet, walletNumber)}
+          title={getWalletName(activeWallet, walletNumber)}
           address={activeWallet.getReceiveAddress()}
           chain={getWalletChain(activeWallet)}
           onPress={goToAccounts}
+          goToButton
           active
         />
       )}

@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-
 import theme from '../Global/theme';
 import GlobalButton from '../Global/GlobalButton';
 import GlobalImage from '../Global/GlobalImage';
@@ -8,6 +7,7 @@ import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
+import IconEdit from '../../assets/images/IconEdit.png';
 
 const styles = StyleSheet.create({
   buttonCard: {
@@ -40,6 +40,21 @@ const styles = StyleSheet.create({
   cardActions: {
     alignItems: 'flex-end',
   },
+  onEditButtonBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: theme.gutters.responsivePadding * -0.5,
+    marginLeft: theme.gutters.paddingXS,
+    height: '100%',
+    borderLeftWidth: 1,
+    borderLeftColor: theme.colors.labelSecondary,
+  },
+  touchable: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: theme.gutters.paddingXXS,
+  },
 });
 
 const CardButton = ({
@@ -55,12 +70,13 @@ const CardButton = ({
   goToButton,
   actions,
   onPress,
+  onEdit,
   touchableStyles,
 }) => {
   const buttonStyle = {
     ...styles.buttonCard,
     ...(title && description && styles.buttonCardLarge),
-    ...(type === 'wallet' ? styles.buttonCardXL : {}),
+    ...(type === 'large' ? styles.buttonCardXL : {}),
   };
 
   return (
@@ -107,6 +123,17 @@ const CardButton = ({
       {goToButton && <GlobalImage source={IconChevronRight} size="sm" />}
 
       {children && <View>{children}</View>}
+
+      {onEdit && (
+        <View style={styles.onEditButtonBox}>
+          <GlobalButton
+            style={styles.onEditButton}
+            touchableStyles={styles.touchable}
+            transparent>
+            <GlobalImage source={IconEdit} size="sm" />
+          </GlobalButton>
+        </View>
+      )}
     </GlobalButton>
   );
 };

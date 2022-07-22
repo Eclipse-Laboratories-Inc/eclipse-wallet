@@ -1,16 +1,27 @@
 import React from 'react';
 import CardButton from './CardButton';
-import AvatarImage from '../Image/AvatarImage';
 import { LOGOS } from '../../utils/wallet';
 
-const CardButtonWallet = ({ name, address, chain, onPress, active }) => (
+const CardButtonWallet = ({
+  title,
+  address,
+  chain,
+  active,
+  onPress,
+  onEdit,
+  ...props
+}) => (
   <CardButton
+    type="large"
     key={address}
-    onPress={onPress}
-    icon={<AvatarImage url={LOGOS[chain]} size={48} />}
-    title={name}
+    title={title}
     description={address}
+    image={LOGOS[chain]}
+    imageSize="xl"
     active={active}
+    onPress={onPress}
+    onEdit={onEdit}
+    {...props}
   />
 );
 
