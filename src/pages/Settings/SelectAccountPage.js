@@ -12,7 +12,7 @@ import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -62,7 +62,7 @@ const SelectAccountPage = () => {
             </View>
             <>
               {groupedWallets[chain].map(wallet => (
-                <GlobalButtonCard
+                <CardButton
                   key={wallet.address}
                   type="wallet"
                   imageSize="xl"

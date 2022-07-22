@@ -1,7 +1,7 @@
 import React from 'react';
 
-import GlobalButtonCard from './GlobalButtonCard';
-import GlobalText from './GlobalText';
+import CardButton from './CardButton';
+import GlobalText from '../Global/GlobalText';
 
 import IconTransactionSent from '../../assets/images/IconTransactionSent.png';
 import IconTransactionReceived from '../../assets/images/IconTransactionReceived.png';
@@ -11,7 +11,7 @@ import IconTransactionPaid from '../../assets/images/IconTransactionPaid.png';
 
 import { getShortAddress } from '../../utils/wallet';
 
-const GlobalTransaction = ({
+const CardButtonTransaction = ({
   transaction,
   address,
   amount,
@@ -61,7 +61,7 @@ const GlobalTransaction = ({
   };
 
   return (
-    <GlobalButtonCard
+    <CardButton
       transaction={transaction}
       image={getTransactionImage(transaction)}
       title={title || getTransactionTitle(transaction)}
@@ -81,4 +81,4 @@ const GlobalTransaction = ({
     />
   );
 };
-export default GlobalTransaction;
+export default CardButtonTransaction;

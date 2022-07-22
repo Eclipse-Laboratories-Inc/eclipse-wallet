@@ -7,10 +7,10 @@ import { useNavigation } from '../../routes/hooks';
 
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import WalletButton from '../../features/WalletButton/WalletButton';
+import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
 const SettingsOptionsPage = () => {
@@ -31,60 +31,60 @@ const SettingsOptionsPage = () => {
       </GlobalText>
 
       {activeWallet && (
-        <WalletButton
+        <CardButtonWallet
           name={getWalletName(activeWallet, walletNumber)}
           address={activeWallet.getReceiveAddress()}
           chain={getWalletChain(activeWallet)}
-          onClick={goToAccounts}
+          onPress={goToAccounts}
           active
         />
       )}
 
       <GlobalPadding />
 
-      <GlobalButtonCard
+      <CardButton
         title="Address Book"
         description="Lorem impsum"
         goToButton
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Display Language"
         description="Lorem impsum"
         goToButton
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Change Network"
         description="Lorem impsum"
         goToButton
         onPress={goToNetwork}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Security"
         description="Lorem impsum"
         goToButton
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Notifications"
         description="Lorem impsum"
         goToButton
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Trusted Apps"
         description="Lorem impsum"
         goToButton
         onPress={() => {}}
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Help & Support"
         description="Lorem impsum"
         goToButton

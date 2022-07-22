@@ -13,7 +13,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../component-library/CardButton/CardButton';
 
 import AvatarImage from '../../component-library/Image/AvatarImage';
 
@@ -105,7 +105,7 @@ const SelectChain = ({ onNext, blockChains, onBack }) => (
       <GlobalPadding size="xs" />
 
       {blockChains.map(chain => (
-        <GlobalButtonCard
+        <CardButton
           key={chain}
           onPress={() => onNext(chain)}
           icon={<AvatarImage url={LOGOS[chain]} size={48} />}

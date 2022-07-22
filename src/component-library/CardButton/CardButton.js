@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import theme from './theme';
-import GlobalButton from './GlobalButton';
-import GlobalImage from './GlobalImage';
-import GlobalText from './GlobalText';
+import theme from '../Global/theme';
+import GlobalButton from '../Global/GlobalButton';
+import GlobalImage from '../Global/GlobalImage';
+import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const GlobalButtonCard = ({
+const CardButton = ({
   type,
   icon,
   image,
@@ -110,4 +110,4 @@ const GlobalButtonCard = ({
     </GlobalButton>
   );
 };
-export default GlobalButtonCard;
+export default CardButton;
