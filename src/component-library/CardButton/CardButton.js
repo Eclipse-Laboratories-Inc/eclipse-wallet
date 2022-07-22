@@ -169,6 +169,7 @@ const CardButton = ({
       {onEdit && (
         <View style={styles.onEditButtonBox}>
           <GlobalButton
+            onPress={onEdit}
             style={styles.onEditButton}
             touchableStyles={styles.touchable}
             transparent>

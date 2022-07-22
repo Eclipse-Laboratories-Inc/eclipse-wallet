@@ -52,6 +52,7 @@ export const globalRoutes = [
   ),
   ...require('../pages/Wallet/routes').default,
   ...require('../pages/Settings/routes').default,
+  ...require('../pages/Transactions/routes').default,
 ];
 
 export default routes;

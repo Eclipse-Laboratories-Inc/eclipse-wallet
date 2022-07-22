@@ -1,10 +1,12 @@
 import SettingsOptionsPage from './SettingsOptionsPage';
 import ChangeNetworkPage from './ChangeNetworkPage';
 import SelectAccountPage from './SelectAccountPage';
+import EditAccountPage from './EditAccountPage';
 export const ROUTES_MAP = {
   SETTINGS_OPTIONS: 'SETTINGS_OPTIONS',
   SETTINGS_CHANGENETWORK: 'SETTINGS_CHANGENETWORK',
   SETTINGS_SELECTACCOUNT: 'SETTINGS_SELECTACCOUNT',
+  SETTINGS_EDITACCOUNT: 'SETTINGS_EDITACCOUNT',
 };
 
 const routes = [
@@ -30,6 +32,14 @@ const routes = [
     path: 'accounts',
     route: '/wallet/settings/accounts',
     Component: SelectAccountPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_EDITACCOUNT,
+    name: 'settingsEditAccount',
+    path: 'accounts/:address',
+    route: '/wallet/settings/accounts/:address',
+    Component: EditAccountPage,
     default: false,
   },
 ];

@@ -38,6 +38,9 @@ const SelectAccountPage = () => {
   const getWalletIndex = wallet =>
     wallets.findIndex(w => w.address === wallet.address);
   const selectWallet = wallet => changeActiveWallet(getWalletIndex(wallet));
+  const editWallet = ({ address }) =>
+    navigate(ROUTES_MAP.SETTINGS_EDITACCOUNT, { address });
+
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
   return (
@@ -46,32 +49,29 @@ const SelectAccountPage = () => {
 
       <GlobalPadding />
 
-      {Object.keys(groupedWallets).map(chain => {
-        console.log(LOGOS[chain]);
-
-        return (
-          <React.Fragment key={chain.address}>
-            <View style={styles.sectionTitle}>
-              <GlobalImage source={LOGOS[chain]} style={styles.chainImg} />
-              <GlobalText type="body1" color="secondary">
-                {chain}
-              </GlobalText>
-            </View>
-            <>
-              {groupedWallets[chain].map(wallet => (
-                <CardButtonWallet
-                  title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
-                  address={wallet.address}
-                  chain={wallet.chain}
-                  active={activeWallet.getReceiveAddress() === wallet.address}
-                  onPress={() => selectWallet(wallet)}
-                  onEdit={() => selectWallet(wallet)}
-                />
-              ))}
-            </>
-          </React.Fragment>
-        );
-      })}
+      {Object.keys(groupedWallets).map(chain => (
+        <React.Fragment key={chain}>
+          <View style={styles.sectionTitle}>
+            <GlobalImage source={LOGOS[chain]} style={styles.chainImg} />
+            <GlobalText type="body1" color="secondary">
+              {chain}
+            </GlobalText>
+          </View>
+          <>
+            {groupedWallets[chain].map(wallet => (
+              <CardButtonWallet
+                key={wallet.address}
+                title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
+                address={wallet.address}
+                chain={wallet.chain}
+                active={activeWallet.getReceiveAddress() === wallet.address}
+                onPress={() => selectWallet(wallet)}
+                onEdit={() => editWallet(wallet)}
+              />
+            ))}
+          </>
+        </React.Fragment>
+      ))}
 
       <GlobalPadding />
 
