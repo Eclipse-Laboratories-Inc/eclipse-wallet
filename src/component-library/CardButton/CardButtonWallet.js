@@ -18,6 +18,7 @@ const CardButtonWallet = ({
     description={address}
     image={LOGOS[chain]}
     imageSize="xl"
+    mask="lg"
     active={active}
     onPress={onPress}
     onEdit={onEdit}
