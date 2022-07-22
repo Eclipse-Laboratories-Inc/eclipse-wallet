@@ -96,11 +96,7 @@ const SelectAction = ({ onNext }) => (
 const SelectChain = ({ onNext, blockChains, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={() => onBack()} />
-
-      <GlobalText type="headline3" center>
-        Select Blockchain
-      </GlobalText>
+      <GlobalBackTitle onBack={onBack} title="Select Blockchain" />
 
       <GlobalPadding size="xs" />
 

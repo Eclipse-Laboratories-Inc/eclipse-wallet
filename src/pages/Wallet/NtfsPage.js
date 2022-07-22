@@ -1,13 +1,11 @@
 import React from 'react';
 
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const NtfsPage = () => (
   <GlobalLayoutForTabScreen>
-    <GlobalText type="headline2" center>
-      NFT
-    </GlobalText>
+    <GlobalBackTitle title="NFT" />
   </GlobalLayoutForTabScreen>
 );
 

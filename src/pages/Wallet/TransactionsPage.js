@@ -5,7 +5,7 @@ import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
-import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const styles = StyleSheet.create({
   titleStyle: {
@@ -15,9 +15,7 @@ const styles = StyleSheet.create({
 
 const TransactionsPage = () => (
   <GlobalLayoutForTabScreen>
-    <GlobalText type="headline2" center>
-      Your Transactions
-    </GlobalText>
+    <GlobalBackTitle title="Your Transactions" />
 
     <GlobalCollapse
       title="Recent Activity"

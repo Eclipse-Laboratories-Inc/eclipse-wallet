@@ -41,11 +41,7 @@ const SelectAccountPage = () => {
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="subtitle2" center nospace>
-          Your Wallets
-        </GlobalText>
-      </GlobalBackTitle>
+      <GlobalBackTitle onBack={onBack} title="Your Wallets" />
 
       <GlobalPadding />
 

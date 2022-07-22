@@ -21,20 +21,6 @@ const styles = StyleSheet.create({
   container: {
     padding: theme.gutters.paddingMD,
   },
-  walletNameAddress: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  walletName: {
-    textAlign: 'right',
-    marginRight: theme.gutters.paddingXXS,
-    lineHeight: theme.fontSize.fontSizeNormal + 2,
-  },
-  walletAddress: {
-    lineHeight: theme.fontSize.fontSizeNormal + 4,
-  },
   cardBox: {
     paddingVertical: theme.gutters.paddingSM,
     paddingHorizontal: theme.gutters.paddingSM,
@@ -56,20 +42,12 @@ const TokenDetailPage = ({ params }) => {
 
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={goToBack}>
-        <View style={styles.walletNameAddress}>
-          <GlobalText type="body2" style={styles.walletName}>
-            Token Name
-          </GlobalText>
+      <GlobalBackTitle
+        onBack={goToBack}
+        inlineTitle="Token Name"
+        inlineAddress={params.tokenId}
+      />
 
-          <GlobalText
-            type="body1"
-            color="tertiary"
-            style={styles.walletAddress}>
-            ({getShortAddress(params.tokenId)})
-          </GlobalText>
-        </View>
-      </GlobalBackTitle>
       <WalletBalanceCard
         balance={totalBalance}
         neutralTotal="$8.000"
@@ -79,7 +57,9 @@ const TokenDetailPage = ({ params }) => {
           <GlobalSendReceive goToSend={() => {}} goToReceive={() => {}} />
         }
       />
+
       <GlobalPadding size="lg" />
+
       <View style={styles.cardBox}>
         <GlobalCollapse title="Chart Data Range" narrowTitle isOpen={false}>
           <GlobalPadding />

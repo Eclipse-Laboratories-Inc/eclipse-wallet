@@ -7,9 +7,9 @@ import { useNavigation } from '../../routes/hooks';
 
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
@@ -24,11 +24,10 @@ const SettingsOptionsPage = () => {
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_SELECTACCOUNT);
+
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalText type="headline2" center>
-        Settings
-      </GlobalText>
+      <GlobalBackTitle title="Settings" />
 
       {activeWallet && (
         <CardButtonWallet

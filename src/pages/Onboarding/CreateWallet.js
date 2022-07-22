@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 const Message = ({ onNext, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={() => onBack()} />
+      <GlobalBackTitle onBack={onBack} />
     </View>
 
     <View style={styles.inner}>
@@ -91,7 +91,7 @@ const Message = ({ onNext, onBack }) => (
 const Form = ({ account, onComplete, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={() => onBack()}>
+      <GlobalBackTitle onBack={onBack}>
         <View style={styles.pagination}>
           <GlobalPageDot active />
           <GlobalPageDot />
@@ -171,7 +171,7 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot active />
@@ -243,7 +243,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot />

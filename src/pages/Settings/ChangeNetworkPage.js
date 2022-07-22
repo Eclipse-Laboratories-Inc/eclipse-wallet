@@ -21,11 +21,7 @@ const ChangeNetworkPage = () => {
 
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="headline2" center nospace>
-          Select Network
-        </GlobalText>
-      </GlobalBackTitle>
+      <GlobalBackTitle onBack={onBack} title="Select Network" />
 
       <GlobalPadding />
 
