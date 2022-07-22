@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
 
 const GlobalButtonCard = ({
   type,
-  transaction,
   icon,
   image,
+  imageSize,
   title,
   description,
   children,
@@ -64,44 +64,8 @@ const GlobalButtonCard = ({
 }) => {
   const buttonStyle = {
     ...styles.buttonCard,
-    ...((title || transaction) && description && styles.buttonCardLarge),
+    ...(title && description && styles.buttonCardLarge),
     ...(type === 'wallet' ? styles.buttonCardXL : {}),
-  };
-
-  const getTransactionTitle = () => {
-    const object = transaction;
-    switch (object) {
-      case 'sent':
-        return 'Sent';
-      case 'received':
-        return 'Received';
-      case 'swap':
-        return 'Swap';
-      case 'interaction':
-        return 'Interaction';
-      case 'paid':
-        return 'Paid';
-      default:
-        return 'Sent';
-    }
-  };
-
-  const getTransactionImage = () => {
-    const object = transaction;
-    switch (object) {
-      case 'sent':
-        return IconTransactionSent;
-      case 'received':
-        return IconTransactionReceived;
-      case 'swap':
-        return IconTransactionSwap;
-      case 'interaction':
-        return IconTransactionInteraction;
-      case 'paid':
-        return IconTransactionPaid;
-      default:
-        return IconTransactionSent;
-    }
   };
 
   return (
@@ -115,22 +79,18 @@ const GlobalButtonCard = ({
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
 
-        {image && type === 'wallet' && (
-          <GlobalImage source={image} size="xl" style={styles.spaceRight} />
-        )}
-
-        {transaction && (
+        {image && (
           <GlobalImage
-            source={getTransactionImage(transaction)}
+            source={image}
+            size={imageSize}
             style={styles.spaceRight}
           />
         )}
 
         <View style={styles.main}>
-          {(title || transaction) && (
+          {title && (
             <GlobalText type="body2" numberOfLines={1}>
-              {!!title && title}
-              {!title && transaction && getTransactionTitle(transaction)}
+              {title}
             </GlobalText>
           )}
 
@@ -145,11 +105,11 @@ const GlobalButtonCard = ({
         </View>
       </View>
 
-      {goToButton && <GlobalImage source={IconChevronRight} size="sm" />}
-
       {actions && <View style={styles.cardActions}>{actions}</View>}
 
       {complete && <GlobalImage source={IconInteractionRed} size="sm" />}
+
+      {goToButton && <GlobalImage source={IconChevronRight} size="sm" />}
 
       {children && <View>{children}</View>}
     </GlobalButton>

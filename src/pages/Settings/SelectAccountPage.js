@@ -67,6 +67,7 @@ const SelectAccountPage = () => {
                 <GlobalButtonCard
                   key={wallet.address}
                   type="wallet"
+                  imageSize="xl"
                   active={activeWallet.getReceiveAddress() === wallet.address}
                   image={LOGOS[wallet.chain]}
                   title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
