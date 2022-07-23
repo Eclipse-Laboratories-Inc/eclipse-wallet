@@ -6,6 +6,7 @@ const EXPIRES = 60 * 1000;
 export const CACHE_TYPES = {
   BALANCE: 'BALANCE',
   NTFS: 'NTFS',
+  TRANSACTIONS: 'TRANSACTIONS',
 };
 
 var CACHE = {
@@ -15,6 +16,11 @@ var CACHE = {
     value: {},
   },
   [CACHE_TYPES.NTFS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.TRANSACTIONS]: {
     expires: null,
     key: '',
     value: [],

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
   },
   buttonCardXL: {
-    minHeight: 94,
+    height: 94,
   },
   cardContent: {
     flex: 1,

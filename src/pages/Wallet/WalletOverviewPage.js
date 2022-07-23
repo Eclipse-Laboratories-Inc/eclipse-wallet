@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
-
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -25,6 +25,12 @@ import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { getWalletName, getShortAddress } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
+import {
+  hiddenValue,
+  getLabelValue,
+  showAmount,
+  showPercentage,
+} from '../../utils/amount';
 
 const styles = StyleSheet.create({
   container: {
@@ -158,9 +164,18 @@ const WalletOverviewPage = () => {
         </View>
 
         <WalletBalanceCard
-          balance={totalBalance}
-          positiveTotal="$2.30"
-          negativeTotal="$2.30"
+          total={
+            !hiddenBalance
+              ? showAmount(totalBalance.usdTotal)
+              : `$ ${hiddenValue}`
+          }
+          {...{
+            [`${getLabelValue(
+              get(totalBalance, 'last24HoursChage.perc', 0),
+            )}Total`]: showPercentage(
+              get(totalBalance, 'last24HoursChage.perc', 0),
+            ),
+          }}
           messages={[]}
           showBalance={!hiddenBalance}
           onToggleShow={toggleHideBalance}

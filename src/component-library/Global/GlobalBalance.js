@@ -11,8 +11,6 @@ import IconVisibilityShow from '../../assets/images/IconVisibilityShow.png';
 import IconBalanceUp from '../../assets/images/IconBalancetUp.png';
 import IconBalanceDown from '../../assets/images/IconBalanceDown.png';
 
-import { hiddenValue, showAmount } from '../../utils/amount';
-
 const styles = StyleSheet.create({
   container: {},
   bigTotal: {
@@ -40,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 const WalletBalanceCard = ({
-  balance,
+  total,
   neutralTotal,
   negativeTotal,
   positiveTotal,
@@ -52,8 +50,7 @@ const WalletBalanceCard = ({
   <View style={styles.container}>
     <View style={styles.bigTotal}>
       <GlobalText type="headline1" center nospace>
-        {showBalance && <>{showAmount(balance.usdTotal)}</>}
-        {!showBalance && <>$ {hiddenValue} </>}
+        {total}
 
         <GlobalButton
           type="icon"
@@ -75,7 +72,7 @@ const WalletBalanceCard = ({
         <>
           <GlobalImage source={IconBalanceDown} style={styles.iconUpDown} />
           <GlobalText type="body2" color="negative" style={styles.upDownTotals}>
-            - {negativeTotal}
+            {negativeTotal}
           </GlobalText>
         </>
       )}
@@ -84,7 +81,7 @@ const WalletBalanceCard = ({
         <>
           <GlobalImage source={IconBalanceUp} style={styles.iconUpDown} />
           <GlobalText type="body2" color="positive" style={styles.upDownTotals}>
-            + {positiveTotal}
+            {positiveTotal}
           </GlobalText>
         </>
       )}
