@@ -67,8 +67,7 @@ const CardButton = ({
   description,
   children,
   active,
-  complete,
-  goToButton,
+  actionIcon,
   actions,
   onPress,
   onEdit,
@@ -120,9 +119,13 @@ const CardButton = ({
 
       {actions && <View style={styles.cardActions}>{actions}</View>}
 
-      {complete && <GlobalImage source={IconInteractionRed} size="sm" />}
+      {actionIcon === 'right' && (
+        <GlobalImage source={IconChevronRight} size="sm" />
+      )}
 
-      {goToButton && <GlobalImage source={IconChevronRight} size="sm" />}
+      {actionIcon === 'complete' && (
+        <GlobalImage source={IconInteractionRed} size="sm" />
+      )}
 
       {children && <View>{children}</View>}
 
