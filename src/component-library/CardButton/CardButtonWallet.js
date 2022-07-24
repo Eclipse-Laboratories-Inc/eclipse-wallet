@@ -1,27 +1,31 @@
 import React from 'react';
-import CardButton from './CardButton';
+
 import { LOGOS } from '../../utils/wallet';
+import { getShortAddress } from '../../utils/wallet';
+
+import CardButton from './CardButton';
 
 const CardButtonWallet = ({
   title,
   address,
   chain,
+  selected,
   active,
   onPress,
-  onEdit,
+  onSecondaryPress,
   ...props
 }) => (
   <CardButton
-    type="large"
     key={address}
     title={title}
-    description={address}
+    description={`(${getShortAddress(address)})`}
     image={LOGOS[chain]}
     imageSize="xl"
     mask="lg"
     active={active}
+    selected={selected}
     onPress={onPress}
-    onEdit={onEdit}
+    onSecondaryPress={onSecondaryPress}
     {...props}
   />
 );

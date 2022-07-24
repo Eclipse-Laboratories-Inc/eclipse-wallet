@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "title": "Settings",
+    "languages": {
+      "title": "Language",
+      "en": "English",
+      "es": "Spanish"
+    }
+  }
+}

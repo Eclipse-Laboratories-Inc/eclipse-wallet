@@ -37,8 +37,8 @@ const SettingsOptionsPage = ({ t }) => {
           address={activeWallet.getReceiveAddress()}
           chain={getWalletChain(activeWallet)}
           onPress={goToAccounts}
-          goToButton
-          active
+          actionIcon="right"
+          selected
         />
       )}
 
@@ -47,49 +47,49 @@ const SettingsOptionsPage = ({ t }) => {
       <CardButton
         title="Address Book"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
       />
 
       <CardButton
         title="Display Language"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={goToLanguages}
       />
 
       <CardButton
         title="Change Network"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={goToNetwork}
       />
 
       <CardButton
         title="Security"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
       />
 
       <CardButton
         title="Notifications"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
       />
 
       <CardButton
         title="Trusted Apps"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
       />
 
       <CardButton
         title="Help & Support"
         description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
       />
 
