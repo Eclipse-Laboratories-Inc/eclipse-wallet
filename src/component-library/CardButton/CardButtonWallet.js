@@ -1,4 +1,5 @@
 import React from 'react';
+
 import CardButton from './CardButton';
 import { LOGOS } from '../../utils/wallet';
 
@@ -12,7 +13,7 @@ const CardButtonWallet = ({
   ...props
 }) => (
   <CardButton
-    type="large"
+    type="xl"
     key={address}
     title={title}
     description={address}

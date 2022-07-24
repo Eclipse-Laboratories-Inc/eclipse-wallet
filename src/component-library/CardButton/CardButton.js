@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+
 import theme from '../Global/theme';
 import GlobalButton from '../Global/GlobalButton';
 import GlobalImage from '../Global/GlobalImage';
@@ -10,18 +11,20 @@ import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 
 const styles = StyleSheet.create({
+  touchable: {
+    marginBottom: theme.gutters.paddingNormal,
+  },
   buttonCard: {
     width: '100%',
-    marginBottom: theme.gutters.paddingNormal,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  buttonCardLarge: {
+  buttonCardLG: {
     minHeight: 80,
   },
   buttonCardXL: {
-    height: 94,
+    minHeight: 94,
   },
   cardContent: {
     flex: 1,
@@ -45,12 +48,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: theme.gutters.responsivePadding * -0.5,
     marginLeft: theme.gutters.paddingXS,
-    height: '100%',
     borderLeftWidth: 1,
     borderLeftColor: theme.colors.labelSecondary,
   },
-  touchable: {
-    height: '100%',
+  touchableActionButton: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.gutters.paddingXXS,
@@ -73,10 +74,9 @@ const CardButton = ({
   onSecondaryPress,
   touchableStyles,
 }) => {
-  const buttonStyle = {
-    ...styles.buttonCard,
-    ...(title && description && styles.buttonCardLarge),
-    ...(type === 'large' ? styles.buttonCardXL : {}),
+  const buttonSize = {
+    ...(title && description && styles.buttonCardLG),
+    ...(type === 'xl' && styles.buttonCardXL),
   };
 
   return (
@@ -85,8 +85,8 @@ const CardButton = ({
       color={active ? 'active' : null}
       title={!children ? title : null}
       onPress={onPress}
-      style={buttonStyle}
-      touchableStyles={touchableStyles}>
+      style={[styles.buttonCard, buttonSize]}
+      touchableStyles={[touchableStyles, styles.touchable]}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
 
@@ -134,7 +134,7 @@ const CardButton = ({
           <GlobalButton
             onPress={onSecondaryPress}
             style={styles.onEditButton}
-            touchableStyles={styles.touchable}
+            touchableStyles={[styles.touchableActionButton, buttonSize]}
             transparent>
             <GlobalImage source={IconEdit} size="sm" />
           </GlobalButton>
