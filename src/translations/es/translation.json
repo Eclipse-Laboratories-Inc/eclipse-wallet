@@ -1,4 +1,8 @@
 {
+  "general": {
+    "copy": "Copiar",
+    "close": "Cerrar"
+  },
   "settings": {
     "title": "Configuración",
     "languages": {
