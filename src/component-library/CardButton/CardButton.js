@@ -79,6 +79,7 @@ const CardButton = ({
   onSecondaryPress,
   touchableStyles,
   buttonStyle,
+  imageStyle,
   ...props
 }) => {
   const buttonSize = {
@@ -103,7 +104,7 @@ const CardButton = ({
           <GlobalImage
             source={image}
             size={imageSize}
-            style={[styles.image, styles.spaceRight]}
+            style={[styles.image, styles.spaceRight, imageStyle]}
             mask={mask}
             maskColor={selected && 'accentPrimary'}
           />
