@@ -1,9 +1,15 @@
 import React from 'react';
+import get from 'lodash/get';
 
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalText from '../../component-library/Global/GlobalText';
 import AvatarImage from '../../component-library/Image/AvatarImage';
-import { hiddenValue, showAmount, showPercentage } from '../../utils/amount';
+import {
+  hiddenValue,
+  showAmount,
+  showPercentage,
+  getLabelValue,
+} from '../../utils/amount';
 
 const TokenList = ({ tokens, onDetail, hiddenBalance }) => (
   <>
@@ -21,8 +27,11 @@ const TokenList = ({ tokens, onDetail, hiddenBalance }) => (
             {hiddenBalance ? hiddenValue : showAmount(t.usdBalance)}
           </GlobalText>,
           t.last24HoursChange && (
-            <GlobalText key={'perc-action'} type="body2" color="positive">
-              {showPercentage(t.last24HoursChange.perc)}
+            <GlobalText
+              key={'perc-action'}
+              type="body2"
+              color={getLabelValue(get(t, 'last24HoursChange.perc'))}>
+              {showPercentage(get(t, 'last24HoursChange.perc'))}
             </GlobalText>
           ),
         ].filter(Boolean)}
