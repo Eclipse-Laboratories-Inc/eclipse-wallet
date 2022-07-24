@@ -70,7 +70,7 @@ const LockedPage = () => {
 
         <View style={styles.inner}>
           <GlobalText type="headline2" center>
-            2 lines max Enter Your Password
+            Enter Your Password
           </GlobalText>
 
           <GlobalPadding size="md" />

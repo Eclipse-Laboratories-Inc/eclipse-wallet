@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
     right: -10,
     bottom: -10,
   },
+  bigImage: {
+    backgroundColor: theme.colors.bgLight,
+  },
   inlineWell: {
     marginBottom: theme.gutters.paddingXS,
     paddingVertical: theme.gutters.paddingXS,
@@ -63,6 +66,7 @@ const TransactionsDetailPage = () => {
           <GlobalImage
             source={getMediaRemoteUrl(LOGOS['SOLANA'])}
             size="xxl"
+            style={styles.bigImage}
             circle
           />
           <GlobalImage
