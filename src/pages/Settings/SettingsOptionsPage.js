@@ -36,7 +36,7 @@ const SettingsOptionsPage = () => {
           chain={getWalletChain(activeWallet)}
           onPress={goToAccounts}
           actionIcon="right"
-          active
+          selected
         />
       )}
 

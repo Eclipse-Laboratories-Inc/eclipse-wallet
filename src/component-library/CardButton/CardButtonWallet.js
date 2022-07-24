@@ -1,19 +1,19 @@
 import React from 'react';
 
-import CardButton from './CardButton';
 import { LOGOS } from '../../utils/wallet';
+import CardButton from './CardButton';
 
 const CardButtonWallet = ({
   title,
   address,
   chain,
+  selected,
   active,
   onPress,
   onSecondaryPress,
   ...props
 }) => (
   <CardButton
-    type="xl"
     key={address}
     title={title}
     description={address}
@@ -21,6 +21,7 @@ const CardButtonWallet = ({
     imageSize="xl"
     mask="lg"
     active={active}
+    selected={selected}
     onPress={onPress}
     onSecondaryPress={onSecondaryPress}
     {...props}

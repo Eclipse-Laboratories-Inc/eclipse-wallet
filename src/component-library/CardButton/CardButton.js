@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  image: {
+    backgroundColor: theme.colors.bgPrimary,
+  },
   spaceRight: {
     marginRight: theme.gutters.paddingSM,
   },
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     marginRight: theme.gutters.responsivePadding * -0.5,
     marginLeft: theme.gutters.paddingXS,
     borderLeftWidth: 1,
-    borderLeftColor: theme.colors.labelSecondary,
+    borderLeftColor: theme.colors.labelPrimary,
   },
   touchableActionButton: {
     justifyContent: 'center',
@@ -67,12 +70,14 @@ const CardButton = ({
   title,
   description,
   children,
+  selected,
   active,
   actionIcon,
   actions,
   onPress,
   onSecondaryPress,
   touchableStyles,
+  buttonStyle,
 }) => {
   const buttonSize = {
     ...(title && description && styles.buttonCardLG),
@@ -82,10 +87,11 @@ const CardButton = ({
   return (
     <GlobalButton
       type="card"
-      color={active ? 'active' : null}
       title={!children ? title : null}
+      selected={selected}
+      active={active}
       onPress={onPress}
-      style={[styles.buttonCard, buttonSize]}
+      style={[styles.buttonCard, buttonSize, buttonStyle]}
       touchableStyles={[touchableStyles, styles.touchable]}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
@@ -94,8 +100,9 @@ const CardButton = ({
           <GlobalImage
             source={image}
             size={imageSize}
-            style={styles.spaceRight}
+            style={[styles.image, styles.spaceRight]}
             mask={mask}
+            maskColor={selected && 'accentPrimary'}
           />
         )}
 

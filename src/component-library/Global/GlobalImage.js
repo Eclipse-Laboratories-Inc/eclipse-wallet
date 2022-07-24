@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 
 import ImageMaskLGCards from '../../assets/images/ImageMaskLGCards.png';
+import ImageMaskLGAccentPrimary from '../../assets/images/ImageMaskLGAccentPrimary.png';
 import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
 import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
 
@@ -50,6 +51,7 @@ const GlobalImage = ({
   source,
   size,
   mask,
+  maskColor,
   resizeMode,
   style,
   ...props
@@ -74,7 +76,20 @@ const GlobalImage = ({
       {mask && (
         <View style={styles.imageMask}>
           {mask === 'lg' && (
-            <GlobalImage source={ImageMaskLGCards} style={styles.imageMaskLG} />
+            <>
+              {maskColor !== 'accentPrimary' && (
+                <GlobalImage
+                  source={ImageMaskLGCards}
+                  style={styles.imageMaskLG}
+                />
+              )}
+              {maskColor === 'accentPrimary' && (
+                <GlobalImage
+                  source={ImageMaskLGAccentPrimary}
+                  style={styles.imageMaskLG}
+                />
+              )}
+            </>
           )}
 
           {mask === 'xl' && (
