@@ -21,8 +21,8 @@ import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import TokenList from '../../features/TokenList/TokenList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
-import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
 import { getWalletName, getShortAddress } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
@@ -103,21 +103,25 @@ const WalletOverviewPage = () => {
     }
   }, [activeWallet, selectedEndpoints]);
 
-  const goToSend = () => {};
+  const goToSend = () =>
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
+      action: 'send',
+    });
 
-  const goToReceive = () => {};
+  const goToReceive = () =>
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
+      action: 'receive',
+    });
 
   const goToTokenDetail = t =>
-    navigate(ROUTES_MAP.TOKEN_DETAIL, {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
       tokenId: t.address,
     });
 
   const goToNotifications = () => setHasNotifications(!hasNotifications);
 
-  const goToQR = t => navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
-
   const goToNFTs = t =>
-    navigate(WALLET_MAP.WALLET_NTFS, { tokenId: t.address });
+    navigate(WALLET_ROUTES_MAP.WALLET_NTFS, { tokenId: t.address });
 
   return (
     loaded &&
@@ -158,7 +162,7 @@ const WalletOverviewPage = () => {
               transparent
               icon={IconQRCodeScanner}
               style={styles.narrowBtn}
-              onPress={goToQR}
+              onPress={() => {}}
             />
           </View>
         </View>
