@@ -49,6 +49,7 @@ const SettingsOptionsPage = ({ t }) => {
         description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <CardButton
@@ -70,6 +71,7 @@ const SettingsOptionsPage = ({ t }) => {
         description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <CardButton
@@ -77,6 +79,7 @@ const SettingsOptionsPage = ({ t }) => {
         description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <CardButton
@@ -84,6 +87,7 @@ const SettingsOptionsPage = ({ t }) => {
         description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <CardButton
@@ -91,6 +95,7 @@ const SettingsOptionsPage = ({ t }) => {
         description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <GlobalPadding size="4xl" />

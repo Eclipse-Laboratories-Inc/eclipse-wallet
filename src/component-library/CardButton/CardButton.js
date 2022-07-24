@@ -72,12 +72,14 @@ const CardButton = ({
   children,
   selected,
   active,
+  complete,
   actionIcon,
   actions,
   onPress,
   onSecondaryPress,
   touchableStyles,
   buttonStyle,
+  ...props
 }) => {
   const buttonSize = {
     ...(title && description && styles.buttonCardLG),
@@ -92,7 +94,8 @@ const CardButton = ({
       active={active}
       onPress={onPress}
       style={[styles.buttonCard, buttonSize, buttonStyle]}
-      touchableStyles={[touchableStyles, styles.touchable]}>
+      touchableStyles={[touchableStyles, styles.touchable]}
+      {...props}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
 
@@ -130,7 +133,7 @@ const CardButton = ({
         <GlobalImage source={IconChevronRight} size="sm" />
       )}
 
-      {actionIcon === 'complete' && (
+      {(complete || actionIcon === 'complete') && (
         <GlobalImage source={IconInteractionRed} size="sm" />
       )}
 

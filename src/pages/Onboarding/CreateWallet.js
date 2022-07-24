@@ -118,7 +118,6 @@ const Form = ({ account, onComplete, onBack }) => (
         seedphrase
         multiline
         numberOfLines={8}
-        complete={false}
         invalid={false}
       />
     </View>
@@ -199,7 +198,6 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
               setValue={value => setPhrasePos(value, index)}
               // value={phrases[index]}
               value={account.mnemonic.split(' ')[pos - 1]}
-              complete={false}
               invalid={false}
             />
             <GlobalPadding />
@@ -262,7 +260,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={wrongpass}
             autoComplete="password-new"
             secureTextEntry
@@ -285,7 +282,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="New Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={false}
             autoComplete="password-new"
             secureTextEntry
@@ -297,7 +293,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Repeat New Password"
             value={repass}
             setValue={setRepass}
-            complete={false}
             invalid={false}
             autoComplete="password-new"
             secureTextEntry

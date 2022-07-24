@@ -105,7 +105,6 @@ const Form = ({ onComplete, onBack }) => {
           seedphrase
           multiline
           numberOfLines={8}
-          complete={false}
           invalid={false}
         />
       </View>
@@ -173,7 +172,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={wrongpass}
             autoComplete="password-new"
             secureTextEntry
@@ -196,7 +194,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="New Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={false}
             autoComplete="off"
             secureTextEntry
@@ -208,7 +205,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Repeat New Password"
             value={repass}
             setValue={setRepass}
-            complete={false}
             invalid={false}
             autoComplete="off"
             secureTextEntry

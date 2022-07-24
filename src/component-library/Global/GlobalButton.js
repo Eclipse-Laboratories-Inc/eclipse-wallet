@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: theme.colors.cards,
+    opacity: 0.5,
   },
   transparent: {
     backgroundColor: theme.staticColor.transparent,
@@ -164,11 +165,11 @@ const GlobalButton = ({
     ...(type === 'text' ? styles.textButton : {}),
     ...(type === 'card' ? styles.cardButton : {}),
     ...(type === 'tabbar' ? styles.tabbar : {}),
-    ...(disabled ? styles.disabled : {}),
-    ...(outlined && disabled ? styles.outlinedDisabled : {}),
     ...(transparent ? styles.transparent : {}),
     ...(selected ? styles.cardSelected : {}),
     ...(active ? styles.cardActive : {}),
+    ...(disabled ? styles.disabled : {}),
+    ...(outlined && disabled ? styles.outlinedDisabled : {}),
   };
 
   const buttonTextStyle = {
