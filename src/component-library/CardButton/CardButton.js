@@ -7,9 +7,6 @@ import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
-import ImageMaskLGCards from '../../assets/images/ImageMaskLGCards.png';
-import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
-import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 
 const styles = StyleSheet.create({
@@ -32,23 +29,6 @@ const styles = StyleSheet.create({
   },
   spaceRight: {
     marginRight: theme.gutters.paddingSM,
-  },
-  imageMask: {
-    position: 'absolute',
-    marginTop: -1,
-    marginLeft: -1,
-  },
-  imageMaskLG: {
-    width: 72,
-    height: 72,
-  },
-  imageMaskXL: {
-    width: 196,
-    height: 196,
-  },
-  imageMaskXXL: {
-    width: 264,
-    height: 264,
   },
   main: {
     flex: 1,
@@ -116,27 +96,7 @@ const CardButton = ({
             source={image}
             size={imageSize}
             style={styles.spaceRight}
-          />
-        )}
-
-        {mask === 'lg' && (
-          <GlobalImage
-            source={ImageMaskLGCards}
-            style={[styles.imageMask, styles.imageMaskLG]}
-          />
-        )}
-
-        {mask === 'xl' && (
-          <GlobalImage
-            source={ImageMaskXLCards}
-            style={[styles.imageMask, styles.imageMaskXL]}
-          />
-        )}
-
-        {mask === 'xxl' && (
-          <GlobalImage
-            source={ImageMaskXXLCards}
-            style={[styles.imageMask, styles.imageMaskXXL]}
+            mask={mask}
           />
         )}
 
