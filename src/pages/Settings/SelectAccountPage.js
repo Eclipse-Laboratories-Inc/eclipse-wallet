@@ -66,7 +66,7 @@ const SelectAccountPage = () => {
                 chain={wallet.chain}
                 active={activeWallet.getReceiveAddress() === wallet.address}
                 onPress={() => selectWallet(wallet)}
-                onEdit={() => editWallet(wallet)}
+                onSecondaryPress={() => editWallet(wallet)}
               />
             ))}
           </>

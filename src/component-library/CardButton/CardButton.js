@@ -70,7 +70,7 @@ const CardButton = ({
   actionIcon,
   actions,
   onPress,
-  onEdit,
+  onSecondaryPress,
   touchableStyles,
 }) => {
   const buttonStyle = {
@@ -129,10 +129,10 @@ const CardButton = ({
 
       {children && <View>{children}</View>}
 
-      {onEdit && (
+      {onSecondaryPress && (
         <View style={styles.onEditButtonBox}>
           <GlobalButton
-            onPress={onEdit}
+            onPress={onSecondaryPress}
             style={styles.onEditButton}
             touchableStyles={styles.touchable}
             transparent>

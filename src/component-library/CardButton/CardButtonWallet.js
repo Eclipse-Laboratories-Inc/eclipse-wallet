@@ -8,7 +8,7 @@ const CardButtonWallet = ({
   chain,
   active,
   onPress,
-  onEdit,
+  onSecondaryPress,
   ...props
 }) => (
   <CardButton
@@ -21,7 +21,7 @@ const CardButtonWallet = ({
     mask="lg"
     active={active}
     onPress={onPress}
-    onEdit={onEdit}
+    onSecondaryPress={onSecondaryPress}
     {...props}
   />
 );
