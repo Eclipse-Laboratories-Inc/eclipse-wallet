@@ -4,7 +4,8 @@ import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP } from './routes';
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -67,15 +68,21 @@ const TokenDetailPage = ({ params }) => {
   }, [activeWallet, params]);
 
   const goToBack = () => {
-    navigate(ROUTES_MAP.WALLET);
+    navigate(APP_ROUTES_MAP.WALLET);
   };
+
+  const goToSend = () =>
+    navigate(ROUTES_MAP.TOKEN_SEND, { tokenId: params.tokenId });
+
+  const goToReceive = () =>
+    navigate(ROUTES_MAP.TOKEN_RECEIVE, { tokenId: params.tokenId });
 
   return (
     loaded && (
       <GlobalLayoutForTabScreen>
         <GlobalBackTitle
           onBack={goToBack}
-          inlineTitle="Token Name"
+          inlineTitle={token.name}
           inlineAddress={params.tokenId}
         />
 
@@ -96,7 +103,7 @@ const TokenDetailPage = ({ params }) => {
           onToggleShow={toggleHideBalance}
           messages={[]}
           actions={
-            <GlobalSendReceive goToSend={() => {}} goToReceive={() => {}} />
+            <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
           }
         />
 
