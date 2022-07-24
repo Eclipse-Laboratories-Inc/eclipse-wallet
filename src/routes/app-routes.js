@@ -1,7 +1,7 @@
 import OnboardingPage from '../pages/Onboarding/OnboardingPage';
 import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
-import TokenDetailPage from '../pages/Token/TokenDetailPage';
+import TokenSection from '../pages/Token';
 
 const getRoutesWithParent = (routes, parent) =>
   routes.map(r => ({ ...r, parent }));
@@ -9,7 +9,7 @@ export const ROUTES_MAP = {
   WELCOME: 'WELCOME',
   ONBOARDING: 'ONBOARDING',
   WALLET: 'WALLET',
-  TOKEN_DETAIL: 'TOKEN_DETAIL',
+  TOKEN: 'TOKEN',
 };
 
 const routes = [
@@ -36,11 +36,11 @@ const routes = [
     Component: OnboardingPage,
   },
   {
-    key: ROUTES_MAP.TOKEN_DETAIL,
-    name: 'tokenDetail',
-    path: 'token/:tokenId',
-    route: '/token/:tokenId',
-    Component: TokenDetailPage,
+    key: ROUTES_MAP.TOKEN,
+    name: 'token',
+    path: 'token/*',
+    route: '/token',
+    Component: TokenSection,
   },
 ];
 
@@ -49,6 +49,10 @@ export const globalRoutes = [
   ...getRoutesWithParent(
     require('../pages/Onboarding/routes').default,
     ROUTES_MAP.ONBOARDING,
+  ),
+  ...getRoutesWithParent(
+    require('../pages/Token/routes').default,
+    ROUTES_MAP.TOKEN,
   ),
   ...require('../pages/Wallet/routes').default,
   ...require('../pages/Settings/routes').default,

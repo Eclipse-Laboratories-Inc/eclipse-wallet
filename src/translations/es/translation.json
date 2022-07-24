@@ -6,5 +6,15 @@
       "en": "Inglés",
       "es": "Español"
     }
+  },
+  "token": {
+    "action": {
+      "send": "Enviar",
+      "receive": "Recibir",
+      "select": "Seleccionar"
+    },
+    "receive": {
+      "title": "Depositos"
+    }
   }
 }

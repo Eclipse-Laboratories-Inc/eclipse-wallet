@@ -8,6 +8,7 @@ const buildRouteWithParams = (route, params) =>
     (path, param) => path.replace(`:${param}`, params[param]),
     route,
   );
+
 export const useNavigation = () => {
   const navigate = useNavigate();
   return (to, params = {}) => {
