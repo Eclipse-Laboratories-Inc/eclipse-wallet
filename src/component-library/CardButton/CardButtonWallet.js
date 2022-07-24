@@ -1,8 +1,6 @@
 import React from 'react';
-
-import { LOGOS } from '../../utils/wallet';
-import { getShortAddress } from '../../utils/wallet';
-
+import { getMediaRemoteUrl } from '../../utils/media';
+import { LOGOS, getShortAddress } from '../../utils/wallet';
 import CardButton from './CardButton';
 
 const CardButtonWallet = ({
@@ -19,7 +17,7 @@ const CardButtonWallet = ({
     key={address}
     title={title}
     description={`(${getShortAddress(address)})`}
-    image={LOGOS[chain]}
+    image={getMediaRemoteUrl(LOGOS[chain])}
     imageSize="xl"
     mask="lg"
     active={active}

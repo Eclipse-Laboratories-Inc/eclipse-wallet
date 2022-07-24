@@ -1,5 +1,1 @@
-export const getMediaRemoteUrl = (url, size = {}, alt = '') => ({
-  url,
-  ...size,
-  alt,
-});
+export const getMediaRemoteUrl = (url, size = {}, alt = '') => url;

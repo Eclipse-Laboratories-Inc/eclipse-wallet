@@ -17,6 +17,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import { getMediaRemoteUrl } from '../../utils/media';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -56,7 +57,10 @@ const SelectAccountPage = () => {
       {Object.keys(groupedWallets).map(chain => (
         <React.Fragment key={chain}>
           <View style={styles.sectionTitle}>
-            <GlobalImage source={LOGOS[chain]} style={styles.chainImg} />
+            <GlobalImage
+              source={getMediaRemoteUrl(LOGOS[chain])}
+              style={styles.chainImg}
+            />
             <GlobalText type="body1" color="secondary">
               {chain}
             </GlobalText>
