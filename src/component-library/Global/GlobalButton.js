@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   cardActive: {
     borderColor: theme.colors.labelSecondary,
   },
+  cardSelected: {
+    backgroundColor: theme.colors.accentPrimary,
+  },
   cardButtonText: {
     textAlign: 'left',
     textTransform: 'none',
@@ -56,13 +59,6 @@ const styles = StyleSheet.create({
   block: {
     width: '100%',
     alignSelf: 'stretch',
-  },
-  bordered: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.black300,
-  },
-  flat: {
-    borderRadius: 0,
   },
   outlined: {
     borderWidth: 1,
@@ -145,8 +141,8 @@ const GlobalButton = ({
   block,
   flex,
   wide,
-  bordered,
-  flat,
+  selected,
+  active,
   outlined,
   disabled,
   transparent,
@@ -160,8 +156,6 @@ const GlobalButton = ({
     ...(block ? styles.block : {}),
     ...(flex ? styles.flex : {}),
     ...(wide ? styles.wide : {}),
-    ...(bordered ? styles.bordered : {}),
-    ...(flat ? styles.flat : {}),
     ...(outlined ? styles.outlined : {}),
     ...(size === 'medium' ? styles.buttonMD : {}),
     ...(type === 'accent' ? styles.accent : {}),
@@ -170,10 +164,11 @@ const GlobalButton = ({
     ...(type === 'text' ? styles.textButton : {}),
     ...(type === 'card' ? styles.cardButton : {}),
     ...(type === 'tabbar' ? styles.tabbar : {}),
-    ...(color === 'active' ? styles.cardActive : {}),
     ...(disabled ? styles.disabled : {}),
     ...(outlined && disabled ? styles.outlinedDisabled : {}),
     ...(transparent ? styles.transparent : {}),
+    ...(selected ? styles.cardSelected : {}),
+    ...(active ? styles.cardActive : {}),
   };
 
   const buttonTextStyle = {

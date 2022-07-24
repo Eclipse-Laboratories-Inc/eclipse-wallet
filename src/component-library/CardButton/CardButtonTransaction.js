@@ -20,7 +20,7 @@ const CardButtonTransaction = ({
   description,
   active,
   complete,
-  goToButton,
+  actionIcon,
   onPress,
   touchableStyles,
 }) => {
@@ -68,7 +68,7 @@ const CardButtonTransaction = ({
       description={description || `To: ${getShortAddress(address)}`}
       active={active}
       complete={complete}
-      goToButton={goToButton}
+      actionIcon={actionIcon}
       actions={[
         <GlobalText key={'amount-action'} type="body2" color="positive">
           {amount}

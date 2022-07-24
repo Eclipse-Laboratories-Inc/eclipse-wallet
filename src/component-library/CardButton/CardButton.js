@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+
 import theme from '../Global/theme';
 import GlobalButton from '../Global/GlobalButton';
 import GlobalImage from '../Global/GlobalImage';
@@ -7,48 +8,33 @@ import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
-import ImageMaskLGCards from '../../assets/images/ImageMaskLGCards.png';
-import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
-import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 
 const styles = StyleSheet.create({
+  touchable: {
+    marginBottom: theme.gutters.paddingNormal,
+  },
   buttonCard: {
     width: '100%',
-    marginBottom: theme.gutters.paddingNormal,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  buttonCardLarge: {
+  buttonCardLG: {
     minHeight: 80,
   },
   buttonCardXL: {
-    height: 94,
+    minHeight: 94,
   },
   cardContent: {
     flex: 1,
     flexDirection: 'row',
   },
+  image: {
+    backgroundColor: theme.colors.bgPrimary,
+  },
   spaceRight: {
     marginRight: theme.gutters.paddingSM,
-  },
-  imageMask: {
-    position: 'absolute',
-    marginTop: -1,
-    marginLeft: -1,
-  },
-  imageMaskLG: {
-    width: 72,
-    height: 72,
-  },
-  imageMaskXL: {
-    width: 196,
-    height: 196,
-  },
-  imageMaskXXL: {
-    width: 264,
-    height: 264,
   },
   main: {
     flex: 1,
@@ -65,12 +51,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: theme.gutters.responsivePadding * -0.5,
     marginLeft: theme.gutters.paddingXS,
-    height: '100%',
     borderLeftWidth: 1,
-    borderLeftColor: theme.colors.labelSecondary,
+    borderLeftColor: theme.colors.labelPrimary,
   },
-  touchable: {
-    height: '100%',
+  touchableActionButton: {
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.gutters.paddingXXS,
@@ -86,28 +70,29 @@ const CardButton = ({
   title,
   description,
   children,
+  selected,
   active,
-  complete,
-  goToButton,
+  actionIcon,
   actions,
   onPress,
-  onEdit,
+  onSecondaryPress,
   touchableStyles,
+  buttonStyle,
 }) => {
-  const buttonStyle = {
-    ...styles.buttonCard,
-    ...(title && description && styles.buttonCardLarge),
-    ...(type === 'large' ? styles.buttonCardXL : {}),
+  const buttonSize = {
+    ...(title && description && styles.buttonCardLG),
+    ...(type === 'xl' && styles.buttonCardXL),
   };
 
   return (
     <GlobalButton
       type="card"
-      color={active ? 'active' : null}
       title={!children ? title : null}
+      selected={selected}
+      active={active}
       onPress={onPress}
-      style={buttonStyle}
-      touchableStyles={touchableStyles}>
+      style={[styles.buttonCard, buttonSize, buttonStyle]}
+      touchableStyles={[touchableStyles, styles.touchable]}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
 
@@ -115,28 +100,9 @@ const CardButton = ({
           <GlobalImage
             source={image}
             size={imageSize}
-            style={styles.spaceRight}
-          />
-        )}
-
-        {mask === 'lg' && (
-          <GlobalImage
-            source={ImageMaskLGCards}
-            style={[styles.imageMask, styles.imageMaskLG]}
-          />
-        )}
-
-        {mask === 'xl' && (
-          <GlobalImage
-            source={ImageMaskXLCards}
-            style={[styles.imageMask, styles.imageMaskXL]}
-          />
-        )}
-
-        {mask === 'xxl' && (
-          <GlobalImage
-            source={ImageMaskXXLCards}
-            style={[styles.imageMask, styles.imageMaskXXL]}
+            style={[styles.image, styles.spaceRight]}
+            mask={mask}
+            maskColor={selected && 'accentPrimary'}
           />
         )}
 
@@ -160,18 +126,22 @@ const CardButton = ({
 
       {actions && <View style={styles.cardActions}>{actions}</View>}
 
-      {complete && <GlobalImage source={IconInteractionRed} size="sm" />}
+      {actionIcon === 'right' && (
+        <GlobalImage source={IconChevronRight} size="sm" />
+      )}
 
-      {goToButton && <GlobalImage source={IconChevronRight} size="sm" />}
+      {actionIcon === 'complete' && (
+        <GlobalImage source={IconInteractionRed} size="sm" />
+      )}
 
       {children && <View>{children}</View>}
 
-      {onEdit && (
+      {onSecondaryPress && (
         <View style={styles.onEditButtonBox}>
           <GlobalButton
-            onPress={onEdit}
+            onPress={onSecondaryPress}
             style={styles.onEditButton}
-            touchableStyles={styles.touchable}
+            touchableStyles={[styles.touchableActionButton, buttonSize]}
             transparent>
             <GlobalImage source={IconEdit} size="sm" />
           </GlobalButton>
