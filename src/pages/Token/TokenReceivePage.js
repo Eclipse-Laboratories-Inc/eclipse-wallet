@@ -7,6 +7,11 @@ import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalL
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
+import QRImage from '../../features/QRImage';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import { getShortAddress } from '../../utils/wallet';
+import clipboard from '../../utils/clipboard';
 
 const TokenReceivePage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -37,13 +42,30 @@ const TokenReceivePage = ({ params, t }) => {
     navigate(ROUTES_MAP.WALLET);
   };
 
+  const onCopy = () => clipboard.copy(token.address);
+
   return (
     loaded && (
       <GlobalLayoutForTabScreen>
         <GlobalBackTitle
           onBack={goToBack}
           inlineTitle={t('token.receive.title')}
-          inlineAddress={params.tokenId}
+        />
+        <QRImage address={token.address} />
+        <GlobalText type="body1" center>
+          {token.name} ({getShortAddress(token.address)})
+        </GlobalText>
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('general.copy')}
+          onPress={onCopy}
+        />
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('general.close')}
+          onPress={goToBack}
         />
       </GlobalLayoutForTabScreen>
     )
