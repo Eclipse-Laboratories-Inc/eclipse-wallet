@@ -4,7 +4,14 @@ import {
   restoreDerivedAccounts,
 } from '@4m/wallet-adapter';
 import chains from '@4m/wallet-adapter/constants/chains';
+
 import ENDPOINTS from '../config/endpoints';
+
+import IconTransactionSent from '../assets/images/IconTransactionSent.png';
+import IconTransactionReceived from '../assets/images/IconTransactionReceived.png';
+import IconTransactionSwap from '../assets/images/IconTransactionSwap.png';
+import IconTransactionInteraction from '../assets/images/IconTransactionInteraction.png';
+import IconTransactionPaid from '../assets/images/IconTransactionPaid.png';
 
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
@@ -51,3 +58,21 @@ export const getWalletChain = wallet => {
 
 export const getShortAddress = address =>
   `${address.substr(0, 4)}...${address.substr(-4)}`;
+
+export const getTransactionImage = transaction => {
+  const object = transaction;
+  switch (object) {
+    case 'sent':
+      return IconTransactionSent;
+    case 'received':
+      return IconTransactionReceived;
+    case 'swap':
+      return IconTransactionSwap;
+    case 'interaction':
+      return IconTransactionInteraction;
+    case 'paid':
+      return IconTransactionPaid;
+    default:
+      return IconTransactionSent;
+  }
+};

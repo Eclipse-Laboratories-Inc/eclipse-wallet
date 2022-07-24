@@ -5,6 +5,7 @@ import ImageMaskLGCards from '../../assets/images/ImageMaskLGCards.png';
 import ImageMaskLGAccentPrimary from '../../assets/images/ImageMaskLGAccentPrimary.png';
 import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
 import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
+import theme from './theme';
 
 const styles = StyleSheet.create({
   sizeSM: {
@@ -23,9 +24,16 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
+  sizeXXL: {
+    width: 100,
+    height: 100,
+  },
   block: {
     width: '100%',
     height: '100%',
+  },
+  circle: {
+    borderRadius: 250,
   },
   imageMask: {
     position: 'absolute',
@@ -52,6 +60,7 @@ const GlobalImage = ({
   size,
   mask,
   maskColor,
+  circle,
   resizeMode,
   style,
   ...props
@@ -60,7 +69,9 @@ const GlobalImage = ({
     ...(size === 'sm' ? styles.sizeSM : {}),
     ...(size === 'md' ? styles.sizeMD : {}),
     ...(size === 'xl' ? styles.sizeXL : {}),
+    ...(size === 'xxl' ? styles.sizeXXL : {}),
     ...(size === 'block' ? styles.block : {}),
+    ...(circle && styles.circle),
   };
 
   return (

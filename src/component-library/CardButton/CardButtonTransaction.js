@@ -1,15 +1,17 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
+import theme from '../Global/theme';
 import CardButton from './CardButton';
 import GlobalText from '../Global/GlobalText';
 
-import IconTransactionSent from '../../assets/images/IconTransactionSent.png';
-import IconTransactionReceived from '../../assets/images/IconTransactionReceived.png';
-import IconTransactionSwap from '../../assets/images/IconTransactionSwap.png';
-import IconTransactionInteraction from '../../assets/images/IconTransactionInteraction.png';
-import IconTransactionPaid from '../../assets/images/IconTransactionPaid.png';
+import { getTransactionImage, getShortAddress } from '../../utils/wallet';
 
-import { getShortAddress } from '../../utils/wallet';
+const styles = StyleSheet.create({
+  imageStyle: {
+    borderRadius: theme.borderRadius.borderRadiusPill,
+  },
+});
 
 const CardButtonTransaction = ({
   transaction,
@@ -42,33 +44,15 @@ const CardButtonTransaction = ({
     }
   };
 
-  const getTransactionImage = () => {
-    const object = transaction;
-    switch (object) {
-      case 'sent':
-        return IconTransactionSent;
-      case 'received':
-        return IconTransactionReceived;
-      case 'swap':
-        return IconTransactionSwap;
-      case 'interaction':
-        return IconTransactionInteraction;
-      case 'paid':
-        return IconTransactionPaid;
-      default:
-        return IconTransactionSent;
-    }
-  };
-
   return (
     <CardButton
-      transaction={transaction}
       image={getTransactionImage(transaction)}
       title={title || getTransactionTitle(transaction)}
       description={description || `To: ${getShortAddress(address)}`}
       active={active}
       complete={complete}
       actionIcon={actionIcon}
+      imageStyle={styles.imageStyle}
       actions={[
         <GlobalText key={'amount-action'} type="body2" color="positive">
           {amount}
