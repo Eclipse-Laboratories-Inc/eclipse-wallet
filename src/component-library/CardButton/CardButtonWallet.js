@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { LOGOS } from '../../utils/wallet';
+import { getShortAddress } from '../../utils/wallet';
+
 import CardButton from './CardButton';
 
 const CardButtonWallet = ({
@@ -16,7 +18,7 @@ const CardButtonWallet = ({
   <CardButton
     key={address}
     title={title}
-    description={address}
+    description={`(${getShortAddress(address)})`}
     image={LOGOS[chain]}
     imageSize="xl"
     mask="lg"
