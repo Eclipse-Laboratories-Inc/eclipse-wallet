@@ -5,6 +5,7 @@ import groupBy from 'lodash/groupBy';
 import { AppContext } from '../../AppProvider';
 import { getWalletName, LOGOS } from '../../utils/wallet';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 
@@ -37,7 +38,10 @@ const SelectAccountPage = () => {
   const groupedWallets = groupBy(wallets, 'chain');
   const getWalletIndex = wallet =>
     wallets.findIndex(w => w.address === wallet.address);
-  const selectWallet = wallet => changeActiveWallet(getWalletIndex(wallet));
+  const selectWallet = async wallet => {
+    await changeActiveWallet(getWalletIndex(wallet));
+    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
+  };
   const editWallet = ({ address }) =>
     navigate(ROUTES_MAP.SETTINGS_EDITACCOUNT, { address });
 

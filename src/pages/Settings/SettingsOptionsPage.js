@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
@@ -13,7 +14,7 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
-const SettingsOptionsPage = () => {
+const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, walletNumber }, { logout }] = useContext(AppContext);
   const handleLogout = () => {
@@ -24,10 +25,11 @@ const SettingsOptionsPage = () => {
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_SELECTACCOUNT);
-
+  const goToLanguages = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle title="Settings" />
+      <GlobalBackTitle title={t('settings.title')} />
 
       {activeWallet && (
         <CardButtonWallet
@@ -53,7 +55,7 @@ const SettingsOptionsPage = () => {
         title="Display Language"
         description="Lorem impsum"
         goToButton
-        onPress={() => {}}
+        onPress={goToLanguages}
       />
 
       <CardButton
@@ -105,4 +107,4 @@ const SettingsOptionsPage = () => {
   );
 };
 
-export default SettingsOptionsPage;
+export default withTranslation()(SettingsOptionsPage);
