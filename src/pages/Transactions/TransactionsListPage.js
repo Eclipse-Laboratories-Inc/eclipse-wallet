@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
 const TransactionsListPage = () => {
   const navigate = useNavigation();
   const onDetail = id => navigate(ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
+
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle title="Your Transactions" />

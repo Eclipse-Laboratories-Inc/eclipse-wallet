@@ -5,6 +5,16 @@ import get from 'lodash/get';
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as TRANSACTIONS_ROUTES_MAP } from '../Transactions/routes';
+import { cache, CACHE_TYPES } from '../../utils/cache';
+import {
+  hiddenValue,
+  showAmount,
+  getLabelValue,
+  showPercentage,
+  showValue,
+} from '../../utils/amount';
+
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -14,14 +24,6 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import GlobalText from '../../component-library/Global/GlobalText';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import {
-  hiddenValue,
-  showAmount,
-  getLabelValue,
-  showPercentage,
-  showValue,
-} from '../../utils/amount';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,6 +39,9 @@ const styles = StyleSheet.create({
 
 const TokenDetailPage = ({ params }) => {
   const navigate = useNavigation();
+  const onDetail = id =>
+    navigate(TRANSACTIONS_ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
+
   const [loaded, setloaded] = useState(false);
 
   const [token, setToken] = useState({});
@@ -117,16 +122,21 @@ const TokenDetailPage = ({ params }) => {
           viewAllAction={() => {}}
           hideCollapse
           isOpen>
-          {transactions.map(transaction => (
-            <CardButtonTransaction
-              key={transaction.signature}
-              transaction="sent"
-              address="AXNAwy7iq6bTthgtojjuUVqA279KhUmppdAbzYSfH18S"
-              amount="+1 SOL"
-              percentage="+0000%"
-              onPress={() => {}}
-            />
-          ))}
+          {transactions.map(transaction => {
+            console.log(transaction);
+            return (
+              <CardButtonTransaction
+                key={transaction.signature}
+                transaction="sent"
+                address={
+                  transaction.destination ? transaction.destination : '----'
+                }
+                amount={transaction.amount ? transaction.amount : '+1 SOL'}
+                percentage="+0000%"
+                onPress={() => onDetail(transaction.signature)}
+              />
+            );
+          })}
         </GlobalCollapse>
       </GlobalLayoutForTabScreen>
     )

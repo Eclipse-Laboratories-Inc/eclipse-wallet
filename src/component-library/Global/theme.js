@@ -24,6 +24,7 @@ const variables = {
   HEADER_HEIGHT,
 
   buttonMaxWidth: 375,
+  buttonMaxWidthSmall: 263,
   mobileWidth: 375,
   mobileWidthLG: 425,
   tabletWidth: 690,

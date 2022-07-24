@@ -11,6 +11,7 @@ import IconArrowBack from '../../assets/images/IconArrowBack.png';
 
 const styles = StyleSheet.create({
   container: {
+    minHeight: 52,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -55,8 +56,14 @@ const GlobalBackTitle = ({
 
     <View style={styles.centerInline}>
       {title && (
-        <GlobalText type={smallTitle ? 'subtitle2' : 'headline2'} nospace>
+        <GlobalText type={'headline2'} nospace>
           {title}
+        </GlobalText>
+      )}
+
+      {smallTitle && (
+        <GlobalText type={'subtitle2'} nospace>
+          {smallTitle}
         </GlobalText>
       )}
 

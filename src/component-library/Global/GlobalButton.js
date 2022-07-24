@@ -113,6 +113,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     maxWidth: theme.variables.buttonMaxWidth,
   },
+  wideSmall: {
+    width: '100%',
+    flexGrow: 1,
+    maxWidth: theme.variables.buttonMaxWidthSmall,
+  },
   icon: {
     width: 32,
     height: 32,
@@ -142,6 +147,7 @@ const GlobalButton = ({
   block,
   flex,
   wide,
+  wideSmall,
   selected,
   active,
   outlined,
@@ -157,6 +163,7 @@ const GlobalButton = ({
     ...(block ? styles.block : {}),
     ...(flex ? styles.flex : {}),
     ...(wide ? styles.wide : {}),
+    ...(wideSmall ? styles.wideSmall : {}),
     ...(outlined ? styles.outlined : {}),
     ...(size === 'medium' ? styles.buttonMD : {}),
     ...(type === 'accent' ? styles.accent : {}),
@@ -187,7 +194,11 @@ const GlobalButton = ({
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[touchableStyles, wide && styles.wide]}
+      style={[
+        touchableStyles,
+        wide && styles.wide,
+        wideSmall && styles.wideSmall,
+      ]}
       {...props}>
       <View style={[styles.button, buttonStyle, style]}>
         {icon && (

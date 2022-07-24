@@ -5,13 +5,7 @@ import theme from '../Global/theme';
 import CardButton from './CardButton';
 import GlobalText from '../Global/GlobalText';
 
-import IconTransactionSent from '../../assets/images/IconTransactionSent.png';
-import IconTransactionReceived from '../../assets/images/IconTransactionReceived.png';
-import IconTransactionSwap from '../../assets/images/IconTransactionSwap.png';
-import IconTransactionInteraction from '../../assets/images/IconTransactionInteraction.png';
-import IconTransactionPaid from '../../assets/images/IconTransactionPaid.png';
-
-import { getShortAddress } from '../../utils/wallet';
+import { getTransactionImage, getShortAddress } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   imageStyle: {
@@ -47,24 +41,6 @@ const CardButtonTransaction = ({
         return 'Paid';
       default:
         return 'Sent';
-    }
-  };
-
-  const getTransactionImage = () => {
-    const object = transaction;
-    switch (object) {
-      case 'sent':
-        return IconTransactionSent;
-      case 'received':
-        return IconTransactionReceived;
-      case 'swap':
-        return IconTransactionSwap;
-      case 'interaction':
-        return IconTransactionInteraction;
-      case 'paid':
-        return IconTransactionPaid;
-      default:
-        return IconTransactionSent;
     }
   };
 

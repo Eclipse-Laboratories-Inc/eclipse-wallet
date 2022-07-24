@@ -72,7 +72,9 @@ const styles = StyleSheet.create({
 });
 
 const Form = ({ onComplete, onBack }) => {
-  const [seedPhrase, setSeedPhrase] = useState('');
+  const [seedPhrase, setSeedPhrase] = useState(
+    'grow oblige neck same spend east come small dinosaur frost rice vintage',
+  );
 
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
 
