@@ -114,13 +114,13 @@ const TokenSendPage = ({ params, t }) => {
 
   const addressBook = [
     {
-      symbol: 'SOL',
+      chain: 'SOLANA',
       name: 'Demo Name 1',
       logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png',
       address: '8Nb3tg9H55svmywG4NvsHVtw7GpZWdA2Wi6TbXbgTtzi',
     },
     {
-      symbol: 'SOL',
+      chain: 'SOLANA',
       name: 'Demo Name 2',
       logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
       address: 'So11111111111111111111111111111111111111112',
@@ -140,16 +140,12 @@ const TokenSendPage = ({ params, t }) => {
           <CardButtonWallet
             title="From: Wallet Name"
             address={activeWallet.getReceiveAddress()}
-            icon={
-              <GlobalImage
-                source={getMediaRemoteUrl(LOGOS['SOLANA'])}
-                size="md"
-                circle
-              />
-            }
+            chain="SOLANA"
+            imageSize="md"
             buttonStyle={styles.buttonStyle}
             touchableStyles={styles.touchableStyles}
             transparent
+            readonly
           />
 
           <GlobalInputWithButton
@@ -172,9 +168,8 @@ const TokenSendPage = ({ params, t }) => {
               <CardButtonWallet
                 title={addressBookItem.name}
                 address={addressBookItem.address}
-                icon={
-                  <GlobalImage url={addressBookItem.logo} size="md" circle />
-                }
+                chain={addressBookItem.chain}
+                imageSize="md"
                 onPress={() => {}}
                 buttonStyle={styles.addressBookItem}
                 touchableStyles={styles.touchableStyles}

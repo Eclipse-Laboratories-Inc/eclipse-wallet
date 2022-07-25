@@ -152,6 +152,7 @@ const GlobalButton = ({
   active,
   outlined,
   disabled,
+  readonly,
   transparent,
   style,
   textStyle,
@@ -176,6 +177,7 @@ const GlobalButton = ({
     ...(selected ? styles.cardSelected : {}),
     ...(active ? styles.cardActive : {}),
     ...(disabled ? styles.disabled : {}),
+    ...(readonly ? styles.readonly : {}),
     ...(outlined && disabled ? styles.outlinedDisabled : {}),
   };
 
@@ -193,7 +195,7 @@ const GlobalButton = ({
 
   return (
     <TouchableOpacity
-      disabled={disabled}
+      disabled={readonly ? true : disabled}
       style={[
         touchableStyles,
         wide && styles.wide,
