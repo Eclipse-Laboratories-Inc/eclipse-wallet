@@ -1,14 +1,16 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import enTranslation from './en/translation';
+import esTranslation from './es/translation';
 
 export const LANGUAGES = ['en', 'es'];
 
 export const resources = {
   en: {
-    translation: require(`./en/translation`),
+    translation: enTranslation,
   },
   es: {
-    translation: require(`./es/translation`),
+    translation: esTranslation,
   },
 };
 
