@@ -217,8 +217,8 @@ const themes = {
 
 export const globalStyles = StyleSheet.create({
   mainContainer: {
-    // flex: 1,
-    flexGrow: 1,
+    flex: 1,
+    // flexGrow: 1,
     justifyContent: 'space-between',
     alignSelf: 'center',
     paddingVertical: gutters.paddingNormal,

@@ -106,8 +106,9 @@ const CardButton = ({
             source={image}
             size={imageSize}
             style={[styles.image, styles.spaceRight, imageStyle]}
-            mask={mask}
+            // mask={mask}
             maskColor={selected && 'accentPrimary'}
+            circle
           />
         )}
 

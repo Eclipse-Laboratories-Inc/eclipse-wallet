@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     // height: '100%',
-    flex: 1,
+    // flex: 1,
     alignSelf: 'stretch',
   },
 });
