@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput } from 'react-native';
-import isString from 'lodash/isString';
-import theme from './theme';
-import GlobalText from './GlobalText';
-import GlobalImage from './GlobalImage';
 
+import theme from './theme';
+import GlobalImage from './GlobalImage';
+import GlobalText from './GlobalText';
+
+import IconSearch from '../../assets/images/IconSearch.png';
 import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
 
 const styles = StyleSheet.create({
@@ -34,8 +35,16 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.fontSizeMD,
     textAlign: 'center',
   },
-  startLabel: {
+  forSearch: {
     width: 50,
+    height: '100%',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.7,
+  },
+  startLabel: {
+    minWidth: 50,
     height: '100%',
     position: 'absolute',
     alignItems: 'center',
@@ -45,6 +54,8 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   startLabelText: {
+    alignItems: 'center',
+    justifyContent: 'center',
     color: theme.colors.labelTertiary,
   },
   startLabelFocused: {
@@ -55,6 +66,9 @@ const styles = StyleSheet.create({
   },
   invalid: {
     borderColor: theme.colors.danger,
+  },
+  withSearch: {
+    paddingLeft: 50,
   },
   withStartLabel: {
     paddingLeft: 64,
@@ -78,6 +92,7 @@ const styles = StyleSheet.create({
 
 const GlobalInput = ({
   placeholder,
+  forSearch,
   startLabel,
   value,
   setValue,
@@ -98,11 +113,34 @@ const GlobalInput = ({
 
   return (
     <View style={styles.inputGroup}>
+      {forSearch && (
+        <View style={styles.forSearch}>
+          <GlobalImage source={IconSearch} size="xs" />
+        </View>
+      )}
+
+      {startLabel && (
+        <View
+          style={[
+            styles.startLabel,
+            invalid && styles.invalid,
+            isFocused && styles.isFocused,
+          ]}>
+          <GlobalText
+            type="body2"
+            selectable={false}
+            style={styles.startLabelText}>
+            {startLabel}
+          </GlobalText>
+        </View>
+      )}
+
       <TextInput
         style={[
           styles.input,
           multiline && styles.multiline,
           seedphrase && styles.seedphrase,
+          forSearch && styles.withSearch,
           startLabel && styles.withStartLabel,
           invalid && styles.invalid,
           isFocused && styles.isFocused,
@@ -121,21 +159,7 @@ const GlobalInput = ({
         onFocus={() => setIsFocused(true)}
         {...props}
       />
-      {startLabel && (
-        <View
-          style={[
-            styles.startLabel,
-            invalid && styles.invalid,
-            isFocused && styles.isFocused,
-          ]}>
-          <GlobalText
-            type="body2"
-            selectable={false}
-            style={styles.startLabelText}>
-            {startLabel}
-          </GlobalText>
-        </View>
-      )}
+
       {complete && (
         <View style={styles.complete}>
           <GlobalImage

@@ -1,18 +1,23 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
+import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP } from './routes';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
-import GlobalText from '../../component-library/Global/GlobalText';
+import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { hiddenValue, showAmount } from '../../utils/amount';
+
+import { globalStyles } from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
+import GlobalImage from '../../component-library/Global/GlobalImage';
+import GlobalInput from '../../component-library/Global/GlobalInput';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
-import AvatarImage from '../../component-library/Image/AvatarImage';
-import { withTranslation } from '../../hooks/useTranslations';
 
 const TokenSelectPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -20,6 +25,8 @@ const TokenSelectPage = ({ params, t }) => {
 
   const [tokens, setTokens] = useState({});
   const [{ activeWallet, hiddenBalance }] = useContext(AppContext);
+
+  const [searchToken, setSearchToken] = useState('');
 
   useEffect(() => {
     if (activeWallet) {
@@ -39,45 +46,64 @@ const TokenSelectPage = ({ params, t }) => {
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
+
   const onSelect = token => {
     if (params.action === 'send') {
-      navigate(ROUTES_MAP.TOKEN_SEND, { tokenId: token.address });
+      navigate(TOKEN_ROUTES_MAP.TOKEN_SEND, { tokenId: token.address });
     } else if (params.action === 'receive') {
-      navigate(ROUTES_MAP.TOKEN_RECEIVE, { tokenId: token.address });
+      navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE, { tokenId: token.address });
     } else {
-      navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: token.address });
+      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: token.address });
     }
+  };
+
+  const goToAddToken = token => {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_ADD, {
+      action: params.action,
+      walletAddress: activeWallet.getReceiveAddress(),
+    });
   };
 
   return (
     loaded && (
-      <GlobalLayoutForTabScreen>
-        <GlobalBackTitle
-          onBack={goToBack}
-          inlineTitle={t(`token.action.${params.action || 'select'}`)}
-          inlineAddress={params.tokenId}
-        />
+      <GlobalLayout withContainer>
+        <View style={globalStyles.mainHeader}>
+          <GlobalBackTitle
+            onBack={goToBack}
+            smallTitle={t(`token.action.${params.action || 'select'}`)}
+          />
 
-        <GlobalCollapse
-          title="Tokens"
-          viewAllAction={() => {}}
-          hideCollapse
-          isOpen>
-          {tokens.map(token => (
-            <CardButton
-              key={token.mint}
-              onPress={() => onSelect(token)}
-              icon={<AvatarImage url={token.logo} size={48} />}
-              title={token.name}
-              actions={[
-                <GlobalText key={'amount-action'} type="body2">
-                  {hiddenBalance ? hiddenValue : showAmount(token.usdBalance)}
-                </GlobalText>,
-              ]}
-            />
-          ))}
-        </GlobalCollapse>
-      </GlobalLayoutForTabScreen>
+          <GlobalInput
+            forSearch
+            placeholder="Search..."
+            value={searchToken}
+            setValue={setSearchToken}
+          />
+
+          <GlobalPadding />
+
+          <GlobalCollapse
+            title="Select Token"
+            isOpen
+            actionTitle="Add New Token"
+            viewAllAction={goToAddToken}
+            hideCollapse>
+            {tokens.map(token => (
+              <CardButton
+                key={token.mint}
+                onPress={() => onSelect(token)}
+                icon={<GlobalImage url={token.logo} size="md" circle />}
+                title={token.name}
+                actions={[
+                  <GlobalText key={'amount-action'} type="body2">
+                    {hiddenBalance ? hiddenValue : showAmount(token.usdBalance)}
+                  </GlobalText>,
+                ]}
+              />
+            ))}
+          </GlobalCollapse>
+        </View>
+      </GlobalLayout>
     )
   );
 };

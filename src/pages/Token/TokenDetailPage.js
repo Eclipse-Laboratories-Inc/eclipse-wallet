@@ -20,6 +20,7 @@ import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
+// import GlobalChart from '../../component-library/Global/GlobalChart';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
@@ -117,6 +118,7 @@ const TokenDetailPage = ({ params }) => {
         <View style={styles.cardBox}>
           <GlobalCollapse title="Chart Data Range" narrowTitle isOpen={false}>
             <GlobalPadding />
+            {/* <GlobalChart /> */}
             <GlobalText type="body2">[CHART GOES HERE]</GlobalText>
             <GlobalPadding />
           </GlobalCollapse>

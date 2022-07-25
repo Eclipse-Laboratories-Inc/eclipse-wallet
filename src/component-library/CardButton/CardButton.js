@@ -13,6 +13,7 @@ import IconEdit from '../../assets/images/IconEdit.png';
 const styles = StyleSheet.create({
   touchable: {
     marginBottom: theme.gutters.paddingNormal,
+    width: '100%',
   },
   buttonCard: {
     width: '100%',
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   cardActions: {
     alignItems: 'flex-end',
   },
-  onEditButtonBox: {
+  secondaryAction: {
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: theme.gutters.responsivePadding * -0.5,
@@ -95,7 +96,7 @@ const CardButton = ({
       active={active}
       onPress={onPress}
       style={[styles.buttonCard, buttonSize, buttonStyle]}
-      touchableStyles={[touchableStyles, styles.touchable]}
+      touchableStyles={[styles.touchable, touchableStyles]}
       {...props}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
@@ -121,6 +122,7 @@ const CardButton = ({
             <GlobalText
               type="caption"
               numberOfLines={1}
+              color="secondary"
               style={styles.description}>
               {description}
             </GlobalText>
@@ -130,6 +132,8 @@ const CardButton = ({
 
       {actions && <View style={styles.cardActions}>{actions}</View>}
 
+      {children && <View>{children}</View>}
+
       {actionIcon === 'right' && (
         <GlobalImage source={IconChevronRight} size="sm" />
       )}
@@ -138,13 +142,10 @@ const CardButton = ({
         <GlobalImage source={IconInteractionRed} size="sm" />
       )}
 
-      {children && <View>{children}</View>}
-
       {onSecondaryPress && (
-        <View style={styles.onEditButtonBox}>
+        <View style={styles.secondaryAction}>
           <GlobalButton
             onPress={onSecondaryPress}
-            style={styles.onEditButton}
             touchableStyles={[styles.touchableActionButton, buttonSize]}
             transparent>
             <GlobalImage source={IconEdit} size="sm" />

@@ -11,13 +11,13 @@ import {
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
+import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import theme from '../../component-library/Global/theme';
 
 const styles = StyleSheet.create({
   centered: {
@@ -33,6 +33,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: -10,
     bottom: -10,
+  },
+  bigImage: {
+    backgroundColor: theme.colors.bgLight,
   },
   inlineWell: {
     marginBottom: theme.gutters.paddingXS,
@@ -63,6 +66,7 @@ const TransactionsDetailPage = () => {
           <GlobalImage
             source={getMediaRemoteUrl(LOGOS['SOLANA'])}
             size="xxl"
+            style={styles.bigImage}
             circle
           />
           <GlobalImage

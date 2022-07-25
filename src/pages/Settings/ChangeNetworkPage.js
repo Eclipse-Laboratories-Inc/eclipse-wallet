@@ -2,13 +2,13 @@ import React, { useContext } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import CardButton from '../../component-library/CardButton/CardButton';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalText from '../../component-library/Global/GlobalText';
 import { getWalletChain } from '../../utils/wallet';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
+
+import CardButton from '../../component-library/CardButton/CardButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const ChangeNetworkPage = () => {
   const navigate = useNavigation();

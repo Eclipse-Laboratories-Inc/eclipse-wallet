@@ -11,16 +11,22 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, walletNumber }, { logout }] = useContext(AppContext);
+  const [{ activeWallet, walletNumber, selectedEndpoints }, { logout }] =
+    useContext(AppContext);
   const handleLogout = () => {
     logout();
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
+
+  const [{ selectedLanguage, languages }, { changeLanguage }] =
+    useContext(AppContext);
+
   const goToNetwork = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
@@ -46,7 +52,6 @@ const SettingsOptionsPage = ({ t }) => {
 
       <CardButton
         title="Address Book"
-        description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
         disabled
@@ -54,37 +59,39 @@ const SettingsOptionsPage = ({ t }) => {
 
       <CardButton
         title="Display Language"
-        description="Lorem impsum"
+        // description="Lorem impsum"
         actionIcon="right"
-        onPress={goToLanguages}
-      />
+        onPress={goToLanguages}>
+        <GlobalText type="caption">
+          {t(`settings.languages.${selectedLanguage}`)}
+        </GlobalText>
+      </CardButton>
 
       <CardButton
         title="Change Network"
-        description="Lorem impsum"
         actionIcon="right"
-        onPress={goToNetwork}
-      />
+        onPress={goToNetwork}>
+        <GlobalText type="caption">
+          {selectedEndpoints[getWalletChain(activeWallet)]}
+        </GlobalText>
+      </CardButton>
 
       <CardButton
         title="Security"
-        description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
         disabled
       />
 
-      <CardButton
+      {/* <CardButton
         title="Notifications"
-        description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
         disabled
-      />
+      /> */}
 
       <CardButton
         title="Trusted Apps"
-        description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
         disabled
@@ -92,7 +99,6 @@ const SettingsOptionsPage = ({ t }) => {
 
       <CardButton
         title="Help & Support"
-        description="Lorem impsum"
         actionIcon="right"
         onPress={() => {}}
         disabled
@@ -100,12 +106,7 @@ const SettingsOptionsPage = ({ t }) => {
 
       <GlobalPadding size="4xl" />
 
-      <GlobalButton
-        type="secondary"
-        block
-        title="Logout"
-        onPress={handleLogout}
-      />
+      <GlobalButton type="text" block title="Logout" onPress={handleLogout} />
 
       <GlobalPadding size="lg" />
     </GlobalLayoutForTabScreen>

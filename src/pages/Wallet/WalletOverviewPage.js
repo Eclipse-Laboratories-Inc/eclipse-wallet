@@ -77,7 +77,7 @@ const WalletOverviewPage = () => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [ntfsList, setNtfsList] = useState([]);
-  const [hasNotifications, setHasNotifications] = useState(false);
+  // const [hasNotifications, setHasNotifications] = useState(false);
 
   const [loaded, setLoaded] = useState(false);
 
@@ -118,7 +118,7 @@ const WalletOverviewPage = () => {
       tokenId: t.address,
     });
 
-  const goToNotifications = () => setHasNotifications(!hasNotifications);
+  // const goToNotifications = () => setHasNotifications(!hasNotifications);
 
   const goToNFTs = t =>
     navigate(WALLET_ROUTES_MAP.WALLET_NTFS, { tokenId: t.address });
@@ -150,13 +150,13 @@ const WalletOverviewPage = () => {
           </View>
 
           <View style={styles.walletActions}>
-            <GlobalButton
+            {/* <GlobalButton
               type="icon"
               transparent
               icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
               style={styles.narrowBtn}
               onPress={goToNotifications}
-            />
+            /> */}
             <GlobalButton
               type="icon"
               transparent
