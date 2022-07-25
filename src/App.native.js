@@ -2,6 +2,7 @@ import React from 'react';
 import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import AppProvider from './AppProvider';
 import AppRoutes from './AppRoutes';
+import theme from './component-library/Global/theme';
 
 const App = () => (
   <AppProvider>
@@ -15,6 +16,7 @@ const App = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.bgPrimary,
   },
 });
 

@@ -54,7 +54,8 @@ const useWallets = () => {
   };
   const unlockWallets = async password => {
     try {
-      const unlockedWallets = await unlock(wallets, password);
+      const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+      const unlockedWallets = await unlock(storedWallets.wallets, password);
       const activeIndex = await storage.getItem(STORAGE_KEYS.ACTIVE);
       setWallets(unlockedWallets);
       if (!isNil(activeIndex)) {
@@ -79,8 +80,6 @@ const useWallets = () => {
     }
   };
   const lockWallets = async () => {
-    const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
-    setWallets(storedWallets.wallets);
     setLocked(true);
   };
 

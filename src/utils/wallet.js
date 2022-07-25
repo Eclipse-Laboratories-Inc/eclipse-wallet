@@ -48,7 +48,7 @@ export const validateSeedPhrase = seedPhrase =>
 export const getWalletName = (wallet, number) => `Wallet ${number}`;
 
 export const getWalletChain = wallet => {
-  const type = wallet.constructor.name;
+  const type = wallet ? wallet.constructor.name : '';
   switch (type) {
     case 'SolanaAccount':
       return 'SOLANA';
