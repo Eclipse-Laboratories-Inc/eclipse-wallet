@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.7,
+    zIndex: 1,
   },
   startLabel: {
     minWidth: 50,
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: theme.colors.btnBrandLight,
     opacity: 0.9,
+    zIndex: 1,
   },
   startLabelText: {
     alignItems: 'center',
