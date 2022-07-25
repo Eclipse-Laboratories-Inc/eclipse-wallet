@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  size3XL: {
+    width: 120,
+    height: 120,
+  },
   block: {
     width: '100%',
     height: '100%',
@@ -75,6 +79,7 @@ const GlobalImage = ({
     ...(size === 'md' && styles.sizeMD),
     ...(size === 'xl' && styles.sizeXL),
     ...(size === 'xxl' && styles.sizeXXL),
+    ...(size === '3xl' && styles.size3XL),
     ...(size === 'block' && styles.block),
     ...(circle && styles.circle),
   };

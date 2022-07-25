@@ -7,8 +7,8 @@ import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
 
-import theme from '../../component-library/Global/theme';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import theme, { globalStyles } from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
@@ -22,10 +22,6 @@ const styles = StyleSheet.create({
   centered: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  inlineFlexButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   buttonTouchable: {
     flex: 1,
@@ -80,76 +76,78 @@ const TokenAddPage = ({ params, t }) => {
 
   return (
     loaded && (
-      <GlobalLayoutForTabScreen>
-        <GlobalBackTitle
-          onBack={goToBack}
-          inlineTitle="Wallet Name"
-          inlineAddress={activeWallet.getReceiveAddress()}
-        />
-
-        <View style={styles.centered}>
-          <GlobalText type="headline2">{t(`token.action.addToken`)}</GlobalText>
-
-          <GlobalImage
-            source={IconCircleAdd}
-            size="xxl"
-            style={styles.bigImage}
-            circle
+      <GlobalLayout withContainer>
+        <View style={globalStyles.mainHeader}>
+          <GlobalBackTitle
+            onBack={goToBack}
+            inlineTitle="Wallet Name"
+            inlineAddress={activeWallet.getReceiveAddress()}
           />
 
-          <GlobalPadding size="md" />
+          <View style={styles.centered}>
+            <GlobalText type="headline2">
+              {t(`token.action.addToken`)}
+            </GlobalText>
 
-          <GlobalText type="body2">This will cost 0.00204 ACR</GlobalText>
+            <GlobalImage
+              source={IconCircleAdd}
+              size="xxl"
+              style={styles.bigImage}
+              circle
+            />
 
-          <GlobalPadding size="md" />
+            <GlobalPadding size="md" />
 
-          <GlobalInput
-            placeholder="Mint Address"
-            value={tokenMintAddress}
-            setValue={setTokenMintAddress}
-          />
+            <GlobalText type="body2">This will cost 0.00204 ACR</GlobalText>
 
-          <GlobalPadding />
+            <GlobalPadding size="md" />
 
-          <GlobalInput
-            placeholder="Name"
-            value={tokenName}
-            setValue={setTokenName}
-          />
+            <GlobalInput
+              placeholder="Mint Address"
+              value={tokenMintAddress}
+              setValue={setTokenMintAddress}
+            />
 
-          <GlobalPadding />
+            <GlobalPadding />
 
-          <GlobalInput
-            placeholder="Symbol"
-            value={tokenSymbol}
-            setValue={setTokenSymbol}
-          />
+            <GlobalInput
+              placeholder="Name"
+              value={tokenName}
+              setValue={setTokenName}
+            />
+
+            <GlobalPadding />
+
+            <GlobalInput
+              placeholder="Symbol"
+              value={tokenSymbol}
+              setValue={setTokenSymbol}
+            />
+          </View>
         </View>
 
-        <GlobalPadding size="4xl" />
+        <View style={globalStyles.mainFooter}>
+          <View style={globalStyles.inlineFlexButtons}>
+            <GlobalButton
+              type="secondary"
+              flex
+              title="Cancel"
+              onPress={goToBack}
+              style={[styles.button, styles.buttonLeft]}
+              touchableStyles={styles.buttonTouchable}
+            />
 
-        <View style={styles.inlineFlexButtons}>
-          <GlobalButton
-            type="secondary"
-            flex
-            title="Cancel"
-            onPress={goToBack}
-            style={[styles.button, styles.buttonLeft]}
-            touchableStyles={styles.buttonTouchable}
-          />
-
-          <GlobalButton
-            type="primary"
-            flex
-            title="Add Token"
-            onPress={onAddToken}
-            style={[styles.button, styles.buttonRight]}
-            touchableStyles={styles.buttonTouchable}
-          />
+            <GlobalButton
+              type="primary"
+              flex
+              title="Add Token"
+              onPress={onAddToken}
+              style={[styles.button, styles.buttonRight]}
+              touchableStyles={styles.buttonTouchable}
+            />
+          </View>
         </View>
-
-        <GlobalPadding size="xl" />
-      </GlobalLayoutForTabScreen>
+      </GlobalLayout>
     )
   );
 };

@@ -11,12 +11,14 @@ const CardButtonWallet = ({
   active,
   onPress,
   onSecondaryPress,
+  buttonStyle,
+  touchableStyles,
   ...props
 }) => (
   <CardButton
     key={address}
     title={title}
-    description={`(${getShortAddress(address)})`}
+    description={`${getShortAddress(address)}`}
     image={getMediaRemoteUrl(LOGOS[chain])}
     imageSize="xl"
     mask="lg"
@@ -24,6 +26,8 @@ const CardButtonWallet = ({
     selected={selected}
     onPress={onPress}
     onSecondaryPress={onSecondaryPress}
+    buttonStyle={buttonStyle}
+    touchableStyles={touchableStyles}
     {...props}
   />
 );

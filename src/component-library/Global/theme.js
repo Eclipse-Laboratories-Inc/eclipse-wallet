@@ -1,4 +1,4 @@
-import { Platform, Dimensions, Appearance } from 'react-native';
+import { Platform, Dimensions, Appearance, StyleSheet } from 'react-native';
 
 const calculateResponsivePadding = () => {
   let padding = 10;
@@ -215,6 +215,41 @@ const themes = {
   },
 };
 
+export const globalStyles = StyleSheet.create({
+  mainContainer: {
+    // flex: 1,
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    paddingVertical: gutters.paddingNormal,
+    paddingBottom: gutters.padding4XL,
+    paddingHorizontal: gutters.paddingSM,
+    width: '100%',
+    maxWidth: variables.mobileWidthLG,
+  },
+  mainHeader: {
+    // flexGrow: 1,
+  },
+  mainInner: {
+    // flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: gutters.paddingNormal,
+    paddingBottom: gutters.padding2XL,
+  },
+  mainFooter: {
+    paddingTop: gutters.paddingLG,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  inlineFlexButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+});
+
 const colorTheme =
   Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
 
@@ -228,6 +263,7 @@ const theme = {
   borderRadius,
   staticColor,
   colors: colorTheme,
+  globalStyles,
 };
 
 export default theme;

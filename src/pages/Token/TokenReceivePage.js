@@ -9,13 +9,15 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import theme, { globalStyles } from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
 import QRImage from '../../features/QRImage';
-import theme from '../../component-library/Global/theme';
+import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
   centered: {
@@ -26,6 +28,18 @@ const styles = StyleSheet.create({
     padding: theme.gutters.paddingMD,
     backgroundColor: theme.staticColor.alwaysWhite,
     borderRadius: theme.borderRadius.borderRadiusNormal,
+  },
+  inlineWell: {
+    marginBottom: theme.gutters.paddingXS,
+    paddingVertical: theme.gutters.paddingXS,
+    paddingHorizontal: theme.gutters.paddingSM,
+    width: '100%',
+    maxWidth: theme.variables.buttonMaxWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.colors.bgLight,
+    borderRadius: theme.borderRadius.borderRadiusMD,
   },
 });
 
@@ -58,43 +72,55 @@ const TokenReceivePage = ({ params, t }) => {
     navigate(ROUTES_MAP.WALLET);
   };
 
-  const onCopy = () => clipboard.copy(token.address);
+  const onCopyAlias = () => clipboard.copy(token.address);
+
+  const onCopyAddress = () => clipboard.copy(token.address);
 
   return (
     loaded && (
-      <GlobalLayoutForTabScreen>
-        <GlobalBackTitle
-          onBack={goToBack}
-          smallTitle={t('token.receive.title')}
-        />
-
-        <View style={styles.centered}>
-          <View style={styles.qrBox}>
-            <QRImage address={token.address} />
-          </View>
-
-          <GlobalPadding size="md" />
-
-          <GlobalText type="body1" center>
-            {token.name} ({getShortAddress(token.address)})
-          </GlobalText>
-
-          <GlobalPadding size="md" />
-
-          <GlobalButton
-            type="secondary"
-            title={t('general.copy')}
-            onPress={onCopy}
+      <GlobalLayout withContainer>
+        <View style={globalStyles.mainHeader}>
+          <GlobalBackTitle
+            onBack={goToBack}
+            smallTitle={t('token.receive.title')}
           />
 
-          <GlobalPadding size="md" />
+          <View style={styles.centered}>
+            <View style={styles.qrBox}>
+              <QRImage address={token.address} />
+            </View>
 
-          <GlobalText type="body1" center>
-            2 lines max Validation text sint occaecat cupidatat non proident
-          </GlobalText>
+            <GlobalPadding size="md" />
 
-          <GlobalPadding size="4xl" />
+            <View style={styles.inlineWell}>
+              <GlobalText type="body2">Name.acr</GlobalText>
 
+              <GlobalButton onPress={onCopyAlias} size="medium">
+                <GlobalImage source={IconCopy} size="xs" />
+                <GlobalText type="button">Copy</GlobalText>
+              </GlobalButton>
+            </View>
+
+            <View style={styles.inlineWell}>
+              <GlobalText type="body2">
+                {token.name} ({getShortAddress(token.address)})
+              </GlobalText>
+
+              <GlobalButton onPress={onCopyAddress} size="medium">
+                <GlobalImage source={IconCopy} size="xs" />
+                <GlobalText type="button">Copy</GlobalText>
+              </GlobalButton>
+            </View>
+
+            <GlobalPadding size="md" />
+
+            <GlobalText type="body1" center>
+              2 lines max Validation text sint occaecat cupidatat non proident
+            </GlobalText>
+          </View>
+        </View>
+
+        <View style={globalStyles.mainFooter}>
           <GlobalButton
             type="secondary"
             wideSmall
@@ -102,7 +128,7 @@ const TokenReceivePage = ({ params, t }) => {
             onPress={goToBack}
           />
         </View>
-      </GlobalLayoutForTabScreen>
+      </GlobalLayout>
     )
   );
 };

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   startLabel: {
-    width: 50,
+    minWidth: 50,
     height: '100%',
     position: 'absolute',
     alignItems: 'center',

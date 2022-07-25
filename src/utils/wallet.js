@@ -12,6 +12,9 @@ import IconTransactionReceived from '../assets/images/IconTransactionReceived.pn
 import IconTransactionSwap from '../assets/images/IconTransactionSwap.png';
 import IconTransactionInteraction from '../assets/images/IconTransactionInteraction.png';
 import IconTransactionPaid from '../assets/images/IconTransactionPaid.png';
+import IconTransactionResultSuccess from '../assets/images/IconTransactionResultSuccess.png';
+import IconTransactionResultWarning from '../assets/images/IconTransactionResultWarning.png';
+import IconTransactionResultFail from '../assets/images/IconTransactionResultFail.png';
 
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
@@ -72,6 +75,12 @@ export const getTransactionImage = transaction => {
       return IconTransactionInteraction;
     case 'paid':
       return IconTransactionPaid;
+    case 'success':
+      return IconTransactionResultSuccess;
+    case 'warning':
+      return IconTransactionResultWarning;
+    case 'fail':
+      return IconTransactionResultFail;
     default:
       return IconTransactionSent;
   }

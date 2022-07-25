@@ -10,6 +10,7 @@ import IconExpandLess from '../../assets/images/IconExpandLess.png';
 
 const styles = StyleSheet.create({
   inline: {
+    minHeight: 48,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

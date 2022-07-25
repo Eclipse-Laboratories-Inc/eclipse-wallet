@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: theme.gutters.paddingLG,
   },
+  nospace: {
+    marginBottom: 0,
+  },
   buttonSize: {
     width: 52,
   },
@@ -42,9 +45,10 @@ const GlobalBackTitle = ({
   smallTitle,
   inlineTitle,
   inlineAddress,
+  nospace,
   children,
 }) => (
-  <View style={styles.container}>
+  <View style={[styles.container, nospace && styles.nospace]}>
     {onBack && (
       <GlobalButton
         type="icon"
