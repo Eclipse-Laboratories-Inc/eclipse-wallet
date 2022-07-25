@@ -5,9 +5,12 @@ import ImageMaskLGCards from '../../assets/images/ImageMaskLGCards.png';
 import ImageMaskLGAccentPrimary from '../../assets/images/ImageMaskLGAccentPrimary.png';
 import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
 import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
-import theme from './theme';
 
 const styles = StyleSheet.create({
+  sizeXS: {
+    width: 24,
+    height: 24,
+  },
   sizeSM: {
     width: 32,
     height: 32,
@@ -57,6 +60,7 @@ const styles = StyleSheet.create({
 const GlobalImage = ({
   name,
   source,
+  url,
   size,
   mask,
   maskColor,
@@ -66,11 +70,12 @@ const GlobalImage = ({
   ...props
 }) => {
   const imageStyles = {
-    ...(size === 'sm' ? styles.sizeSM : {}),
-    ...(size === 'md' ? styles.sizeMD : {}),
-    ...(size === 'xl' ? styles.sizeXL : {}),
-    ...(size === 'xxl' ? styles.sizeXXL : {}),
-    ...(size === 'block' ? styles.block : {}),
+    ...(size === 'xs' && styles.sizeXS),
+    ...(size === 'sm' && styles.sizeSM),
+    ...(size === 'md' && styles.sizeMD),
+    ...(size === 'xl' && styles.sizeXL),
+    ...(size === 'xxl' && styles.sizeXXL),
+    ...(size === 'block' && styles.block),
     ...(circle && styles.circle),
   };
 
@@ -78,7 +83,7 @@ const GlobalImage = ({
     <>
       <Image
         // source={name ? getImage(name) : source}
-        source={source}
+        source={url ? { uri: url } : source}
         resizeMode={resizeMode || 'contain'}
         style={[styles.sizeNormal, imageStyles, style]}
         {...props}

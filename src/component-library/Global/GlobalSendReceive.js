@@ -5,7 +5,7 @@ import theme from './theme';
 import GlobalButton from './GlobalButton';
 
 const styles = StyleSheet.create({
-  sendReceiveButtons: {
+  inlineFlexButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 const GlobalSendReceive = ({ goToSend, goToReceive }) => (
-  <View style={styles.sendReceiveButtons}>
+  <View style={styles.inlineFlexButtons}>
     <GlobalButton
       type="primary"
       flex

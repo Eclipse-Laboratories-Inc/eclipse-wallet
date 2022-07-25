@@ -13,6 +13,8 @@
   },
   "token": {
     "action": {
+      "addToken": "Add Token",
+      "add": "Add",
       "send": "Send",
       "receive": "Receive",
       "select": "Select"

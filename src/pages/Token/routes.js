@@ -1,11 +1,13 @@
 import TokenDetailPage from './TokenDetailPage';
-import TokenReceivePage from './TokenReceivePage';
 import TokenSelectPage from './TokenSelectPage';
+import TokenAddPage from './TokenAddPage';
 import TokenSendPage from './TokenSendPage';
+import TokenReceivePage from './TokenReceivePage';
 
 export const ROUTES_MAP = {
   TOKEN_DETAIL: 'TOKEN_DETAIL',
   TOKEN_SELECT: 'TOKEN_SELECT',
+  TOKEN_ADD: 'TOKEN_ADD',
   TOKEN_SEND: 'TOKEN_SEND',
   TOKEN_RECEIVE: 'TOKEN_RECEIVE',
 };
@@ -25,6 +27,13 @@ const routes = [
     route: '/token/select/:action',
     Component: TokenSelectPage,
     default: true,
+  },
+  {
+    key: ROUTES_MAP.TOKEN_ADD,
+    name: 'tokenAdd',
+    path: 'add/:walletAddress/:action',
+    route: '/token/add/:walletAddress/:action',
+    Component: TokenAddPage,
   },
   {
     key: ROUTES_MAP.TOKEN_SEND,

@@ -3,12 +3,9 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
-
-import { LOGOS } from '../../utils/wallet';
-import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
@@ -16,16 +13,15 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalInput from '../../component-library/Global/GlobalInput';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
+
+import IconCircleAdd from '../../assets/images/IconCircleAdd.png';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 const styles = StyleSheet.create({
   centered: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  bigImage: {
-    backgroundColor: theme.colors.bgLight,
   },
   inlineFlexButtons: {
     flexDirection: 'row',
@@ -45,14 +41,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const TokenSendPage = ({ params, t }) => {
+const TokenAddPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setloaded] = useState(false);
   const [token, setToken] = useState({});
 
   const [{ activeWallet }] = useContext(AppContext);
 
-  const [recipientAddress, setRecipientAddress] = useState('');
+  const [tokenMintAddress, setTokenMintAddress] = useState('');
+  const [tokenName, setTokenName] = useState('');
+  const [tokenSymbol, setTokenSymbol] = useState('');
 
   useEffect(() => {
     if (activeWallet) {
@@ -73,11 +71,11 @@ const TokenSendPage = ({ params, t }) => {
   }, [activeWallet, params]);
 
   const goToBack = () => {
-    navigate(ROUTES_MAP.WALLET);
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: params.action });
   };
 
-  const onSend = () => {
-    navigate(ROUTES_MAP.WALLET);
+  const onAddToken = () => {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SEND, { tokenId: tokenMintAddress });
   };
 
   return (
@@ -85,13 +83,15 @@ const TokenSendPage = ({ params, t }) => {
       <GlobalLayoutForTabScreen>
         <GlobalBackTitle
           onBack={goToBack}
-          inlineTitle={t('token.action.send')}
-          inlineAddress={params.tokenId}
+          inlineTitle="Wallet Name"
+          inlineAddress={activeWallet.getReceiveAddress()}
         />
 
         <View style={styles.centered}>
+          <GlobalText type="headline2">{t(`token.action.addToken`)}</GlobalText>
+
           <GlobalImage
-            source={getMediaRemoteUrl(LOGOS['SOLANA'])}
+            source={IconCircleAdd}
             size="xxl"
             style={styles.bigImage}
             circle
@@ -99,31 +99,31 @@ const TokenSendPage = ({ params, t }) => {
 
           <GlobalPadding size="md" />
 
-          <GlobalInput
-            placeholder="Recipient´s ACR address"
-            value={recipientAddress}
-            setValue={setRecipientAddress}
-          />
+          <GlobalText type="body2">This will cost 0.00204 ACR</GlobalText>
 
           <GlobalPadding size="md" />
 
           <GlobalInput
-            placeholder="USD"
-            value={recipientAddress}
-            setValue={setRecipientAddress}
+            placeholder="Mint Address"
+            value={tokenMintAddress}
+            setValue={setTokenMintAddress}
           />
 
           <GlobalPadding />
 
-          <GlobalText type="body2" center>
-            -0 USD
-          </GlobalText>
+          <GlobalInput
+            placeholder="Name"
+            value={tokenName}
+            setValue={setTokenName}
+          />
 
-          <GlobalPadding size="md" />
+          <GlobalPadding />
 
-          <GlobalText type="body1" center>
-            2 lines max Validation text sint occaecat cupidatat non proident
-          </GlobalText>
+          <GlobalInput
+            placeholder="Symbol"
+            value={tokenSymbol}
+            setValue={setTokenSymbol}
+          />
         </View>
 
         <GlobalPadding size="4xl" />
@@ -141,8 +141,8 @@ const TokenSendPage = ({ params, t }) => {
           <GlobalButton
             type="primary"
             flex
-            title="Send"
-            onPress={onSend}
+            title="Add Token"
+            onPress={onAddToken}
             style={[styles.button, styles.buttonRight]}
             touchableStyles={styles.buttonTouchable}
           />
@@ -154,4 +154,4 @@ const TokenSendPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(TokenSendPage));
+export default withParams(withTranslation()(TokenAddPage));

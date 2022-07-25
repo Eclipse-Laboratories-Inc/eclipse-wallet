@@ -46,6 +46,7 @@ const GlobalCollapse = ({
   title,
   titleStyle,
   narrowTitle,
+  actionTitle,
   viewAllAction,
   actions,
   hideCollapse,
@@ -83,7 +84,7 @@ const GlobalCollapse = ({
             <GlobalButton
               type="text"
               color="secondary"
-              title="View All"
+              title={actionTitle ? actionTitle : 'View All'}
               style={styles.viewAllBtn}
               textStyle={styles.viewAllBtnText}
               onPress={viewAllAction}
