@@ -142,7 +142,7 @@ const TokenSendPage = ({ params, t }) => {
             address={activeWallet.getReceiveAddress()}
             icon={
               <GlobalImage
-                url={getMediaRemoteUrl(LOGOS['SOLANA'])}
+                source={getMediaRemoteUrl(LOGOS['SOLANA'])}
                 size="md"
                 circle
               />

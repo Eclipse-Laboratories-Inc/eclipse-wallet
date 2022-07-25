@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
 const SelectAccountPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets }, { changeActiveWallet }] =
+  const [{ activeWallet, wallets, locked }, { changeActiveWallet }] =
     useContext(AppContext);
   const addNewWallet = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   const groupedWallets = groupBy(wallets, 'chain');
@@ -49,47 +49,49 @@ const SelectAccountPage = () => {
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack} title="Your Wallets" />
+    !locked && (
+      <GlobalLayoutForTabScreen>
+        <GlobalBackTitle onBack={onBack} title="Your Wallets" />
 
-      <GlobalPadding />
+        <GlobalPadding />
 
-      {Object.keys(groupedWallets).map(chain => (
-        <React.Fragment key={chain}>
-          <View style={styles.sectionTitle}>
-            <GlobalImage
-              source={getMediaRemoteUrl(LOGOS[chain])}
-              style={styles.chainImg}
-            />
-            <GlobalText type="body1" color="secondary">
-              {chain}
-            </GlobalText>
-          </View>
-          <>
-            {groupedWallets[chain].map(wallet => (
-              <CardButtonWallet
-                key={wallet.address}
-                title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
-                address={wallet.address}
-                chain={wallet.chain}
-                selected={activeWallet.getReceiveAddress() === wallet.address}
-                onPress={() => selectWallet(wallet)}
-                onSecondaryPress={() => editWallet(wallet)}
+        {Object.keys(groupedWallets).map(chain => (
+          <React.Fragment key={chain}>
+            <View style={styles.sectionTitle}>
+              <GlobalImage
+                source={getMediaRemoteUrl(LOGOS[chain])}
+                style={styles.chainImg}
               />
-            ))}
-          </>
-        </React.Fragment>
-      ))}
+              <GlobalText type="body1" color="secondary">
+                {chain}
+              </GlobalText>
+            </View>
+            <>
+              {groupedWallets[chain].map(wallet => (
+                <CardButtonWallet
+                  key={wallet.address}
+                  title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
+                  address={wallet.address}
+                  chain={wallet.chain}
+                  selected={activeWallet.getReceiveAddress() === wallet.address}
+                  onPress={() => selectWallet(wallet)}
+                  onSecondaryPress={() => editWallet(wallet)}
+                />
+              ))}
+            </>
+          </React.Fragment>
+        ))}
 
-      <GlobalPadding />
+        <GlobalPadding />
 
-      <GlobalButton
-        type="primary"
-        block
-        title="Add new Wallet"
-        onPress={addNewWallet}
-      />
-    </GlobalLayoutForTabScreen>
+        <GlobalButton
+          type="primary"
+          block
+          title="Add new Wallet"
+          onPress={addNewWallet}
+        />
+      </GlobalLayoutForTabScreen>
+    )
   );
 };
 
