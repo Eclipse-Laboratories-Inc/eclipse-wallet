@@ -16,13 +16,14 @@ const styles = StyleSheet.create({
 const CardButtonTransaction = ({
   transaction,
   address,
-  amount,
+  // amount,
   percentage,
   title,
   description,
   active,
   complete,
   actionIcon,
+  actions,
   onPress,
   touchableStyles,
 }) => {
@@ -39,6 +40,8 @@ const CardButtonTransaction = ({
         return 'Interaction';
       case 'paid':
         return 'Paid';
+      case 'unknown':
+        return 'Unknown';
       default:
         return 'Sent';
     }
@@ -48,19 +51,12 @@ const CardButtonTransaction = ({
     <CardButton
       image={getTransactionImage(transaction)}
       title={title || getTransactionTitle(transaction)}
-      description={description || `To: ${getShortAddress(address)}`}
+      description={address && `To: ${getShortAddress(address)}`}
       active={active}
       complete={complete}
       actionIcon={actionIcon}
       imageStyle={styles.imageStyle}
-      actions={[
-        <GlobalText key={'amount-action'} type="body2" color="positive">
-          {amount}
-        </GlobalText>,
-        <GlobalText key={'perc-action'} type="caption" color="secondary">
-          {percentage}
-        </GlobalText>,
-      ].filter(Boolean)}
+      actions={actions}
       onPress={onPress}
     />
   );

@@ -12,6 +12,7 @@ import IconTransactionReceived from '../assets/images/IconTransactionReceived.pn
 import IconTransactionSwap from '../assets/images/IconTransactionSwap.png';
 import IconTransactionInteraction from '../assets/images/IconTransactionInteraction.png';
 import IconTransactionPaid from '../assets/images/IconTransactionPaid.png';
+import IconTransactionUnknown from '../assets/images/IconTransactionUnknown.png';
 import IconTransactionResultSuccess from '../assets/images/IconTransactionResultSuccess.png';
 import IconTransactionResultWarning from '../assets/images/IconTransactionResultWarning.png';
 import IconTransactionResultFail from '../assets/images/IconTransactionResultFail.png';
@@ -75,6 +76,8 @@ export const getTransactionImage = transaction => {
       return IconTransactionInteraction;
     case 'paid':
       return IconTransactionPaid;
+    case 'unknown':
+      return IconTransactionUnknown;
     case 'success':
       return IconTransactionResultSuccess;
     case 'warning':
