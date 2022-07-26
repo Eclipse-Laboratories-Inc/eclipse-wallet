@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
@@ -18,6 +18,14 @@ const ChangeNetworkPage = () => {
     changeEndpoint(getWalletChain(activeWallet), value);
   };
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+  const [networks, setNetworks] = useState([]);
+  useEffect(() => {
+    activeWallet.getNetworks().then(nwks => {
+      if (nwks?.length > 0) {
+        setNetworks(nwks);
+      }
+    });
+  }, [activeWallet]);
 
   return (
     <GlobalLayoutForTabScreen>
@@ -25,18 +33,16 @@ const ChangeNetworkPage = () => {
 
       <GlobalPadding />
 
-      {activeWallet
-        .getNetworks()
-        .map(({ networkId: label, nodeUrl: endpoint }) => (
-          <CardButton
-            key={label}
-            active={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            title={label}
-            description={endpoint}
-            onPress={() => onSelect(label)}
-          />
-        ))}
+      {networks.map(({ id: label, description }) => (
+        <CardButton
+          key={label}
+          active={label === selectedEndpoints[getWalletChain(activeWallet)]}
+          complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
+          title={label}
+          description={description}
+          onPress={() => onSelect(label)}
+        />
+      ))}
     </GlobalLayoutForTabScreen>
   );
 };
