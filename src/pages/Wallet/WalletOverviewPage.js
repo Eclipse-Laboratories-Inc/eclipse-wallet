@@ -108,10 +108,7 @@ const WalletOverviewPage = () => {
       action: 'send',
     });
 
-  const goToReceive = () =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
-      action: 'receive',
-    });
+  const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
   const goToTokenDetail = t =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {

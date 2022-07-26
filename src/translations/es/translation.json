@@ -20,7 +20,13 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Depositos"
+      "title": "Recibir"
+    },
+    "send": {
+      "from": "De: {{name}}",
+      "transaction_success": "Enviado",
+      "transaction_warning": "Warning",
+      "transaction_fail": "Error"
     }
   }
 }
