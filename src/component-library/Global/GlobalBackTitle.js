@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 
 import { getShortAddress } from '../../utils/wallet';
 
@@ -22,6 +22,16 @@ const styles = StyleSheet.create({
   },
   buttonSize: {
     width: 52,
+    height: 52,
+  },
+  buttonSizeSmall: {
+    width: theme.gutters.paddingXXS,
+    height: theme.gutters.paddingXXS,
+  },
+  vertical: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   centerInline: {
     flex: 1,
@@ -42,51 +52,66 @@ const styles = StyleSheet.create({
 const GlobalBackTitle = ({
   onBack,
   title,
-  smallTitle,
+  secondaryTitle,
   inlineTitle,
   inlineAddress,
   nospace,
   children,
 }) => (
-  <View style={[styles.container, nospace && styles.nospace]}>
-    {onBack && (
-      <GlobalButton
-        type="icon"
-        transparent
-        icon={IconArrowBack}
-        onPress={onBack}
-      />
-    )}
+  <SafeAreaView edges={['top']}>
+    <View style={[styles.container, nospace && styles.nospace]}>
+      {onBack && (
+        <GlobalButton
+          type="icon"
+          transparent
+          icon={IconArrowBack}
+          onPress={onBack}
+        />
+      )}
+      {!onBack && <View style={styles.buttonSizeSmall} />}
 
-    <View style={styles.centerInline}>
-      {title && (
-        <GlobalText type={'headline2'} nospace>
-          {title}
-        </GlobalText>
+      {(title || secondaryTitle) && (
+        <View style={styles.vertical}>
+          {title && (
+            <GlobalText type={'headline2'} center nospace>
+              {title}
+            </GlobalText>
+          )}
+
+          {secondaryTitle && (
+            <GlobalText type={'subtitle2'} center nospace>
+              {secondaryTitle}
+            </GlobalText>
+          )}
+        </View>
       )}
 
-      {smallTitle && (
-        <GlobalText type={'subtitle2'} nospace>
-          {smallTitle}
-        </GlobalText>
-      )}
+      {(inlineTitle || inlineAddress) && (
+        <View style={styles.centerInline}>
+          {inlineTitle && (
+            <GlobalText type="body2" style={styles.inlineTitle}>
+              {inlineTitle}
+            </GlobalText>
+          )}
 
-      {inlineTitle && (
-        <GlobalText type="body2" style={styles.inlineTitle}>
-          {inlineTitle}
-        </GlobalText>
-      )}
+          {inlineAddress && (
+            <GlobalText
+              type="body1"
+              color="tertiary"
+              style={styles.inlineAddress}>
+              ({getShortAddress(inlineAddress)})
+            </GlobalText>
+          )}
 
-      {inlineAddress && (
-        <GlobalText type="body1" color="tertiary" style={styles.inlineAddress}>
-          ({getShortAddress(inlineAddress)})
-        </GlobalText>
+          {children}
+        </View>
       )}
 
       {children}
-    </View>
 
-    {onBack && <View style={styles.buttonSize} />}
-  </View>
+      {onBack && <View style={styles.buttonSize} />}
+      {!onBack && <View style={styles.buttonSizeSmall} />}
+    </View>
+  </SafeAreaView>
 );
 export default GlobalBackTitle;

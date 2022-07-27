@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useNavigation } from '../../routes/hooks';
 import { getChains, LOGOS } from '../../utils/wallet';
@@ -9,7 +9,6 @@ import { ROUTES_MAP } from './routes';
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -21,27 +20,6 @@ import AppIcon from '../../assets/images/AppIcon.png';
 import AppTitle from '../../assets/images/AppTitle.png';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    paddingVertical: 40,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.mobileWidthLG,
-  },
-  headerActions: {
-    // width: '100%',
-  },
-  inner: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.gutters.paddingNormal,
-  },
-  footerActions: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   appIconImage: {
     marginBottom: 30,
     width: 88,
@@ -52,26 +30,22 @@ const styles = StyleSheet.create({
     height: 26,
   },
   touchable: {
-    minWidth: theme.variables.buttonMaxWidth,
+    maxWidth: theme.variables.buttonMaxWidth,
   },
 });
 
 const SelectAction = ({ onNext }) => (
   <>
-    <View style={styles.headerActions}>
-      <GlobalText type="headline3" center>
-        Welcome to
-      </GlobalText>
-    </View>
+    <GlobalLayout.Header>
+      <GlobalBackTitle secondaryTitle="Welcome to" />
+    </GlobalLayout.Header>
 
-    <View style={styles.inner}>
+    <GlobalLayout.Inner>
       <GlobalImage source={AppIcon} style={styles.appIconImage} />
       <GlobalImage source={AppTitle} style={styles.appTitleImage} />
-    </View>
+    </GlobalLayout.Inner>
 
-    <View style={styles.footerActions}>
-      <GlobalPadding />
-
+    <GlobalLayout.Footer>
       <GlobalButton
         type="primary"
         wide
@@ -89,28 +63,26 @@ const SelectAction = ({ onNext }) => (
         onPress={() => onNext(ROUTES_MAP.ONBOARDING_RECOVER)}
         // disabled={!chainCode}
       />
-    </View>
+    </GlobalLayout.Footer>
   </>
 );
 
 const SelectChain = ({ onNext, blockChains, onBack }) => (
-  <>
-    <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={onBack} title="Select Blockchain" />
+  <GlobalLayout.Header>
+    <GlobalBackTitle onBack={onBack} secondaryTitle="Select Blockchain" />
 
-      <GlobalPadding size="xs" />
+    <GlobalPadding size="xs" />
 
-      {blockChains.map(chain => (
-        <CardButton
-          key={chain}
-          onPress={() => onNext(chain)}
-          icon={<AvatarImage url={LOGOS[chain]} size={48} />}
-          title={chain}
-          touchableStyles={styles.touchable}
-        />
-      ))}
-    </View>
-  </>
+    {blockChains.map(chain => (
+      <CardButton
+        key={chain}
+        onPress={() => onNext(chain)}
+        icon={<AvatarImage url={LOGOS[chain]} size={48} />}
+        title={chain}
+        touchableStyles={styles.touchable}
+      />
+    ))}
+  </GlobalLayout.Header>
 );
 
 const SelectOptions = () => {
@@ -127,22 +99,20 @@ const SelectOptions = () => {
   };
 
   return (
-    <GlobalLayout>
-      <View style={styles.container}>
-        {step === 0 && (
-          <SelectAction
-            onNext={onSelectAction}
-            onBack={() => navigate(ROUTES_MAP_APP.ONBOARDING)}
-          />
-        )}
-        {step === 1 && (
-          <SelectChain
-            onNext={onSelectChain}
-            blockChains={getChains()}
-            onBack={() => setStep(0)}
-          />
-        )}
-      </View>
+    <GlobalLayout fullscreen>
+      {step === 0 && (
+        <SelectAction
+          onNext={onSelectAction}
+          onBack={() => navigate(ROUTES_MAP_APP.ONBOARDING)}
+        />
+      )}
+      {step === 1 && (
+        <SelectChain
+          onNext={onSelectChain}
+          blockChains={getChains()}
+          onBack={() => setStep(0)}
+        />
+      )}
     </GlobalLayout>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import theme from './theme';
 import GlobalButton from './GlobalButton';
 import GlobalImage from './GlobalImage';
 import GlobalInput from './GlobalInput';

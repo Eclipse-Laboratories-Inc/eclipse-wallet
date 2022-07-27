@@ -6,7 +6,7 @@ import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
 
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -25,30 +25,6 @@ import {
 } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    paddingHorizontal: theme.gutters.paddingSM,
-    paddingVertical: 40,
-    width: '100%',
-    maxWidth: theme.variables.mobileWidthLG,
-    minHeight: '100%',
-  },
-  headerActions: {
-    width: '100%',
-  },
-  inner: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: theme.gutters.paddingNormal,
-    paddingBottom: theme.gutters.padding2XL,
-  },
-  footerActions: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   bigIcon: {
     width: 120,
     height: 120,
@@ -57,17 +33,6 @@ const styles = StyleSheet.create({
     marginVertical: theme.gutters.paddingXL,
     width: 56,
     height: 8,
-  },
-  pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  textAreaWrapper: {
-    width: '100%',
-    height: 284,
-  },
-  inputWrapper: {
-    width: '90%',
   },
 });
 
@@ -80,17 +45,15 @@ const Form = ({ onComplete, onBack }) => {
 
   return (
     <>
-      <View style={styles.headerActions}>
+      <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack}>
-          <View style={styles.pagination}>
+          <View style={globalStyles.pagination}>
             <GlobalPageDot active />
             <GlobalPageDot />
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
-      </View>
 
-      <View style={styles.inner}>
         <GlobalText type="headline2" center>
           Recover Existing Wallet
         </GlobalText>
@@ -109,8 +72,9 @@ const Form = ({ onComplete, onBack }) => {
           numberOfLines={8}
           invalid={false}
         />
-      </View>
-      <View style={styles.footerActions}>
+      </GlobalLayout.Header>
+
+      <GlobalLayout.Footer>
         {!isValid && (
           <GlobalButton
             type="secondary"
@@ -127,7 +91,7 @@ const Form = ({ onComplete, onBack }) => {
             onPress={() => onComplete(seedPhrase)}
           />
         )}
-      </View>
+      </GlobalLayout.Footer>
     </>
   );
 };
@@ -154,66 +118,69 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
 
   return (
     <>
-      <View style={styles.headerActions}>
+      <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack}>
-          <View style={styles.pagination}>
+          <View style={globalStyles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot active />
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
-      </View>
-      {requiredLock && (
-        <View style={styles.inner}>
-          <GlobalText type="headline2" center>
-            Insert password
-          </GlobalText>
-          <GlobalPadding size="2xl" />
 
-          <GlobalInput
-            placeholder="Password"
-            value={pass}
-            setValue={setPass}
-            invalid={wrongpass}
-            autoComplete="password-new"
-            secureTextEntry
-          />
-        </View>
-      )}
-      {!requiredLock && (
-        <View style={styles.inner}>
-          <GlobalText type="headline2" center>
-            Create Password
-          </GlobalText>
+        {requiredLock && (
+          <>
+            <GlobalText type="headline2" center>
+              Insert password
+            </GlobalText>
+            <GlobalPadding size="2xl" />
 
-          <GlobalText type="body1" center>
-            3 lines max Excepteur sint occaecat cupidatat non proident, sunt
-          </GlobalText>
+            <GlobalInput
+              placeholder="Password"
+              value={pass}
+              setValue={setPass}
+              invalid={wrongpass}
+              autoComplete="password-new"
+              secureTextEntry
+            />
+          </>
+        )}
 
-          <GlobalPadding size="2xl" />
+        {!requiredLock && (
+          <>
+            <GlobalText type="headline2" center>
+              Create Password
+            </GlobalText>
 
-          <GlobalInput
-            placeholder="New Password"
-            value={pass}
-            setValue={setPass}
-            invalid={false}
-            autoComplete="off"
-            secureTextEntry
-          />
+            <GlobalText type="body1" center>
+              3 lines max Excepteur sint occaecat cupidatat non proident, sunt
+            </GlobalText>
 
-          <GlobalPadding />
+            <GlobalPadding size="2xl" />
 
-          <GlobalInput
-            placeholder="Repeat New Password"
-            value={repass}
-            setValue={setRepass}
-            invalid={false}
-            autoComplete="off"
-            secureTextEntry
-          />
-        </View>
-      )}
-      <View style={styles.footerActions}>
+            <GlobalInput
+              placeholder="New Password"
+              value={pass}
+              setValue={setPass}
+              invalid={false}
+              autoComplete="off"
+              secureTextEntry
+            />
+
+            <GlobalPadding />
+
+            <GlobalInput
+              placeholder="Repeat New Password"
+              value={repass}
+              setValue={setRepass}
+              invalid={false}
+              autoComplete="off"
+              secureTextEntry
+            />
+          </>
+        )}
+      </GlobalLayout.Header>
+
+      <GlobalLayout.Footer>
         <GlobalButton
           type="primary"
           wide
@@ -221,18 +188,18 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
           onPress={onContinue}
           disabled={!isValid}
         />
-      </View>
+      </GlobalLayout.Footer>
     </>
   );
 };
 
 const Success = ({ goToWallet, goToDerived }) => (
   <>
-    <View style={styles.headerActions}>
+    <GlobalLayout.Header>
       <GlobalPadding size="md" />
-    </View>
+    </GlobalLayout.Header>
 
-    <View style={styles.inner}>
+    <GlobalLayout.Inner>
       <GlobalPadding size="md" />
 
       <GlobalImage source={IconInteractionGreen} style={styles.bigIcon} />
@@ -246,9 +213,9 @@ const Success = ({ goToWallet, goToDerived }) => (
       <GlobalText type="body1" center>
         3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
       </GlobalText>
-    </View>
+    </GlobalLayout.Inner>
 
-    <View style={styles.footerActions}>
+    <GlobalLayout.Footer>
       <GlobalButton
         type="primary"
         wide
@@ -264,7 +231,7 @@ const Success = ({ goToWallet, goToDerived }) => (
         title="Select Derivable"
         onPress={goToDerived}
       />
-    </View>
+    </GlobalLayout.Footer>
   </>
 );
 
@@ -293,30 +260,28 @@ const RecoverWallet = () => {
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
   return (
-    <GlobalLayout>
-      <View style={styles.container}>
-        {step === 1 && (
-          <Form
-            onComplete={handleRecover}
-            onBack={() => navigate(ROUTES_ONBOARDING.ONBOARDING_HOME)}
-          />
-        )}
-        {step === 2 && (
-          <Password
-            onComplete={handleOnPasswordComplete}
-            onBack={() => setStep(1)}
-            requiredLock={requiredLock}
-            checkPassword={checkPassword}
-          />
-        )}
-        {step === 3 && (
-          <Success
-            goToWallet={goToWallet}
-            goToDerived={goToDerived}
-            onBack={() => setStep(2)}
-          />
-        )}
-      </View>
+    <GlobalLayout fullscreen>
+      {step === 1 && (
+        <Form
+          onComplete={handleRecover}
+          onBack={() => navigate(ROUTES_ONBOARDING.ONBOARDING_HOME)}
+        />
+      )}
+      {step === 2 && (
+        <Password
+          onComplete={handleOnPasswordComplete}
+          onBack={() => setStep(1)}
+          requiredLock={requiredLock}
+          checkPassword={checkPassword}
+        />
+      )}
+      {step === 3 && (
+        <Success
+          goToWallet={goToWallet}
+          goToDerived={goToDerived}
+          onBack={() => setStep(2)}
+        />
+      )}
     </GlobalLayout>
   );
 };

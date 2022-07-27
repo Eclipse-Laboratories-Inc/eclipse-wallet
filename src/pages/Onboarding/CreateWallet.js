@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import randomNumber from 'lodash/random';
 
 import { AppContext } from '../../AppProvider';
@@ -9,7 +9,7 @@ import { ROUTES_MAP } from './routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
 
-import theme from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalInput from '../../component-library/Global/GlobalInput';
@@ -19,56 +19,13 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    paddingHorizontal: theme.gutters.paddingSM,
-    paddingVertical: 40,
-    maxWidth: theme.variables.mobileWidthLG,
-    width: '100%',
-    minHeight: '100%',
-  },
-  headerActions: {
-    // width: '100%',
-  },
-  inner: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: theme.gutters.paddingNormal,
-    paddingBottom: theme.gutters.padding2XL,
-  },
-  footerActions: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  divider: {
-    marginVertical: theme.gutters.paddingXL,
-    width: 56,
-    height: 8,
-  },
-  pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  textAreaWrapper: {
-    width: '100%',
-    height: 284,
-  },
-  inputWrapper: {
-    width: '90%',
-  },
-});
-
 const Message = ({ onNext, onBack }) => (
   <>
-    <View style={styles.headerActions}>
+    <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack} />
-    </View>
+    </GlobalLayout.Header>
 
-    <View style={styles.inner}>
+    <GlobalLayout.Inner>
       <GlobalDivider />
 
       <GlobalText type="headline2" center>
@@ -80,27 +37,25 @@ const Message = ({ onNext, onBack }) => (
         You will need these words to restore your wallet if your browser's
         storage is cleared or your device is damaged or lost.
       </GlobalText>
-    </View>
+    </GlobalLayout.Inner>
 
-    <View style={styles.footerActions}>
+    <GlobalLayout.Footer>
       <GlobalButton type="primary" wide title="Continue" onPress={onNext} />
-    </View>
+    </GlobalLayout.Footer>
   </>
 );
 
 const Form = ({ account, onComplete, onBack }) => (
   <>
-    <View style={styles.headerActions}>
+    <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack}>
-        <View style={styles.pagination}>
+        <View style={globalStyles.pagination}>
           <GlobalPageDot active />
           <GlobalPageDot />
           <GlobalPageDot />
         </View>
       </GlobalBackTitle>
-    </View>
 
-    <View style={styles.inner}>
       <GlobalText type="headline2" center>
         Your Seed Phrase
       </GlobalText>
@@ -120,9 +75,9 @@ const Form = ({ account, onComplete, onBack }) => (
         numberOfLines={8}
         invalid={false}
       />
-    </View>
+    </GlobalLayout.Header>
 
-    <View style={styles.footerActions}>
+    <GlobalLayout.Footer>
       <GlobalButton
         type="secondary"
         wide
@@ -138,7 +93,7 @@ const Form = ({ account, onComplete, onBack }) => (
         title="I´ve backed up seed phrase"
         onPress={onComplete}
       />
-    </View>
+    </GlobalLayout.Footer>
   </>
 );
 
@@ -169,17 +124,15 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
     ]);
   return (
     <>
-      <View style={styles.headerActions}>
+      <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack}>
-          <View style={styles.pagination}>
+          <View style={globalStyles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot active />
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
-      </View>
 
-      <View style={styles.inner}>
         <GlobalText type="headline2" center>
           Confirm Seed Phrase
         </GlobalText>
@@ -203,9 +156,9 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
             <GlobalPadding />
           </React.Fragment>
         ))}
-      </View>
+      </GlobalLayout.Header>
 
-      <View style={styles.footerActions}>
+      <GlobalLayout.Footer>
         <GlobalButton
           type={isValid ? 'primary' : 'secondary'}
           wide
@@ -213,7 +166,7 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
           onPress={onComplete}
           disabled={isValid}
         />
-      </View>
+      </GlobalLayout.Footer>
     </>
   );
 };
@@ -240,66 +193,69 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
 
   return (
     <>
-      <View style={styles.headerActions}>
+      <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack}>
-          <View style={styles.pagination}>
+          <View style={globalStyles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot />
             <GlobalPageDot active />
           </View>
         </GlobalBackTitle>
-      </View>
-      {requiredLock && (
-        <View style={styles.inner}>
-          <GlobalText type="headline2" center>
-            Insert password
-          </GlobalText>
-          <GlobalPadding size="2xl" />
 
-          <GlobalInput
-            placeholder="Password"
-            value={pass}
-            setValue={setPass}
-            invalid={wrongpass}
-            autoComplete="password-new"
-            secureTextEntry
-          />
-        </View>
-      )}
-      {!requiredLock && (
-        <View style={styles.inner}>
-          <GlobalText type="headline2" center>
-            Choose a Password
-          </GlobalText>
+        {requiredLock && (
+          <>
+            <GlobalText type="headline2" center>
+              Insert password
+            </GlobalText>
+            <GlobalPadding size="2xl" />
 
-          <GlobalText type="body1" center>
-            Prese re-enter seed phrase to confirm tha you have save it
-          </GlobalText>
+            <GlobalInput
+              placeholder="Password"
+              value={pass}
+              setValue={setPass}
+              invalid={wrongpass}
+              autoComplete="password-new"
+              secureTextEntry
+            />
+          </>
+        )}
 
-          <GlobalPadding size="2xl" />
+        {!requiredLock && (
+          <>
+            <GlobalText type="headline2" center>
+              Choose a Password
+            </GlobalText>
 
-          <GlobalInput
-            placeholder="New Password"
-            value={pass}
-            setValue={setPass}
-            invalid={false}
-            autoComplete="password-new"
-            secureTextEntry
-          />
+            <GlobalText type="body1" center>
+              Prese re-enter seed phrase to confirm tha you have save it
+            </GlobalText>
 
-          <GlobalPadding />
+            <GlobalPadding size="2xl" />
 
-          <GlobalInput
-            placeholder="Repeat New Password"
-            value={repass}
-            setValue={setRepass}
-            invalid={false}
-            autoComplete="password-new"
-            secureTextEntry
-          />
-        </View>
-      )}
-      <View style={styles.footerActions}>
+            <GlobalInput
+              placeholder="New Password"
+              value={pass}
+              setValue={setPass}
+              invalid={false}
+              autoComplete="password-new"
+              secureTextEntry
+            />
+
+            <GlobalPadding />
+
+            <GlobalInput
+              placeholder="Repeat New Password"
+              value={repass}
+              setValue={setRepass}
+              invalid={false}
+              autoComplete="password-new"
+              secureTextEntry
+            />
+          </>
+        )}
+      </GlobalLayout.Header>
+
+      <GlobalLayout.Footer>
         <GlobalButton
           type="secondary"
           wide
@@ -307,7 +263,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
           onPress={onContinue}
           disabled={!isValid}
         />
-      </View>
+      </GlobalLayout.Footer>
     </>
   );
 };
@@ -334,37 +290,35 @@ const CreateWallet = ({ params }) => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
   return (
-    <GlobalLayout>
-      <View style={styles.container}>
-        {step === 1 && (
-          <Message
-            onNext={() => setStep(2)}
-            onBack={() => navigate(ROUTES_MAP.ONBOARDING_HOME)}
-          />
-        )}
-        {step === 2 && (
-          <Form
-            account={account}
-            onComplete={() => setStep(3)}
-            onBack={() => setStep(1)}
-          />
-        )}
-        {step === 3 && (
-          <ValidateSeed
-            account={account}
-            onComplete={() => setStep(4)}
-            onBack={() => setStep(2)}
-          />
-        )}
-        {step === 4 && (
-          <Password
-            onComplete={handleOnPasswordComplete}
-            onBack={() => setStep(3)}
-            requiredLock={requiredLock}
-            checkPassword={checkPassword}
-          />
-        )}
-      </View>
+    <GlobalLayout fullscreen>
+      {step === 1 && (
+        <Message
+          onNext={() => setStep(2)}
+          onBack={() => navigate(ROUTES_MAP.ONBOARDING_HOME)}
+        />
+      )}
+      {step === 2 && (
+        <Form
+          account={account}
+          onComplete={() => setStep(3)}
+          onBack={() => setStep(1)}
+        />
+      )}
+      {step === 3 && (
+        <ValidateSeed
+          account={account}
+          onComplete={() => setStep(4)}
+          onBack={() => setStep(2)}
+        />
+      )}
+      {step === 4 && (
+        <Password
+          onComplete={handleOnPasswordComplete}
+          onBack={() => setStep(3)}
+          requiredLock={requiredLock}
+          checkPassword={checkPassword}
+        />
+      )}
     </GlobalLayout>
   );
 };
