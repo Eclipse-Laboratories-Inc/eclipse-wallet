@@ -5,6 +5,13 @@
   },
   "settings": {
     "title": "Settings",
+    "addressbook": {
+      "title": "Address Book",
+      "add": "Add Address",
+      "addnew": "Add New Address",
+      "save": "Save Address",
+      "label": "Label"
+    },
     "languages": {
       "title": "Language",
       "en": "English",

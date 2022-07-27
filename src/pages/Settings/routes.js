@@ -1,15 +1,21 @@
 import SettingsOptionsPage from './SettingsOptionsPage';
+import AccountSelectPage from './AccountSelectPage';
+import AccountEditPage from './AccountEditPage';
+import AddressBookPage from './AddressBookPage';
+import AddressBookAddPage from './AddressBookAddPage';
+import AddressBookEditPage from './AddressBookEditPage';
 import ChangeNetworkPage from './ChangeNetworkPage';
-import SelectAccountPage from './SelectAccountPage';
-import EditAccountPage from './EditAccountPage';
 import ChangeLanguagePage from './ChangeLanguagePage';
 
 export const ROUTES_MAP = {
   SETTINGS_OPTIONS: 'SETTINGS_OPTIONS',
+  SETTINGS_ACCOUNT_SELECT: 'SETTINGS_ACCOUNT_SELECT',
+  SETTINGS_ACCOUNT_EDIT: 'SETTINGS_ACCOUNT_EDIT',
+  SETTINGS_ADDRESSBOOK: 'SETTINGS_ADDRESSBOOK',
+  SETTINGS_ADDRESSBOOK_ADD: 'SETTINGS_ADDRESSBOOK_ADD',
+  SETTINGS_ADDRESSBOOK_EDIT: 'SETTINGS_ADDRESSBOOK_EDIT',
   SETTINGS_CHANGENETWORK: 'SETTINGS_CHANGENETWORK',
   SETTINGS_CHANGELANGUAGE: 'SETTINGS_CHANGELANGUAGE',
-  SETTINGS_SELECTACCOUNT: 'SETTINGS_SELECTACCOUNT',
-  SETTINGS_EDITACCOUNT: 'SETTINGS_EDITACCOUNT',
 };
 
 const routes = [
@@ -20,6 +26,30 @@ const routes = [
     route: '/wallet/settings',
     Component: SettingsOptionsPage,
     default: true,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ADDRESSBOOK,
+    name: 'settingsAddressBook',
+    path: 'addressbook',
+    route: '/wallet/settings/addressbook',
+    Component: AddressBookPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ADDRESSBOOK_ADD,
+    name: 'settingsAddAddressBook',
+    path: 'addressbook/new',
+    route: '/wallet/settings/addressbook/new',
+    Component: AddressBookAddPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ADDRESSBOOK_EDIT,
+    name: 'settingsEditAddressBook',
+    path: 'addressbook/:addressbook',
+    route: '/wallet/settings/addressbook/:addressbook',
+    Component: AddressBookEditPage,
+    default: false,
   },
   {
     key: ROUTES_MAP.SETTINGS_CHANGENETWORK,
@@ -38,19 +68,19 @@ const routes = [
     default: false,
   },
   {
-    key: ROUTES_MAP.SETTINGS_SELECTACCOUNT,
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_SELECT,
     name: 'settingsSelectAccount',
     path: 'accounts',
     route: '/wallet/settings/accounts',
-    Component: SelectAccountPage,
+    Component: AccountSelectPage,
     default: false,
   },
   {
-    key: ROUTES_MAP.SETTINGS_EDITACCOUNT,
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_EDIT,
     name: 'settingsEditAccount',
     path: 'accounts/:address',
     route: '/wallet/settings/accounts/:address',
-    Component: EditAccountPage,
+    Component: AccountEditPage,
     default: false,
   },
 ];

@@ -8,7 +8,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
-const EditAccountPage = () => {
+const AccountEditPage = () => {
   const navigate = useNavigation();
   const [{ activeWallet, wallets }, { changeActiveWallet }] =
     useContext(AppContext);
@@ -24,4 +24,4 @@ const EditAccountPage = () => {
   );
 };
 
-export default EditAccountPage;
+export default AccountEditPage;

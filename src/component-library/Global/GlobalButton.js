@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     maxWidth: theme.variables.buttonMaxWidthSmall,
   },
   icon: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     paddingRight: 5,
   },
   iconIdle: {

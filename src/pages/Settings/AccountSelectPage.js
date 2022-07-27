@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const SelectAccountPage = () => {
+const AccountSelectPage = () => {
   const navigate = useNavigation();
   const [{ activeWallet, wallets, locked }, { changeActiveWallet }] =
     useContext(AppContext);
@@ -43,8 +43,10 @@ const SelectAccountPage = () => {
     await changeActiveWallet(getWalletIndex(wallet));
     navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
   };
-  const editWallet = ({ address }) =>
-    navigate(ROUTES_MAP.SETTINGS_EDITACCOUNT, { address });
+  const editWallet = ({ address }) => {
+    console.log(address);
+    navigate(ROUTES_MAP.SETTINGS_ACCOUNT_EDIT, { address });
+  };
 
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
@@ -99,4 +101,4 @@ const SelectAccountPage = () => {
   );
 };
 
-export default SelectAccountPage;
+export default AccountSelectPage;
