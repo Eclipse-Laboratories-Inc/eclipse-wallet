@@ -25,6 +25,18 @@ const initialState = {
   isLogged: false,
   ready: false,
   hiddenBalance: false,
+  addressBook: [
+    {
+      name: 'TEST 1',
+      address: 'MjMRoC8j1P2732DapDq6SjzhJ7kq2p',
+      chain: 'SOLANA',
+    },
+    {
+      name: 'TEST 2',
+      address: 'LjMRoC8j1P2732DapDq6SjzhJ7kq2p',
+      chain: 'SOLANA',
+    },
+  ],
 };
 
 const reducer = (state, action) => {

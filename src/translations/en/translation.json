@@ -20,7 +20,13 @@
       "select": "Select"
     },
     "receive": {
-      "title": "Deposit"
+      "title": "Receive"
+    },
+    "send": {
+      "from": "From: {{name}}",
+      "transaction_success": "Sent",
+      "transaction_warning": "Warning",
+      "transaction_fail": "Fail"
     }
   }
 }

@@ -77,8 +77,7 @@ const TokenDetailPage = ({ params }) => {
   const goToSend = () =>
     navigate(ROUTES_MAP.TOKEN_SEND, { tokenId: params.tokenId });
 
-  const goToReceive = () =>
-    navigate(ROUTES_MAP.TOKEN_RECEIVE, { tokenId: params.tokenId });
+  const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
 
   return (
     loaded && (
