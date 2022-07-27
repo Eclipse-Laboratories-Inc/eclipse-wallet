@@ -27,10 +27,12 @@ const SettingsOptionsPage = ({ t }) => {
   const [{ selectedLanguage, languages }, { changeLanguage }] =
     useContext(AppContext);
 
+  const goToAddressBook = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ADDRESSBOOK);
   const goToNetwork = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_SELECTACCOUNT);
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
   const goToLanguages = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
 
@@ -55,8 +57,7 @@ const SettingsOptionsPage = ({ t }) => {
         <CardButton
           title="Address Book"
           actionIcon="right"
-          onPress={() => {}}
-          disabled
+          onPress={goToAddressBook}
         />
 
         <CardButton

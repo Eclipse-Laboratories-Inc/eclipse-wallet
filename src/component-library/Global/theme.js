@@ -220,6 +220,14 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  addressBookItem: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 60,
+  },
+  addressBookTouchable: {
+    marginBottom: 0,
+  },
 });
 
 const colorTheme =

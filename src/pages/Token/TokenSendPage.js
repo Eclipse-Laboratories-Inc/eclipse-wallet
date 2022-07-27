@@ -8,8 +8,9 @@ import { ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { LOGOS, getTransactionImage } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
+import useToken from '../../hooks/useToken';
 
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -20,7 +21,7 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import IconCopy from '../../assets/images/IconCopy.png';
-import useToken from '../../hooks/useToken';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -31,11 +32,6 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: theme.colors.labelTertiary,
-  },
-  addressBookItem: {
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    minHeight: 60,
   },
   centered: {
     justifyContent: 'center',
@@ -156,8 +152,10 @@ const TokenSendPage = ({ params, t }) => {
                 placeholder={`Name or ${'SOL'} Address`}
                 value={recipientAddress}
                 setValue={onRecipientChange}
-                actionIcon="qr"
-                onActionPress={() => {}}
+                // actionIcon="qr"
+                // onActionPress={() => {}}
+                buttonIcon={IconQRCodeScanner}
+                buttonOnPress={() => {}}
               />
 
               <GlobalPadding />
@@ -174,8 +172,8 @@ const TokenSendPage = ({ params, t }) => {
                     chain={addressBookItem.chain}
                     imageSize="md"
                     onPress={() => onRecipientChange(addressBookItem.address)}
-                    buttonStyle={styles.addressBookItem}
-                    touchableStyles={styles.touchableStyles}
+                    buttonStyle={globalStyles.addressBookItem}
+                    touchableStyles={globalStyles.addressBookTouchable}
                     transparent
                   />
                 ))}
@@ -190,8 +188,8 @@ const TokenSendPage = ({ params, t }) => {
                     value={recipientAmount}
                     setValue={setRecipientAmount}
                     keyboardType="numeric"
-                    actionIcon="sendmax"
-                    onActionPress={() => {}}
+                    buttonLabel="Max"
+                    buttonOnPress={() => {}}
                   />
 
                   <GlobalPadding />
