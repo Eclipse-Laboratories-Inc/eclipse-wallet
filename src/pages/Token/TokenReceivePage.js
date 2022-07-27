@@ -67,10 +67,10 @@ const TokenReceivePage = ({ t }) => {
 
           <View style={styles.centered}>
             <View style={styles.qrBox}>
-              <QRImage address={activeWallet.getReceiveAddress()} />
+              <QRImage address={activeWallet.getReceiveAddress()} size={225} />
             </View>
 
-            <GlobalPadding size="md" />
+            <GlobalPadding size="2xl" />
 
             <View style={styles.inlineWell}>
               <GlobalText type="body2">Name.acr</GlobalText>
