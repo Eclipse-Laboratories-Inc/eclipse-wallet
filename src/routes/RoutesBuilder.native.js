@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -7,6 +7,9 @@ import { getDefaultRoute, getRouteName } from './utils';
 import { ROUTES_TYPES } from './constants';
 
 import theme from '../component-library/Global/theme';
+import { useNavigation } from './hooks';
+import { AppContext } from '../AppProvider';
+import { ROUTES_MAP } from './app-routes';
 
 const createFunction = {
   [ROUTES_TYPES.STACK]: createNativeStackNavigator,
@@ -19,12 +22,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const RoutesBuilder = ({ routes, entry, type = ROUTES_TYPES.STACK, ..._ }) => {
-  const [detachPreviousScreen, setDetachPreviousScreen] = React.useState(true);
-
+const RoutesBuilder = ({
+  routes,
+  entry,
+  type = ROUTES_TYPES.STACK,
+  requireOnboarding = true,
+  ..._
+}) => {
+  const navigate = useNavigation();
+  const [{ wallets }] = useContext(AppContext);
+  useEffect(() => {
+    if (requireOnboarding && !wallets.length) {
+      navigate(ROUTES_MAP.ONBOARDING);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requireOnboarding]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const Nav = useMemo(() => createFunction[type](), []);
-  return (
+
+  return !requireOnboarding || (requireOnboarding && wallets.length > 0) ? (
     <Nav.Navigator
       sceneContainerStyle={styles.sceneStyles}
       screenOptions={{
@@ -42,7 +58,7 @@ const RoutesBuilder = ({ routes, entry, type = ROUTES_TYPES.STACK, ..._ }) => {
         <Nav.Screen key={`route-${key}`} name={name} component={Component} />
       ))}
     </Nav.Navigator>
-  );
+  ) : null;
 };
 
 export default RoutesBuilder;
