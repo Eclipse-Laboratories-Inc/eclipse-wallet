@@ -5,7 +5,7 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import Grid from '../../component-library/Grid/Grid';
 
 const GlobalNftList = ({ nonFungibleTokens }) =>
-  nonFungibleTokens == 100 ? (
+  nonFungibleTokens ? (
     <List nonFungibleTokens={nonFungibleTokens} />
   ) : (
     <GlobalSkeleton type="NftList" />
