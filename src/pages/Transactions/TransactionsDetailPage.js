@@ -12,7 +12,7 @@ import {
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme from '../../component-library/Global/theme';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
@@ -58,61 +58,63 @@ const TransactionsDetailPage = () => {
   const onBack = () => navigate(ROUTES_MAP.TRANSACTIONS_LIST);
 
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack} smallTitle="Transaction Detail" />
+    <GlobalLayout>
+      <GlobalLayout.Header>
+        <GlobalBackTitle onBack={onBack} secondaryTitle="Transaction Detail" />
 
-      <View style={styles.centered}>
-        <View style={styles.floatingTransactionBox}>
-          <GlobalImage
-            source={getMediaRemoteUrl(LOGOS['SOLANA'])}
-            size="xxl"
-            style={styles.bigImage}
-            circle
-          />
-          <GlobalImage
-            source={getTransactionImage('sent')}
-            size="md"
-            circle
-            style={styles.floatingTransaction}
-          />
+        <View style={styles.centered}>
+          <View style={styles.floatingTransactionBox}>
+            <GlobalImage
+              source={getMediaRemoteUrl(LOGOS['SOLANA'])}
+              size="xxl"
+              style={styles.bigImage}
+              circle
+            />
+            <GlobalImage
+              source={getTransactionImage('sent')}
+              size="md"
+              circle
+              style={styles.floatingTransaction}
+            />
+          </View>
+
+          <GlobalText type="headline1" center>
+            -0.07 SOL
+          </GlobalText>
+
+          <GlobalPadding size="sm" />
+
+          <View style={styles.inlineWell}>
+            <GlobalText type="caption" color="tertiary">
+              Date
+            </GlobalText>
+
+            <GlobalText type="body2">Sep 21, 2022 - 10.17 PM</GlobalText>
+          </View>
+
+          <View style={styles.inlineWell}>
+            <GlobalText type="caption" color="tertiary">
+              Status
+            </GlobalText>
+
+            <GlobalText type="body2" color="positive">
+              Confirm
+            </GlobalText>
+          </View>
+
+          <View style={styles.inlineWell}>
+            <GlobalText type="caption" color="tertiary">
+              To
+            </GlobalText>
+
+            <GlobalText type="body2" numberOfLines={1}>
+              {getShortAddress('8Nb3tg9H55svmywG4NvsHVtw7GpZWdA2Wi6TbXbgTtzi')}
+            </GlobalText>
+          </View>
         </View>
+      </GlobalLayout.Header>
 
-        <GlobalText type="headline1" center>
-          -0.07 SOL
-        </GlobalText>
-
-        <GlobalPadding size="sm" />
-
-        <View style={styles.inlineWell}>
-          <GlobalText type="caption" color="tertiary">
-            Date
-          </GlobalText>
-
-          <GlobalText type="body2">Sep 21, 2022 - 10.17 PM</GlobalText>
-        </View>
-
-        <View style={styles.inlineWell}>
-          <GlobalText type="caption" color="tertiary">
-            Status
-          </GlobalText>
-
-          <GlobalText type="body2" color="positive">
-            Confirm
-          </GlobalText>
-        </View>
-
-        <View style={styles.inlineWell}>
-          <GlobalText type="caption" color="tertiary">
-            To
-          </GlobalText>
-
-          <GlobalText type="body2" numberOfLines={1}>
-            {getShortAddress('8Nb3tg9H55svmywG4NvsHVtw7GpZWdA2Wi6TbXbgTtzi')}
-          </GlobalText>
-        </View>
-
-        <GlobalPadding size="2xl" />
-
+      <GlobalLayout.Footer>
         <GlobalButton
           type="secondary"
           wideSmall
@@ -128,10 +130,8 @@ const TransactionsDetailPage = () => {
           title="Back to Wallet"
           onPress={onBack}
         />
-
-        <GlobalPadding size="xl" />
-      </View>
-    </GlobalLayoutForTabScreen>
+      </GlobalLayout.Footer>
+    </GlobalLayout>
   );
 };
 

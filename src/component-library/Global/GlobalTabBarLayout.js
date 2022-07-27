@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 
 import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
 import GlobalButton from './GlobalButton';
@@ -7,20 +7,10 @@ import GlobalButton from './GlobalButton';
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    // backgroundColor: 'green',
-  },
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
   },
   scrollViewHorizontal: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  bottomTabBar: {
-    alignItems: 'center',
   },
   tabsContainer: {
     width: '100%',
@@ -62,16 +52,10 @@ export const GlobalTabBar = ({ tabs }) => {
 
 const GlobalTabBarLayout = ({ children, tabs }) => (
   <GlobalBackgroundImage>
-    <View style={styles.wrapper}>
-      <View style={styles.container}>
-        {/* <ScrollView contentContainerStyle={styles.scrollView}> */}
-        {children}
-        {/* </ScrollView> */}
-      </View>
-      <View style={styles.bottomTabBar}>
-        <GlobalTabBar tabs={tabs} />
-      </View>
-    </View>
+    <View style={styles.wrapper}>{children}</View>
+    <SafeAreaView edges={['bottom']}>
+      <GlobalTabBar tabs={tabs} />
+    </SafeAreaView>
   </GlobalBackgroundImage>
 );
 

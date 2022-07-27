@@ -3,8 +3,9 @@ import React, { useContext } from 'react';
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 const EditAccountPage = () => {
@@ -14,11 +15,12 @@ const EditAccountPage = () => {
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack} title="Edit Wallet" />
-
-      <GlobalPadding />
-    </GlobalLayoutForTabScreen>
+    <GlobalLayout>
+      <GlobalLayout.Header>
+        <GlobalBackTitle onBack={onBack} title="Edit Wallet" />
+        <GlobalPadding />
+      </GlobalLayout.Header>
+    </GlobalLayout>
   );
 };
 

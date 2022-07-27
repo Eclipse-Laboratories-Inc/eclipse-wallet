@@ -1,56 +1,95 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native';
+import { StyleSheet, StatusBar, ScrollView, View } from 'react-native';
 
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import theme from '../../component-library/Global/theme';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
 
 const styles = StyleSheet.create({
-  containerForTabs: {
+  mainContainer: {
     flex: 1,
-    width: '100%',
-    backgroundColor: theme.staticColor.transparent,
-  },
-  scrollViewForTabs: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: theme.staticColor.transparent,
-    minHeight: '100%',
-  },
-  scrollViewForTabsInner: {
-    flex: 1,
+    justifyContent: 'space-between',
     alignSelf: 'center',
+    paddingVertical: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding4XL,
+    paddingHorizontal: theme.gutters.paddingSM,
     width: '100%',
     maxWidth: theme.variables.mobileWidthLG,
-    minHeight: '100%',
-    padding: theme.gutters.paddingNormal,
-    backgroundColor: theme.colors.bgPrimary,
   },
-  scrollView: {
-    // height: '100%',
-    // flex: 1,
-    alignSelf: 'stretch',
+  mainTabContainer: {
+    flex: 1,
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    paddingVertical: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding4XL,
+    paddingHorizontal: theme.gutters.paddingSM,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+  },
+  mainHeader: {
+    // flexGrow: 1,
+  },
+  mainInner: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding2XL,
+  },
+  mainFooter: {
+    paddingTop: theme.gutters.paddingLG,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  inlineFlexButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  scrollViewContainer: {
+    minHeight: '100%',
   },
 });
 
-export const GlobalLayoutForTabScreen = ({ children, style, ...props }) => (
-  <View style={[styles.containerForTabs, style]}>
-    <ScrollView contentInsetAdjustmentBehavior="automatic" {...props}>
-      <View style={styles.scrollViewForTabsInner}>{children}</View>
-    </ScrollView>
+const GlobalLayout = ({ fullscreen, children }) => {
+  const inner = (
+    <>
+      <StatusBar barStyle={'light-content'} />
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContainer}
+        contentInsetAdjustmentBehavior="never">
+        <View
+          style={fullscreen ? styles.mainTabContainer : styles.mainContainer}>
+          {children}
+        </View>
+      </ScrollView>
+    </>
+  );
+
+  return (
+    <>
+      {fullscreen && <GlobalBackgroundImage>{inner}</GlobalBackgroundImage>}
+      {!fullscreen && inner}
+    </>
+  );
+};
+
+const Header = ({ children }) => (
+  <View style={styles.mainHeader}>{children}</View>
+);
+
+const Inner = ({ children }) => (
+  <View style={styles.mainInner}>{children}</View>
+);
+
+const Footer = ({ inlineFlex, children }) => (
+  <View style={[styles.mainFooter, inlineFlex && styles.inlineFlexButtons]}>
+    {children}
   </View>
 );
 
-const GlobalLayout = ({ withContainer, children }) => (
-  <GlobalBackgroundImage>
-    <ScrollView
-      contentContainerStyle={styles.scrollView}
-      contentInsetAdjustmentBehavior="automatic">
-      {!withContainer && children}
-      {withContainer && (
-        <View style={globalStyles.mainContainer}>{children}</View>
-      )}
-    </ScrollView>
-  </GlobalBackgroundImage>
-);
+GlobalLayout.Header = Header;
+GlobalLayout.Inner = Inner;
+GlobalLayout.Footer = Footer;
 
 export default GlobalLayout;

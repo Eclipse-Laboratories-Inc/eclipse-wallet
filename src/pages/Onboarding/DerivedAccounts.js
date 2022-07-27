@@ -31,7 +31,7 @@ const DerivedAccounts = () => {
     navigate(ROUTES_MAP.WALLET);
   };
   return (
-    <GlobalLayout>
+    <GlobalLayout fullscreen>
       <ChooseDerivabes accounts={accounts} onComplete={onComplete} />
     </GlobalLayout>
   );

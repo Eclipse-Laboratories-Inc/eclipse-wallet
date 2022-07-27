@@ -17,7 +17,7 @@ import {
 } from '../../utils/amount';
 
 import theme from '../../component-library/Global/theme';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 // import GlobalChart from '../../component-library/Global/GlobalChart';
@@ -28,9 +28,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 
 const styles = StyleSheet.create({
-  container: {
-    padding: theme.gutters.paddingMD,
-  },
   cardBox: {
     paddingVertical: theme.gutters.paddingSM,
     paddingHorizontal: theme.gutters.paddingSM,
@@ -84,55 +81,59 @@ const TokenDetailPage = ({ params }) => {
 
   return (
     loaded && (
-      <GlobalLayoutForTabScreen>
-        <GlobalBackTitle
-          onBack={goToBack}
-          inlineTitle={token.name}
-          inlineAddress={params.tokenId}
-        />
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
+          <GlobalBackTitle
+            onBack={goToBack}
+            inlineTitle={token.name}
+            inlineAddress={params.tokenId}
+          />
 
-        <WalletBalanceCard
-          total={
-            !hiddenBalance
-              ? `${showValue(token.uiAmount)} ${token.symbol}`
-              : `${hiddenValue} ${token.symbol}`
-          }
-          {...{
-            [`${getLabelValue(
-              get(token, 'last24HoursChange.perc', 0),
-            )}Total`]: `${
-              !hiddenBalance ? showAmount(token.usdBalance) : `$ ${hiddenValue}`
-            } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
-          }}
-          showBalance={!hiddenBalance}
-          onToggleShow={toggleHideBalance}
-          messages={[]}
-          actions={
-            <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
-          }
-        />
+          <WalletBalanceCard
+            total={
+              !hiddenBalance
+                ? `${showValue(token.uiAmount)} ${token.symbol}`
+                : `${hiddenValue} ${token.symbol}`
+            }
+            {...{
+              [`${getLabelValue(
+                get(token, 'last24HoursChange.perc', 0),
+              )}Total`]: `${
+                !hiddenBalance
+                  ? showAmount(token.usdBalance)
+                  : `$ ${hiddenValue}`
+              } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
+            }}
+            showBalance={!hiddenBalance}
+            onToggleShow={toggleHideBalance}
+            messages={[]}
+            actions={
+              <GlobalSendReceive
+                goToSend={goToSend}
+                goToReceive={goToReceive}
+              />
+            }
+          />
 
-        <GlobalPadding size="lg" />
+          <GlobalPadding size="lg" />
 
-        <View style={styles.cardBox}>
-          <GlobalCollapse title="Chart Data Range" narrowTitle isOpen={false}>
-            <GlobalPadding />
-            {/* <GlobalChart /> */}
-            <GlobalText type="body2">[CHART GOES HERE]</GlobalText>
-            <GlobalPadding />
-          </GlobalCollapse>
-        </View>
+          <View style={styles.cardBox}>
+            <GlobalCollapse title="Chart Data Range" narrowTitle isOpen={false}>
+              <GlobalPadding />
+              {/* <GlobalChart /> */}
+              <GlobalText type="body2">[CHART GOES HERE]</GlobalText>
+              <GlobalPadding />
+            </GlobalCollapse>
+          </View>
 
-        <GlobalPadding size="lg" />
+          <GlobalPadding size="lg" />
 
-        <GlobalCollapse
-          title="Recent Activity"
-          viewAllAction={() => {}}
-          hideCollapse
-          isOpen>
-          {transactions.map(transaction => {
-            console.log(transaction);
-            return (
+          <GlobalCollapse
+            title="Recent Activity"
+            viewAllAction={() => {}}
+            hideCollapse
+            isOpen>
+            {transactions.map(transaction => (
               <CardButtonTransaction
                 key={transaction.signature}
                 transaction="sent"
@@ -143,10 +144,10 @@ const TokenDetailPage = ({ params }) => {
                 percentage="+0000%"
                 onPress={() => onDetail(transaction.signature)}
               />
-            );
-          })}
-        </GlobalCollapse>
-      </GlobalLayoutForTabScreen>
+            ))}
+          </GlobalCollapse>
+        </GlobalLayout.Header>
+      </GlobalLayout>
     )
   );
 };

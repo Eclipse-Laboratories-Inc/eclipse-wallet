@@ -9,7 +9,7 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -58,11 +58,11 @@ const TokenReceivePage = ({ t }) => {
 
   return (
     activeWallet && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
-            smallTitle={t('token.receive.title')}
+            secondaryTitle={t('token.receive.title')}
           />
 
           <View style={styles.centered}>
@@ -99,16 +99,16 @@ const TokenReceivePage = ({ t }) => {
               2 lines max Validation text sint occaecat cupidatat non proident
             </GlobalText>
           </View>
-        </View>
+        </GlobalLayout.Header>
 
-        <View style={globalStyles.mainFooter}>
+        <GlobalLayout.Footer>
           <GlobalButton
             type="secondary"
             wideSmall
             title={t('general.close')}
             onPress={goToBack}
           />
-        </View>
+        </GlobalLayout.Footer>
       </GlobalLayout>
     )
   );

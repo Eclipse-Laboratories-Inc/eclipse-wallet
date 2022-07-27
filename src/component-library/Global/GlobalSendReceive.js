@@ -11,11 +11,8 @@ const styles = StyleSheet.create({
   },
   buttonTouchable: {
     flex: 1,
-    // width: '100%',
   },
   button: {
-    // flex: 1,
-    // width: '100%',
     alignSelf: 'stretch',
   },
   buttonLeft: {
