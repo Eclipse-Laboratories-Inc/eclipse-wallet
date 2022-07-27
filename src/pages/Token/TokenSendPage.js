@@ -286,9 +286,9 @@ const TokenSendPage = ({ params, t }) => {
         {step === 3 && (
           <>
             <GlobalLayout.Header>
+              <GlobalPadding size="4xl" />
+              <GlobalPadding size="4xl" />
               <View style={styles.centeredSmall}>
-                <GlobalPadding size="4xl" />
-
                 <GlobalImage
                   source={getTransactionImage(status)}
                   size="3xl"
@@ -304,68 +304,6 @@ const TokenSendPage = ({ params, t }) => {
                 </GlobalText>
 
                 <GlobalPadding size="4xl" />
-
-                <GlobalLayout.Footer>
-                  <GlobalButton
-                    type="secondary"
-                    flex
-                    title="Close"
-                    onPress={goToBack}
-                    style={[styles.button, styles.buttonLeft]}
-                    touchableStyles={styles.buttonTouchable}
-                  />
-                </GlobalLayout.Footer>
-              </View>
-
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
-
-              <View style={styles.centeredSmall}>
-                <GlobalImage
-                  source={getTransactionImage('success')}
-                  size="3xl"
-                  circle
-                />
-                <GlobalPadding />
-                <GlobalText type="headline2" center>
-                  Sent
-                </GlobalText>
-                <GlobalText type="body1" center>
-                  3 lines max Excepteur sint occaecat cupidatat non proident,
-                  sunt ?
-                </GlobalText>
-
-                <GlobalPadding size="4xl" />
-
-                <GlobalImage
-                  source={getTransactionImage('fail')}
-                  size="3xl"
-                  circle
-                />
-                <GlobalPadding />
-                <GlobalText type="headline2" center>
-                  Fail
-                </GlobalText>
-                <GlobalText type="body1" center>
-                  3 lines max Excepteur sint occaecat cupidatat non proident,
-                  sunt ?
-                </GlobalText>
-
-                <GlobalPadding size="4xl" />
-
-                <GlobalImage
-                  source={getTransactionImage('warning')}
-                  size="3xl"
-                  circle
-                />
-                <GlobalPadding />
-                <GlobalText type="headline2" center>
-                  Warning
-                </GlobalText>
-                <GlobalText type="body1" center>
-                  3 lines max Excepteur sint occaecat cupidatat non proident,
-                  sunt ?
-                </GlobalText>
               </View>
             </GlobalLayout.Header>
 
@@ -373,18 +311,9 @@ const TokenSendPage = ({ params, t }) => {
               <GlobalButton
                 type="secondary"
                 flex
-                title="Cancel"
+                title="Close"
                 onPress={goToBack}
                 style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
-              />
-
-              <GlobalButton
-                type="primary"
-                flex
-                title="Next"
-                onPress={onSend}
-                style={[styles.button, styles.buttonRight]}
                 touchableStyles={styles.buttonTouchable}
               />
             </GlobalLayout.Footer>
