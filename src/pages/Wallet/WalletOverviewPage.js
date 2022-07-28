@@ -70,7 +70,7 @@ const WalletOverviewPage = () => {
   ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
-  const [ntfsList, setNtfsList] = useState([]);
+  const [nftsList, setNftsList] = useState(null);
   const [hasNotifications, setHasNotifications] = useState(false);
 
   const [loaded, setLoaded] = useState(false);
@@ -84,13 +84,13 @@ const WalletOverviewPage = () => {
         ),
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NTFS,
+          CACHE_TYPES.NFTS,
           () => activeWallet.getAllNfts(),
         ),
-      ]).then(([balance, ntfs]) => {
+      ]).then(([balance, nfts]) => {
         setTotalBalance(balance);
         setTokenList(balance.items);
-        setNtfsList(ntfs);
+        setNftsList(nfts);
         setLoaded(true);
       });
     }
@@ -110,7 +110,7 @@ const WalletOverviewPage = () => {
   const goToQR = t => navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
 
   const goToNFTs = t =>
-    navigate(WALLET_MAP.WALLET_NTFS, { tokenId: t.address });
+    navigate(WALLET_MAP.WALLET_NFTS, { tokenId: t.address });
 
   return (
     activeWallet && (
@@ -184,7 +184,7 @@ const WalletOverviewPage = () => {
         <GlobalPadding />
 
         <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
-          <GlobalNftList nonFungibleTokens={ntfsList} />
+          <GlobalNftList nonFungibleTokens={nftsList} />
         </GlobalCollapse>
 
         <GlobalPadding />

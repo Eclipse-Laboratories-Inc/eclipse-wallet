@@ -1,5 +1,5 @@
 import WalletOverview from './WalletOverviewPage';
-import NtfsPage from './NtfsPage';
+import NftsPage from './NftsPage';
 import SwapPage from './SwapPage';
 import TransactionsPage from './TransactionsPage';
 import SettingsPage from '../Settings/SettingsPage';
@@ -12,7 +12,7 @@ import IconSettings from '../../assets/images/IconSettings.png';
 
 export const ROUTES_MAP = {
   WALLET_OVERVIEW: 'WALLET_OVERVIEW',
-  WALLET_NTFS: 'WALLET_NTFS',
+  WALLET_NFTS: 'WALLET_NFTS',
   WALLET_SWAP: 'WALLET_SWAP',
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
   WALLET_SETTINGS: 'WALLET_SETTINGS',
@@ -29,11 +29,11 @@ const routes = [
     icon: IconWallet,
   },
   {
-    key: ROUTES_MAP.WALLET_NTFS,
+    key: ROUTES_MAP.WALLET_NFTS,
     name: 'NFT',
-    path: 'ntfs',
-    route: '/wallet/ntfs',
-    Component: NtfsPage,
+    path: 'nfts',
+    route: '/wallet/nfts',
+    Component: NftsPage,
     default: false,
     icon: IconNFT,
   },
