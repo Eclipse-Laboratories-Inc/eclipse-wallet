@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
-
 import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -21,10 +21,16 @@ import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import TokenList from '../../features/TokenList/TokenList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
-import { ROUTES_MAP as WALLET_MAP } from '../../pages/Wallet/routes';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
 import { getWalletName, getShortAddress } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
+import {
+  hiddenValue,
+  getLabelValue,
+  showAmount,
+  showPercentage,
+} from '../../utils/amount';
 
 const styles = StyleSheet.create({
   container: {
@@ -71,8 +77,7 @@ const WalletOverviewPage = () => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
-  const [hasNotifications, setHasNotifications] = useState(false);
-
+  //const [hasNotifications, setHasNotifications] = useState(false);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     if (activeWallet) {
@@ -96,21 +101,25 @@ const WalletOverviewPage = () => {
     }
   }, [activeWallet, selectedEndpoints]);
 
-  const goToSend = () => {};
+  const goToSend = () =>
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
+      action: 'send',
+    });
 
-  const goToReceive = () => {};
+  const goToReceive = () =>
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
+      action: 'receive',
+    });
 
   const goToTokenDetail = t =>
-    navigate(ROUTES_MAP.TOKEN_DETAIL, {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
       tokenId: t.address,
     });
 
-  const goToNotifications = () => setHasNotifications(!hasNotifications);
-
-  const goToQR = t => navigate(ROUTES_MAP.TOKEN_DETAIL, { tokenId: t.address });
+  // const goToNotifications = () => setHasNotifications(!hasNotifications);
 
   const goToNFTs = t =>
-    navigate(WALLET_MAP.WALLET_NFTS, { tokenId: t.address });
+    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: t.address });
 
   return (
     activeWallet && (
@@ -138,27 +147,37 @@ const WalletOverviewPage = () => {
           </View>
 
           <View style={styles.walletActions}>
-            <GlobalButton
+            {/* <GlobalButton
               type="icon"
               transparent
               icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
               style={styles.narrowBtn}
               onPress={goToNotifications}
-            />
+            /> */}
             <GlobalButton
               type="icon"
               transparent
               icon={IconQRCodeScanner}
               style={styles.narrowBtn}
-              onPress={goToQR}
+              onPress={() => {}}
             />
           </View>
         </View>
+
         {totalBalance && (
           <WalletBalanceCard
-            balance={totalBalance}
-            positiveTotal="$2.30"
-            negativeTotal="$2.30"
+            total={
+              !hiddenBalance
+                ? showAmount(totalBalance.usdTotal)
+                : `$ ${hiddenValue}`
+            }
+            {...{
+              [`${getLabelValue(
+                get(totalBalance, 'last24HoursChage.perc', 0),
+              )}Total`]: showPercentage(
+                get(totalBalance, 'last24HoursChage.perc', 0),
+              ),
+            }}
             messages={[]}
             showBalance={!hiddenBalance}
             onToggleShow={toggleHideBalance}
@@ -172,7 +191,6 @@ const WalletOverviewPage = () => {
         )}
 
         <GlobalPadding />
-
         <GlobalCollapse title="My Tokens" isOpen>
           <TokenList
             tokens={tokenList}
@@ -180,13 +198,10 @@ const WalletOverviewPage = () => {
             hiddenBalance={hiddenBalance}
           />
         </GlobalCollapse>
-
         <GlobalPadding />
-
         <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
           <GlobalNftList nonFungibleTokens={nftsList} />
         </GlobalCollapse>
-
         <GlobalPadding />
       </GlobalLayoutForTabScreen>
     )

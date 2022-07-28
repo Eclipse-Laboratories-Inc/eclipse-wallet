@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 const Message = ({ onNext, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={() => onBack()} />
+      <GlobalBackTitle onBack={onBack} />
     </View>
 
     <View style={styles.inner}>
@@ -91,7 +91,7 @@ const Message = ({ onNext, onBack }) => (
 const Form = ({ account, onComplete, onBack }) => (
   <>
     <View style={styles.headerActions}>
-      <GlobalBackTitle onBack={() => onBack()}>
+      <GlobalBackTitle onBack={onBack}>
         <View style={styles.pagination}>
           <GlobalPageDot active />
           <GlobalPageDot />
@@ -118,7 +118,6 @@ const Form = ({ account, onComplete, onBack }) => (
         seedphrase
         multiline
         numberOfLines={8}
-        complete={false}
         invalid={false}
       />
     </View>
@@ -171,7 +170,7 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot active />
@@ -199,7 +198,6 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
               setValue={value => setPhrasePos(value, index)}
               // value={phrases[index]}
               value={account.mnemonic.split(' ')[pos - 1]}
-              complete={false}
               invalid={false}
             />
             <GlobalPadding />
@@ -243,7 +241,7 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
   return (
     <>
       <View style={styles.headerActions}>
-        <GlobalBackTitle onBack={() => onBack()}>
+        <GlobalBackTitle onBack={onBack}>
           <View style={styles.pagination}>
             <GlobalPageDot />
             <GlobalPageDot />
@@ -262,7 +260,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={wrongpass}
             autoComplete="password-new"
             secureTextEntry
@@ -285,7 +282,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="New Password"
             value={pass}
             setValue={setPass}
-            complete={false}
             invalid={false}
             autoComplete="password-new"
             secureTextEntry
@@ -297,7 +293,6 @@ const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
             placeholder="Repeat New Password"
             value={repass}
             setValue={setRepass}
-            complete={false}
             invalid={false}
             autoComplete="password-new"
             secureTextEntry

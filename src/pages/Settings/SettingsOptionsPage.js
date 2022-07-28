@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
@@ -7,102 +8,109 @@ import { useNavigation } from '../../routes/hooks';
 
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import WalletButton from '../../features/WalletButton/WalletButton';
+import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
-const SettingsOptionsPage = () => {
+const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, walletNumber }, { logout }] = useContext(AppContext);
+  const [{ activeWallet, walletNumber, selectedEndpoints }, { logout }] =
+    useContext(AppContext);
   const handleLogout = () => {
     logout();
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
+
+  const [{ selectedLanguage, languages }, { changeLanguage }] =
+    useContext(AppContext);
+
   const goToNetwork = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_SELECTACCOUNT);
+  const goToLanguages = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalText type="headline2" center>
-        Settings
-      </GlobalText>
+      <GlobalBackTitle title={t('settings.title')} />
 
       {activeWallet && (
-        <WalletButton
-          name={getWalletName(activeWallet, walletNumber)}
+        <CardButtonWallet
+          title={getWalletName(activeWallet, walletNumber)}
           address={activeWallet.getReceiveAddress()}
           chain={getWalletChain(activeWallet)}
-          onClick={goToAccounts}
-          active
+          onPress={goToAccounts}
+          actionIcon="right"
+          selected
         />
       )}
 
       <GlobalPadding />
 
-      <GlobalButtonCard
+      <CardButton
         title="Address Book"
-        description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Display Language"
-        description="Lorem impsum"
-        goToButton
-        onPress={() => {}}
-      />
+        // description="Lorem impsum"
+        actionIcon="right"
+        onPress={goToLanguages}>
+        <GlobalText type="caption">
+          {t(`settings.languages.${selectedLanguage}`)}
+        </GlobalText>
+      </CardButton>
 
-      <GlobalButtonCard
+      <CardButton
         title="Change Network"
-        description="Lorem impsum"
-        goToButton
-        onPress={goToNetwork}
-      />
+        actionIcon="right"
+        onPress={goToNetwork}>
+        <GlobalText type="caption">
+          {selectedEndpoints[getWalletChain(activeWallet)]}
+        </GlobalText>
+      </CardButton>
 
-      <GlobalButtonCard
+      <CardButton
         title="Security"
-        description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
-      <GlobalButtonCard
+      {/* <CardButton
         title="Notifications"
-        description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
-      />
+        disabled
+      /> */}
 
-      <GlobalButtonCard
+      <CardButton
         title="Trusted Apps"
-        description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
-      <GlobalButtonCard
+      <CardButton
         title="Help & Support"
-        description="Lorem impsum"
-        goToButton
+        actionIcon="right"
         onPress={() => {}}
+        disabled
       />
 
       <GlobalPadding size="4xl" />
 
-      <GlobalButton
-        type="secondary"
-        block
-        title="Logout"
-        onPress={handleLogout}
-      />
+      <GlobalButton type="text" block title="Logout" onPress={handleLogout} />
 
       <GlobalPadding size="lg" />
     </GlobalLayoutForTabScreen>
   );
 };
 
-export default SettingsOptionsPage;
+export default withTranslation()(SettingsOptionsPage);

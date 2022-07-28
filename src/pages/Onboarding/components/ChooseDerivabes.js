@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { GlobalLayoutForTabScreen } from '../../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../../component-library/Global/GlobalButtonCard';
+import CardButton from '../../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalText from '../../../component-library/Global/GlobalText';
 
@@ -33,7 +33,7 @@ const ChooseDerivabes = ({ accounts, onComplete }) => {
       <GlobalPadding size="xl" />
 
       {accounts.map(({ index }) => (
-        <GlobalButtonCard
+        <CardButton
           key={`wallet-${index}`}
           active={selected.includes(index)}
           title="Public Key"

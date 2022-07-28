@@ -5,6 +5,7 @@ import groupBy from 'lodash/groupBy';
 import { AppContext } from '../../AppProvider';
 import { getWalletName, LOGOS } from '../../utils/wallet';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 
@@ -12,12 +13,11 @@ import theme from '../../component-library/Global/theme';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-
-import WalletButton from '../../features/WalletButton/WalletButton';
+import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import { getMediaRemoteUrl } from '../../utils/media';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -33,62 +33,65 @@ const styles = StyleSheet.create({
 
 const SelectAccountPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets }, { changeActiveWallet }] =
+  const [{ activeWallet, wallets, locked }, { changeActiveWallet }] =
     useContext(AppContext);
   const addNewWallet = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   const groupedWallets = groupBy(wallets, 'chain');
   const getWalletIndex = wallet =>
     wallets.findIndex(w => w.address === wallet.address);
-  const selectWallet = wallet => changeActiveWallet(getWalletIndex(wallet));
+  const selectWallet = async wallet => {
+    await changeActiveWallet(getWalletIndex(wallet));
+    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
+  };
+  const editWallet = ({ address }) =>
+    navigate(ROUTES_MAP.SETTINGS_EDITACCOUNT, { address });
+
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="subtitle2" center nospace>
-          Your Wallets
-        </GlobalText>
-      </GlobalBackTitle>
+    !locked && (
+      <GlobalLayoutForTabScreen>
+        <GlobalBackTitle onBack={onBack} title="Your Wallets" />
 
-      <GlobalPadding />
+        <GlobalPadding />
 
-      {Object.keys(groupedWallets).map(chain => {
-        console.log(LOGOS[chain]);
-
-        return (
-          <React.Fragment key={chain.address}>
+        {Object.keys(groupedWallets).map(chain => (
+          <React.Fragment key={chain}>
             <View style={styles.sectionTitle}>
-              <GlobalImage source={LOGOS[chain]} style={styles.chainImg} />
+              <GlobalImage
+                source={getMediaRemoteUrl(LOGOS[chain])}
+                style={styles.chainImg}
+              />
               <GlobalText type="body1" color="secondary">
                 {chain}
               </GlobalText>
             </View>
             <>
               {groupedWallets[chain].map(wallet => (
-                <GlobalButtonCard
+                <CardButtonWallet
                   key={wallet.address}
-                  type="wallet"
-                  active={activeWallet.getReceiveAddress() === wallet.address}
-                  image={LOGOS[wallet.chain]}
                   title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
-                  description={wallet.address}
-                  goToButton
+                  address={wallet.address}
+                  chain={wallet.chain}
+                  selected={activeWallet.getReceiveAddress() === wallet.address}
                   onPress={() => selectWallet(wallet)}
+                  onSecondaryPress={() => editWallet(wallet)}
                 />
               ))}
             </>
           </React.Fragment>
-        );
-      })}
+        ))}
 
-      <GlobalPadding />
+        <GlobalPadding />
 
-      <GlobalButton
-        type="primary"
-        block
-        title="Add new Wallet"
-        onPress={addNewWallet}
-      />
-    </GlobalLayoutForTabScreen>
+        <GlobalButton
+          type="primary"
+          block
+          title="Add new Wallet"
+          onPress={addNewWallet}
+        />
+      </GlobalLayoutForTabScreen>
+    )
   );
 };
 

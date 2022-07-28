@@ -1,0 +1,26 @@
+{
+  "general": {
+    "copy": "Copiar",
+    "close": "Cerrar"
+  },
+  "settings": {
+    "title": "Configuración",
+    "languages": {
+      "title": "Idioma",
+      "en": "Inglés",
+      "es": "Español"
+    }
+  },
+  "token": {
+    "action": {
+      "addToken": "Añadir Token",
+      "add": "Añadir",
+      "send": "Enviar",
+      "receive": "Recibir",
+      "select": "Seleccionar"
+    },
+    "receive": {
+      "title": "Depositos"
+    }
+  }
+}

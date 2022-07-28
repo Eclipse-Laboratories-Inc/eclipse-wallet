@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalButtonCard from '../../component-library/Global/GlobalButtonCard';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalText from '../../component-library/Global/GlobalText';
 import { getWalletChain } from '../../utils/wallet';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
+
+import CardButton from '../../component-library/CardButton/CardButton';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const ChangeNetworkPage = () => {
   const navigate = useNavigation();
@@ -18,29 +18,31 @@ const ChangeNetworkPage = () => {
     changeEndpoint(getWalletChain(activeWallet), value);
   };
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+  const [networks, setNetworks] = useState([]);
+  useEffect(() => {
+    activeWallet.getNetworks().then(nwks => {
+      if (nwks?.length > 0) {
+        setNetworks(nwks);
+      }
+    });
+  }, [activeWallet]);
 
   return (
     <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack}>
-        <GlobalText type="headline2" center nospace>
-          Select Network
-        </GlobalText>
-      </GlobalBackTitle>
+      <GlobalBackTitle onBack={onBack} title="Select Network" />
 
       <GlobalPadding />
 
-      {activeWallet
-        .getNetworks()
-        .map(({ networkId: label, nodeUrl: endpoint }) => (
-          <GlobalButtonCard
-            key={label}
-            active={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            title={label}
-            description={endpoint}
-            onPress={() => onSelect(label)}
-          />
-        ))}
+      {networks.map(({ id: label, description }) => (
+        <CardButton
+          key={label}
+          active={label === selectedEndpoints[getWalletChain(activeWallet)]}
+          complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
+          title={label}
+          description={description}
+          onPress={() => onSelect(label)}
+        />
+      ))}
     </GlobalLayoutForTabScreen>
   );
 };

@@ -1,7 +1,7 @@
 import WalletOverview from './WalletOverviewPage';
 import NftsPage from './NftsPage';
 import SwapPage from './SwapPage';
-import TransactionsPage from './TransactionsPage';
+import TransactionsPage from '../Transactions/TransactionsPage';
 import SettingsPage from '../Settings/SettingsPage';
 
 import IconWallet from '../../assets/images/IconWallet.png';
@@ -49,7 +49,7 @@ const routes = [
   {
     key: ROUTES_MAP.WALLET_TRANSACTIONS,
     name: 'Transactions',
-    path: 'transactions',
+    path: 'transactions/*',
     route: '/wallet/transactions',
     Component: TransactionsPage,
     default: false,

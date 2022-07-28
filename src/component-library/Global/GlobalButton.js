@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   cardActive: {
     borderColor: theme.colors.labelSecondary,
   },
+  cardSelected: {
+    backgroundColor: theme.colors.accentPrimary,
+  },
   cardButtonText: {
     textAlign: 'left',
     textTransform: 'none',
@@ -56,13 +59,6 @@ const styles = StyleSheet.create({
   block: {
     width: '100%',
     alignSelf: 'stretch',
-  },
-  bordered: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: theme.colors.black300,
-  },
-  flat: {
-    borderRadius: 0,
   },
   outlined: {
     borderWidth: 1,
@@ -84,6 +80,7 @@ const styles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: theme.colors.cards,
+    opacity: 0.5,
   },
   transparent: {
     backgroundColor: theme.staticColor.transparent,
@@ -116,6 +113,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     maxWidth: theme.variables.buttonMaxWidth,
   },
+  wideSmall: {
+    width: '100%',
+    flexGrow: 1,
+    maxWidth: theme.variables.buttonMaxWidthSmall,
+  },
   icon: {
     width: 32,
     height: 32,
@@ -145,10 +147,12 @@ const GlobalButton = ({
   block,
   flex,
   wide,
-  bordered,
-  flat,
+  wideSmall,
+  selected,
+  active,
   outlined,
   disabled,
+  readonly,
   transparent,
   style,
   textStyle,
@@ -160,8 +164,7 @@ const GlobalButton = ({
     ...(block ? styles.block : {}),
     ...(flex ? styles.flex : {}),
     ...(wide ? styles.wide : {}),
-    ...(bordered ? styles.bordered : {}),
-    ...(flat ? styles.flat : {}),
+    ...(wideSmall ? styles.wideSmall : {}),
     ...(outlined ? styles.outlined : {}),
     ...(size === 'medium' ? styles.buttonMD : {}),
     ...(type === 'accent' ? styles.accent : {}),
@@ -170,10 +173,12 @@ const GlobalButton = ({
     ...(type === 'text' ? styles.textButton : {}),
     ...(type === 'card' ? styles.cardButton : {}),
     ...(type === 'tabbar' ? styles.tabbar : {}),
-    ...(color === 'active' ? styles.cardActive : {}),
-    ...(disabled ? styles.disabled : {}),
-    ...(outlined && disabled ? styles.outlinedDisabled : {}),
     ...(transparent ? styles.transparent : {}),
+    ...(selected ? styles.cardSelected : {}),
+    ...(active ? styles.cardActive : {}),
+    ...(disabled ? styles.disabled : {}),
+    ...(readonly ? styles.readonly : {}),
+    ...(outlined && disabled ? styles.outlinedDisabled : {}),
   };
 
   const buttonTextStyle = {
@@ -190,8 +195,12 @@ const GlobalButton = ({
 
   return (
     <TouchableOpacity
-      disabled={disabled}
-      style={[touchableStyles, wide && styles.wide]}
+      disabled={readonly ? true : disabled}
+      style={[
+        touchableStyles,
+        wide && styles.wide,
+        wideSmall && styles.wideSmall,
+      ]}
       {...props}>
       <View style={[styles.button, buttonStyle, style]}>
         {icon && (

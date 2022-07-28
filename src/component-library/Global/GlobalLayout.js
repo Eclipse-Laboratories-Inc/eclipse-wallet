@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native';
 
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
 
 const styles = StyleSheet.create({
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     // height: '100%',
-    flex: 1,
+    // flex: 1,
     alignSelf: 'stretch',
   },
 });
@@ -40,12 +40,15 @@ export const GlobalLayoutForTabScreen = ({ children, style, ...props }) => (
   </View>
 );
 
-const GlobalLayout = ({ children }) => (
+const GlobalLayout = ({ withContainer, children }) => (
   <GlobalBackgroundImage>
     <ScrollView
       contentContainerStyle={styles.scrollView}
       contentInsetAdjustmentBehavior="automatic">
-      {children}
+      {!withContainer && children}
+      {withContainer && (
+        <View style={globalStyles.mainContainer}>{children}</View>
+      )}
     </ScrollView>
   </GlobalBackgroundImage>
 );

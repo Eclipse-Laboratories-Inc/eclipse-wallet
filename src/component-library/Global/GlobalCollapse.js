@@ -10,6 +10,7 @@ import IconExpandLess from '../../assets/images/IconExpandLess.png';
 
 const styles = StyleSheet.create({
   inline: {
+    minHeight: 48,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -46,6 +47,7 @@ const GlobalCollapse = ({
   title,
   titleStyle,
   narrowTitle,
+  actionTitle,
   viewAllAction,
   actions,
   hideCollapse,
@@ -83,7 +85,7 @@ const GlobalCollapse = ({
             <GlobalButton
               type="text"
               color="secondary"
-              title="View All"
+              title={actionTitle ? actionTitle : 'View All'}
               style={styles.viewAllBtn}
               textStyle={styles.viewAllBtnText}
               onPress={viewAllAction}

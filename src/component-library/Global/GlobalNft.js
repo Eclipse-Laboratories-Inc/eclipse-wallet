@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 
 const GlobalNft = ({ nft }) => (
   <View key={nft.url} style={styles.image}>
-    <GlobalImage source={getMediaRemoteUrl(nft.image).url} size="block" />
+    <GlobalImage source={getMediaRemoteUrl(nft.image)} size="block" />
     <GlobalFloatingBadge title={nft.name} number="18" />
   </View>
 );

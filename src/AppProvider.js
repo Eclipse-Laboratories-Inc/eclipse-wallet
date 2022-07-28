@@ -7,6 +7,7 @@ import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 import GlobalError from './features/ErrorHandler/GlobalError';
+import useTranslations from './hooks/useTranslations';
 
 export const AppContext = createContext([]);
 
@@ -45,16 +46,27 @@ const reducer = (state, action) => {
 
 const AppProvider = ({ children }) => {
   const [walletState, walletActions] = useWallets();
+  const {
+    selected: selectedLanguage,
+    loaded: translationsLoaded,
+    languages,
+    changeLanguage,
+  } = useTranslations();
   const [appState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    if (walletState.ready && !appState.ready) {
+    if (walletState.ready && !appState.ready && translationsLoaded) {
       splash.hide();
       dispatch({
         type: ACTIONS.INITIATE_DONE,
         value: { isLogged: !isNil(walletState.active) },
       });
     }
-  }, [walletState.ready, walletState.active, appState.ready]);
+  }, [
+    walletState.ready,
+    walletState.active,
+    appState.ready,
+    translationsLoaded,
+  ]);
   const logout = async () => {
     await walletActions.removeAllWallets();
     dispatch({
@@ -70,12 +82,17 @@ const AppProvider = ({ children }) => {
   };
   const appActions = {
     ...walletActions,
+    changeLanguage,
     logout,
     toggleHideBalance,
   };
 
   return (
-    <AppContext.Provider value={[{ ...appState, ...walletState }, appActions]}>
+    <AppContext.Provider
+      value={[
+        { ...appState, ...walletState, languages, selectedLanguage },
+        appActions,
+      ]}>
       <GlobalError>
         {appState.ready && !walletState.locked && (
           <InactivityCheck

@@ -1,0 +1,26 @@
+{
+  "general": {
+    "copy": "Copy",
+    "close": "Close"
+  },
+  "settings": {
+    "title": "Settings",
+    "languages": {
+      "title": "Language",
+      "en": "English",
+      "es": "Spanish"
+    }
+  },
+  "token": {
+    "action": {
+      "addToken": "Add Token",
+      "add": "Add",
+      "send": "Send",
+      "receive": "Receive",
+      "select": "Select"
+    },
+    "receive": {
+      "title": "Deposit"
+    }
+  }
+}
