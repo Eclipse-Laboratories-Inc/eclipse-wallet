@@ -45,8 +45,8 @@ const routes = [
   {
     key: ROUTES_MAP.TOKEN_RECEIVE,
     name: 'tokenReceive',
-    path: 'receive/:tokenId',
-    route: '/token/receive/:tokenId',
+    path: 'receive',
+    route: '/token/receive',
     Component: TokenReceivePage,
   },
 ];

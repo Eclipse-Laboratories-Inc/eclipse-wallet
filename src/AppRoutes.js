@@ -9,6 +9,7 @@ const AppRoutes = () => {
     <RoutesBuilder
       routes={routes}
       entry={wallets.length ? ROUTES_MAP.WALLET : ROUTES_MAP.WELCOME}
+      requireOnboarding={false}
     />
   );
 };

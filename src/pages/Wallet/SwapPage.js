@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 
 const SwapPage = () => (
-  <GlobalLayoutForTabScreen>
-    <GlobalBackTitle title="Swap" />
-  </GlobalLayoutForTabScreen>
+  <GlobalLayout>
+    <GlobalLayout.Header>
+      <GlobalBackTitle title="Swap" />
+    </GlobalLayout.Header>
+  </GlobalLayout>
 );
 
 export default SwapPage;

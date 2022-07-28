@@ -1,25 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
-import theme from '../../component-library/Global/theme';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
-import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalNftList from '../../component-library/Global/GlobalNftList';
-
-import AvatarImage from '../../component-library/Image/AvatarImage';
-import Avatar from '../../assets/images/Avatar.png';
-import IconNotifications from '../../assets/images/IconNotifications.png';
-import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
-
 import TokenList from '../../features/TokenList/TokenList';
-import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
@@ -32,10 +16,23 @@ import {
   showPercentage,
 } from '../../utils/amount';
 
+import theme from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalNftList from '../../component-library/Global/GlobalNftList';
+import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
+
+import AvatarImage from '../../component-library/Image/AvatarImage';
+import Avatar from '../../assets/images/Avatar.png';
+// import IconNotifications from '../../assets/images/IconNotifications.png';
+// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
+
 const styles = StyleSheet.create({
-  container: {
-    padding: theme.gutters.paddingMD,
-  },
   avatarWalletAddressActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -106,10 +103,7 @@ const WalletOverviewPage = () => {
       action: 'send',
     });
 
-  const goToReceive = () =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
-      action: 'receive',
-    });
+  const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
   const goToTokenDetail = t =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
@@ -123,87 +117,91 @@ const WalletOverviewPage = () => {
 
   return (
     activeWallet && (
-      <GlobalLayoutForTabScreen styles={styles.container}>
-        <View style={styles.avatarWalletAddressActions}>
-          <View style={styles.avatarWalletAddress}>
-            <AvatarImage src={Avatar} size={42} />
+      <GlobalLayout>
+        <GlobalLayout.Header>
+          <SafeAreaView edges={['top']}>
+            <View style={styles.avatarWalletAddressActions}>
+              <View style={styles.avatarWalletAddress}>
+                <AvatarImage src={Avatar} size={42} />
 
-            <View style={styles.walletNameAddress}>
-              <GlobalText
-                type="body2"
-                style={styles.walletName}
-                numberOfLines={1}>
-                {getWalletName(activeWallet, walletNumber)}
-              </GlobalText>
+                <View style={styles.walletNameAddress}>
+                  <GlobalText
+                    type="body2"
+                    style={styles.walletName}
+                    numberOfLines={1}>
+                    {getWalletName(activeWallet, walletNumber)}
+                  </GlobalText>
 
-              <GlobalText
-                type="body1"
-                color="tertiary"
-                style={styles.walletAddress}
-                numberOfLines={1}>
-                ({getShortAddress(activeWallet.getReceiveAddress())})
-              </GlobalText>
+                  <GlobalText
+                    type="body1"
+                    color="tertiary"
+                    style={styles.walletAddress}
+                    numberOfLines={1}>
+                    ({getShortAddress(activeWallet.getReceiveAddress())})
+                  </GlobalText>
+                </View>
+              </View>
+
+              <View style={styles.walletActions}>
+                {/* <GlobalButton
+                  type="icon"
+                  transparent
+                  icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
+                  style={styles.narrowBtn}
+                  onPress={goToNotifications}
+                /> */}
+                <GlobalButton
+                  type="icon"
+                  transparent
+                  icon={IconQRCodeScanner}
+                  style={styles.narrowBtn}
+                  onPress={() => {}}
+                />
+              </View>
             </View>
-          </View>
-
-          <View style={styles.walletActions}>
-            {/* <GlobalButton
-              type="icon"
-              transparent
-              icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
-              style={styles.narrowBtn}
-              onPress={goToNotifications}
-            /> */}
-            <GlobalButton
-              type="icon"
-              transparent
-              icon={IconQRCodeScanner}
-              style={styles.narrowBtn}
-              onPress={() => {}}
+          </SafeAreaView>
+          {totalBalance && (
+            <WalletBalanceCard
+              total={
+                !hiddenBalance
+                  ? showAmount(totalBalance.usdTotal)
+                  : `$ ${hiddenValue}`
+              }
+              {...{
+                [`${getLabelValue(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                )}Total`]: showPercentage(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                ),
+              }}
+              messages={[]}
+              showBalance={!hiddenBalance}
+              onToggleShow={toggleHideBalance}
+              actions={
+                <GlobalSendReceive
+                  goToSend={goToSend}
+                  goToReceive={goToReceive}
+                />
+              }
             />
-          </View>
-        </View>
+          )}
+          <GlobalPadding />
 
-        {totalBalance && (
-          <WalletBalanceCard
-            total={
-              !hiddenBalance
-                ? showAmount(totalBalance.usdTotal)
-                : `$ ${hiddenValue}`
-            }
-            {...{
-              [`${getLabelValue(
-                get(totalBalance, 'last24HoursChage.perc', 0),
-              )}Total`]: showPercentage(
-                get(totalBalance, 'last24HoursChage.perc', 0),
-              ),
-            }}
-            messages={[]}
-            showBalance={!hiddenBalance}
-            onToggleShow={toggleHideBalance}
-            actions={
-              <GlobalSendReceive
-                goToSend={goToSend}
-                goToReceive={goToReceive}
-              />
-            }
-          />
-        )}
+          <GlobalCollapse title="My Tokens" isOpen>
+            <TokenList
+              tokens={tokenList}
+              onDetail={goToTokenDetail}
+              hiddenBalance={hiddenBalance}
+            />
+          </GlobalCollapse>
 
-        <GlobalPadding />
-        <GlobalCollapse title="My Tokens" isOpen>
-          <TokenList
-            tokens={tokenList}
-            onDetail={goToTokenDetail}
-            hiddenBalance={hiddenBalance}
-          />
-        </GlobalCollapse>
-        <GlobalPadding />
-        <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
-          <GlobalNftList nonFungibleTokens={nftsList} />
-        </GlobalCollapse>
-        <GlobalPadding />
-      </GlobalLayoutForTabScreen>
+          <GlobalPadding />
+
+          <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
+            <GlobalNftList nonFungibleTokens={nftsList} />
+          </GlobalCollapse>
+        </GlobalLayout.Header>
+      </GlobalLayout>
     )
   );
 };

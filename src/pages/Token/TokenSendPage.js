@@ -1,14 +1,14 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
+import isNumber from 'lodash/isNumber';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
-
 import { LOGOS, getTransactionImage } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
+import useToken from '../../hooks/useToken';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -21,6 +21,7 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import IconCopy from '../../assets/images/IconCopy.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -31,11 +32,6 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: theme.colors.labelTertiary,
-  },
-  addressBookItem: {
-    paddingVertical: 0,
-    paddingHorizontal: 0,
-    minHeight: 60,
   },
   centered: {
     justifyContent: 'center',
@@ -76,241 +72,286 @@ const styles = StyleSheet.create({
   },
 });
 
+const STATUS = {
+  FAIL: 'fail',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+};
+
 const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
-  const [token, setToken] = useState({});
-
-  const [{ activeWallet }] = useContext(AppContext);
+  const { token, loaded } = useToken({ tokenId: params.tokenId });
+  const [step, setStep] = useState(1);
+  const [{ activeWallet, addressBook }] = useContext(AppContext);
+  const [validAddress, setValidAddress] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [status, setStatus] = useState();
 
   const [recipientAddress, setRecipientAddress] = useState('');
   const [recipientAmount, setRecipientAmount] = useState('');
-
-  useEffect(() => {
-    if (activeWallet) {
-      Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
-        ),
-      ]).then(([balance]) => {
-        const tokenSelected = (balance.items || []).find(
-          i => i.address === params.tokenId,
-        );
-        setToken(tokenSelected || {});
-        setloaded(true);
-      });
-    }
-  }, [activeWallet, params]);
-
+  const onRecipientChange = v => {
+    setValidAddress(false);
+    setRecipientAddress(v);
+  };
+  const validAmount = parseFloat(recipientAmount) <= token.uiAmount;
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
   };
-
-  const onSend = () => {
-    navigate(ROUTES_MAP.WALLET);
+  const onNext = () => setStep(step + 1);
+  const validateAddress = async () => {
+    const result = await activeWallet.validateDestinationAccount(
+      recipientAddress,
+    );
+    setValidAddress(result);
   };
-
-  const addressBook = [
-    {
-      chain: 'SOLANA',
-      name: 'Demo Name 1',
-      logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png',
-      address: '8Nb3tg9H55svmywG4NvsHVtw7GpZWdA2Wi6TbXbgTtzi',
-    },
-    {
-      chain: 'SOLANA',
-      name: 'Demo Name 2',
-      logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
-      address: 'So11111111111111111111111111111111111111112',
-    },
-  ];
+  const onSend = async () => {
+    setSending(true);
+    try {
+      const result = await activeWallet.transfer(
+        recipientAddress,
+        token.address,
+        recipientAmount,
+      );
+      console.log(result);
+      setStatus(STATUS.SUCCESS);
+      setStep(3);
+      setSending(false);
+    } catch (e) {
+      console.error(e);
+      setStatus(STATUS.FAIL);
+      setStep(3);
+      setSending(false);
+    }
+  };
 
   return (
     loaded && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
-          <GlobalBackTitle
-            onBack={goToBack}
-            title={`${t('token.action.send')} SOL`}
-            nospace
-          />
+      <GlobalLayout fullscreen>
+        {step === 1 && (
+          <>
+            <GlobalLayout.Header>
+              <GlobalBackTitle
+                onBack={goToBack}
+                title={`${t('token.action.send')} ${token.symbol}`}
+                nospace
+              />
 
-          <CardButtonWallet
-            title="From: Wallet Name"
-            address={activeWallet.getReceiveAddress()}
-            chain="SOLANA"
-            imageSize="md"
-            buttonStyle={styles.buttonStyle}
-            touchableStyles={styles.touchableStyles}
-            transparent
-            readonly
-          />
-
-          <GlobalInputWithButton
-            startLabel="To"
-            placeholder={`Name or ${'SOL'} Address`}
-            value={recipientAddress}
-            setValue={setRecipientAddress}
-            actionIcon="qr"
-            onActionPress={() => {}}
-          />
-
-          <GlobalPadding />
-
-          <GlobalCollapse
-            title="Address Book"
-            titleStyle={styles.titleStyle}
-            isOpen
-            hideCollapse>
-            {addressBook.map(addressBookItem => (
               <CardButtonWallet
-                title={addressBookItem.name}
-                address={addressBookItem.address}
-                chain={addressBookItem.chain}
+                title={t('token.send.from', { name: token.name })}
+                address={token.address}
+                chain="SOLANA"
                 imageSize="md"
-                onPress={() => {}}
-                buttonStyle={styles.addressBookItem}
+                buttonStyle={styles.buttonStyle}
                 touchableStyles={styles.touchableStyles}
                 transparent
+                readonly
               />
-            ))}
-          </GlobalCollapse>
 
-          <GlobalPadding size="4xl" />
+              <GlobalInputWithButton
+                startLabel="To"
+                placeholder={`Name or ${'SOL'} Address`}
+                value={recipientAddress}
+                setValue={onRecipientChange}
+                // actionIcon="qr"
+                // onActionPress={() => {}}
+                buttonIcon={IconQRCodeScanner}
+                buttonOnPress={() => {}}
+              />
 
-          <GlobalInputWithButton
-            startLabel="SOL"
-            placeholder="Enter Amount"
-            value={recipientAmount}
-            setValue={setRecipientAmount}
-            keyboardType="numeric"
-            actionIcon="sendmax"
-            onActionPress={() => {}}
-          />
+              <GlobalPadding />
 
-          <GlobalPadding />
+              <GlobalCollapse
+                title="Address Book"
+                titleStyle={styles.titleStyle}
+                isOpen
+                hideCollapse>
+                {addressBook.map(addressBookItem => (
+                  <CardButtonWallet
+                    title={addressBookItem.name}
+                    address={addressBookItem.address}
+                    chain={addressBookItem.chain}
+                    imageSize="md"
+                    onPress={() => onRecipientChange(addressBookItem.address)}
+                    buttonStyle={globalStyles.addressBookItem}
+                    touchableStyles={globalStyles.addressBookTouchable}
+                    transparent
+                  />
+                ))}
+              </GlobalCollapse>
 
-          <GlobalText type="subtitle2" center>
-            -0 USD
-          </GlobalText>
+              <GlobalPadding size="4xl" />
+              {validAddress && validAddress.type !== 'ERROR' && (
+                <>
+                  <GlobalInputWithButton
+                    startLabel={token.symbol}
+                    placeholder="Enter Amount"
+                    value={recipientAmount}
+                    setValue={setRecipientAmount}
+                    keyboardType="numeric"
+                    buttonLabel="Max"
+                    buttonOnPress={() => {}}
+                  />
 
-          <GlobalPadding size="md" />
+                  <GlobalPadding />
 
-          <GlobalText type="body1" center>
-            2 lines max Validation text sint occaecat cupidatat non proident
-          </GlobalText>
+                  <GlobalText type="subtitle2" center>
+                    -0 USD
+                  </GlobalText>
+                </>
+              )}
 
-          <GlobalPadding size="4xl" />
+              <GlobalPadding size="md" />
+              {!validAmount && recipientAmount && (
+                <GlobalText type="body1" center color="negative">
+                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
+                </GlobalText>
+              )}
+              {validAddress && validAddress.type !== 'SUCCESS' && (
+                <GlobalText
+                  type="body1"
+                  center
+                  color={validAddress.type === 'ERROR' ? 'negative' : ''}>
+                  {t(`token.send.address.${validAddress.code}`)}
+                </GlobalText>
+              )}
+            </GlobalLayout.Header>
 
-          <View style={styles.centered}>
-            <GlobalImage
-              source={getMediaRemoteUrl(LOGOS['SOLANA'])}
-              size="xxl"
-              style={styles.bigImage}
-              circle
-            />
+            <GlobalLayout.Footer inlineFlex>
+              <GlobalButton
+                type="secondary"
+                flex
+                title="Cancel"
+                onPress={goToBack}
+                style={[styles.button, styles.buttonLeft]}
+                touchableStyles={styles.buttonTouchable}
+              />
 
-            <GlobalText type="headline1" center>
-              16.000 SOL
-            </GlobalText>
+              <GlobalButton
+                type="primary"
+                flex
+                disabled={validAddress && !validAmount}
+                title={t(
+                  validAddress && validAddress.type !== 'ERROR'
+                    ? 'token.send.next'
+                    : 'token.send.validate',
+                )}
+                onPress={
+                  validAddress && validAddress.type !== 'ERROR'
+                    ? onNext
+                    : validateAddress
+                }
+                style={[styles.button, styles.buttonRight]}
+                touchableStyles={styles.buttonTouchable}
+              />
+            </GlobalLayout.Footer>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <GlobalLayout.Header>
+              <GlobalBackTitle
+                onBack={goToBack}
+                title={`${t('token.action.send')} ${token.symbol}`}
+                nospace
+              />
+              <GlobalPadding size="4xl" />
 
-            <GlobalPadding size="md" />
+              <View style={styles.centered}>
+                <GlobalImage
+                  source={getMediaRemoteUrl(LOGOS.SOLANA)}
+                  size="xxl"
+                  style={styles.bigImage}
+                  circle
+                />
 
-            <GlobalText type="subtitle2" center>
-              Name.SOL
-            </GlobalText>
+                <GlobalText type="headline1" center>
+                  {recipientAmount} {token.symbol}
+                </GlobalText>
 
-            <GlobalPadding size="md" />
+                <GlobalPadding size="md" />
 
-            <View style={styles.inlineWell}>
-              <GlobalText type="body2">Name.SOL</GlobalText>
+                <GlobalText type="subtitle2" center>
+                  Name.SOL
+                </GlobalText>
 
-              <GlobalButton onPress={() => {}} transparent>
-                <GlobalImage source={IconCopy} size="xs" />
-              </GlobalButton>
-            </View>
+                <GlobalPadding size="md" />
 
-            <View style={styles.inlineWell}>
-              <GlobalText type="caption" color="tertiary">
-                Network Fee
-              </GlobalText>
+                <View style={styles.inlineWell}>
+                  <GlobalText type="body2">Name.SOL</GlobalText>
 
-              <GlobalText type="body2">$ 8.888.16</GlobalText>
-            </View>
-          </View>
+                  <GlobalButton onPress={() => {}} transparent>
+                    <GlobalImage source={IconCopy} size="xs" />
+                  </GlobalButton>
+                </View>
 
-          <GlobalPadding size="4xl" />
-          <GlobalPadding size="4xl" />
+                <View style={styles.inlineWell}>
+                  <GlobalText type="caption" color="tertiary">
+                    Network Fee
+                  </GlobalText>
 
-          <View style={styles.centeredSmall}>
-            <GlobalImage
-              source={getTransactionImage('success')}
-              size="3xl"
-              circle
-            />
-            <GlobalPadding />
-            <GlobalText type="headline2" center>
-              Sent
-            </GlobalText>
-            <GlobalText type="body1" center>
-              3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
-            </GlobalText>
+                  <GlobalText type="body2">$ 8.888.16</GlobalText>
+                </View>
+              </View>
+            </GlobalLayout.Header>
 
-            <GlobalPadding size="4xl" />
+            <GlobalLayout.Footer inlineFlex>
+              <GlobalButton
+                type="secondary"
+                flex
+                title="Cancel"
+                onPress={goToBack}
+                style={[styles.button, styles.buttonLeft]}
+                touchableStyles={styles.buttonTouchable}
+              />
 
-            <GlobalImage
-              source={getTransactionImage('fail')}
-              size="3xl"
-              circle
-            />
-            <GlobalPadding />
-            <GlobalText type="headline2" center>
-              Fail
-            </GlobalText>
-            <GlobalText type="body1" center>
-              3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
-            </GlobalText>
+              <GlobalButton
+                disabled={sending}
+                type="primary"
+                flex
+                title="Next"
+                onPress={onSend}
+                style={[styles.button, styles.buttonRight]}
+                touchableStyles={styles.buttonTouchable}
+              />
+            </GlobalLayout.Footer>
+          </>
+        )}
+        {step === 3 && (
+          <>
+            <GlobalLayout.Header>
+              <GlobalPadding size="4xl" />
+              <GlobalPadding size="4xl" />
+              <View style={styles.centeredSmall}>
+                <GlobalImage
+                  source={getTransactionImage(status)}
+                  size="3xl"
+                  circle
+                />
+                <GlobalPadding />
+                <GlobalText type="headline2" center>
+                  {t(`token.send.transaction_${status}`)}
+                </GlobalText>
+                <GlobalText type="body1" center>
+                  3 lines max Excepteur sint occaecat cupidatat non proident,
+                  sunt ?
+                </GlobalText>
 
-            <GlobalPadding size="4xl" />
+                <GlobalPadding size="4xl" />
+              </View>
+            </GlobalLayout.Header>
 
-            <GlobalImage
-              source={getTransactionImage('warning')}
-              size="3xl"
-              circle
-            />
-            <GlobalPadding />
-            <GlobalText type="headline2" center>
-              Warning
-            </GlobalText>
-            <GlobalText type="body1" center>
-              3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
-            </GlobalText>
-          </View>
-        </View>
-
-        <View style={globalStyles.mainFooter}>
-          <View style={globalStyles.inlineFlexButtons}>
-            <GlobalButton
-              type="secondary"
-              flex
-              title="Cancel"
-              onPress={goToBack}
-              style={[styles.button, styles.buttonLeft]}
-              touchableStyles={styles.buttonTouchable}
-            />
-
-            <GlobalButton
-              type="primary"
-              flex
-              title="Next"
-              onPress={onSend}
-              style={[styles.button, styles.buttonRight]}
-              touchableStyles={styles.buttonTouchable}
-            />
-          </View>
-        </View>
+            <GlobalLayout.Footer inlineFlex>
+              <GlobalButton
+                type="secondary"
+                flex
+                title="Close"
+                onPress={goToBack}
+                style={[styles.button, styles.buttonLeft]}
+                touchableStyles={styles.buttonTouchable}
+              />
+            </GlobalLayout.Footer>
+          </>
+        )}
       </GlobalLayout>
     )
   );

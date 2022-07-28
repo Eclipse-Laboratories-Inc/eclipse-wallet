@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 
 const NftsPage = () => (
-  <GlobalLayoutForTabScreen>
-    <GlobalText type="headline2" center>
-      NFT
-    </GlobalText>
-  </GlobalLayoutForTabScreen>
+  <GlobalLayout>
+    <GlobalLayout.Header>
+      <GlobalBackTitle title="NFT" />
+    </GlobalLayout.Header>
+  </GlobalLayout>
 );
 
 export default NftsPage;

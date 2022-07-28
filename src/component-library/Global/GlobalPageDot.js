@@ -6,9 +6,6 @@ import PaginationOn from '../../assets/images/PaginationOn.png';
 import PaginationOff from '../../assets/images/PaginationOff.png';
 
 const styles = StyleSheet.create({
-  pagination: {
-    flexDirection: 'row',
-  },
   paginationDot: {
     margin: 10,
     width: 6,

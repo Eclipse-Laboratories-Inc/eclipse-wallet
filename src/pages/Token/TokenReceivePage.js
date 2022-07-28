@@ -6,10 +6,10 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
-import { getShortAddress } from '../../utils/wallet';
+import { getShortAddress, getWalletName } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -43,54 +43,34 @@ const styles = StyleSheet.create({
   },
 });
 
-const TokenReceivePage = ({ params, t }) => {
+const TokenReceivePage = ({ t }) => {
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
-  const [token, setToken] = useState({});
 
-  const [{ activeWallet }] = useContext(AppContext);
-
-  useEffect(() => {
-    if (activeWallet) {
-      Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
-        ),
-      ]).then(([balance]) => {
-        const tokenSelected = (balance.items || []).find(
-          i => i.address === params.tokenId,
-        );
-        setToken(tokenSelected || {});
-        setloaded(true);
-      });
-    }
-  }, [activeWallet, params]);
+  const [{ activeWallet, walletNumber }] = useContext(AppContext);
 
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
   };
 
-  const onCopyAlias = () => clipboard.copy(token.address);
+  const onCopyAlias = () => clipboard.copy(activeWallet.getReceiveAddress());
 
-  const onCopyAddress = () => clipboard.copy(token.address);
+  const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
 
   return (
-    loaded && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
+    activeWallet && (
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
-            smallTitle={t('token.receive.title')}
+            secondaryTitle={t('token.receive.title')}
           />
 
           <View style={styles.centered}>
             <View style={styles.qrBox}>
-              <QRImage address={token.address} />
+              <QRImage address={activeWallet.getReceiveAddress()} size={225} />
             </View>
 
-            <GlobalPadding size="md" />
+            <GlobalPadding size="2xl" />
 
             <View style={styles.inlineWell}>
               <GlobalText type="body2">Name.acr</GlobalText>
@@ -103,7 +83,8 @@ const TokenReceivePage = ({ params, t }) => {
 
             <View style={styles.inlineWell}>
               <GlobalText type="body2">
-                {token.name} ({getShortAddress(token.address)})
+                {getWalletName(activeWallet, walletNumber)} (
+                {getShortAddress(activeWallet.getReceiveAddress())})
               </GlobalText>
 
               <GlobalButton onPress={onCopyAddress} size="medium">
@@ -118,19 +99,19 @@ const TokenReceivePage = ({ params, t }) => {
               2 lines max Validation text sint occaecat cupidatat non proident
             </GlobalText>
           </View>
-        </View>
+        </GlobalLayout.Header>
 
-        <View style={globalStyles.mainFooter}>
+        <GlobalLayout.Footer>
           <GlobalButton
             type="secondary"
             wideSmall
             title={t('general.close')}
             onPress={goToBack}
           />
-        </View>
+        </GlobalLayout.Footer>
       </GlobalLayout>
     )
   );
 };
 
-export default withParams(withTranslation()(TokenReceivePage));
+export default withTranslation()(TokenReceivePage);

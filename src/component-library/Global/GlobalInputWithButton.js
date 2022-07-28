@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import theme from './theme';
 import GlobalButton from './GlobalButton';
 import GlobalImage from './GlobalImage';
 import GlobalInput from './GlobalInput';
@@ -10,6 +9,7 @@ import GlobalText from './GlobalText';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 import IconCopy from '../../assets/images/IconCopy.png';
+import theme from './theme';
 
 const styles = StyleSheet.create({
   inputGroup: {
@@ -18,7 +18,9 @@ const styles = StyleSheet.create({
   },
   secondaryAction: {
     position: 'absolute',
-    right: 0,
+    top: 0,
+    right: theme.gutters.paddingXS,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
     // borderLeftWidth: 1,
@@ -31,6 +33,10 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     paddingRight: 60,
+  },
+  buttonLabel: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -45,7 +51,10 @@ const GlobalInputWithButton = ({
   inputStyle,
   numberOfLines,
   actionIcon,
+  buttonLabel,
+  buttonIcon,
   onActionPress,
+  buttonOnPress,
   ...props
 }) => {
   const handleChange = event => {
@@ -91,6 +100,17 @@ const GlobalInputWithButton = ({
               </GlobalText>
             )}
           </GlobalButton>
+        </View>
+      )}
+
+      {buttonOnPress && (buttonLabel || buttonIcon) && (
+        <View style={styles.secondaryAction}>
+          <GlobalButton
+            onPress={buttonOnPress}
+            size="medium"
+            title={buttonLabel}
+            icon={buttonIcon}
+          />
         </View>
       )}
     </View>

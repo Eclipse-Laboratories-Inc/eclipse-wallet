@@ -216,37 +216,17 @@ const themes = {
 };
 
 export const globalStyles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    // flexGrow: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    paddingVertical: gutters.paddingNormal,
-    paddingBottom: gutters.padding4XL,
-    paddingHorizontal: gutters.paddingSM,
-    width: '100%',
-    maxWidth: variables.mobileWidthLG,
-  },
-  mainHeader: {
-    // flexGrow: 1,
-  },
-  mainInner: {
-    // flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: gutters.paddingNormal,
-    paddingBottom: gutters.padding2XL,
-  },
-  mainFooter: {
-    paddingTop: gutters.paddingLG,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  inlineFlexButtons: {
+  pagination: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    justifyContent: 'center',
+  },
+  addressBookItem: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 60,
+  },
+  addressBookTouchable: {
+    marginBottom: 0,
   },
 });
 

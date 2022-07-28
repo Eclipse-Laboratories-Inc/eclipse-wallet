@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@4m/wallet-adapter": "^0.0.24",
+    "@4m/wallet-adapter": "^0.0.27",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.7.0",

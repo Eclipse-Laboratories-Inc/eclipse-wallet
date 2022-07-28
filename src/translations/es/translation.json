@@ -5,6 +5,13 @@
   },
   "settings": {
     "title": "Configuración",
+    "addressbook": {
+      "title": "Address Book",
+      "add": "Add Address",
+      "addnew": "Add New Address",
+      "save": "Save Address",
+      "label": "Label"
+    },
     "languages": {
       "title": "Idioma",
       "en": "Inglés",
@@ -20,7 +27,23 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Depositos"
+      "title": "Recibir"
+    },
+    "send": {
+      "address": {
+        "INVALID_ADDRESS": "La direccion destino no es valida",
+        "EMPTY_ACCOUNT": "La direccion destino esta vacia",
+        "NO_FUNDS": "La direccion destino no tiene fondos"
+      },
+      "amount": {
+        "invalid": "El monto debe ser un numero menor a {{max}}"
+      },
+      "next": "Next",
+      "validate": "Validate",
+      "from": "De: {{name}}",
+      "transaction_success": "Enviado",
+      "transaction_warning": "Warning",
+      "transaction_fail": "Error"
     }
   }
 }
