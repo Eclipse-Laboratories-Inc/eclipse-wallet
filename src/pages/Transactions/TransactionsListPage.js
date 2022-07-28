@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import theme from '../../component-library/Global/theme';
 import { TRANSACTION_TYPE, TYPES_MAP } from './constants';
+import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
@@ -39,22 +40,32 @@ const TransactionsListPage = () => {
 
   useEffect(() => {
     if (activeWallet) {
-      Promise.resolve(activeWallet.getRecentTransactions()).then(
-        transactions => {
-          setRecentTransactions(transactions);
-          setLastTransaction(transactions.slice(-1).pop());
-          setLoaded(true);
-        },
-      );
+      Promise.all([
+        cache(
+          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          CACHE_TYPES.TRANSACTIONS,
+          () => activeWallet.getRecentTransactions(),
+        ),
+      ]).then(([recTransactions]) => {
+        setRecentTransactions(recTransactions);
+        setLastTransaction(recTransactions.slice(-1).pop());
+        setLoaded(true);
+      });
     }
   }, [activeWallet, selectedEndpoints]);
 
   const onLoadMore = () => {
     Promise.resolve(
       activeWallet.getRecentTransactions(lastTransaction.signature),
-    ).then(transactions => {
-      setLastTransaction(transactions.slice(-1).pop());
-      setRecentTransactions(recentTransactions.concat(transactions));
+    ).then(recTransactions => {
+      invalidate(CACHE_TYPES.TRANSACTIONS);
+      cache(
+        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        CACHE_TYPES.TRANSACTIONS,
+        () => recentTransactions.concat(recTransactions),
+      );
+      setLastTransaction(recTransactions.slice(-1).pop());
+      setRecentTransactions(recentTransactions.concat(recTransactions));
       setLoaded(true);
     });
   };
@@ -69,7 +80,7 @@ const TransactionsListPage = () => {
         hideCollapse
         isOpen>
         {loaded
-          ? recentTransactions?.map(transaction => {
+          ? recentTransactions?.map((transaction, i) => {
               switch (transaction.type) {
                 case TRANSACTION_TYPE.TRANSFER:
                 case TRANSACTION_TYPE.CREATE_ACCOUNT:
@@ -117,7 +128,7 @@ const TransactionsListPage = () => {
                               </View>,
                             ].filter(Boolean)
                       }
-                      onPress={() => onDetail(1)}
+                      onPress={() => onDetail(i)}
                     />
                   );
                 case TRANSACTION_TYPE.SWAP:
@@ -162,7 +173,7 @@ const TransactionsListPage = () => {
                           />
                         </View>,
                       ].filter(Boolean)}
-                      onPress={() => onDetail(1)}
+                      onPress={() => onDetail(i)}
                     />
                   );
                 case TRANSACTION_TYPE.CLOSE_ACCOUNT:
@@ -171,7 +182,7 @@ const TransactionsListPage = () => {
                       transaction="interaction"
                       title={TYPES_MAP[transaction.type]}
                       // percentage="+0000%"
-                      onPress={() => onDetail(1)}
+                      onPress={() => onDetail(i)}
                     />
                   );
               }
