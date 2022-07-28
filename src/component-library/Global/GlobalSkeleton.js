@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import ContentLoader from 'react-content-loader';
 import theme from '../../component-library/Global/theme';
 
