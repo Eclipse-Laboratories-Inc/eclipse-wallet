@@ -1,8 +1,8 @@
 import React from 'react';
 import get from 'lodash/get';
-
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import {
   hiddenValue,
@@ -12,6 +12,16 @@ import {
 } from '../../utils/amount';
 
 const TokenList = ({ tokens, onDetail, hiddenBalance }) => (
+  <>
+    {tokens ? (
+      <List tokens={tokens} onDetail={onDetail} hiddenBalance={hiddenBalance} />
+    ) : (
+      <GlobalSkeleton type="TokenList" />
+    )}
+  </>
+);
+
+const List = ({ tokens, onDetail, hiddenBalance }) => (
   <>
     {tokens.map(t => (
       <CardButton

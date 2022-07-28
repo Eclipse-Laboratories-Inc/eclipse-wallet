@@ -72,12 +72,10 @@ const WalletOverviewPage = () => {
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
-  const [tokenList, setTokenList] = useState([]);
-  const [ntfsList, setNtfsList] = useState([]);
-  // const [hasNotifications, setHasNotifications] = useState(false);
-
+  const [tokenList, setTokenList] = useState(null);
+  const [nftsList, setNftsList] = useState(null);
+  //const [hasNotifications, setHasNotifications] = useState(false);
   const [loaded, setLoaded] = useState(false);
-
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -88,13 +86,13 @@ const WalletOverviewPage = () => {
         ),
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NTFS,
+          CACHE_TYPES.NFTS,
           () => activeWallet.getAllNfts(),
         ),
-      ]).then(([balance, ntfs]) => {
+      ]).then(([balance, nfts]) => {
         setTotalBalance(balance);
         setTokenList(balance.items);
-        setNtfsList(ntfs);
+        setNftsList(nfts);
         setLoaded(true);
       });
     }
@@ -115,10 +113,9 @@ const WalletOverviewPage = () => {
   // const goToNotifications = () => setHasNotifications(!hasNotifications);
 
   const goToNFTs = t =>
-    navigate(WALLET_ROUTES_MAP.WALLET_NTFS, { tokenId: t.address });
+    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: t.address });
 
   return (
-    loaded &&
     activeWallet && (
       <GlobalLayout>
         <GlobalLayout.Header>
@@ -163,31 +160,31 @@ const WalletOverviewPage = () => {
               </View>
             </View>
           </SafeAreaView>
-
-          <WalletBalanceCard
-            total={
-              !hiddenBalance
-                ? showAmount(totalBalance.usdTotal)
-                : `$ ${hiddenValue}`
-            }
-            {...{
-              [`${getLabelValue(
-                get(totalBalance, 'last24HoursChage.perc', 0),
-              )}Total`]: showPercentage(
-                get(totalBalance, 'last24HoursChage.perc', 0),
-              ),
-            }}
-            messages={[]}
-            showBalance={!hiddenBalance}
-            onToggleShow={toggleHideBalance}
-            actions={
-              <GlobalSendReceive
-                goToSend={goToSend}
-                goToReceive={goToReceive}
-              />
-            }
-          />
-
+          {totalBalance && (
+            <WalletBalanceCard
+              total={
+                !hiddenBalance
+                  ? showAmount(totalBalance.usdTotal)
+                  : `$ ${hiddenValue}`
+              }
+              {...{
+                [`${getLabelValue(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                )}Total`]: showPercentage(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                ),
+              }}
+              messages={[]}
+              showBalance={!hiddenBalance}
+              onToggleShow={toggleHideBalance}
+              actions={
+                <GlobalSendReceive
+                  goToSend={goToSend}
+                  goToReceive={goToReceive}
+                />
+              }
+            />
+          )}
           <GlobalPadding />
 
           <GlobalCollapse title="My Tokens" isOpen>
@@ -201,7 +198,7 @@ const WalletOverviewPage = () => {
           <GlobalPadding />
 
           <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
-            <GlobalNftList nonFungibleTokens={ntfsList} />
+            <GlobalNftList nonFungibleTokens={nftsList} />
           </GlobalCollapse>
         </GlobalLayout.Header>
       </GlobalLayout>
