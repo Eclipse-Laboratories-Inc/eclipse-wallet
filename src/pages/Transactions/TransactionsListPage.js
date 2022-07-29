@@ -137,42 +137,60 @@ const TransactionsListPage = () => {
                       transaction="swap"
                       address={activeWallet.getReceiveAddress()}
                       // percentage="+0000%"
-                      actions={[
-                        <View style={styles.inline}>
-                          <GlobalText
-                            key={'amount-action'}
-                            type="body2"
-                            color="positive">
-                            {`+${
-                              transaction.swapAmountIn /
-                              (transaction.tokenNameIn === 'SOL'
-                                ? 1000000000
-                                : 1000000)
-                            } ${transaction.tokenNameIn} `}
-                          </GlobalText>
-                          <AvatarImage
-                            url={transaction.tokenLogoIn}
-                            size={18}
-                          />
-                        </View>,
-                        <View style={styles.inline}>
-                          <GlobalText
-                            key={'amount-action'}
-                            type="body2"
-                            color="negative">
-                            {`-${
-                              transaction.swapAmountOut /
-                              (transaction.tokenNameOut === 'SOL'
-                                ? 1000000000
-                                : 1000000)
-                            } ${transaction.tokenNameOut} `}
-                          </GlobalText>
-                          <AvatarImage
-                            url={transaction.tokenLogoOut}
-                            size={18}
-                          />
-                        </View>,
-                      ].filter(Boolean)}
+                      actions={
+                        transaction.error
+                          ? [
+                              <View style={styles.inline}>
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color="negative">
+                                  {`${'-'}${
+                                    transaction.fee / 1000000000
+                                  } SOL  `}
+                                </GlobalText>
+                                <GlobalImage source={IconFailed} size="xxs" />
+                              </View>,
+                            ]
+                          : [
+                              <View style={styles.inline}>
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color="positive">
+                                  {`+${
+                                    transaction.swapAmountIn /
+                                    (transaction.tokenNameIn === 'SOL' ||
+                                    !transaction.tokenNameIn
+                                      ? 1000000000
+                                      : 1000000)
+                                  } ${transaction.tokenNameIn || 'SOL'} `}
+                                </GlobalText>
+                                <AvatarImage
+                                  url={transaction.tokenLogoIn}
+                                  size={18}
+                                />
+                              </View>,
+                              <View style={styles.inline}>
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color="negative">
+                                  {`-${
+                                    transaction.swapAmountOut /
+                                    (transaction.tokenNameOut === 'SOL' ||
+                                    !transaction.tokenNameOut
+                                      ? 1000000000
+                                      : 1000000)
+                                  } ${transaction.tokenNameOut || 'SOL'} `}
+                                </GlobalText>
+                                <AvatarImage
+                                  url={transaction.tokenLogoOut}
+                                  size={18}
+                                />
+                              </View>,
+                            ].filter(Boolean)
+                      }
                       onPress={() => onDetail(i)}
                     />
                   );

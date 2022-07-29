@@ -126,15 +126,18 @@ const TransactionsDetailPage = ({ params }) => {
                     />
                   </View>
 
-                  {transactionDetail.amount && (
-                    <GlobalText type="headline2" center>
-                      {transactionDetail.error
-                        ? `${transactionDetail.amount} SOL`
-                        : `${isReceive ? '+' : '-'}${
-                            transactionDetail.amount
-                          } SOL`}
-                    </GlobalText>
-                  )}
+                  <GlobalText type="headline2" center>
+                    {transactionDetail.error
+                      ? `${'-'}${transactionDetail.fee / 1000000000} SOL  `
+                      : `${isReceive ? '+' : '-'}${
+                          isReceive
+                            ? transactionDetail.amount
+                            : parseFloat(
+                                transactionDetail.amount +
+                                  transactionDetail.fee / 1000000000,
+                              ).toFixed(8)
+                        } SOL`}
+                  </GlobalText>
 
                   <GlobalPadding size="sm" />
 
@@ -203,18 +206,29 @@ const TransactionsDetailPage = ({ params }) => {
               return (
                 <View style={styles.centered}>
                   <View style={styles.floatingTransactionBoxSwap}>
-                    <GlobalImage
-                      source={transactionDetail.tokenLogoOut}
-                      size="xxl"
-                      style={styles.bigImage}
-                      circle
-                    />
-                    <GlobalImage
-                      source={transactionDetail.tokenLogoIn}
-                      size="xxl"
-                      style={styles.bigImage}
-                      circle
-                    />
+                    {transactionDetail.error ? (
+                      <GlobalImage
+                        source={getTransactionImage('swap')}
+                        size="xxl"
+                        style={styles.bigImage}
+                        circle
+                      />
+                    ) : (
+                      <>
+                        <GlobalImage
+                          source={transactionDetail.tokenLogoOut}
+                          size="xxl"
+                          style={styles.bigImage}
+                          circle
+                        />
+                        <GlobalImage
+                          source={transactionDetail.tokenLogoIn}
+                          size="xxl"
+                          style={styles.bigImage}
+                          circle
+                        />
+                      </>
+                    )}
                     <GlobalImage
                       source={
                         transactionDetail.error
@@ -227,23 +241,32 @@ const TransactionsDetailPage = ({ params }) => {
                     />
                   </View>
 
-                  <GlobalText type="headline2" center>
-                    {`+${
-                      transactionDetail.swapAmountIn /
-                      (transactionDetail.tokenNameIn === 'SOL'
-                        ? 1000000000
-                        : 1000000)
-                    } ${transactionDetail.tokenNameIn} `}
-                  </GlobalText>
-
-                  <GlobalText type="headline2" center>
-                    {`-${
-                      transactionDetail.swapAmountOut /
-                      (transactionDetail.tokenNameOut === 'SOL'
-                        ? 1000000000
-                        : 1000000)
-                    } ${transactionDetail.tokenNameOut} `}
-                  </GlobalText>
+                  {transactionDetail.error ? (
+                    <GlobalText type="headline2" center>
+                      {`${'-'}${transactionDetail.fee / 1000000000} SOL  `}
+                    </GlobalText>
+                  ) : (
+                    <>
+                      <GlobalText type="headline2" center>
+                        {`+${
+                          transactionDetail.swapAmountIn /
+                          (transactionDetail.tokenNameIn === 'SOL' ||
+                          !transactionDetail.tokenNameIn
+                            ? 1000000000
+                            : 1000000)
+                        } ${transactionDetail.tokenNameIn || 'SOL'} `}
+                      </GlobalText>
+                      <GlobalText type="headline2" center>
+                        {`-${
+                          transactionDetail.swapAmountOut /
+                          (transactionDetail.tokenNameOut === 'SOL' ||
+                          !transactionDetail.tokenNameOut
+                            ? 1000000000
+                            : 1000000)
+                        } ${transactionDetail.tokenNameOut || 'SOL'} `}
+                      </GlobalText>
+                    </>
+                  )}
 
                   <GlobalPadding size="sm" />
 
