@@ -37,6 +37,7 @@ const initialState = {
       chain: 'SOLANA',
     },
   ],
+  isExtension: process.env.REACT_APP_IS_EXTENSION || false,
 };
 
 const reducer = (state, action) => {

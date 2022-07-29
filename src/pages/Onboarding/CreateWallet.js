@@ -8,7 +8,6 @@ import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
-
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';

@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+const isExtension = process.env.REACT_APP_IS_EXTENSION || false;
+isExtension ? import('./index-extension.css') : import('./index-web.css');
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './globals';

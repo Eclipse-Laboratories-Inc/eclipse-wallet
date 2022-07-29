@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
-
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
