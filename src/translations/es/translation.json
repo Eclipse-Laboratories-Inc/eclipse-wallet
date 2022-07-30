@@ -45,5 +45,30 @@
       "transaction_warning": "Warning",
       "transaction_fail": "Error"
     }
+  },
+  "lock": {
+    "title": "Ingrese su contraseña",
+    "placeholder": "Ingrese su contraseña",
+    "error": "La constraseña es incorrecta",
+    "buttonChecking": "Validando...",
+    "buttonUnlock": "Desbloquear"
+  },
+  "wallet": {
+    "create": {
+      "messageTitle": "Keep your seed safe!",
+      "messageBody1": "Your private keys are only stored on your current computer or device.",
+      "messageBody2": "You will need these words to restore your wallet if your browser's",
+      "messageBody3": "storage is cleared or your device is damaged or lost.",
+      "buttonContinue": "Continue",
+      "buttonPreparing": "Preparing...",
+      "passwordCheck": "Enter your password",
+      "passwordInvalid": "Password Invalid",
+      "passwordChoose": "Choose a password",
+      "passwordDescription": "You will need it to unlock your wallet",
+      "passwordNew": "New password",
+      "passwordRepeat": "Repeat password",
+      "passwordChecking": "Checking...",
+      "passwordButton": "Continue"
+    }
   }
 }

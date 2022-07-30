@@ -1,39 +1,27 @@
 import React, { useContext, useState, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
+import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
-
-import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
 
 import {
   getDefaultChain,
   recoverAccount,
   validateSeedPhrase,
 } from '../../utils/wallet';
-
-const styles = StyleSheet.create({
-  bigIcon: {
-    width: 120,
-    height: 120,
-  },
-  divider: {
-    marginVertical: theme.gutters.paddingXL,
-    width: 56,
-    height: 8,
-  },
-});
+import Password from './components/Password';
+import Success from './components/Success';
 
 const Form = ({ onComplete, onBack }) => {
   const [seedPhrase, setSeedPhrase] = useState(
@@ -95,153 +83,13 @@ const Form = ({ onComplete, onBack }) => {
   );
 };
 
-const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
-  const [wrongpass, setWrongpass] = useState(false);
-  const isValid =
-    (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
-    (requiredLock && pass);
-  const onContinue = async () => {
-    if (requiredLock) {
-      const result = await checkPassword(pass);
-      if (!result) {
-        setWrongpass(true);
-      } else {
-        onComplete(pass);
-      }
-    } else {
-      onComplete(pass);
-    }
-  };
-
-  return (
-    <>
-      <GlobalLayout.Header>
-        <GlobalBackTitle onBack={onBack}>
-          <View style={globalStyles.pagination}>
-            <GlobalPageDot />
-            <GlobalPageDot active />
-            <GlobalPageDot />
-          </View>
-        </GlobalBackTitle>
-
-        {requiredLock && (
-          <>
-            <GlobalText type="headline2" center>
-              Insert password
-            </GlobalText>
-            <GlobalPadding size="2xl" />
-
-            <GlobalInput
-              placeholder="Password"
-              value={pass}
-              setValue={setPass}
-              invalid={wrongpass}
-              autoComplete="password-new"
-              secureTextEntry
-            />
-          </>
-        )}
-
-        {!requiredLock && (
-          <>
-            <GlobalText type="headline2" center>
-              Create Password
-            </GlobalText>
-
-            <GlobalText type="body1" center>
-              3 lines max Excepteur sint occaecat cupidatat non proident, sunt
-            </GlobalText>
-
-            <GlobalPadding size="2xl" />
-
-            <GlobalInput
-              placeholder="New Password"
-              value={pass}
-              setValue={setPass}
-              invalid={false}
-              autoComplete="off"
-              secureTextEntry
-            />
-
-            <GlobalPadding />
-
-            <GlobalInput
-              placeholder="Repeat New Password"
-              value={repass}
-              setValue={setRepass}
-              invalid={false}
-              autoComplete="off"
-              secureTextEntry
-            />
-          </>
-        )}
-      </GlobalLayout.Header>
-
-      <GlobalLayout.Footer>
-        <GlobalButton
-          type="primary"
-          wide
-          title="Recover Wallet"
-          onPress={onContinue}
-          disabled={!isValid}
-        />
-      </GlobalLayout.Footer>
-    </>
-  );
-};
-
-const Success = ({ goToWallet, goToDerived }) => (
-  <>
-    <GlobalLayout.Header>
-      <GlobalPadding size="md" />
-    </GlobalLayout.Header>
-
-    <GlobalLayout.Inner>
-      <GlobalPadding size="md" />
-
-      <GlobalImage source={IconInteractionGreen} style={styles.bigIcon} />
-
-      <GlobalPadding size="xl" />
-
-      <GlobalText type="headline2" center>
-        Success Message
-      </GlobalText>
-
-      <GlobalText type="body1" center>
-        3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
-      </GlobalText>
-    </GlobalLayout.Inner>
-
-    <GlobalLayout.Footer>
-      <GlobalButton
-        type="primary"
-        wide
-        title="Go to my Wallet"
-        onPress={goToWallet}
-      />
-
-      <GlobalPadding size="md" />
-
-      <GlobalButton
-        type="secondary"
-        wide
-        title="Select Derivable"
-        onPress={goToDerived}
-      />
-    </GlobalLayout.Footer>
-  </>
-);
-
-const RecoverWallet = () => {
+const RecoverWallet = ({ t }) => {
   const navigate = useNavigation();
-  const [
-    { selectedEndpoints, requiredLock, wallets },
-    { addWallet, checkPassword },
-  ] = useContext(AppContext);
+  const [{ selectedEndpoints, requiredLock }, { addWallet, checkPassword }] =
+    useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
+  const [waiting, setWaiting] = useState(false);
   const handleRecover = async seedPhrase => {
     const a = await recoverAccount(
       getDefaultChain(),
@@ -252,7 +100,9 @@ const RecoverWallet = () => {
     setStep(2);
   };
   const handleOnPasswordComplete = async password => {
+    setWaiting(true);
     await addWallet(account, password, getDefaultChain());
+    setWaiting(false);
     setStep(3);
   };
   const goToWallet = () => navigate(ROUTES_MAP.WALLET);
@@ -272,6 +122,8 @@ const RecoverWallet = () => {
           onBack={() => setStep(1)}
           requiredLock={requiredLock}
           checkPassword={checkPassword}
+          waiting={waiting}
+          t={t}
         />
       )}
       {step === 3 && (
@@ -285,4 +137,4 @@ const RecoverWallet = () => {
   );
 };
 
-export default RecoverWallet;
+export default withTranslation()(RecoverWallet);

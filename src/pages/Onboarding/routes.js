@@ -39,7 +39,6 @@ const routes = [
     path: 'derived',
     route: '/onboarding/derived',
     Component: DerivedAccounts,
-    default: true,
   },
 ];
 

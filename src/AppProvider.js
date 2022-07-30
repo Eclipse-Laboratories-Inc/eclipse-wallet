@@ -108,13 +108,15 @@ const AppProvider = ({ children }) => {
       ]}>
       <GlobalError>
         {appState.ready && !walletState.locked && (
-          <InactivityCheck
-            onIdle={walletActions.lockWallets}
-            active={walletState.requiredLock}>
-            <RoutesProvider>
-              <ThemeProvider>{children}</ThemeProvider>
-            </RoutesProvider>
-          </InactivityCheck>
+          <RoutesProvider>
+            <ThemeProvider>
+              <InactivityCheck
+                onIdle={walletActions.lockWallets}
+                active={walletState.requiredLock}>
+                {children}
+              </InactivityCheck>
+            </ThemeProvider>
+          </RoutesProvider>
         )}
         {walletState.locked && (
           <ThemeProvider>
