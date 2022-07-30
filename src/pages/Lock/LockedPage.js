@@ -7,12 +7,17 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 import { AppContext } from '../../AppProvider';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import { withTranslation } from '../../hooks/useTranslations';
 
-const LockedPage = () => {
+const LockedPage = ({ t }) => {
   const [, { unlockWallets }] = useContext(AppContext);
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const onChange = v => {
+    setError(false);
+    setPass(v);
+  };
   const unlock = async () => {
     setError(false);
     setUnlocking(true);
@@ -23,28 +28,29 @@ const LockedPage = () => {
     }
   };
   return (
-    <GlobalLayout>
+    <GlobalLayout fullscreen>
       <GlobalLayout.Header>
         <GlobalPadding size="4xl" />
       </GlobalLayout.Header>
 
       <GlobalLayout.Inner>
         <GlobalText type="headline2" center>
-          Enter Your Password
+          {t('lock.title')}
         </GlobalText>
 
         <GlobalPadding size="md" />
 
         <GlobalInput
-          placeholder="Enter Your Password"
+          placeholder={t('lock.placeholder')}
           value={pass}
-          setValue={setPass}
+          setValue={onChange}
           secureTextEntry
           autocomplete={false}
+          invalid={error}
         />
         {error && (
           <GlobalText type="body1" color="negative">
-            password error
+            {t('lock.error')}
           </GlobalText>
         )}
       </GlobalLayout.Inner>
@@ -53,7 +59,7 @@ const LockedPage = () => {
         <GlobalButton
           type="primary"
           wide
-          title="Unlock"
+          title={unlocking ? t('lock.buttonChecking') : t('lock.buttonUnlock')}
           onPress={unlock}
           disabled={!pass || unlocking}
         />
@@ -62,4 +68,4 @@ const LockedPage = () => {
   );
 };
 
-export default LockedPage;
+export default withTranslation()(LockedPage);

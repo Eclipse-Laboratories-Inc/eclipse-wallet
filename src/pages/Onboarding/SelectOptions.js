@@ -95,7 +95,6 @@ const SelectOptions = () => {
   };
   const onSelectChain = chain => {
     navigate(actionRoute, { chainCode: chain });
-    setStep(0);
   };
 
   return (

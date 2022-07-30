@@ -17,8 +17,11 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
+import { withTranslation } from '../../hooks/useTranslations';
+import Password from './components/Password';
+import Success from './components/Success';
 
-const Message = ({ onNext, onBack }) => (
+const Message = ({ onNext, onBack, waiting, t }) => (
   <>
     <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack} />
@@ -28,18 +31,28 @@ const Message = ({ onNext, onBack }) => (
       <GlobalDivider />
 
       <GlobalText type="headline2" center>
-        Keep your seed safe!
+        {t('wallet.create.messageTitle')}
       </GlobalText>
 
       <GlobalText type="body1" center>
-        Your private keys are only stored on your current computer or device.
-        You will need these words to restore your wallet if your browser's
-        storage is cleared or your device is damaged or lost.
+        {t('wallet.create.messageBody1')}
+        {t('wallet.create.messageBody2')}
+        {t('wallet.create.messageBody3')}
       </GlobalText>
     </GlobalLayout.Inner>
 
     <GlobalLayout.Footer>
-      <GlobalButton type="primary" wide title="Continue" onPress={onNext} />
+      <GlobalButton
+        type="primary"
+        wide
+        title={
+          !waiting
+            ? t('wallet.create.buttonContinue')
+            : t('wallet.create.buttonPreparing')
+        }
+        onPress={onNext}
+        disabled={waiting}
+      />
     </GlobalLayout.Footer>
   </>
 );
@@ -170,130 +183,45 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
   );
 };
 
-const Password = ({ onComplete, onBack, requiredLock, checkPassword }) => {
-  const [pass, setPass] = useState('');
-  const [repass, setRepass] = useState('');
-  const [wrongpass, setWrongpass] = useState(false);
-  const isValid =
-    (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
-    (requiredLock && pass);
-  const onContinue = async () => {
-    if (requiredLock) {
-      const result = await checkPassword(pass);
-      if (!result) {
-        setWrongpass(true);
-      } else {
-        onComplete(pass);
-      }
-    } else {
-      onComplete(pass);
-    }
-  };
-
-  return (
-    <>
-      <GlobalLayout.Header>
-        <GlobalBackTitle onBack={onBack}>
-          <View style={globalStyles.pagination}>
-            <GlobalPageDot />
-            <GlobalPageDot />
-            <GlobalPageDot active />
-          </View>
-        </GlobalBackTitle>
-
-        {requiredLock && (
-          <>
-            <GlobalText type="headline2" center>
-              Insert password
-            </GlobalText>
-            <GlobalPadding size="2xl" />
-
-            <GlobalInput
-              placeholder="Password"
-              value={pass}
-              setValue={setPass}
-              invalid={wrongpass}
-              autoComplete="password-new"
-              secureTextEntry
-            />
-          </>
-        )}
-
-        {!requiredLock && (
-          <>
-            <GlobalText type="headline2" center>
-              Choose a Password
-            </GlobalText>
-
-            <GlobalText type="body1" center>
-              Prese re-enter seed phrase to confirm tha you have save it
-            </GlobalText>
-
-            <GlobalPadding size="2xl" />
-
-            <GlobalInput
-              placeholder="New Password"
-              value={pass}
-              setValue={setPass}
-              invalid={false}
-              autoComplete="password-new"
-              secureTextEntry
-            />
-
-            <GlobalPadding />
-
-            <GlobalInput
-              placeholder="Repeat New Password"
-              value={repass}
-              setValue={setRepass}
-              invalid={false}
-              autoComplete="password-new"
-              secureTextEntry
-            />
-          </>
-        )}
-      </GlobalLayout.Header>
-
-      <GlobalLayout.Footer>
-        <GlobalButton
-          type="secondary"
-          wide
-          title="Create Wallet"
-          onPress={onContinue}
-          disabled={!isValid}
-        />
-      </GlobalLayout.Footer>
-    </>
-  );
-};
-
-const CreateWallet = ({ params }) => {
+const CreateWallet = ({ params, t }) => {
   const navigate = useNavigation();
-  const [
-    { selectedEndpoints, requiredLock, wallets },
-    { addWallet, checkPassword },
-  ] = useContext(AppContext);
+  const [{ selectedEndpoints, requiredLock }, { addWallet, checkPassword }] =
+    useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
-  useEffect(() => {
+  const [waiting, setWaiting] = useState(false);
+
+  const onAddAccount = () => {
+    setWaiting(true);
     if (!account) {
       createAccount(params.chainCode, selectedEndpoints[params.chainCode]).then(
         d => {
           setAccount(d);
+          setStep(2);
+          setWaiting(false);
         },
       );
+    } else {
+      setStep(2);
+      setWaiting(false);
     }
-  }, [selectedEndpoints, account, params.chainCode]);
-  const handleOnPasswordComplete = async password => {
-    await addWallet(account, password, params.chainCode);
-    navigate(APP_ROUTES_MAP.WALLET);
   };
+  const handleOnPasswordComplete = async password => {
+    setWaiting(true);
+    await addWallet(account, password, params.chainCode);
+    setStep(5);
+  };
+  const goToWallet = () => navigate(APP_ROUTES_MAP.WALLET);
+  const goToDerived = () => navigate(ROUTES_MAP.ONBOARDING_DERIVED);
+
   return (
     <GlobalLayout fullscreen>
       {step === 1 && (
         <Message
-          onNext={() => setStep(2)}
+          onNext={onAddAccount}
           onBack={() => navigate(ROUTES_MAP.ONBOARDING_HOME)}
+          waiting={waiting}
+          t={t}
         />
       )}
       {step === 2 && (
@@ -316,10 +244,19 @@ const CreateWallet = ({ params }) => {
           onBack={() => setStep(3)}
           requiredLock={requiredLock}
           checkPassword={checkPassword}
+          waiting={waiting}
+          t={t}
+        />
+      )}
+      {step === 5 && (
+        <Success
+          goToWallet={goToWallet}
+          goToDerived={goToDerived}
+          onBack={() => setStep(2)}
         />
       )}
     </GlobalLayout>
   );
 };
 
-export default withParams(CreateWallet);
+export default withParams(withTranslation()(CreateWallet));
