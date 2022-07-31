@@ -99,7 +99,11 @@ const AppProvider = ({ children }) => {
     logout,
     toggleHideBalance,
   };
-
+  const onAppIdle = () => {
+    if (walletState.requiredLock) {
+      walletActions.lockWallets();
+    }
+  };
   return (
     <AppContext.Provider
       value={[
@@ -110,9 +114,7 @@ const AppProvider = ({ children }) => {
         {appState.ready && !walletState.locked && (
           <RoutesProvider>
             <ThemeProvider>
-              <InactivityCheck
-                onIdle={walletActions.lockWallets}
-                active={walletState.requiredLock}>
+              <InactivityCheck onIdle={onAppIdle} active>
                 {children}
               </InactivityCheck>
             </ThemeProvider>

@@ -69,6 +69,13 @@
       "passwordRepeat": "Repeat password",
       "passwordChecking": "Checking...",
       "passwordButton": "Continue"
+    },
+    "onboarding": {
+      "titleOnboarded": "Add new wallet",
+      "titleWelcome": "Welcome to",
+      "createWallet": "Create wallet",
+      "recoverWallet": "Recover wallet",
+      "titleChain": "Select blockchain"
     }
   }
 }

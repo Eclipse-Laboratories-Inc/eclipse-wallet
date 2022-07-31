@@ -69,6 +69,19 @@
       "passwordRepeat": "Repeat password",
       "passwordChecking": "Checking...",
       "passwordButton": "Continue"
+    },
+    "recover": {
+      "messageTitle": "Recover Existing Wallet",
+      "messageBody": "Recover your wallet using your 24 words seed phrase.",
+      "pasteSeed": "Paster your seed phrase",
+      "buttonNext": "Next"
+    },
+    "onboarding": {
+      "titleOnboarded": "Add new wallet",
+      "titleWelcome": "Welcome to",
+      "createWallet": "Create wallet",
+      "recoverWallet": "Recover wallet",
+      "titleChain": "Select blockchain"
     }
   }
 }

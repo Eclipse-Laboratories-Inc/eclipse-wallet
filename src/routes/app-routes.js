@@ -1,4 +1,4 @@
-import OnboardingPage from '../pages/Onboarding/OnboardingPage';
+import OnboardingSection from '../pages/Onboarding';
 import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
 import TokenSection from '../pages/Token';
@@ -33,7 +33,7 @@ const routes = [
     name: 'onboarding',
     path: 'onboarding/*',
     route: '/onboarding',
-    Component: OnboardingPage,
+    Component: OnboardingSection,
   },
   {
     key: ROUTES_MAP.TOKEN,

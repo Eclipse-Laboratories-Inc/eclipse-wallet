@@ -10,7 +10,7 @@ import CardButton from '../../../component-library/CardButton/CardButton';
 
 import AvatarImage from '../../../component-library/Image/AvatarImage';
 
-const ChooseDerivabes = ({ accounts, onComplete }) => {
+const ChooseDerivabes = ({ accounts, onComplete, t }) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {

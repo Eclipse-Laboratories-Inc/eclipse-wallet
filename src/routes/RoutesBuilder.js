@@ -12,8 +12,7 @@ const RoutesBuilder = ({ routes, entry, requireOnboarding = true, ..._ }) => {
     if (requireOnboarding && !wallets.length) {
       navigate(ROUTES_MAP.ONBOARDING);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requireOnboarding]);
+  }, [requireOnboarding, navigate, wallets]);
 
   const EntryComponent = entry ? getRouteComponent(routes, entry) : null;
 
