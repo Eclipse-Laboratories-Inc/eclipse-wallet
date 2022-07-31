@@ -20,16 +20,22 @@ const AddressBookEditPage = ({ params, t }) => {
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
   const [currentAddress, setCurrentAddress] = useState('');
+  const [currentLabel, setCurrentLabel] = useState('');
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     const address = addressBook.find(a => a.address === params.address);
     if (address) {
       setCurrentAddress(address.address);
+      setCurrentLabel(address.name);
       setAddressAddress(address.address);
       setAddressLabel(address.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.addressbook]);
+  const isValid =
+    addressLabel &&
+    addressAddress &&
+    (addressLabel !== currentLabel || addressAddress !== currentAddress);
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
@@ -77,7 +83,7 @@ const AddressBookEditPage = ({ params, t }) => {
           wideSmall
           title={t('settings.addressbook.save')}
           onPress={onSave}
-          disabled={saving}
+          disabled={saving || !isValid}
         />
       </GlobalLayout.Footer>
     </GlobalLayout>

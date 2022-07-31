@@ -18,7 +18,9 @@ const AddressBookAddPage = ({ t }) => {
   const [saving, setSaving] = useState(false);
   const [{ activeWallet, addressBook }, { addAddress }] =
     useContext(AppContext);
-
+  const [addressLabel, setAddressLabel] = useState('');
+  const [addressAddress, setAddressAddress] = useState('');
+  const isValid = addressLabel && addressAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
@@ -31,8 +33,6 @@ const AddressBookAddPage = ({ t }) => {
     setSaving(false);
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   };
-  const [addressLabel, setAddressLabel] = useState('');
-  const [addressAddress, setAddressAddress] = useState('');
 
   return (
     <GlobalLayout>
@@ -68,7 +68,7 @@ const AddressBookAddPage = ({ t }) => {
           wideSmall
           title={t('settings.addressbook.save')}
           onPress={onSave}
-          disabled={saving}
+          disabled={saving || !isValid}
         />
       </GlobalLayout.Footer>
     </GlobalLayout>
