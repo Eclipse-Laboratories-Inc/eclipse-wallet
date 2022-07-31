@@ -7,7 +7,6 @@ import { withTranslation } from '../../hooks/useTranslations';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButton from '../../component-library/CardButton/CardButton';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const ChangeLanguagePage = ({ t }) => {
@@ -26,8 +25,6 @@ const ChangeLanguagePage = ({ t }) => {
           onBack={onBack}
           title={t('settings.languages.title')}
         />
-
-        <GlobalPadding />
 
         {languages.map(code => (
           <CardButton

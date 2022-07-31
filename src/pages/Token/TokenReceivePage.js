@@ -9,7 +9,7 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -20,26 +20,10 @@ import QRImage from '../../features/QRImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   qrBox: {
     padding: theme.gutters.paddingMD,
     backgroundColor: theme.staticColor.alwaysWhite,
     borderRadius: theme.borderRadius.borderRadiusNormal,
-  },
-  inlineWell: {
-    marginBottom: theme.gutters.paddingXS,
-    paddingVertical: theme.gutters.paddingXS,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.buttonMaxWidth,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: theme.colors.bgLight,
-    borderRadius: theme.borderRadius.borderRadiusMD,
   },
 });
 
@@ -65,14 +49,14 @@ const TokenReceivePage = ({ t }) => {
             secondaryTitle={t('token.receive.title')}
           />
 
-          <View style={styles.centered}>
+          <View style={globalStyles.centered}>
             <View style={styles.qrBox}>
               <QRImage address={activeWallet.getReceiveAddress()} size={225} />
             </View>
 
             <GlobalPadding size="2xl" />
 
-            <View style={styles.inlineWell}>
+            <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">Name.acr</GlobalText>
 
               <GlobalButton onPress={onCopyAlias} size="medium">
@@ -81,7 +65,7 @@ const TokenReceivePage = ({ t }) => {
               </GlobalButton>
             </View>
 
-            <View style={styles.inlineWell}>
+            <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">
                 {getWalletName(activeWallet, walletNumber)} (
                 {getShortAddress(activeWallet.getReceiveAddress())})

@@ -27,14 +27,28 @@ const SettingsOptionsPage = ({ t }) => {
   const [{ selectedLanguage, languages }, { changeLanguage }] =
     useContext(AppContext);
 
-  const goToAddressBook = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ADDRESSBOOK);
-  const goToNetwork = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
   const goToAccounts = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
+
+  const goToAddressBook = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ADDRESSBOOK);
+
   const goToLanguages = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
+
+  const goToNetwork = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
+
+  const goToSecurity = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_SECURITY);
+
+  const goToNofifications = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_NOTIFICATIONS);
+
+  const goToTrustedApps = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_TRUSTEDAPPS);
+
+  const goToHelpSupport = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_HELPSUPPORT);
 
   return (
     <GlobalLayout>
@@ -55,13 +69,13 @@ const SettingsOptionsPage = ({ t }) => {
         <GlobalPadding />
 
         <CardButton
-          title="Address Book"
+          title={t(`settings.address_book`)}
           actionIcon="right"
           onPress={goToAddressBook}
         />
 
         <CardButton
-          title="Display Language"
+          title={t(`settings.display_language`)}
           // description="Lorem impsum"
           actionIcon="right"
           onPress={goToLanguages}>
@@ -71,7 +85,7 @@ const SettingsOptionsPage = ({ t }) => {
         </CardButton>
 
         <CardButton
-          title="Change Network"
+          title={t(`settings.change_network`)}
           actionIcon="right"
           onPress={goToNetwork}>
           <GlobalText type="caption">
@@ -80,31 +94,27 @@ const SettingsOptionsPage = ({ t }) => {
         </CardButton>
 
         <CardButton
-          title="Security"
+          title={t(`settings.security`)}
           actionIcon="right"
-          onPress={() => {}}
-          disabled
-        />
-
-        {/* <CardButton
-        title="Notifications"
-        actionIcon="right"
-        onPress={() => {}}
-        disabled
-      /> */}
-
-        <CardButton
-          title="Trusted Apps"
-          actionIcon="right"
-          onPress={() => {}}
-          disabled
+          onPress={goToSecurity}
         />
 
         <CardButton
-          title="Help & Support"
+          title={t(`settings.notifications`)}
           actionIcon="right"
-          onPress={() => {}}
-          disabled
+          onPress={goToNofifications}
+        />
+
+        <CardButton
+          title={t(`settings.trusted_apps`)}
+          actionIcon="right"
+          onPress={goToTrustedApps}
+        />
+
+        <CardButton
+          title={t(`settings.help_support`)}
+          actionIcon="right"
+          onPress={goToHelpSupport}
         />
       </GlobalLayout.Header>
 

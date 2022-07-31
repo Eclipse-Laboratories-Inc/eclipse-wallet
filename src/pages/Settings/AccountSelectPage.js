@@ -10,6 +10,7 @@ import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import { getMediaRemoteUrl } from '../../utils/media';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const AccountSelectPage = () => {
+const AccountSelectPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, wallets, locked }, { changeActiveWallet }] =
     useContext(AppContext);
@@ -48,7 +49,6 @@ const AccountSelectPage = () => {
     navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
   };
   const editWallet = ({ address }) => {
-    console.log(address);
     navigate(ROUTES_MAP.SETTINGS_ACCOUNT_EDIT, { address });
   };
 
@@ -58,9 +58,10 @@ const AccountSelectPage = () => {
     !locked && (
       <GlobalLayout>
         <GlobalLayout.Header>
-          <GlobalBackTitle onBack={onBack} title="Your Wallets" />
-
-          <GlobalPadding />
+          <GlobalBackTitle
+            onBack={onBack}
+            title={t('settings.wallets.your_wallets')}
+          />
 
           {Object.keys(groupedWallets).map(chain => (
             <React.Fragment key={chain}>
@@ -96,7 +97,7 @@ const AccountSelectPage = () => {
           <GlobalButton
             type="primary"
             wide
-            title="Add New Wallet"
+            title={t('settings.wallets.add_new_wallet')}
             onPress={addNewWallet}
           />
         </GlobalLayout.Footer>
@@ -105,4 +106,4 @@ const AccountSelectPage = () => {
   );
 };
 
-export default AccountSelectPage;
+export default withTranslation()(AccountSelectPage);

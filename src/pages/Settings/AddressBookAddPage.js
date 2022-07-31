@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
-import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -14,9 +13,6 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
-
-  const [{ activeWallet, wallets }, { changeActiveWallet }] =
-    useContext(AppContext);
 
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
 

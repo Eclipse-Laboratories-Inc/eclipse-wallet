@@ -35,12 +35,23 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
   },
+  sizeeXL: {
+    width: 196,
+    height: 196,
+  },
   block: {
     width: '100%',
     height: '100%',
   },
+  square: {
+    width: '100%',
+    aspectRatio: 1,
+  },
   circle: {
     borderRadius: 250,
+  },
+  squircle: {
+    borderRadius: 20,
   },
   imageMask: {
     position: 'absolute',
@@ -68,7 +79,9 @@ const GlobalImage = ({
   size,
   mask,
   maskColor,
+  square,
   circle,
+  squircle,
   resizeMode,
   style,
   ...props
@@ -76,12 +89,16 @@ const GlobalImage = ({
   const imageStyles = {
     ...(size === 'xs' && styles.sizeXS),
     ...(size === 'sm' && styles.sizeSM),
+    ...(size === 'normal' && styles.sizeNormal),
     ...(size === 'md' && styles.sizeMD),
     ...(size === 'xl' && styles.sizeXL),
     ...(size === 'xxl' && styles.sizeXXL),
     ...(size === '3xl' && styles.size3XL),
+    ...(size === '4xl' && styles.sizeeXL),
     ...(size === 'block' && styles.block),
     ...(circle && styles.circle),
+    ...(squircle && styles.squircle),
+    ...(square && styles.square),
   };
 
   return (
@@ -90,7 +107,7 @@ const GlobalImage = ({
         // source={name ? getImage(name) : source}
         source={url ? { uri: url } : source}
         resizeMode={resizeMode || 'contain'}
-        style={[styles.sizeNormal, imageStyles, style]}
+        style={[imageStyles, style]}
         {...props}
       />
 

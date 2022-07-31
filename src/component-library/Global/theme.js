@@ -215,10 +215,34 @@ const themes = {
   },
 };
 
+const colorTheme =
+  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
+
 export const globalStyles = StyleSheet.create({
+  squareRatio: {
+    width: '100%',
+    aspectRatio: 1,
+  },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  inlineFlexButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  buttonTouchable: {
+    flex: 1,
+  },
+  button: {
+    alignSelf: 'stretch',
+  },
+  buttonLeft: {
+    marginRight: gutters.paddingXS,
+  },
+  buttonRight: {
+    marginLeft: gutters.paddingXS,
   },
   addressBookItem: {
     paddingVertical: 0,
@@ -228,10 +252,42 @@ export const globalStyles = StyleSheet.create({
   addressBookTouchable: {
     marginBottom: 0,
   },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredSmall: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    maxWidth: variables.buttonMaxWidthSmall,
+  },
+  floatingTransactionBox: {
+    marginVertical: gutters.paddingLG,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  floatingTransaction: {
+    position: 'absolute',
+    right: -10,
+    bottom: -10,
+  },
+  bigImage: {
+    backgroundColor: colorTheme.bgLight,
+  },
+  inlineWell: {
+    marginBottom: gutters.paddingSM,
+    paddingVertical: gutters.paddingXS,
+    paddingHorizontal: gutters.paddingSM,
+    width: '100%',
+    maxWidth: variables.buttonMaxWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colorTheme.bgLight,
+    borderRadius: borderRadius.borderRadiusMD,
+  },
 });
-
-const colorTheme =
-  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
 
 const theme = {
   variables,

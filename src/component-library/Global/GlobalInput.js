@@ -101,6 +101,7 @@ const GlobalInput = ({
   invalid,
   complete,
   style,
+  inputGroupStyles,
   seedphrase,
   multiline,
   numberOfLines,
@@ -114,7 +115,7 @@ const GlobalInput = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View style={styles.inputGroup}>
+    <View style={[styles.inputGroup, inputGroupStyles]}>
       {forSearch && (
         <View style={styles.forSearch}>
           <GlobalImage source={IconSearch} size="xs" />
