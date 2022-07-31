@@ -13,11 +13,13 @@ const WalletPage = () => {
 
   return (
     <GlobalTabBarLayout
-      tabs={routes.map(r => ({
-        title: r.name,
-        onClick: () => navigate(r.key),
-        icon: r.icon,
-      }))}>
+      tabs={routes
+        .filter(r => !!r.icon)
+        .map(r => ({
+          title: r.name,
+          onClick: () => navigate(r.key),
+          icon: r.icon,
+        }))}>
       <RoutesBuilder routes={routes} type={ROUTES_TYPES.TABS} />
     </GlobalTabBarLayout>
   );

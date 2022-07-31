@@ -2,9 +2,8 @@ import OnboardingSection from '../pages/Onboarding';
 import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
 import TokenSection from '../pages/Token';
+import { getRoutesWithParent } from './utils';
 
-const getRoutesWithParent = (routes, parent) =>
-  routes.map(r => ({ ...r, parent }));
 export const ROUTES_MAP = {
   WELCOME: 'WELCOME',
   ONBOARDING: 'ONBOARDING',

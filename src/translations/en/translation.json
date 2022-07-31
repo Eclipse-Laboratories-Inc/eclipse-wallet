@@ -83,5 +83,16 @@
       "recoverWallet": "Recover wallet",
       "titleChain": "Select blockchain"
     }
+  },
+  "nfts": {
+    "list": {
+      "title": "Your NFTS"
+    },
+    "send": {
+      "button": "Send",
+      "processing": "Sending...",
+      "finish": "Sent",
+      "viewTransaction": "View Transaction"
+    }
   }
 }

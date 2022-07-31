@@ -10,6 +10,12 @@ export const getDefaultRoute = routes =>
     'name',
   );
 
+export const getDefaultRouteKey = routes =>
+  get(
+    find(routes, route => route.default),
+    'key',
+  );
+
 export const getRouteComponent = (routes, key) =>
   get(
     find(routes, route => route.key === key),
@@ -21,3 +27,6 @@ export const getRouteName = (routes, key) =>
     find(routes, route => route.key === key),
     'name',
   );
+
+export const getRoutesWithParent = (routes, parent) =>
+  routes.map(r => ({ ...r, parent }));
