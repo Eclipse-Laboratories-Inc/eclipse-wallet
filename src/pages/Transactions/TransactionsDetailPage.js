@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';
@@ -11,7 +11,7 @@ import {
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
-import theme from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -19,42 +19,12 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 
-const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  floatingTransactionBox: {
-    marginVertical: theme.gutters.paddingXL,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-  },
-  floatingTransaction: {
-    position: 'absolute',
-    right: -10,
-    bottom: -10,
-  },
-  bigImage: {
-    backgroundColor: theme.colors.bgLight,
-  },
-  inlineWell: {
-    marginBottom: theme.gutters.paddingXS,
-    paddingVertical: theme.gutters.paddingXS,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.buttonMaxWidth,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: theme.colors.bgLight,
-    borderRadius: theme.borderRadius.borderRadiusMD,
-  },
-});
-
 const TransactionsDetailPage = () => {
   const navigate = useNavigation();
+
   const [{ activeWallet, wallets }, { changeActiveWallet }] =
     useContext(AppContext);
+
   const onBack = () => navigate(ROUTES_MAP.TRANSACTIONS_LIST);
 
   return (
@@ -62,19 +32,19 @@ const TransactionsDetailPage = () => {
       <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack} secondaryTitle="Transaction Detail" />
 
-        <View style={styles.centered}>
-          <View style={styles.floatingTransactionBox}>
+        <View style={globalStyles.centered}>
+          <View style={globalStyles.floatingTransactionBox}>
             <GlobalImage
               source={getMediaRemoteUrl(LOGOS['SOLANA'])}
               size="xxl"
-              style={styles.bigImage}
+              style={globalStyles.bigImage}
               circle
             />
             <GlobalImage
               source={getTransactionImage('sent')}
               size="md"
               circle
-              style={styles.floatingTransaction}
+              style={globalStyles.floatingTransaction}
             />
           </View>
 
@@ -84,7 +54,7 @@ const TransactionsDetailPage = () => {
 
           <GlobalPadding size="sm" />
 
-          <View style={styles.inlineWell}>
+          <View style={globalStyles.inlineWell}>
             <GlobalText type="caption" color="tertiary">
               Date
             </GlobalText>
@@ -92,7 +62,7 @@ const TransactionsDetailPage = () => {
             <GlobalText type="body2">Sep 21, 2022 - 10.17 PM</GlobalText>
           </View>
 
-          <View style={styles.inlineWell}>
+          <View style={globalStyles.inlineWell}>
             <GlobalText type="caption" color="tertiary">
               Status
             </GlobalText>
@@ -102,7 +72,7 @@ const TransactionsDetailPage = () => {
             </GlobalText>
           </View>
 
-          <View style={styles.inlineWell}>
+          <View style={globalStyles.inlineWell}>
             <GlobalText type="caption" color="tertiary">
               To
             </GlobalText>

@@ -4,13 +4,13 @@ import { AppContext } from '../../AppProvider';
 import { getWalletChain } from '../../utils/wallet';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButton from '../../component-library/CardButton/CardButton';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
-const ChangeNetworkPage = () => {
+const ChangeNetworkPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, selectedEndpoints }, { changeEndpoint }] =
     useContext(AppContext);
@@ -30,9 +30,7 @@ const ChangeNetworkPage = () => {
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <GlobalBackTitle onBack={onBack} title="Select Network" />
-
-        <GlobalPadding />
+        <GlobalBackTitle onBack={onBack} title={t(`settings.change_network`)} />
 
         {networks.map(({ id: label, description }) => (
           <CardButton
@@ -49,4 +47,4 @@ const ChangeNetworkPage = () => {
   );
 };
 
-export default ChangeNetworkPage;
+export default withTranslation()(ChangeNetworkPage);

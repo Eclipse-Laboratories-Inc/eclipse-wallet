@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';

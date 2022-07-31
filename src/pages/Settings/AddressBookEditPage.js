@@ -54,7 +54,10 @@ const AddressBookEditPage = ({ params, t }) => {
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <GlobalBackTitle onBack={onBack} title="Edit Address" />
+        <GlobalBackTitle
+          onBack={onBack}
+          title={t(`settings.addressbook.edit`)}
+        />
 
         <GlobalPadding size="md" />
 

@@ -1,14 +1,41 @@
 {
   "general": {
+    "home": "Home",
     "copy": "Copiar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "save": "Guardar",
+    "remove": "Eliminar",
+    "done": "Listo",
+    "name": "Nombre",
+    "address": "Dirección",
+    "seed_phrase": "Seed Phrase"
   },
   "settings": {
     "title": "Configuración",
+    "address_book": "Address Book",
+    "display_language": "Display Language",
+    "change_network": "Change Network",
+    "security": "Security",
+    "notifications": "Notifications",
+    "trusted_apps": "Trusted Apps",
+    "help_support": "Help & Support",
+    "wallets": {
+      "your_wallets": "Your Wallets",
+      "add_new_wallet": "Add New Wallet",
+      "edit_wallet": "Edit Wallet",
+      "edit_name": "Edit Name",
+      "edit_address": "Edit Wallet",
+      "tap_to_reveal": "Tap to Reveal",
+      "set_profile_picture": "Set Profile Picture",
+      "select_nft": "Select NFT",
+      "upload_photo": "Upload Photo",
+      "select_nft_to_profile": "Select NFT to Profile",
+      "full_nft_description": "Full NFT Description"
+    },
     "addressbook": {
-      "title": "Address Book",
       "add": "Add Address",
       "addnew": "Add New Address",
+      "edit": "Edit Address",
       "save": "Save Address",
       "label": "Label"
     },

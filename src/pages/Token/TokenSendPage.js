@@ -32,43 +32,6 @@ const styles = StyleSheet.create({
   titleStyle: {
     color: theme.colors.labelTertiary,
   },
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centeredSmall: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    maxWidth: theme.variables.buttonMaxWidthSmall,
-  },
-  bigImage: {
-    backgroundColor: theme.colors.bgLight,
-  },
-  buttonTouchable: {
-    flex: 1,
-  },
-  button: {
-    alignSelf: 'stretch',
-  },
-  buttonLeft: {
-    marginRight: theme.gutters.paddingXS,
-  },
-  buttonRight: {
-    marginLeft: theme.gutters.paddingXS,
-  },
-  inlineWell: {
-    marginBottom: theme.gutters.paddingXS,
-    paddingVertical: theme.gutters.paddingXS,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.buttonMaxWidth,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: theme.colors.bgLight,
-    borderRadius: theme.borderRadius.borderRadiusMD,
-  },
 });
 
 const STATUS = {
@@ -222,8 +185,8 @@ const TokenSendPage = ({ params, t }) => {
                 flex
                 title="Cancel"
                 onPress={goToBack}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
 
               <GlobalButton
@@ -240,8 +203,8 @@ const TokenSendPage = ({ params, t }) => {
                     ? onNext
                     : validateAddress
                 }
-                style={[styles.button, styles.buttonRight]}
-                touchableStyles={styles.buttonTouchable}
+                style={[globalStyles.button, globalStyles.buttonRight]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </>
@@ -256,11 +219,11 @@ const TokenSendPage = ({ params, t }) => {
               />
               <GlobalPadding size="4xl" />
 
-              <View style={styles.centered}>
+              <View style={globalStyles.centered}>
                 <GlobalImage
                   source={getMediaRemoteUrl(LOGOS.SOLANA)}
                   size="xxl"
-                  style={styles.bigImage}
+                  style={globalStyles.bigImage}
                   circle
                 />
 
@@ -276,7 +239,7 @@ const TokenSendPage = ({ params, t }) => {
 
                 <GlobalPadding size="md" />
 
-                <View style={styles.inlineWell}>
+                <View style={globalStyles.inlineWell}>
                   <GlobalText type="body2">Name.SOL</GlobalText>
 
                   <GlobalButton onPress={() => {}} transparent>
@@ -284,7 +247,7 @@ const TokenSendPage = ({ params, t }) => {
                   </GlobalButton>
                 </View>
 
-                <View style={styles.inlineWell}>
+                <View style={globalStyles.inlineWell}>
                   <GlobalText type="caption" color="tertiary">
                     Network Fee
                   </GlobalText>
@@ -300,8 +263,8 @@ const TokenSendPage = ({ params, t }) => {
                 flex
                 title="Cancel"
                 onPress={goToBack}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
 
               <GlobalButton
@@ -310,8 +273,8 @@ const TokenSendPage = ({ params, t }) => {
                 flex
                 title="Next"
                 onPress={onSend}
-                style={[styles.button, styles.buttonRight]}
-                touchableStyles={styles.buttonTouchable}
+                style={[globalStyles.button, globalStyles.buttonRight]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </>
@@ -321,7 +284,7 @@ const TokenSendPage = ({ params, t }) => {
             <GlobalLayout.Header>
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
-              <View style={styles.centeredSmall}>
+              <View style={globalStyles.centeredSmall}>
                 <GlobalImage
                   source={getTransactionImage(status)}
                   size="3xl"
@@ -346,8 +309,8 @@ const TokenSendPage = ({ params, t }) => {
                 flex
                 title="Close"
                 onPress={goToBack}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </>

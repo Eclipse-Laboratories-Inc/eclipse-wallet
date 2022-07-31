@@ -9,10 +9,12 @@ import GlobalText from '../Global/GlobalText';
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 import IconEdit from '../../assets/images/IconEdit.png';
+import ToggleOn from '../../assets/images/ToggleOn.png';
+import ToggleOff from '../../assets/images/ToggleOff.png';
 
 const styles = StyleSheet.create({
   touchable: {
-    marginBottom: theme.gutters.paddingNormal,
+    marginBottom: theme.gutters.paddingSM,
     width: '100%',
   },
   buttonCard: {
@@ -136,7 +138,17 @@ const CardButton = ({
       {children && <View>{children}</View>}
 
       {actionIcon === 'right' && (
-        <GlobalImage source={IconChevronRight} size="sm" />
+        <GlobalImage
+          source={IconChevronRight}
+          size="sm"
+          style={{ opacity: 0.5 }}
+        />
+      )}
+
+      {actionIcon === 'ToggleOn' && <GlobalImage source={ToggleOn} size="md" />}
+
+      {actionIcon === 'ToggleOff' && (
+        <GlobalImage source={ToggleOff} size="md" />
       )}
 
       {(complete || actionIcon === 'complete') && (

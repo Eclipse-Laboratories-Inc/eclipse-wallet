@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, StatusBar, ScrollView, View } from 'react-native';
 
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
 
 const isExtension = process.env.REACT_APP_IS_EXTENSION || false;
@@ -43,11 +43,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  inlineFlexButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
   scrollViewContainer: {
     minHeight: '100%',
   },
@@ -85,7 +80,8 @@ const Inner = ({ children }) => (
 );
 
 const Footer = ({ inlineFlex, children }) => (
-  <View style={[styles.mainFooter, inlineFlex && styles.inlineFlexButtons]}>
+  <View
+    style={[styles.mainFooter, inlineFlex && globalStyles.inlineFlexButtons]}>
     {children}
   </View>
 );

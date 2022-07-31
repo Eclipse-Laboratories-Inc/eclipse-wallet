@@ -26,10 +26,7 @@ const AddressBookPage = ({ t }) => {
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <GlobalBackTitle
-          onBack={onBack}
-          title={t('settings.addressbook.title')}
-        />
+        <GlobalBackTitle onBack={onBack} title={t('settings.address_book')} />
 
         {addressBook.map(addressBookItem => (
           <CardButtonWallet
