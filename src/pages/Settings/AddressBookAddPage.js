@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
+import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -10,14 +11,28 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import { getWalletChain } from '../../utils/wallet';
 
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
-
-  const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
-
+  const [saving, setSaving] = useState(false);
+  const [{ activeWallet, addressBook }, { addAddress }] =
+    useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
+  const isValid = addressLabel && addressAddress;
+  const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
+  const onSave = async () => {
+    setSaving(true);
+    // check valid address and non existant
+    await addAddress({
+      address: addressAddress,
+      name: addressLabel,
+      chain: getWalletChain(activeWallet),
+    });
+    setSaving(false);
+    navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
+  };
 
   return (
     <GlobalLayout>
@@ -52,7 +67,8 @@ const AddressBookAddPage = ({ t }) => {
           type="primary"
           wideSmall
           title={t('settings.addressbook.save')}
-          onPress={onBack}
+          onPress={onSave}
+          disabled={saving || !isValid}
         />
       </GlobalLayout.Footer>
     </GlobalLayout>

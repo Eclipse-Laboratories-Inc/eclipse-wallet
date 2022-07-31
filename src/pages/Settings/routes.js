@@ -123,8 +123,8 @@ const routes = [
   {
     key: ROUTES_MAP.SETTINGS_ADDRESSBOOK_EDIT,
     name: 'settingsEditAddressBook',
-    path: 'addressbook/:addressbook',
-    route: '/wallet/settings/addressbook/:addressbook',
+    path: 'addressbook/:address',
+    route: '/wallet/settings/addressbook/:address',
     Component: AddressBookEditPage,
     default: false,
   },

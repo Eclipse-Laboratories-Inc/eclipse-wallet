@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import isNumber from 'lodash/isNumber';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -130,6 +129,7 @@ const TokenSendPage = ({ params, t }) => {
                 hideCollapse>
                 {addressBook.map(addressBookItem => (
                   <CardButtonWallet
+                    key={addressBookItem.address}
                     title={addressBookItem.name}
                     address={addressBookItem.address}
                     chain={addressBookItem.chain}
@@ -164,7 +164,7 @@ const TokenSendPage = ({ params, t }) => {
               )}
 
               <GlobalPadding size="md" />
-              {!validAmount && recipientAmount && (
+              {!validAmount && !!recipientAmount && (
                 <GlobalText type="body1" center color="negative">
                   {t(`token.send.amount.invalid`, { max: token.uiAmount })}
                 </GlobalText>
