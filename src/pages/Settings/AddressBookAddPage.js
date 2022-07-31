@@ -11,15 +11,26 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import { getWalletChain } from '../../utils/wallet';
 
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
-
-  const [{ activeWallet, wallets }, { changeActiveWallet }] =
+  const [saving, setSaving] = useState(false);
+  const [{ activeWallet, addressBook }, { addAddress }] =
     useContext(AppContext);
 
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
-
+  const onSave = async () => {
+    setSaving(true);
+    // check valid address and non existant
+    await addAddress({
+      address: addressAddress,
+      name: addressLabel,
+      chain: getWalletChain(activeWallet),
+    });
+    setSaving(false);
+    navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
+  };
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
 
@@ -56,7 +67,8 @@ const AddressBookAddPage = ({ t }) => {
           type="primary"
           wideSmall
           title={t('settings.addressbook.save')}
-          onPress={onBack}
+          onPress={onSave}
+          disabled={saving}
         />
       </GlobalLayout.Footer>
     </GlobalLayout>

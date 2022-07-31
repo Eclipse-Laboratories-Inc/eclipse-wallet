@@ -48,15 +48,11 @@ export const validateSeedPhrase = seedPhrase =>
 export const getWalletName = (wallet, number) => `Wallet ${number}`;
 
 export const getWalletChain = wallet => {
-  const type = wallet ? wallet.constructor.name : '';
-  switch (type) {
-    case 'SolanaAccount':
-      return 'SOLANA';
-    case 'NearAccount':
-      return 'NEAR';
-    default:
-      return getDefaultChain();
+  const type = wallet ? wallet.chain : '';
+  if (type) {
+    return type.toUpperCase();
   }
+  return getDefaultChain();
 };
 
 export const getShortAddress = address =>
