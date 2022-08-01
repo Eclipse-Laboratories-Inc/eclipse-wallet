@@ -1,14 +1,15 @@
 import WalletOverview from './WalletOverviewPage';
-import NftsPage from './NftsPage';
 import SwapPage from './SwapPage';
 import TransactionsPage from '../Transactions/TransactionsPage';
 import SettingsPage from '../Settings/SettingsPage';
+import NftsSection from '../Nfts';
 
 import IconWallet from '../../assets/images/IconWallet.png';
 import IconNFT from '../../assets/images/IconNFT.png';
 import IconSwap from '../../assets/images/IconSwap.png';
 import IconBalance from '../../assets/images/IconBalance.png';
 import IconSettings from '../../assets/images/IconSettings.png';
+import { getDefaultRouteKey, getRoutesWithParent } from '../../routes/utils';
 
 export const ROUTES_MAP = {
   WALLET_OVERVIEW: 'WALLET_OVERVIEW',
@@ -17,6 +18,8 @@ export const ROUTES_MAP = {
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
   WALLET_SETTINGS: 'WALLET_SETTINGS',
 };
+
+const NFTS_ROUTES = require('../Nfts/routes').default;
 
 const routes = [
   {
@@ -30,10 +33,11 @@ const routes = [
   },
   {
     key: ROUTES_MAP.WALLET_NFTS,
+    defaultScreen: getDefaultRouteKey(NFTS_ROUTES),
     name: 'NFT',
-    path: 'nfts',
+    path: 'nfts/*',
     route: '/wallet/nfts',
-    Component: NftsPage,
+    Component: NftsSection,
     default: false,
     icon: IconNFT,
   },
@@ -64,6 +68,7 @@ const routes = [
     default: false,
     icon: IconSettings,
   },
+  ...getRoutesWithParent(NFTS_ROUTES, ROUTES_MAP.WALLET_NFTS),
 ];
 
 export default routes;

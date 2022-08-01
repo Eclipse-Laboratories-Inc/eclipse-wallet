@@ -3,7 +3,9 @@
     "home": "Home",
     "name": "Name",
     "address": "Address",
-    "seed_phrase": "Seed Phrase"
+    "seed_phrase": "Seed Phrase",
+    "sending": "Sending...",
+    "sent": "Sent!"
   },
   "actions": {
     "skip": "Skip",
@@ -136,6 +138,11 @@
   },
   "transactions": {
     "your_transactions": "Your Transactions",
-    "recent_activity": "Recent Activity"
+    "recent_activity": "Recent Activity",
+    "view_transaction": "View Transaction"
+  },
+  "nfts": {
+    "sending": "Sending...",
+    "sent": "Sent!"
   }
 }

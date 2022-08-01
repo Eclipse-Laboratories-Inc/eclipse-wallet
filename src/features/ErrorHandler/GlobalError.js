@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
 
 class GlobalError extends React.Component {
@@ -19,9 +19,9 @@ class GlobalError extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <View>
+        <GlobalLayout fullscreen>
           <GlobalText>Something went wrong.</GlobalText>
-        </View>
+        </GlobalLayout>
       );
     }
 

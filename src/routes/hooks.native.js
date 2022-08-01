@@ -14,6 +14,13 @@ export const useNavigation = () => {
           params,
           screen: toRoute.name,
         });
+      } else if (toRoute.defaultScreen) {
+        // Parent route default screen
+        const screenRoute = getRoute(globalRoutes, toRoute.defaultScreen);
+        navigation.navigate(toRoute.name, {
+          params,
+          screen: screenRoute.name,
+        });
       } else {
         navigation.navigate(toRoute.name, params);
       }

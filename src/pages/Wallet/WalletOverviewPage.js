@@ -7,6 +7,7 @@ import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
+import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../pages/Nfts/routes';
 import { getWalletName, getShortAddress } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
@@ -32,6 +33,7 @@ import Avatar from '../../assets/images/Avatar.png';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
+import { isCollection } from '../../utils/nfts';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -88,9 +90,10 @@ const WalletOverviewPage = ({ t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.NFTS,
-          () => activeWallet.getAllNfts(),
+          () => activeWallet.getAllNftsGrouped(),
         ),
       ]).then(([balance, nfts]) => {
+        console.log(nfts);
         setTotalBalance(balance);
         setTokenList(balance.items);
         setNftsList(nfts);
@@ -112,7 +115,13 @@ const WalletOverviewPage = ({ t }) => {
     });
 
   // const goToNotifications = () => setHasNotifications(!hasNotifications);
-
+  const handleNftsClick = nft => {
+    if (isCollection(nft)) {
+      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
+    } else {
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
+    }
+  };
   const goToNFTs = t =>
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: t.address });
 
@@ -202,7 +211,10 @@ const WalletOverviewPage = ({ t }) => {
             title={t('wallet.my_nfts')}
             viewAllAction={goToNFTs}
             isOpen>
-            <GlobalNftList nonFungibleTokens={nftsList} />
+            <GlobalNftList
+              nonFungibleTokens={nftsList}
+              onClick={handleNftsClick}
+            />
           </GlobalCollapse>
         </GlobalLayout.Header>
       </GlobalLayout>
