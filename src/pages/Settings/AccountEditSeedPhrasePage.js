@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -12,6 +12,8 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
+import { AppContext } from '../../AppProvider';
+import clipboard from '../../utils/clipboard';
 
 const styles = StyleSheet.create({
   positionRelative: {
@@ -35,18 +37,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const AccountEditSeedPhrasePage = ({ t }) => {
+const AccountEditSeedPhrasePage = ({ params, t }) => {
   const navigate = useNavigation();
-
-  const [seedPhrase, setSeedPhrase] = useState(
-    'grow oblige neck same spend east come small dinosaur frost rice vintage',
-  );
+  const [{ wallets }] = useContext(AppContext);
+  const [wallet, setWallet] = useState({});
+  useEffect(() => {
+    const w = wallets.find(f => f.address === params.address);
+    if (w) {
+      setWallet(w);
+    }
+  }, [params.address, wallets]);
 
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
-  const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT);
+  const onBack = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
+      address: params.address,
+    });
 
-  const goToCopy = () => {};
+  const goToCopy = () => clipboard.copy(wallet.mnemonic);
 
   const onReveal = () => setShowSeedPhrase(!showSeedPhrase);
 
@@ -74,8 +83,8 @@ const AccountEditSeedPhrasePage = ({ t }) => {
             />
           )}
           <GlobalInput
-            value={showSeedPhrase ? seedPhrase : ''}
-            setValue={setSeedPhrase}
+            value={showSeedPhrase ? wallet.mnemonic : ''}
+            setValue={() => {}}
             seedphrase
             multiline
             numberOfLines={8}
@@ -95,6 +104,7 @@ const AccountEditSeedPhrasePage = ({ t }) => {
           onPress={goToCopy}
           style={[globalStyles.button, globalStyles.buttonLeft]}
           touchableStyles={globalStyles.buttonTouchable}
+          disabled={!showSeedPhrase}
         />
 
         <GlobalButton
@@ -110,4 +120,4 @@ const AccountEditSeedPhrasePage = ({ t }) => {
   );
 };
 
-export default withTranslation()(AccountEditSeedPhrasePage);
+export default withParams(withTranslation()(AccountEditSeedPhrasePage));
