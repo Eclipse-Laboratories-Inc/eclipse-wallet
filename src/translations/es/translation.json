@@ -3,7 +3,9 @@
     "home": "Inicio",
     "name": "Nombre",
     "address": "Dirección",
-    "seed_phrase": "Seed Phrase"
+    "seed_phrase": "Seed Phrase",
+    "sending": "Enviando...",
+    "sent": "¡Enviado!"
   },
   "actions": {
     "skip": "Omitir",
@@ -134,7 +136,8 @@
     }
   },
   "transactions": {
-    "your_transactions": "Your Transactions",
-    "recent_activity": "Recent Activity"
+    "your_transactions": "Transacciones",
+    "recent_activity": "Actividad Reciente",
+    "view_transaction": "Ver Transacción"
   }
 }

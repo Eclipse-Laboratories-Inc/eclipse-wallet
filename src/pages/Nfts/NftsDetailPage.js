@@ -1,24 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { withTranslation } from '../../hooks/useTranslations';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalLayout from '../../component-library/Global/GlobalLayout';
-import { useNavigation, withParams } from '../../routes/hooks';
 import { AppContext } from '../../AppProvider';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import GlobalText from '../../component-library/Global/GlobalText';
-import { getWalletName } from '../../utils/wallet';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
-import GlobalButton from '../../component-library/Global/GlobalButton';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { withTranslation } from '../../hooks/useTranslations';
+import { cache, CACHE_TYPES } from '../../utils/cache';
+import { getWalletName } from '../../utils/wallet';
 
-const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+import { globalStyles } from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const NftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -55,20 +50,22 @@ const NftsDetailPage = ({ params, t }) => {
             inlineTitle={getWalletName(activeWallet, walletNumber)}
             inlineAddress={activeWallet.getReceiveAddress()}
           />
+          <View style={globalStyles.centered}>
+            <GlobalText type="headline2" center>
+              {nftDetail.name}
+            </GlobalText>
+          </View>{' '}
+        </GlobalLayout.Header>
 
-          <View style={styles.centered}>
-            <GlobalText type="headline2">{nftDetail.name}</GlobalText>
-          </View>
+        <GlobalLayout.Footer>
           <GlobalButton
             type="primary"
-            flex
-            title={t('nfts.send.button')}
+            wide
+            title={t('actions.send')}
             onPress={goToSend}
             key={'send-button'}
-            style={[styles.button, styles.buttonLeft]}
-            touchableStyles={styles.buttonTouchable}
           />
-        </GlobalLayout.Header>
+        </GlobalLayout.Footer>
       </GlobalLayout>
     )) ||
     null
