@@ -19,7 +19,7 @@ const NftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
-  const [{ activeWallet, walletNumber }] = useContext(AppContext);
+  const [{ activeWallet, config }] = useContext(AppContext);
   useEffect(() => {
     if (activeWallet) {
       cache(
@@ -47,7 +47,10 @@ const NftsDetailPage = ({ params, t }) => {
         <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
-            inlineTitle={getWalletName(activeWallet, walletNumber)}
+            inlineTitle={getWalletName(
+              activeWallet.getReceiveAddress(),
+              config,
+            )}
             inlineAddress={activeWallet.getReceiveAddress()}
           />
           <View style={globalStyles.centered}>

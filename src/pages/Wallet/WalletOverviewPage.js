@@ -71,14 +71,13 @@ const styles = StyleSheet.create({
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, walletNumber, selectedEndpoints, hiddenBalance },
+    { activeWallet, config, selectedEndpoints, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
   //const [hasNotifications, setHasNotifications] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -93,11 +92,9 @@ const WalletOverviewPage = ({ t }) => {
           () => activeWallet.getAllNftsGrouped(),
         ),
       ]).then(([balance, nfts]) => {
-        console.log(nfts);
         setTotalBalance(balance);
         setTokenList(balance.items);
         setNftsList(nfts);
-        setLoaded(true);
       });
     }
   }, [activeWallet, selectedEndpoints]);
@@ -109,9 +106,9 @@ const WalletOverviewPage = ({ t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = t =>
+  const goToTokenDetail = tok =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
-      tokenId: t.address,
+      tokenId: tok.address,
     });
 
   // const goToNotifications = () => setHasNotifications(!hasNotifications);
@@ -122,8 +119,8 @@ const WalletOverviewPage = ({ t }) => {
       navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
     }
   };
-  const goToNFTs = t =>
-    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: t.address });
+  const goToNFTs = tok =>
+    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: tok.address });
 
   return (
     activeWallet && (
@@ -139,7 +136,7 @@ const WalletOverviewPage = ({ t }) => {
                     type="body2"
                     style={styles.walletName}
                     numberOfLines={1}>
-                    {getWalletName(activeWallet, walletNumber)}
+                    {getWalletName(activeWallet.getReceiveAddress(), config)}
                   </GlobalText>
 
                   <GlobalText

@@ -17,15 +17,14 @@ import CardButtonWallet from '../../component-library/CardButton/CardButtonWalle
 
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, walletNumber, selectedEndpoints }, { logout }] =
-    useContext(AppContext);
+  const [
+    { activeWallet, config, selectedEndpoints, selectedLanguage },
+    { logout },
+  ] = useContext(AppContext);
   const handleLogout = () => {
     logout();
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
-
-  const [{ selectedLanguage, languages }, { changeLanguage }] =
-    useContext(AppContext);
 
   const goToAccounts = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
@@ -57,7 +56,7 @@ const SettingsOptionsPage = ({ t }) => {
 
         {activeWallet && (
           <CardButtonWallet
-            title={getWalletName(activeWallet, walletNumber)}
+            title={getWalletName(activeWallet.getReceiveAddress(), config)}
             address={activeWallet.getReceiveAddress()}
             chain={getWalletChain(activeWallet)}
             onPress={goToAccounts}
