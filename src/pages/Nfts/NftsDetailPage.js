@@ -54,7 +54,7 @@ const NftsDetailPage = ({ params, t }) => {
             <GlobalText type="headline2" center>
               {nftDetail.name}
             </GlobalText>
-          </View>{' '}
+          </View>
         </GlobalLayout.Header>
 
         <GlobalLayout.Footer>

@@ -173,7 +173,19 @@ const useWallets = () => {
       ),
       ...derivedAccounts,
     ];
-    await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+    if (password) {
+      const encryptedWallets = await lock(storedWallets, password);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: true,
+        wallets: encryptedWallets,
+      });
+    } else {
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: false,
+        wallets: storedWallets,
+      });
+    }
+    setWallets(storedWallets);
   };
 
   const changeActiveWallet = async walletIndex => {
