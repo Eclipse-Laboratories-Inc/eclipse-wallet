@@ -74,7 +74,7 @@ const Form = ({ onComplete, onBack, t }) => {
           <GlobalButton
             type="primary"
             wide
-            title={t('wallet.recover.buttonNext')}
+            title={t('actions.next')}
             onPress={() => onComplete(seedPhrase)}
           />
         )}
@@ -132,6 +132,7 @@ const RecoverWalletPage = ({ t }) => {
           goToWallet={goToWallet}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
+          t={t}
         />
       )}
     </GlobalLayout>

@@ -47,6 +47,7 @@ const CardButtonTransaction = ({
   return (
     <CardButton
       image={getTransactionImage(transaction)}
+      imageSize="normal"
       title={title || getTransactionTitle(transaction)}
       description={description || `To: ${getShortAddress(address)}`}
       active={active}

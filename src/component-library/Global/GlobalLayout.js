@@ -71,8 +71,10 @@ const GlobalLayout = ({ fullscreen, children }) => {
   );
 };
 
-const Header = ({ children }) => (
-  <View style={styles.mainHeader}>{children}</View>
+const Header = ({ centered, children }) => (
+  <View style={[styles.mainHeader, centered && globalStyles.centered]}>
+    {children}
+  </View>
 );
 
 const Inner = ({ children }) => (

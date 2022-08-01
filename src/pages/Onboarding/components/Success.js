@@ -1,12 +1,13 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
-import IconInteractionGreen from '../../../assets/images/IconInteractionGreen.png';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
-import { StyleSheet } from 'react-native';
+
+import IconTransactionInteractionGreen from '../../../assets/images/IconTransactionInteractionGreen.png';
 
 const styles = StyleSheet.create({
   bigIcon: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Success = ({ goToWallet, goToDerived }) => (
+const Success = ({ goToWallet, goToDerived, t }) => (
   <>
     <GlobalLayout.Header>
       <GlobalPadding size="md" />
@@ -24,16 +25,19 @@ const Success = ({ goToWallet, goToDerived }) => (
     <GlobalLayout.Inner>
       <GlobalPadding size="md" />
 
-      <GlobalImage source={IconInteractionGreen} style={styles.bigIcon} />
+      <GlobalImage
+        source={IconTransactionInteractionGreen}
+        style={styles.bigIcon}
+      />
 
       <GlobalPadding size="xl" />
 
       <GlobalText type="headline2" center>
-        Success Message
+        {t('wallet.create.success_message')}
       </GlobalText>
 
       <GlobalText type="body1" center>
-        3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?
+        {t('wallet.create.success_message_body')}
       </GlobalText>
     </GlobalLayout.Inner>
 
@@ -41,7 +45,7 @@ const Success = ({ goToWallet, goToDerived }) => (
       <GlobalButton
         type="primary"
         wide
-        title="Go to my Wallet"
+        title={t('wallet.create.go_to_my_wallet')}
         onPress={goToWallet}
       />
 

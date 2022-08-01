@@ -58,7 +58,7 @@ const SelectAction = ({ onNext, onBack, onboarded, t }) => (
       <GlobalButton
         type="primary"
         wide
-        title={t('wallet.onboarding.createWallet')}
+        title={t('wallet.create_wallet')}
         onPress={() => onNext(ROUTES_MAP.ONBOARDING_CREATE)}
         // disabled={!chainCode}
       />
@@ -68,7 +68,7 @@ const SelectAction = ({ onNext, onBack, onboarded, t }) => (
       <GlobalButton
         type="secondary"
         wide
-        title={t('wallet.onboarding.recoverWallet')}
+        title={t('wallet.recover_wallet')}
         onPress={() => onNext(ROUTES_MAP.ONBOARDING_RECOVER)}
         // disabled={!chainCode}
       />
@@ -80,7 +80,7 @@ const SelectChain = ({ onNext, blockChains, onBack, t }) => (
   <GlobalLayout.Header>
     <GlobalBackTitle
       onBack={onBack}
-      secondaryTitle={t('wallet.onboarding.titleChain')}
+      secondaryTitle={t('wallet.onboarding.select_blockchain')}
     />
 
     <GlobalPadding size="xs" />

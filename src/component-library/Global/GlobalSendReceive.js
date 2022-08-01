@@ -1,15 +1,17 @@
 import React from 'react';
 import { View } from 'react-native';
 
+import { withTranslation } from '../../hooks/useTranslations';
+
 import { globalStyles } from './theme';
 import GlobalButton from './GlobalButton';
 
-const GlobalSendReceive = ({ goToSend, goToReceive }) => (
+const GlobalSendReceive = ({ goToSend, goToReceive, t }) => (
   <View style={globalStyles.inlineFlexButtons}>
     <GlobalButton
       type="primary"
       flex
-      title="Send"
+      title={t('actions.send')}
       onPress={goToSend}
       key={'send-button'}
       style={[globalStyles.button, globalStyles.buttonLeft]}
@@ -19,11 +21,11 @@ const GlobalSendReceive = ({ goToSend, goToReceive }) => (
     <GlobalButton
       type="primary"
       flex
-      title="Receive"
+      title={t('actions.receive')}
       onPress={goToReceive}
       style={[globalStyles.button, globalStyles.buttonRight]}
       touchableStyles={globalStyles.buttonTouchable}
     />
   </View>
 );
-export default GlobalSendReceive;
+export default withTranslation()(GlobalSendReceive);

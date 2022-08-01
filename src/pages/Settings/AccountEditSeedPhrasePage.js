@@ -91,7 +91,7 @@ const AccountEditSeedPhrasePage = ({ t }) => {
         <GlobalButton
           type="secondary"
           flex
-          title={t(`general.copy`)}
+          title={t(`actions.copy`)}
           onPress={goToCopy}
           style={[globalStyles.button, globalStyles.buttonLeft]}
           touchableStyles={globalStyles.buttonTouchable}
@@ -100,7 +100,7 @@ const AccountEditSeedPhrasePage = ({ t }) => {
         <GlobalButton
           type="primary"
           flex
-          title={t(`general.done`)}
+          title={t(`actions.done`)}
           onPress={onBack}
           style={[globalStyles.button, globalStyles.buttonRight]}
           touchableStyles={globalStyles.buttonTouchable}

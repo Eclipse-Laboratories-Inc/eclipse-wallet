@@ -7,6 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 import { ROUTES_MAP as TRANSACTIONS_ROUTES_MAP } from '../Transactions/routes';
+import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   hiddenValue,
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const TokenDetailPage = ({ params }) => {
+const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const onDetail = id =>
     navigate(TRANSACTIONS_ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
@@ -129,7 +130,7 @@ const TokenDetailPage = ({ params }) => {
           <GlobalPadding size="lg" />
 
           <GlobalCollapse
-            title="Recent Activity"
+            title={t('transactions.recent_activity')}
             viewAllAction={() => {}}
             hideCollapse
             isOpen>
@@ -152,4 +153,4 @@ const TokenDetailPage = ({ params }) => {
   );
 };
 
-export default withParams(TokenDetailPage);
+export default withParams(withTranslation()(TokenDetailPage));

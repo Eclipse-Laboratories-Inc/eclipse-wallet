@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+
+import { withTranslation } from '../../hooks/useTranslations';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
+
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -14,17 +17,13 @@ import GlobalDivider from '../../component-library/Global/GlobalDivider';
 import IconSuccessGradient from '../../assets/images/IconSuccessGradient.png';
 
 const styles = StyleSheet.create({
-  containerTop: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
   bigIcon: {
     width: 219,
     height: 219,
   },
 });
 
-const WelcomePage = () => {
+const WelcomePage = ({ t }) => {
   const navigate = useNavigation();
   const [step, setStep] = useState(0);
   const nextStep = () => {
@@ -53,29 +52,29 @@ const WelcomePage = () => {
 
   return (
     <GlobalLayout fullscreen>
-      <GlobalLayout.Header>
-        <View style={styles.containerTop}>
+      <GlobalLayout.Header centered>
+        <View style={globalStyles.alignEnd}>
           <GlobalButton
             type="text"
             color="secondary"
-            title="Skip"
+            title={t('actions.skip')}
             onPress={goToOnboarding}
           />
-
-          <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
-
-          <GlobalPadding size="2xl" />
-
-          <GlobalDivider />
-
-          <GlobalText type="headline2" center>
-            {steps[step].title}
-          </GlobalText>
-
-          <GlobalText type="body1" center>
-            {steps[step].content}
-          </GlobalText>
         </View>
+
+        <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
+
+        <GlobalPadding size="2xl" />
+
+        <GlobalDivider />
+
+        <GlobalText type="headline2" center>
+          {steps[step].title}
+        </GlobalText>
+
+        <GlobalText type="body1" center>
+          {steps[step].content}
+        </GlobalText>
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer>
@@ -90,7 +89,7 @@ const WelcomePage = () => {
         <GlobalButton
           type="secondary"
           wide
-          title="Next"
+          title={t('actions.next')}
           onPress={nextStep}
           key="next-w-button"
         />
@@ -99,4 +98,4 @@ const WelcomePage = () => {
   );
 };
 
-export default WelcomePage;
+export default withTranslation()(WelcomePage);

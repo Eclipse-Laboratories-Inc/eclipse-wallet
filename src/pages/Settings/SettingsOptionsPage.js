@@ -122,7 +122,7 @@ const SettingsOptionsPage = ({ t }) => {
         <GlobalButton
           type="text"
           block
-          title="Logout"
+          title={t(`actions.logout`)}
           color="secondary"
           onPress={handleLogout}
         />

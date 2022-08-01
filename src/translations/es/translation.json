@@ -1,27 +1,37 @@
 {
   "general": {
-    "home": "Home",
-    "copy": "Copiar",
-    "close": "Cerrar",
-    "save": "Guardar",
-    "remove": "Eliminar",
-    "done": "Listo",
+    "home": "Inicio",
     "name": "Nombre",
     "address": "Dirección",
     "seed_phrase": "Seed Phrase"
   },
+  "actions": {
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "start": "Comenzar",
+    "copy": "Copiar",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "remove": "Eliminar",
+    "done": "Done",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "view_all": "Ver Todo",
+    "search_placeholder": "Buscar...",
+    "logout": "Cerrar Sesión"
+  },
   "settings": {
     "title": "Configuración",
-    "address_book": "Address Book",
-    "display_language": "Display Language",
-    "change_network": "Change Network",
-    "security": "Security",
-    "notifications": "Notifications",
-    "trusted_apps": "Trusted Apps",
-    "help_support": "Help & Support",
+    "address_book": "Contactos",
+    "display_language": "Idioma",
+    "change_network": "Cambiar Network",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "trusted_apps": "Apps Autorizadas",
+    "help_support": "Ayuda & Soporte",
     "wallets": {
-      "your_wallets": "Your Wallets",
-      "add_new_wallet": "Add New Wallet",
+      "your_wallets": "Tus Wallets",
+      "add_new_wallet": "Nuevo Wallet",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
       "edit_address": "Edit Wallet",
@@ -81,28 +91,50 @@
     "buttonUnlock": "Desbloquear"
   },
   "wallet": {
+    "my_tokens": "Mis Tokens",
+    "my_nfts": "Mis NFTs",
+    "create_wallet": "Crear Wallet",
+    "recover_wallet": "Recuperar Wallet",
+    "select_token": "Seleccionar Token",
+    "new_token": "Nuevo Token",
     "create": {
       "messageTitle": "Keep your seed safe!",
-      "messageBody1": "Your private keys are only stored on your current computer or device.",
-      "messageBody2": "You will need these words to restore your wallet if your browser's",
-      "messageBody3": "storage is cleared or your device is damaged or lost.",
-      "buttonContinue": "Continue",
+      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
+      "your_seed_phrase": "Your Seed Phrase",
+      "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
+      "copy_key": "Copy Key",
+      "ive_backed_up_seed_phrase": "I´ve backed up seed phrase",
+      "confirm_seed_phrase": "Confirm Seed Phrase",
+      "confirm_seed_phrase_body": "Please re-enter the following words of the seed phrase to confirm that you have saved it.",
+      "enter_word_number": "Enter Word #",
       "buttonPreparing": "Preparing...",
-      "passwordCheck": "Enter your password",
-      "passwordInvalid": "Password Invalid",
-      "passwordChoose": "Choose a password",
-      "passwordDescription": "You will need it to unlock your wallet",
+      "enter_your_password": "Enter your password",
+      "invalid_password": "Invalid Password",
+      "choose_a_password": "Choose a Password",
+      "choose_a_password_body": "You will need it to unlock your wallet",
       "passwordNew": "New password",
       "passwordRepeat": "Repeat password",
+      "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
       "passwordChecking": "Checking...",
-      "passwordButton": "Continue"
+      "success_message": "Success Message",
+      "success_message_body": "3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?",
+      "select_derivable": "Select Derivable",
+      "derivable_accounts": "Derivable Accounts",
+      "recover": "Recover"
+    },
+    "recover": {
+      "messageTitle": "Recover Existing Wallet",
+      "messageBody": "Recover your wallet using your 24 words seed phrase.",
+      "pasteSeed": "Paster your seed phrase"
     },
     "onboarding": {
-      "titleOnboarded": "Add new wallet",
+      "titleOnboarded": "Nuevo Wallet",
       "titleWelcome": "Welcome to",
-      "createWallet": "Create wallet",
-      "recoverWallet": "Recover wallet",
-      "titleChain": "Select blockchain"
+      "select_blockchain": "Elegir Blockchain"
     }
+  },
+  "transactions": {
+    "your_transactions": "Your Transactions",
+    "recent_activity": "Recent Activity"
   }
 }

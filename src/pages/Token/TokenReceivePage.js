@@ -89,7 +89,7 @@ const TokenReceivePage = ({ t }) => {
           <GlobalButton
             type="secondary"
             wideSmall
-            title={t('general.close')}
+            title={t('actions.close')}
             onPress={goToBack}
           />
         </GlobalLayout.Footer>
