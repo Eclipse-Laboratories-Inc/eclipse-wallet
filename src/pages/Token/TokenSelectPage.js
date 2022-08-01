@@ -73,7 +73,7 @@ const TokenSelectPage = ({ params, t }) => {
 
           <GlobalInput
             forSearch
-            placeholder="Search..."
+            placeholder={t('actions.search_placeholder')}
             value={searchToken}
             setValue={setSearchToken}
           />
@@ -81,9 +81,9 @@ const TokenSelectPage = ({ params, t }) => {
           <GlobalPadding />
 
           <GlobalCollapse
-            title="Select Token"
+            title={t('wallet.select_token')}
             isOpen
-            actionTitle="Add New Token"
+            actionTitle={t('wallet.new_token')}
             viewAllAction={goToAddToken}
             hideCollapse>
             {tokens.map(token => (

@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -16,17 +17,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const TransactionsListPage = () => {
+const TransactionsListPage = ({ t }) => {
   const navigate = useNavigation();
   const onDetail = id => navigate(ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
 
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <GlobalBackTitle title="Your Transactions" />
+        <GlobalBackTitle title={t('transactions.your_transactions')} />
 
         <GlobalCollapse
-          title="Recent Activity"
+          title={t('transactions.recent_activity')}
           titleStyle={styles.titleStyle}
           hideCollapse
           isOpen>
@@ -75,4 +76,4 @@ const TransactionsListPage = () => {
   );
 };
 
-export default TransactionsListPage;
+export default withTranslation()(TransactionsListPage);

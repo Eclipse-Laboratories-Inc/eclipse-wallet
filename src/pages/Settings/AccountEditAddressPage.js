@@ -40,7 +40,7 @@ const AccountEditAddressPage = ({ t }) => {
         <GlobalButton
           type="primary"
           wideSmall
-          title={t('general.save')}
+          title={t('actions.save')}
           onPress={onBack}
         />
       </GlobalLayout.Footer>

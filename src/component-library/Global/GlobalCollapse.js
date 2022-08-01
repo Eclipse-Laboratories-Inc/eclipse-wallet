@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { withTranslation } from '../../hooks/useTranslations';
+
 import theme from './theme';
 import GlobalButton from './GlobalButton';
 import GlobalText from './GlobalText';
@@ -53,6 +55,7 @@ const GlobalCollapse = ({
   hideCollapse,
   children,
   isOpen,
+  t,
 }) => {
   const [isCollapseOpen, setIsCollapseOpen] = useState(isOpen);
   const toggleCollapse = t => setIsCollapseOpen(!isCollapseOpen);
@@ -85,7 +88,7 @@ const GlobalCollapse = ({
             <GlobalButton
               type="text"
               color="secondary"
-              title={actionTitle ? actionTitle : 'View All'}
+              title={actionTitle ? actionTitle : t('actions.view_all')}
               style={styles.viewAllBtn}
               textStyle={styles.viewAllBtnText}
               onPress={viewAllAction}
@@ -110,4 +113,4 @@ const GlobalCollapse = ({
     </>
   );
 };
-export default GlobalCollapse;
+export default withTranslation()(GlobalCollapse);

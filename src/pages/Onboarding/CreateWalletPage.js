@@ -4,10 +4,12 @@ import randomNumber from 'lodash/random';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
+import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP } from './routes';
+import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
+
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -17,7 +19,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
-import { withTranslation } from '../../hooks/useTranslations';
+
 import Password from './components/Password';
 import Success from './components/Success';
 
@@ -35,9 +37,7 @@ const Message = ({ onNext, onBack, waiting, t }) => (
       </GlobalText>
 
       <GlobalText type="body1" center>
-        {t('wallet.create.messageBody1')}
-        {t('wallet.create.messageBody2')}
-        {t('wallet.create.messageBody3')}
+        {t('wallet.create.messageBody')}
       </GlobalText>
     </GlobalLayout.Inner>
 
@@ -46,9 +46,7 @@ const Message = ({ onNext, onBack, waiting, t }) => (
         type="primary"
         wide
         title={
-          !waiting
-            ? t('wallet.create.buttonContinue')
-            : t('wallet.create.buttonPreparing')
+          !waiting ? t('actions.start') : t('wallet.create.buttonPreparing')
         }
         onPress={onNext}
         disabled={waiting}
@@ -57,7 +55,7 @@ const Message = ({ onNext, onBack, waiting, t }) => (
   </>
 );
 
-const Form = ({ account, onComplete, onBack }) => (
+const Form = ({ account, onComplete, onBack, t }) => (
   <>
     <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack}>
@@ -69,12 +67,11 @@ const Form = ({ account, onComplete, onBack }) => (
       </GlobalBackTitle>
 
       <GlobalText type="headline2" center>
-        Your Seed Phrase
+        {t('wallet.create.your_seed_phrase')}
       </GlobalText>
 
       <GlobalText type="body1" center>
-        Your private keys are only stored on your current computer or device.
-        You will need these words to restore your wallet.
+        {t('wallet.create.your_seed_phrase_body')}
       </GlobalText>
 
       <GlobalPadding size="xl" />
@@ -93,7 +90,7 @@ const Form = ({ account, onComplete, onBack }) => (
       <GlobalButton
         type="secondary"
         wide
-        title="Copy Key"
+        title={t('wallet.create.copy_key')}
         onPress={() => clipboard.copy(account.mnemonic)}
       />
 
@@ -102,14 +99,14 @@ const Form = ({ account, onComplete, onBack }) => (
       <GlobalButton
         type="primary"
         wide
-        title="I´ve backed up seed phrase"
+        title={t('wallet.create.ive_backed_up_seed_phrase')}
         onPress={onComplete}
       />
     </GlobalLayout.Footer>
   </>
 );
 
-const ValidateSeed = ({ account, onComplete, onBack }) => {
+const ValidateSeed = ({ account, onComplete, onBack, t }) => {
   const [positions, setPositions] = useState([]);
   const [phrases, setPhrases] = useState(['', '', '']);
   useEffect(() => {
@@ -146,11 +143,11 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
         </GlobalBackTitle>
 
         <GlobalText type="headline2" center>
-          Confirm Seed Phrase
+          {t('wallet.create.confirm_seed_phrase')}
         </GlobalText>
 
         <GlobalText type="body1" center>
-          Prese re-enter seed phrase to confirm tha you have save it
+          {t('wallet.create.confirm_seed_phrase_body')}
         </GlobalText>
 
         <GlobalPadding size="2xl" />
@@ -159,7 +156,7 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
           <React.Fragment key={`phrase-${pos}`}>
             <GlobalInput
               startLabel={pos}
-              placeholder={'Enter Word #' + pos}
+              placeholder={t(`wallet.create.enter_word_number`) + pos}
               setValue={value => setPhrasePos(value, index)}
               // value={phrases[index]}
               value={account.mnemonic.split(' ')[pos - 1]}
@@ -172,9 +169,9 @@ const ValidateSeed = ({ account, onComplete, onBack }) => {
 
       <GlobalLayout.Footer>
         <GlobalButton
-          type={isValid ? 'primary' : 'secondary'}
+          type="primary"
           wide
-          title="Continue"
+          title={t('actions.next')}
           onPress={onComplete}
           disabled={isValid}
         />
@@ -212,14 +209,14 @@ const CreateWalletPage = ({ params, t }) => {
     setStep(5);
   };
   const goToWallet = () => navigate(APP_ROUTES_MAP.WALLET);
-  const goToDerived = () => navigate(ROUTES_MAP.ONBOARDING_DERIVED);
+  const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
   return (
     <GlobalLayout fullscreen>
       {step === 1 && (
         <Message
           onNext={onAddAccount}
-          onBack={() => navigate(ROUTES_MAP.ONBOARDING_HOME)}
+          onBack={() => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME)}
           waiting={waiting}
           t={t}
         />
@@ -229,6 +226,7 @@ const CreateWalletPage = ({ params, t }) => {
           account={account}
           onComplete={() => setStep(3)}
           onBack={() => setStep(1)}
+          t={t}
         />
       )}
       {step === 3 && (
@@ -236,6 +234,7 @@ const CreateWalletPage = ({ params, t }) => {
           account={account}
           onComplete={() => setStep(4)}
           onBack={() => setStep(2)}
+          t={t}
         />
       )}
       {step === 4 && (
@@ -253,6 +252,7 @@ const CreateWalletPage = ({ params, t }) => {
           goToWallet={goToWallet}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
+          t={t}
         />
       )}
     </GlobalLayout>

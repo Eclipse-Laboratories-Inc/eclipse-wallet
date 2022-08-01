@@ -23,7 +23,7 @@ const ChooseDerivabes = ({ accounts, onComplete, t }) => {
     <>
       <GlobalLayout.Header>
         <GlobalBackTitle
-          title="Derivable Accounts"
+          title={t('wallet.create.derivable_accounts')}
           secondaryTitle="m/44´/501/..."
         />
 
@@ -44,7 +44,7 @@ const ChooseDerivabes = ({ accounts, onComplete, t }) => {
         <GlobalButton
           type="primary"
           wide
-          title="Recover"
+          title={t('wallet.create.recover')}
           onPress={() => onComplete(selected)}
         />
       </GlobalLayout.Footer>

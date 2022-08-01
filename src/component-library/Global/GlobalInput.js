@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.btnBrandLight,
     borderRadius: theme.borderRadius.borderRadiusMD,
-    backgroundColor: theme.colors.bgDarken,
+    backgroundColor: theme.colors.bgDarkenFaded,
   },
   multiline: {
     paddingVertical: theme.gutters.paddingSM,

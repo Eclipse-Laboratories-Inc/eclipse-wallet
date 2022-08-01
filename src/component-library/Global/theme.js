@@ -121,7 +121,8 @@ const themes = {
 
     // bgPrimary: 'hsla(225, 25%, 25%, 1)',
     bgPrimary: 'hsla(225, 27%, 9%, 1)',
-    bgDarken: '#10131C',
+    bgDarken: 'hsla(225, 27%, 9%, 1)',
+    bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
 
@@ -181,7 +182,8 @@ const themes = {
     black900: 'rgba(255, 255, 255, 0.9)',
 
     bgPrimary: 'hsla(225, 27%, 9%, 1)',
-    bgDarken: '#10131C',
+    bgDarken: 'hsla(225, 27%, 9%, 1)',
+    bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
 
@@ -219,6 +221,9 @@ const colorTheme =
   Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
 
 export const globalStyles = StyleSheet.create({
+  alignEnd: {
+    alignSelf: 'flex-end',
+  },
   squareRatio: {
     width: '100%',
     aspectRatio: 1,

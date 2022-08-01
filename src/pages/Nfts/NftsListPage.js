@@ -59,7 +59,7 @@ const NftsListPage = ({ t }) => {
           />
 
           <View style={styles.centered}>
-            <GlobalText type="headline2">{t(`nfts.list.title`)}</GlobalText>
+            <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
           </View>
           <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
         </GlobalLayout.Header>

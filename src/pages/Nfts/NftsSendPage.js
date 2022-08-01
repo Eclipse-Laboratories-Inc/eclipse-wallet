@@ -68,63 +68,60 @@ const NftsSendPage = ({ params, t }) => {
                 <GlobalText type="headline2">{nftDetail.name}</GlobalText>
               </View>
             </GlobalLayout.Header>
+
             <GlobalLayout.Footer>
               <GlobalButton
                 type="primary"
-                flex
-                title={t('nfts.send.button')}
+                wide
+                title={t('actions.send')}
                 onPress={onSend}
                 key={'send-button'}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </GlobalLayout>
         )}
+
         {sending && (
           <GlobalLayout fullscreen>
             <GlobalLayout.Header>
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
-              <View style={styles.centered}>
-                <GlobalText type="headline2">
-                  {t('nfts.send.processing')}
-                </GlobalText>
-              </View>
+
+              <GlobalText type="headline2" center>
+                {t('general.sending')}
+              </GlobalText>
             </GlobalLayout.Header>
+
             <GlobalLayout.Footer>
               <GlobalButton
                 type="primary"
-                flex
-                title={t('nfts.send.viewTransaction')}
+                wide
+                title={t('transactions.view_transaction')}
                 onPress={() => {}}
                 key={'send-button'}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </GlobalLayout>
         )}
+
         {finish && (
           <GlobalLayout fullscreen>
             <GlobalLayout.Header>
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
-              <View style={styles.centered}>
-                <GlobalText type="headline2">
-                  {t('nfts.send.finish')}
-                </GlobalText>
-              </View>
+
+              <GlobalText type="headline2" center>
+                {t('general.sent')}
+              </GlobalText>
             </GlobalLayout.Header>
+
             <GlobalLayout.Footer>
               <GlobalButton
                 type="primary"
-                flex
-                title={t('nfts.send.viewTransaction')}
+                wide
+                title={t('transactions.view_transaction')}
                 onPress={() => {}}
                 key={'send-button'}
-                style={[styles.button, styles.buttonLeft]}
-                touchableStyles={styles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </GlobalLayout>

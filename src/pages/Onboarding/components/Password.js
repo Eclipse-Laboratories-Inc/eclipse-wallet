@@ -57,12 +57,12 @@ const Password = ({
         {requiredLock && (
           <>
             <GlobalText type="headline2" center>
-              {t('wallet.create.passwordCheck')}
+              {t('wallet.create.enter_your_password')}
             </GlobalText>
             <GlobalPadding size="2xl" />
 
             <GlobalInput
-              placeholder={t('wallet.create.passwordCheck')}
+              placeholder={t('wallet.create.enter_your_password')}
               value={pass}
               setValue={onChange}
               invalid={wrongpass}
@@ -71,7 +71,7 @@ const Password = ({
             />
             {wrongpass && (
               <GlobalText type="body1" color="negative">
-                {t('wallet.create.passwordInvalid')}
+                {t('wallet.create.invalid_password')}
               </GlobalText>
             )}
           </>
@@ -80,11 +80,11 @@ const Password = ({
         {!requiredLock && (
           <>
             <GlobalText type="headline2" center>
-              {t('wallet.create.passwordChoose')}
+              {t('wallet.create.choose_a_password')}
             </GlobalText>
 
             <GlobalText type="body1" center>
-              {t('wallet.create.passwordDescription')}
+              {t('wallet.create.choose_a_password_body')}
             </GlobalText>
 
             <GlobalPadding size="2xl" />
@@ -113,13 +113,19 @@ const Password = ({
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer>
+        <GlobalText type="body1" center>
+          {t('wallet.create.i_accept_terms_conditions')}
+        </GlobalText>
+
+        <GlobalPadding size="xl" />
+
         <GlobalButton
-          type="secondary"
+          type="primary"
           wide
           title={
             checking
               ? t('wallet.create.passwordChecking')
-              : t('wallet.create.passwordButton')
+              : t('wallet.create_wallet')
           }
           onPress={onContinue}
           disabled={!isValid || checking || waiting}

@@ -16,6 +16,7 @@ import {
   showAmount,
   showPercentage,
 } from '../../utils/amount';
+import { withTranslation } from '../../hooks/useTranslations';
 
 import theme from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const WalletOverviewPage = () => {
+const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
   const [
     { activeWallet, walletNumber, selectedEndpoints, hiddenBalance },
@@ -196,7 +197,7 @@ const WalletOverviewPage = () => {
           )}
           <GlobalPadding />
 
-          <GlobalCollapse title="My Tokens" isOpen>
+          <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
             <TokenList
               tokens={tokenList}
               onDetail={goToTokenDetail}
@@ -206,7 +207,10 @@ const WalletOverviewPage = () => {
 
           <GlobalPadding />
 
-          <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
+          <GlobalCollapse
+            title={t('wallet.my_nfts')}
+            viewAllAction={goToNFTs}
+            isOpen>
             <GlobalNftList
               nonFungibleTokens={nftsList}
               onClick={handleNftsClick}
@@ -218,4 +222,4 @@ const WalletOverviewPage = () => {
   );
 };
 
-export default WalletOverviewPage;
+export default withTranslation()(WalletOverviewPage);

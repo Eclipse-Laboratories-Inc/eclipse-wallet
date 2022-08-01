@@ -24,7 +24,7 @@ const TrustedAppsPage = ({ t }) => {
 
         <GlobalButton
           type="primary"
-          title={t(`general.remove`)}
+          title={t(`actions.remove`)}
           onPress={() => {}}
           size="medium"
         />
