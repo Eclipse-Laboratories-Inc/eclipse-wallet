@@ -21,8 +21,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 
-import Avatar from '../../assets/images/Avatar.png';
-
 const NftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);

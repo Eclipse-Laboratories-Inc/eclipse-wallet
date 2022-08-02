@@ -175,11 +175,13 @@ const TokenSendPage = ({ params, t }) => {
               )}
 
               <GlobalPadding size="md" />
+
               {!validAmount && !!recipientAmount && (
                 <GlobalText type="body1" center color="negative">
                   {t(`token.send.amount.invalid`, { max: token.uiAmount })}
                 </GlobalText>
               )}
+
               {validAddress && validAddress.type !== 'SUCCESS' && (
                 <GlobalText
                   type="body1"
