@@ -237,6 +237,11 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
   },
+  inlineFlexAround: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
   buttonTouchable: {
     flex: 1,
   },

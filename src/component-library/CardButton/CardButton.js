@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.gutters.paddingSM,
     width: '100%',
   },
+  nospace: {
+    marginBottom: 0,
+  },
   buttonCard: {
     width: '100%',
     flexDirection: 'row',
@@ -71,6 +74,7 @@ const CardButton = ({
   imageSize,
   mask,
   title,
+  caption,
   description,
   children,
   selected,
@@ -78,6 +82,7 @@ const CardButton = ({
   complete,
   actionIcon,
   actions,
+  nospace,
   onPress,
   onSecondaryPress,
   touchableStyles,
@@ -98,7 +103,11 @@ const CardButton = ({
       active={active}
       onPress={onPress}
       style={[styles.buttonCard, buttonSize, buttonStyle]}
-      touchableStyles={[styles.touchable, touchableStyles]}
+      touchableStyles={[
+        styles.touchable,
+        touchableStyles,
+        nospace && styles.nospace,
+      ]}
       {...props}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
@@ -115,6 +124,12 @@ const CardButton = ({
         )}
 
         <View style={styles.main}>
+          {caption && (
+            <GlobalText type="caption" color="tertiary">
+              {caption}
+            </GlobalText>
+          )}
+
           {title && (
             <GlobalText type="body2" numberOfLines={1}>
               {title}

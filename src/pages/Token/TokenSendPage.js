@@ -19,8 +19,10 @@ import GlobalInputWithButton from '../../component-library/Global/GlobalInputWit
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+
 import IconCopy from '../../assets/images/IconCopy.png';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
+import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -51,6 +53,7 @@ const TokenSendPage = ({ params, t }) => {
 
   const [recipientAddress, setRecipientAddress] = useState('');
   const [recipientAmount, setRecipientAmount] = useState('');
+
   const onRecipientChange = v => {
     setValidAddress(false);
     setRecipientAddress(v);
@@ -110,8 +113,10 @@ const TokenSendPage = ({ params, t }) => {
               />
 
               <GlobalInputWithButton
-                startLabel="To"
-                placeholder={`Name or ${'SOL'} Address`}
+                startLabel={t('general.to')}
+                placeholder={t('general.name_or_address', {
+                  token: 'SOL',
+                })}
                 value={recipientAddress}
                 setValue={onRecipientChange}
                 // actionIcon="qr"
@@ -120,27 +125,33 @@ const TokenSendPage = ({ params, t }) => {
                 buttonOnPress={() => {}}
               />
 
-              <GlobalPadding />
+              {addressBook.size > 0 && (
+                <>
+                  <GlobalPadding />
 
-              <GlobalCollapse
-                title="Address Book"
-                titleStyle={styles.titleStyle}
-                isOpen
-                hideCollapse>
-                {addressBook.map(addressBookItem => (
-                  <CardButtonWallet
-                    key={addressBookItem.address}
-                    title={addressBookItem.name}
-                    address={addressBookItem.address}
-                    chain={addressBookItem.chain}
-                    imageSize="md"
-                    onPress={() => onRecipientChange(addressBookItem.address)}
-                    buttonStyle={globalStyles.addressBookItem}
-                    touchableStyles={globalStyles.addressBookTouchable}
-                    transparent
-                  />
-                ))}
-              </GlobalCollapse>
+                  <GlobalCollapse
+                    title={t('settings.address_book')}
+                    titleStyle={styles.titleStyle}
+                    isOpen
+                    hideCollapse>
+                    {addressBook.map(addressBookItem => (
+                      <CardButtonWallet
+                        key={addressBookItem.address}
+                        title={addressBookItem.name}
+                        address={addressBookItem.address}
+                        chain={addressBookItem.chain}
+                        imageSize="md"
+                        onPress={() =>
+                          onRecipientChange(addressBookItem.address)
+                        }
+                        buttonStyle={globalStyles.addressBookItem}
+                        touchableStyles={globalStyles.addressBookTouchable}
+                        transparent
+                      />
+                    ))}
+                  </GlobalCollapse>
+                </>
+              )}
 
               <GlobalPadding size="4xl" />
               {validAddress && validAddress.type !== 'ERROR' && (
@@ -231,7 +242,9 @@ const TokenSendPage = ({ params, t }) => {
                   {recipientAmount} {token.symbol}
                 </GlobalText>
 
-                <GlobalPadding size="md" />
+                <GlobalImage source={IconExpandMoreAccent1} size="md" />
+
+                <GlobalPadding />
 
                 <GlobalText type="subtitle2" center>
                   Name.SOL
