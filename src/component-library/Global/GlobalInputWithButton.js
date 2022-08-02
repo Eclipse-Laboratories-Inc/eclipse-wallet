@@ -32,7 +32,13 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   inputStyle: {
-    paddingRight: 60,
+    paddingRight: 20,
+  },
+  inputStyleWithIcon: {
+    paddingRight: 50,
+  },
+  inputStyleWithButton: {
+    paddingRight: 72,
   },
   buttonLabel: {
     justifyContent: 'center',
@@ -57,12 +63,7 @@ const GlobalInputWithButton = ({
   buttonOnPress,
   ...props
 }) => {
-  const handleChange = event => {
-    if (setValue) {
-      setValue(event.nativeEvent.text);
-    }
-  };
-  const [isFocused, setIsFocused] = useState(false);
+  // console.log('Test');
 
   return (
     <View style={styles.inputGroup}>
@@ -74,7 +75,14 @@ const GlobalInputWithButton = ({
         setValue={setValue}
         invalid={invalid}
         complete={complete}
-        style={[styles.inputStyle, inputStyle]}
+        style={[
+          styles.inputStyle,
+          (actionIcon || complete) && styles.inputStyleWithIcon,
+          buttonOnPress &&
+            (buttonLabel || buttonIcon) &&
+            styles.inputStyleWithButton,
+          inputStyle,
+        ]}
         numberOfLines={1}
         {...props}
       />
