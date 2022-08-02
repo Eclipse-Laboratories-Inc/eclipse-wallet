@@ -26,7 +26,7 @@ const NftsSendPage = ({ params, t }) => {
   const [sending, setSending] = useState(false);
   const [finish, setFinish] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
-  const [{ activeWallet, walletNumber }] = useContext(AppContext);
+  const [{ activeWallet, config }] = useContext(AppContext);
   useEffect(() => {
     if (activeWallet) {
       cache(
@@ -60,7 +60,10 @@ const NftsSendPage = ({ params, t }) => {
             <GlobalLayout.Header>
               <GlobalBackTitle
                 onBack={goToBack}
-                inlineTitle={getWalletName(activeWallet, walletNumber)}
+                inlineTitle={getWalletName(
+                  activeWallet.getReceiveAddress(),
+                  config,
+                )}
                 inlineAddress={activeWallet.getReceiveAddress()}
               />
 

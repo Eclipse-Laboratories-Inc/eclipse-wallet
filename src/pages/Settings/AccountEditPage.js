@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 
@@ -15,28 +15,45 @@ import CardButton from '../../component-library/CardButton/CardButton';
 
 import Avatar from '../../assets/images/Avatar.png';
 import IconEditCircle from '../../assets/images/IconEditCircle.png';
+import { AppContext } from '../../AppProvider';
+import { getShortAddress, getWalletName } from '../../utils/wallet';
 
-const AccountEditPage = ({ t }) => {
+const AccountEditPage = ({ params, t }) => {
   const navigate = useNavigation();
-
+  const [{ wallets, config }] = useContext(AppContext);
+  const [wallet, setWallet] = useState({});
+  useEffect(() => {
+    const w = wallets.find(f => f.address === params.address);
+    if (w) {
+      setWallet(w);
+    }
+  }, [params.address, wallets]);
   const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
 
-  const goToEditProfile = ({ address }) =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, { address });
-
-  const goToEditName = ({ address }) =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NAME, { address });
-
-  const goToAddress = ({ address }) =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_ADDRESS, { address });
-
-  const goToWalletNotifications = ({ address }) =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS, {
-      address,
+  const goToEditProfile = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
+      address: params.address,
     });
 
-  const goToSeedPhrase = ({ address }) =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_SEEDPHRASE, { address });
+  const goToEditName = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NAME, {
+      address: params.address,
+    });
+
+  const goToAddress = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_ADDRESS, {
+      address: params.address,
+    });
+
+  const goToWalletNotifications = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS, {
+      address: params.address,
+    });
+
+  const goToSeedPhrase = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_SEEDPHRASE, {
+      address: params.address,
+    });
 
   return (
     <GlobalLayout>
@@ -69,14 +86,18 @@ const AccountEditPage = ({ t }) => {
           title={t(`general.name`)}
           actionIcon="right"
           onPress={goToEditName}>
-          <GlobalText type="caption">Name detail</GlobalText>
+          <GlobalText type="caption">
+            {getWalletName(params.address, config)}
+          </GlobalText>
         </CardButton>
 
         <CardButton
           title={t(`general.address`)}
           actionIcon="right"
           onPress={goToAddress}>
-          <GlobalText type="caption">CxpY....NfdsS</GlobalText>
+          <GlobalText type="caption">
+            {getShortAddress(params.address)}
+          </GlobalText>
         </CardButton>
 
         <CardButton
@@ -95,4 +116,4 @@ const AccountEditPage = ({ t }) => {
   );
 };
 
-export default withTranslation()(AccountEditPage);
+export default withParams(withTranslation()(AccountEditPage));

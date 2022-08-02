@@ -17,7 +17,6 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 
@@ -35,7 +34,7 @@ const styles = StyleSheet.create({
 
 const AccountSelectPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets, locked }, { changeActiveWallet }] =
+  const [{ activeWallet, wallets, locked, config }, { changeActiveWallet }] =
     useContext(AppContext);
   const addNewWallet = () =>
     navigate(APP_ROUTES_MAP.ONBOARDING, {
@@ -78,7 +77,7 @@ const AccountSelectPage = ({ t }) => {
                 {groupedWallets[chain].map(wallet => (
                   <CardButtonWallet
                     key={wallet.address}
-                    title={getWalletName(wallet, getWalletIndex(wallet) + 1)}
+                    title={getWalletName(wallet.address, config)}
                     address={wallet.address}
                     chain={wallet.chain}
                     selected={

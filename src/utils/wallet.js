@@ -4,6 +4,7 @@ import {
   restoreDerivedAccounts,
 } from '@4m/wallet-adapter';
 import chains from '@4m/wallet-adapter/constants/chains';
+import get from 'lodash/get';
 
 import ENDPOINTS from '../config/endpoints';
 
@@ -45,7 +46,8 @@ export const validateSeedPhrase = seedPhrase =>
   QTY_WORDS.includes(seedPhrase.split(' ').length) &&
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
 
-export const getWalletName = (wallet, number) => `Wallet ${number}`;
+export const getWalletName = (address, config) =>
+  get(config, `${address}.name`, 'Wallet Unknown');
 
 export const getWalletChain = wallet => {
   const type = wallet ? wallet.chain : '';

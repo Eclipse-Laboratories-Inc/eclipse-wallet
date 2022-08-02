@@ -54,7 +54,6 @@ export const globalRoutes = [
     ROUTES_MAP.TOKEN,
   ),
   ...require('../pages/Wallet/routes').default,
-  ...require('../pages/Settings/routes').default,
   ...require('../pages/Transactions/routes').default,
 ];
 

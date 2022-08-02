@@ -1,7 +1,7 @@
 import WalletOverview from './WalletOverviewPage';
 import SwapPage from './SwapPage';
 import TransactionsPage from '../Transactions/TransactionsPage';
-import SettingsPage from '../Settings/SettingsPage';
+import SettingsSection from '../Settings';
 import NftsSection from '../Nfts';
 
 import IconWallet from '../../assets/images/IconWallet.png';
@@ -20,6 +20,7 @@ export const ROUTES_MAP = {
 };
 
 const NFTS_ROUTES = require('../Nfts/routes').default;
+const SETTINGS_ROUTES = require('../Settings/routes').default;
 
 const routes = [
   {
@@ -61,14 +62,16 @@ const routes = [
   },
   {
     key: ROUTES_MAP.WALLET_SETTINGS,
+    defaultScreen: getDefaultRouteKey(SETTINGS_ROUTES),
     name: 'Settings',
     path: 'settings/*',
     route: '/wallet/settings',
-    Component: SettingsPage,
+    Component: SettingsSection,
     default: false,
     icon: IconSettings,
   },
   ...getRoutesWithParent(NFTS_ROUTES, ROUTES_MAP.WALLET_NFTS),
+  ...getRoutesWithParent(SETTINGS_ROUTES, ROUTES_MAP.WALLET_SETTINGS),
 ];
 
 export default routes;

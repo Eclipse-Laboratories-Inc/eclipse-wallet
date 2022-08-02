@@ -2,6 +2,6 @@ import React from 'react';
 import RoutesBuilder from '../../routes/RoutesBuilder';
 import routes from './routes';
 
-const SettingsPage = () => <RoutesBuilder routes={routes} />;
+const SettingsSection = () => <RoutesBuilder routes={routes} />;
 
-export default SettingsPage;
+export default SettingsSection;

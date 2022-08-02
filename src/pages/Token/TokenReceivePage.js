@@ -1,10 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
 const TokenReceivePage = ({ t }) => {
   const navigate = useNavigation();
 
-  const [{ activeWallet, walletNumber }] = useContext(AppContext);
+  const [{ activeWallet, config }] = useContext(AppContext);
 
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
@@ -67,7 +66,7 @@ const TokenReceivePage = ({ t }) => {
 
             <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">
-                {getWalletName(activeWallet, walletNumber)} (
+                {getWalletName(activeWallet.getReceiveAddress(), config)} (
                 {getShortAddress(activeWallet.getReceiveAddress())})
               </GlobalText>
 

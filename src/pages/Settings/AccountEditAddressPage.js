@@ -1,21 +1,42 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalInput from '../../component-library/Global/GlobalInput';
+import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
+import QRImage from '../../features/QRImage';
+import IconCopy from '../../assets/images/IconCopy.png';
+import { getShortAddress, getWalletName } from '../../utils/wallet';
+import clipboard from '../../utils/clipboard';
+import { AppContext } from '../../AppProvider';
 
-const AccountEditAddressPage = ({ t }) => {
+const styles = StyleSheet.create({
+  qrBox: {
+    padding: theme.gutters.paddingMD,
+    backgroundColor: theme.staticColor.alwaysWhite,
+    borderRadius: theme.borderRadius.borderRadiusNormal,
+  },
+});
+
+const name = 'Name.acr';
+
+const AccountEditAddressPage = ({ params, t }) => {
   const navigate = useNavigation();
-
-  const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT);
-
-  const [accountName, setAccountName] = useState('');
+  const [{ config }] = useContext(AppContext);
+  const onBack = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
+      address: params.address,
+    });
+  const onCopyAlias = () => clipboard.copy(name);
+  const onCopyAddress = () => clipboard.copy(params.address);
 
   return (
     <GlobalLayout>
@@ -27,25 +48,43 @@ const AccountEditAddressPage = ({ t }) => {
 
         <GlobalPadding size="md" />
 
-        <GlobalInput
-          placeholder={t('general.address')}
-          value={accountName}
-          setValue={setAccountName}
-          invalid={false}
-          autoComplete="off"
-        />
-      </GlobalLayout.Header>
+        <View style={globalStyles.centered}>
+          <View style={styles.qrBox}>
+            <QRImage address={params.address} size={225} />
+          </View>
 
-      <GlobalLayout.Footer>
-        <GlobalButton
-          type="primary"
-          wideSmall
-          title={t('actions.save')}
-          onPress={onBack}
-        />
-      </GlobalLayout.Footer>
+          <GlobalPadding size="2xl" />
+
+          <View style={globalStyles.inlineWell}>
+            <GlobalText type="body2">{name}</GlobalText>
+
+            <GlobalButton onPress={onCopyAlias} size="medium">
+              <GlobalImage source={IconCopy} size="xs" />
+              <GlobalText type="button">Copy</GlobalText>
+            </GlobalButton>
+          </View>
+
+          <View style={globalStyles.inlineWell}>
+            <GlobalText type="body2">
+              {getWalletName(params.address, config)} (
+              {getShortAddress(params.address)})
+            </GlobalText>
+
+            <GlobalButton onPress={onCopyAddress} size="medium">
+              <GlobalImage source={IconCopy} size="xs" />
+              <GlobalText type="button">Copy</GlobalText>
+            </GlobalButton>
+          </View>
+
+          <GlobalPadding size="md" />
+
+          <GlobalText type="body1" center>
+            2 lines max Validation text sint occaecat cupidatat non proident
+          </GlobalText>
+        </View>
+      </GlobalLayout.Header>
     </GlobalLayout>
   );
 };
 
-export default withTranslation()(AccountEditAddressPage);
+export default withParams(withTranslation()(AccountEditAddressPage));
