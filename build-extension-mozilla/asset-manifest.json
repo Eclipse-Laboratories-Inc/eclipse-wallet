@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.209b6663.css",
+    "main.js": "/static/js/main.28c8e4ec.js",
+    "static/css/683.c5a0e072.chunk.css": "/static/css/683.c5a0e072.chunk.css",
+    "static/js/683.3b01f7e7.chunk.js": "/static/js/683.3b01f7e7.chunk.js",
+    "static/css/614.a211e438.chunk.css": "/static/css/614.a211e438.chunk.css",
+    "static/js/614.846ed917.chunk.js": "/static/js/614.846ed917.chunk.js",
+    "static/js/787.2f5f3b11.chunk.js": "/static/js/787.2f5f3b11.chunk.js",
+    "static/media/AppBackground.png": "/static/media/AppBackground.7ec81b48dff408dc88bb.png",
+    "static/media/Avatar.png": "/static/media/Avatar.b7b8b09d468ef569aa3c.png",
+    "static/media/DMSans-Regular.ttf": "/static/media/DMSans-Regular.4ee96395e07a04577aab.ttf",
+    "static/media/DMSans-Bold.ttf": "/static/media/DMSans-Bold.c423ce2dc1d85bc50799.ttf",
+    "static/media/DMSans-Medium.ttf": "/static/media/DMSans-Medium.150680530af9dd9fd00b.ttf",
+    "static/media/IconSuccessGradient.png": "/static/media/IconSuccessGradient.e38958d5df153d3f28d6.png",
+    "static/media/ImageMaskXXLCards.png": "/static/media/ImageMaskXXLCards.9433ce1d1bb087a02244.png",
+    "static/media/AppIcon.png": "/static/media/AppIcon.c86a050517d90677acee.png",
+    "static/media/ImageMaskXLCards.png": "/static/media/ImageMaskXLCards.ab8b000cbcf4c52ada75.png",
+    "index.html": "/index.html",
+    "main.209b6663.css.map": "/static/css/main.209b6663.css.map",
+    "main.28c8e4ec.js.map": "/static/js/main.28c8e4ec.js.map",
+    "683.c5a0e072.chunk.css.map": "/static/css/683.c5a0e072.chunk.css.map",
+    "683.3b01f7e7.chunk.js.map": "/static/js/683.3b01f7e7.chunk.js.map",
+    "614.a211e438.chunk.css.map": "/static/css/614.a211e438.chunk.css.map",
+    "614.846ed917.chunk.js.map": "/static/js/614.846ed917.chunk.js.map",
+    "787.2f5f3b11.chunk.js.map": "/static/js/787.2f5f3b11.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.209b6663.css",
+    "static/js/main.28c8e4ec.js"
+  ]
+}
