@@ -290,7 +290,7 @@ export const globalStyles = StyleSheet.create({
     paddingVertical: gutters.paddingXS,
     paddingHorizontal: gutters.paddingSM,
     width: '100%',
-    maxWidth: variables.buttonMaxWidth,
+    // maxWidth: variables.buttonMaxWidth,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

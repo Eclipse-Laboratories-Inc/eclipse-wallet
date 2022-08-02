@@ -1,12 +1,14 @@
 {
   "general": {
     "home": "Inicio",
+    "usd": "USD",
     "name": "Nombre",
     "address": "Dirección",
     "to": "Para",
     "name_or_address": "Nombre o Dirección \"{{token}}\"",
     "recipient_s_address": "Dirección \"{{token}}\" Destinatario",
     "seed_phrase": "Seed Phrase",
+    "balance": "Balance",
     "sending": "Enviando...",
     "sent": "¡Enviado!"
   },
@@ -149,5 +151,13 @@
     "properties": "Propiedades",
     "send_nft": "Enviar NFT",
     "send_to": "Enviar a:"
+  },
+  "swap": {
+    "swap": "Swap",
+    "swap_tokens": "Swap Tokens",
+    "you_send": "Pagas",
+    "you_receive": "Recibes",
+    "quote": "Cotizar",
+    "go_to_explorer": "Go to Explorer"
   }
 }
