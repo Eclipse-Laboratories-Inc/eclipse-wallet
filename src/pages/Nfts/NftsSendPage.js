@@ -99,7 +99,7 @@ const NftsSendPage = ({ params, t }) => {
         const res = await activeWallet.transfer(
           recipientAddress,
           nftDetail.mint,
-          0,
+          1,
         );
         setSending(false);
         setFinish(true);
