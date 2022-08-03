@@ -5,7 +5,11 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { LOGOS, getTransactionImage } from '../../utils/wallet';
+import {
+  LOGOS,
+  getTransactionImage,
+  TRANSACTION_STATUS,
+} from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
 
@@ -35,12 +39,6 @@ const styles = StyleSheet.create({
     color: theme.colors.labelTertiary,
   },
 });
-
-const STATUS = {
-  FAIL: 'fail',
-  SUCCESS: 'success',
-  WARNING: 'warning',
-};
 
 const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -78,12 +76,12 @@ const TokenSendPage = ({ params, t }) => {
         recipientAmount,
       );
       console.log(result);
-      setStatus(STATUS.SUCCESS);
+      setStatus(TRANSACTION_STATUS.SUCCESS);
       setStep(3);
       setSending(false);
     } catch (e) {
       console.error(e);
-      setStatus(STATUS.FAIL);
+      setStatus(TRANSACTION_STATUS.FAIL);
       setStep(3);
       setSending(false);
     }
