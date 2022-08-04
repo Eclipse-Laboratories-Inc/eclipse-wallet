@@ -8,7 +8,15 @@
     "recipient_s_address": "Recipient´s \"{{token}}\" Address",
     "seed_phrase": "Seed Phrase",
     "sending": "Sending...",
-    "sent": "Sent!"
+    "sent": "Sent!",
+    "close": "Close",
+    "max": "Max",
+    "address_validation": {
+      "ERROR": "Unexpected Error",
+      "INVALID_ADDRESS": "Address is not valid",
+      "EMPTY_ACCOUNT": "Account is empty",
+      "NO_FUNDS": "Address has no funds"
+    }
   },
   "actions": {
     "skip": "Skip",

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import debounce from 'lodash/debounce';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -22,11 +21,9 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
-
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
+import InputAddress from '../../features/InputAddress/InputAddress';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -45,29 +42,7 @@ const NftsSendPage = ({ params, t }) => {
   const [nftDetail, setNftDetail] = useState({});
   const [{ activeWallet, config, addressBook }] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
-  const [checkingAddress, setCheckingAddress] = useState(false);
-  const validateAddress = useMemo(
-    () =>
-      debounce(async address => {
-        setCheckingAddress(true);
-        try {
-          const result = await activeWallet.validateDestinationAccount(address);
-          setCheckingAddress(false);
-          setValidAddress(result.type !== 'ERROR');
-        } catch (error) {
-          setCheckingAddress(false);
-          setValidAddress(false);
-          console.log(error);
-        }
-      }, 500),
-    [activeWallet],
-  );
   const [recipientAddress, setRecipientAddress] = useState('');
-  const onRecipientChange = v => {
-    setValidAddress(false);
-    setRecipientAddress(v);
-    validateAddress(v);
-  };
 
   useEffect(() => {
     if (activeWallet) {
@@ -147,24 +122,15 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="xl" />
               {step === 1 && (
                 <>
-                  <GlobalInputWithButton
-                    // startLabel={t('general.to')}
-                    placeholder={t('general.recipient_s_address', {
-                      token: 'SOL',
-                    })}
-                    value={recipientAddress}
-                    setValue={onRecipientChange}
-                    onActionPress={() => {}}
-                    buttonIcon={!validAddress ? IconQRCodeScanner : undefined}
-                    buttonOnPress={() => {}}
-                    disabled={checkingAddress}
-                    invalid={recipientAddress && !validAddress}
-                    complete={validAddress}
+                  <InputAddress
+                    address={recipientAddress}
+                    onChange={setRecipientAddress}
+                    validAddress={validAddress}
+                    setValidAddress={setValidAddress}
                   />
-
                   <GlobalPadding />
 
-                  {addressBook.size > 0 && (
+                  {addressBook.length > 0 && (
                     <GlobalCollapse
                       title={t('settings.address_book')}
                       titleStyle={styles.titleStyle}
@@ -178,7 +144,7 @@ const NftsSendPage = ({ params, t }) => {
                           chain={addressBookItem.chain}
                           imageSize="md"
                           onPress={() =>
-                            onRecipientChange(addressBookItem.address)
+                            setRecipientAddress(addressBookItem.address)
                           }
                           buttonStyle={globalStyles.addressBookItem}
                           touchableStyles={globalStyles.addressBookTouchable}
@@ -288,7 +254,7 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalButton
                 type="secondary"
                 flex
-                title="Close"
+                title={t('general.close')}
                 onPress={goToBack}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}

@@ -12,6 +12,7 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import { getWalletChain } from '../../utils/wallet';
+import InputAddress from '../../features/InputAddress/InputAddress';
 
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
@@ -20,7 +21,8 @@ const AddressBookAddPage = ({ t }) => {
     useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
-  const isValid = addressLabel && addressAddress;
+  const [validAddress, setValidAddress] = useState(false);
+  const isValid = addressLabel && validAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
@@ -53,12 +55,12 @@ const AddressBookAddPage = ({ t }) => {
 
         <GlobalPadding size="md" />
 
-        <GlobalInputWithButton
-          placeholder={t('settings.addressbook.add')}
-          value={addressAddress}
-          setValue={setAddressAddress}
-          buttonLabel="Paste"
-          buttonOnPress={() => {}}
+        <InputAddress
+          address={addressAddress}
+          onChange={setAddressAddress}
+          validAddress={validAddress}
+          setValidAddress={setValidAddress}
+          recipient={false}
         />
       </GlobalLayout.Header>
 

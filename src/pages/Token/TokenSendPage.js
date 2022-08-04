@@ -25,8 +25,8 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 
 import IconCopy from '../../assets/images/IconCopy.png';
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
+import InputAddress from '../../features/InputAddress/InputAddress';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -52,21 +52,13 @@ const TokenSendPage = ({ params, t }) => {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [recipientAmount, setRecipientAmount] = useState('');
 
-  const onRecipientChange = v => {
-    setValidAddress(false);
-    setRecipientAddress(v);
-  };
-  const validAmount = parseFloat(recipientAmount) <= token.uiAmount;
+  const validAmount =
+    parseFloat(recipientAmount) <= token.uiAmount &&
+    parseFloat(recipientAmount) > 0;
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
   };
   const onNext = () => setStep(step + 1);
-  const validateAddress = async () => {
-    const result = await activeWallet.validateDestinationAccount(
-      recipientAddress,
-    );
-    setValidAddress(result);
-  };
   const onSend = async () => {
     setSending(true);
     try {
@@ -109,17 +101,11 @@ const TokenSendPage = ({ params, t }) => {
                 readonly
               />
 
-              <GlobalInputWithButton
-                startLabel={t('general.to')}
-                placeholder={t('general.name_or_address', {
-                  token: 'SOL',
-                })}
-                value={recipientAddress}
-                setValue={onRecipientChange}
-                // actionIcon="qr"
-                // onActionPress={() => {}}
-                buttonIcon={IconQRCodeScanner}
-                buttonOnPress={() => {}}
+              <InputAddress
+                address={recipientAddress}
+                onChange={setRecipientAddress}
+                validAddress={validAddress}
+                setValidAddress={setValidAddress}
               />
 
               {addressBook.length > 0 && (
@@ -139,7 +125,7 @@ const TokenSendPage = ({ params, t }) => {
                         chain={addressBookItem.chain}
                         imageSize="md"
                         onPress={() =>
-                          onRecipientChange(addressBookItem.address)
+                          setRecipientAddress(addressBookItem.address)
                         }
                         buttonStyle={globalStyles.addressBookItem}
                         touchableStyles={globalStyles.addressBookTouchable}
@@ -159,9 +145,17 @@ const TokenSendPage = ({ params, t }) => {
                     value={recipientAmount}
                     setValue={setRecipientAmount}
                     keyboardType="numeric"
-                    buttonLabel="Max"
-                    buttonOnPress={() => {}}
+                    buttonLabel={t('general.max')}
+                    buttonOnPress={() =>
+                      setRecipientAmount(`${token.uiAmount}`)
+                    }
+                    invalid={!validAmount && !!recipientAmount}
                   />
+                  {!validAmount && !!recipientAmount && (
+                    <GlobalText type="body1" center color="negative">
+                      {t(`token.send.amount.invalid`, { max: token.uiAmount })}
+                    </GlobalText>
+                  )}
 
                   <GlobalPadding />
 
@@ -172,19 +166,6 @@ const TokenSendPage = ({ params, t }) => {
               )}
 
               <GlobalPadding size="md" />
-              {!validAmount && !!recipientAmount && (
-                <GlobalText type="body1" center color="negative">
-                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
-                </GlobalText>
-              )}
-              {validAddress && validAddress.type !== 'SUCCESS' && (
-                <GlobalText
-                  type="body1"
-                  center
-                  color={validAddress.type === 'ERROR' ? 'negative' : ''}>
-                  {t(`token.send.address.${validAddress.code}`)}
-                </GlobalText>
-              )}
             </GlobalLayout.Header>
 
             <GlobalLayout.Footer inlineFlex>
@@ -200,17 +181,9 @@ const TokenSendPage = ({ params, t }) => {
               <GlobalButton
                 type="primary"
                 flex
-                disabled={validAddress && !validAmount}
-                title={t(
-                  validAddress && validAddress.type !== 'ERROR'
-                    ? 'token.send.next'
-                    : 'token.send.validate',
-                )}
-                onPress={
-                  validAddress && validAddress.type !== 'ERROR'
-                    ? onNext
-                    : validateAddress
-                }
+                disabled={!validAddress || !validAmount}
+                title={t('token.send.next')}
+                onPress={onNext}
                 style={[globalStyles.button, globalStyles.buttonRight]}
                 touchableStyles={globalStyles.buttonTouchable}
               />

@@ -38,9 +38,6 @@ const NftsListPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
-  const goToBack = () => {
-    navigate(APP_ROUTES_MAP.WALLET);
-  };
   const onClick = nft => {
     if (isCollection(nft)) {
       navigate(ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
@@ -53,7 +50,6 @@ const NftsListPage = ({ t }) => {
       <GlobalLayout fullscreen>
         <GlobalLayout.Header>
           <GlobalBackTitle
-            onBack={goToBack}
             inlineTitle={getWalletName(
               activeWallet.getReceiveAddress(),
               config,
