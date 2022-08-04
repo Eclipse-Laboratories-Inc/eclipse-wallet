@@ -49,6 +49,13 @@ export const validateSeedPhrase = seedPhrase =>
 export const getWalletName = (address, config) =>
   get(config, `${address}.name`, 'Wallet Unknown');
 
+export const getWalletAvatar = (address, config) =>
+  get(
+    config,
+    `${address}.avatar`,
+    'https://cryptohasbullanft.com/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-09-at-5.45.22-AM-1-768x768.jpeg',
+  );
+
 export const getWalletChain = wallet => {
   const type = wallet ? wallet.chain : '';
   if (type) {
@@ -59,6 +66,12 @@ export const getWalletChain = wallet => {
 
 export const getShortAddress = address =>
   `${address.substr(0, 4)}...${address.substr(-4)}`;
+
+export const TRANSACTION_STATUS = {
+  FAIL: 'fail',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+};
 
 export const getTransactionImage = transaction => {
   const object = transaction;

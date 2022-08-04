@@ -3,6 +3,9 @@
     "home": "Home",
     "name": "Name",
     "address": "Address",
+    "to": "To",
+    "name_or_address": "Name or \"{{token}}\" Address",
+    "recipient_s_address": "Recipient´s \"{{token}}\" Address",
     "seed_phrase": "Seed Phrase",
     "sending": "Sending...",
     "sent": "Sent!"
@@ -15,6 +18,7 @@
     "close": "Close",
     "save": "Save",
     "remove": "Remove",
+    "cancel": "Cancel",
     "done": "Done",
     "send": "Send",
     "receive": "Receive",
@@ -147,8 +151,10 @@
     "recent_activity": "Recent Activity",
     "view_transaction": "View Transaction"
   },
-  "nfts": {
-    "sending": "Sending...",
-    "sent": "Sent!"
+  "nft": {
+    "description": "Description",
+    "properties": "Properties",
+    "send_nft": "Send NFT",
+    "send_to": "Send to:"
   }
 }

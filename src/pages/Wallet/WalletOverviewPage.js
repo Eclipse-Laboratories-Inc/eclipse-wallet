@@ -8,7 +8,11 @@ import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../pages/Nfts/routes';
-import { getWalletName, getShortAddress } from '../../utils/wallet';
+import {
+  getWalletName,
+  getShortAddress,
+  getWalletAvatar,
+} from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   hiddenValue,
@@ -29,11 +33,11 @@ import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 
 import AvatarImage from '../../component-library/Image/AvatarImage';
-import Avatar from '../../assets/images/Avatar.png';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { isCollection } from '../../utils/nfts';
+import { getMediaRemoteUrl } from '../../utils/media';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -129,7 +133,12 @@ const WalletOverviewPage = ({ t }) => {
           <SafeAreaView edges={['top']}>
             <View style={styles.avatarWalletAddressActions}>
               <View style={styles.avatarWalletAddress}>
-                <AvatarImage src={Avatar} size={42} />
+                <AvatarImage
+                  src={getMediaRemoteUrl(
+                    getWalletAvatar(activeWallet.getReceiveAddress(), config),
+                  )}
+                  size={42}
+                />
 
                 <View style={styles.walletNameAddress}>
                   <GlobalText

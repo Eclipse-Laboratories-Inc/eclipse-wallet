@@ -247,6 +247,21 @@ const useWallets = () => {
     });
     setConfig(_config);
   };
+  const editWalletAvatar = async (address, avatar) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        avatar,
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
   return [
     {
       ready,
@@ -268,6 +283,7 @@ const useWallets = () => {
       checkPassword,
       removeAllWallets,
       editWalletName,
+      editWalletAvatar,
     },
   ];
 };

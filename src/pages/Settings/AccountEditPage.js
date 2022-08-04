@@ -13,10 +13,14 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButton from '../../component-library/CardButton/CardButton';
 
-import Avatar from '../../assets/images/Avatar.png';
 import IconEditCircle from '../../assets/images/IconEditCircle.png';
 import { AppContext } from '../../AppProvider';
-import { getShortAddress, getWalletName } from '../../utils/wallet';
+import {
+  getShortAddress,
+  getWalletAvatar,
+  getWalletName,
+} from '../../utils/wallet';
+import { getMediaRemoteUrl } from '../../utils/media';
 
 const AccountEditPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -66,7 +70,9 @@ const AccountEditPage = ({ params, t }) => {
         <View style={globalStyles.centered}>
           <View style={globalStyles.floatingTransactionBox}>
             <GlobalImage
-              source={Avatar}
+              source={getMediaRemoteUrl(
+                getWalletAvatar(params.address, config),
+              )}
               size="4xl"
               style={globalStyles.bigImage}
               circle

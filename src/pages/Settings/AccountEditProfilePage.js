@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import { globalStyles } from '../../component-library/Global/theme';
@@ -11,13 +11,22 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalButton from '../../component-library/Global/GlobalButton';
+import { getWalletAvatar } from '../../utils/wallet';
+import { AppContext } from '../../AppProvider';
+import { getMediaRemoteUrl } from '../../utils/media';
 
-import Avatar from '../../assets/images/Avatar.png';
-
-const AccountEditProfilePage = ({ t }) => {
+const AccountEditProfilePage = ({ params, t }) => {
   const navigate = useNavigation();
+  const [{ config }] = useContext(AppContext);
 
-  const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT);
+  const onBack = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
+      address: params.address,
+    });
+  const onSelectNft = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS, {
+      address: params.address,
+    });
 
   return (
     <GlobalLayout>
@@ -29,7 +38,7 @@ const AccountEditProfilePage = ({ t }) => {
 
         <View style={globalStyles.centered}>
           <GlobalImage
-            source={Avatar}
+            source={getMediaRemoteUrl(getWalletAvatar(params.address, config))}
             size="4xl"
             style={globalStyles.bigImage}
             circle
@@ -41,7 +50,7 @@ const AccountEditProfilePage = ({ t }) => {
             type="primary"
             wideSmall
             title={t('settings.wallets.select_nft')}
-            onPress={() => {}}
+            onPress={onSelectNft}
           />
 
           <GlobalPadding />
@@ -52,52 +61,10 @@ const AccountEditProfilePage = ({ t }) => {
             title={t('settings.wallets.upload_photo')}
             onPress={() => {}}
           />
-
-          <GlobalPadding size="4xl" />
-          <GlobalPadding size="4xl" />
-          <GlobalPadding size="4xl" />
-
-          <View style={globalStyles.squareRatio}>
-            <GlobalImage
-              source={Avatar}
-              style={globalStyles.bigImage}
-              square
-              squircle
-            />
-          </View>
-
-          <GlobalPadding size="xl" />
-
-          <GlobalButton
-            type="primary"
-            wideSmall
-            title={t('settings.wallets.select_nft_to_profile')}
-            onPress={() => {}}
-          />
-
-          <GlobalPadding />
-
-          <GlobalButton
-            type="secondary"
-            wideSmall
-            title={t('settings.wallets.full_nft_description')}
-            onPress={() => {}}
-          />
-
-          <GlobalPadding />
-
-          <GlobalButton
-            type="secondary"
-            wideSmall
-            title={t('general.home')}
-            onPress={onBack}
-          />
-
-          <GlobalPadding />
         </View>
       </GlobalLayout.Header>
     </GlobalLayout>
   );
 };
 
-export default withTranslation()(AccountEditProfilePage);
+export default withParams(withTranslation()(AccountEditProfilePage));
