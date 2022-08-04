@@ -127,13 +127,19 @@
     },
     "recover": {
       "messageTitle": "Recover Existing Wallet",
-      "messageBody": "Recover your wallet using your 24 words seed phrase.",
+      "messageBody": "Recover your wallet using your 12/24 words seed phrase.",
       "pasteSeed": "Paster your seed phrase"
     },
     "onboarding": {
       "titleOnboarded": "Add New Wallet",
       "titleWelcome": "Welcome to",
-      "select_blockchain": "Select Blockchain"
+      "select_blockchain": "Select Blockchain",
+      "title1": "Welcome to Salmon!",
+      "content1": "Open-source, non-custodial & multi-blockchain wallet",      
+      "title2": "Keep the control of your tokens",
+      "content2": "All your assets, in your hands. We don’t have access to them at all.",
+      "title3": "Stay tuned",
+      "content3": "Follow us at @salmonwallet"
     }
   },
   "transactions": {
