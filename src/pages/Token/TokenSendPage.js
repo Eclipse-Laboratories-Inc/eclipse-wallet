@@ -75,7 +75,6 @@ const TokenSendPage = ({ params, t }) => {
         token.address,
         recipientAmount,
       );
-      console.log(result);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       setStep(3);
       setSending(false);
@@ -123,7 +122,7 @@ const TokenSendPage = ({ params, t }) => {
                 buttonOnPress={() => {}}
               />
 
-              {addressBook.size > 0 && (
+              {addressBook.length > 0 && (
                 <>
                   <GlobalPadding />
 
