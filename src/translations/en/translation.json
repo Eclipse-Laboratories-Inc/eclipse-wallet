@@ -1,16 +1,21 @@
 {
   "general": {
     "home": "Home",
+    "usd": "USD",
     "name": "Name",
     "address": "Address",
     "to": "To",
     "name_or_address": "Name or \"{{token}}\" Address",
     "recipient_s_address": "Recipient´s \"{{token}}\" Address",
     "seed_phrase": "Seed Phrase",
+    "balance": "Balance",
     "sending": "Sending...",
     "sent": "Sent!",
     "close": "Close",
     "max": "Max",
+    "back": "Back",
+    "confirm": "Confirm",
+    "error": "Unexpected error",
     "address_validation": {
       "ERROR": "Unexpected Error",
       "INVALID_ADDRESS": "Address is not valid",
@@ -164,5 +169,13 @@
     "properties": "Properties",
     "send_nft": "Send NFT",
     "send_to": "Send to:"
+  },
+  "swap": {
+    "swap": "Swap",
+    "swap_tokens": "Swap Tokens",
+    "you_send": "You Send",
+    "you_receive": "You Receive",
+    "quote": "Quote",
+    "go_to_explorer": "Go to Explorer"
   }
 }

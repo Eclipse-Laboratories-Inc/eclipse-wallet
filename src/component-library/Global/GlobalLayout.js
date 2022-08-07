@@ -48,12 +48,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const GlobalLayout = ({ fullscreen, children }) => {
+const GlobalLayout = ({ fullscreen, style, children }) => {
+  const layoutStyle = {
+    ...styles.scrollViewContainer,
+    ...style,
+  };
+
   const inner = (
     <>
       <StatusBar barStyle={'light-content'} />
       <ScrollView
-        contentContainerStyle={styles.scrollViewContainer}
+        contentContainerStyle={layoutStyle}
         contentInsetAdjustmentBehavior="never">
         <View
           style={fullscreen ? styles.mainTabContainer : styles.mainContainer}>

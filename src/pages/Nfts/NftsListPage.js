@@ -1,30 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { withTranslation } from '../../hooks/useTranslations';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalLayout from '../../component-library/Global/GlobalLayout';
-import { useNavigation } from '../../routes/hooks';
 import { AppContext } from '../../AppProvider';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import GlobalText from '../../component-library/Global/GlobalText';
-import { getWalletName } from '../../utils/wallet';
-import GlobalNftList from '../../component-library/Global/GlobalNftList';
-import { isCollection } from '../../utils/nfts';
+import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
+import { cache, CACHE_TYPES } from '../../utils/cache';
+import { withTranslation } from '../../hooks/useTranslations';
+import { getWalletName } from '../../utils/wallet';
+import { isCollection } from '../../utils/nfts';
 
-const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+import { globalStyles } from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
+import GlobalNftList from '../../component-library/Global/GlobalNftList';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const NftsListPage = ({ t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsGroup, setNftsGroup] = useState([]);
+
   const [{ activeWallet, config }] = useContext(AppContext);
   useEffect(() => {
     if (activeWallet) {
@@ -38,6 +33,7 @@ const NftsListPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
+
   const onClick = nft => {
     if (isCollection(nft)) {
       navigate(ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
@@ -45,6 +41,7 @@ const NftsListPage = ({ t }) => {
       navigate(ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
     }
   };
+
   return (
     (loaded && (
       <GlobalLayout fullscreen>
@@ -57,9 +54,10 @@ const NftsListPage = ({ t }) => {
             inlineAddress={activeWallet.getReceiveAddress()}
           />
 
-          <View style={styles.centered}>
+          <View style={globalStyles.centered}>
             <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
           </View>
+
           <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
         </GlobalLayout.Header>
       </GlobalLayout>

@@ -7,6 +7,7 @@ import GlobalImage from '../Global/GlobalImage';
 import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
+import IconExpandMore from '../../assets/images/IconExpandMore.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 import ToggleOn from '../../assets/images/ToggleOn.png';
@@ -32,6 +33,9 @@ const styles = StyleSheet.create({
   buttonCardXL: {
     minHeight: 94,
   },
+  buttonCardSM: {
+    minHeight: 32,
+  },
   cardContent: {
     flex: 1,
     flexDirection: 'row',
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgPrimary,
   },
   spaceRight: {
-    marginRight: theme.gutters.paddingSM,
+    marginRight: theme.gutters.paddingXS,
   },
   main: {
     flex: 1,
@@ -69,6 +73,7 @@ const styles = StyleSheet.create({
 
 const CardButton = ({
   type,
+  size,
   icon,
   image,
   imageSize,
@@ -92,6 +97,7 @@ const CardButton = ({
 }) => {
   const buttonSize = {
     ...(title && description && styles.buttonCardLG),
+    ...(size === 'sm' && styles.buttonCardSM),
     ...(type === 'xl' && styles.buttonCardXL),
   };
 
@@ -115,7 +121,7 @@ const CardButton = ({
         {image && (
           <GlobalImage
             source={image}
-            size={imageSize}
+            size={imageSize || 'md'}
             style={[styles.image, styles.spaceRight, imageStyle]}
             // mask={mask}
             maskColor={selected && 'accentPrimary'}
@@ -155,6 +161,14 @@ const CardButton = ({
       {actionIcon === 'right' && (
         <GlobalImage
           source={IconChevronRight}
+          size="sm"
+          style={{ opacity: 0.5 }}
+        />
+      )}
+
+      {actionIcon === 'disclose' && (
+        <GlobalImage
+          source={IconExpandMore}
           size="sm"
           style={{ opacity: 0.5 }}
         />

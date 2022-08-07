@@ -137,7 +137,7 @@ const TokenSendPage = ({ params, t }) => {
               )}
 
               <GlobalPadding size="4xl" />
-              {validAddress && validAddress.type !== 'ERROR' && (
+              {validAddress && (
                 <>
                   <GlobalInputWithButton
                     startLabel={token.symbol}

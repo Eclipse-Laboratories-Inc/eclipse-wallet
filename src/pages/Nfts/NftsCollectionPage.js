@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AppContext } from '../../AppProvider';
+import { useNavigation, withParams } from '../../routes/hooks';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP } from './routes';
+import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
+import { getWalletName } from '../../utils/wallet';
+
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
-import { useNavigation, withParams } from '../../routes/hooks';
-import { AppContext } from '../../AppProvider';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import GlobalText from '../../component-library/Global/GlobalText';
-import { getWalletName } from '../../utils/wallet';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
-import { ROUTES_MAP } from './routes';
 
 const styles = StyleSheet.create({
   centered: {

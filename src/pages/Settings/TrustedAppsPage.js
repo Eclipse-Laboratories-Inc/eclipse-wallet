@@ -40,9 +40,11 @@ const TrustedAppsPage = ({ t }) => {
 
         <GlobalPadding />
 
-        <TrustedAppItem title="App.Name 1" />
-        <TrustedAppItem title="App.Name 2" />
-        <TrustedAppItem title="App.Name 3" />
+        <View style={globalStyles.centered}>
+          <TrustedAppItem title="App.Name 1" />
+          <TrustedAppItem title="App.Name 2" />
+          <TrustedAppItem title="App.Name 3" />
+        </View>
       </GlobalLayout.Header>
     </GlobalLayout>
   );
