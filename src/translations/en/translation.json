@@ -13,6 +13,9 @@
     "sent": "Sent!",
     "close": "Close",
     "max": "Max",
+    "back": "Back",
+    "confirm": "Confirm",
+    "error": "Unexpected error",
     "address_validation": {
       "ERROR": "Unexpected Error",
       "INVALID_ADDRESS": "Address is not valid",
