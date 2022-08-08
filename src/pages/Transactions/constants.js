@@ -10,4 +10,9 @@ const TYPES_MAP = {
   closeAccount: 'Close account',
 };
 
-export { TYPES_MAP, TRANSACTION_TYPE };
+const TOKEN_DECIMALS = {
+  SOLANA: 1000000000,
+  COINS: 1000000,
+};
+
+export { TYPES_MAP, TRANSACTION_TYPE, TOKEN_DECIMALS };

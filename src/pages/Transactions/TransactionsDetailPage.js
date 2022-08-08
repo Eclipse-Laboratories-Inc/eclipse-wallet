@@ -6,7 +6,7 @@ import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP } from './routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { TRANSACTION_TYPE, TYPES_MAP } from './constants';
+import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import {
@@ -128,13 +128,15 @@ const TransactionsDetailPage = ({ params }) => {
 
                   <GlobalText type="headline2" center>
                     {transactionDetail.error
-                      ? `${'-'}${transactionDetail.fee / 1000000000} SOL  `
+                      ? `${'-'}${
+                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                        } SOL  `
                       : `${isReceive ? '+' : '-'}${
                           isReceive
                             ? transactionDetail.amount
                             : parseFloat(
                                 transactionDetail.amount +
-                                  transactionDetail.fee / 1000000000,
+                                  transactionDetail.fee / TOKEN_DECIMALS.SOLANA,
                               ).toFixed(8)
                         } SOL`}
                   </GlobalText>
@@ -243,7 +245,9 @@ const TransactionsDetailPage = ({ params }) => {
 
                   {transactionDetail.error ? (
                     <GlobalText type="headline2" center>
-                      {`${'-'}${transactionDetail.fee / 1000000000} SOL  `}
+                      {`${'-'}${
+                        transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                      } SOL  `}
                     </GlobalText>
                   ) : (
                     <>
@@ -252,8 +256,8 @@ const TransactionsDetailPage = ({ params }) => {
                           transactionDetail.swapAmountIn /
                           (transactionDetail.tokenNameIn === 'SOL' ||
                           !transactionDetail.tokenNameIn
-                            ? 1000000000
-                            : 1000000)
+                            ? TOKEN_DECIMALS.SOLANA
+                            : TOKEN_DECIMALS.COINS)
                         } ${transactionDetail.tokenNameIn || 'SOL'} `}
                       </GlobalText>
                       <GlobalText type="headline2" center>
@@ -261,8 +265,8 @@ const TransactionsDetailPage = ({ params }) => {
                           transactionDetail.swapAmountOut /
                           (transactionDetail.tokenNameOut === 'SOL' ||
                           !transactionDetail.tokenNameOut
-                            ? 1000000000
-                            : 1000000)
+                            ? TOKEN_DECIMALS.SOLANA
+                            : TOKEN_DECIMALS.COINS)
                         } ${transactionDetail.tokenNameOut || 'SOL'} `}
                       </GlobalText>
                     </>

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import theme from '../../component-library/Global/theme';
-import { TRANSACTION_TYPE, TYPES_MAP } from './constants';
+import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
@@ -103,7 +103,7 @@ const TransactionsListPage = () => {
                                   type="body2"
                                   color="negative">
                                   {`${'-'}${
-                                    transaction.fee / 1000000000
+                                    transaction.fee / TOKEN_DECIMALS.SOLANA
                                   } SOL  `}
                                 </GlobalText>
                                 <GlobalImage source={IconFailed} size="xxs" />
@@ -120,7 +120,8 @@ const TransactionsListPage = () => {
                                     ? transaction.amount
                                     : parseFloat(
                                         transaction.amount +
-                                          transaction.fee / 1000000000,
+                                          transaction.fee /
+                                            TOKEN_DECIMALS.SOLANA,
                                       ).toFixed(8)}
                                   {` SOL  `}
                                 </GlobalText>
@@ -146,13 +147,14 @@ const TransactionsListPage = () => {
                                   type="body2"
                                   color="negative">
                                   {`${'-'}${
-                                    transaction.fee / 1000000000
+                                    transaction.fee / TOKEN_DECIMALS.SOLANA
                                   } SOL  `}
                                 </GlobalText>
                                 <GlobalImage source={IconFailed} size="xxs" />
                               </View>,
                             ]
-                          : [
+                          : transaction.swapAmountIn !== '0' &&
+                            [
                               <View style={styles.inline}>
                                 <GlobalText
                                   key={'amount-action'}
@@ -162,8 +164,8 @@ const TransactionsListPage = () => {
                                     transaction.swapAmountIn /
                                     (transaction.tokenNameIn === 'SOL' ||
                                     !transaction.tokenNameIn
-                                      ? 1000000000
-                                      : 1000000)
+                                      ? TOKEN_DECIMALS.SOLANA
+                                      : TOKEN_DECIMALS.COINS)
                                   } ${transaction.tokenNameIn || 'SOL'} `}
                                 </GlobalText>
                                 <AvatarImage
@@ -180,8 +182,8 @@ const TransactionsListPage = () => {
                                     transaction.swapAmountOut /
                                     (transaction.tokenNameOut === 'SOL' ||
                                     !transaction.tokenNameOut
-                                      ? 1000000000
-                                      : 1000000)
+                                      ? TOKEN_DECIMALS.SOLANA
+                                      : TOKEN_DECIMALS.COINS)
                                   } ${transaction.tokenNameOut || 'SOL'} `}
                                 </GlobalText>
                                 <AvatarImage
