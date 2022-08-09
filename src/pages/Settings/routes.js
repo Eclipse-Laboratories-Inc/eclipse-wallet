@@ -20,6 +20,7 @@ import TrustedAppsPage from './TrustedAppsPage';
 import HelpSupportPage from './HelpSupportPage';
 import AccountEditProfileNftsPage from './AccountEditProfileNftsPage';
 import AccountEditProfileNftsDetailPage from './AccountEditProfileNftsDetailPage';
+import AccountEditPrivateKeyPage from './AccountEditPrivateKeyPage';
 
 export const ROUTES_MAP = {
   SETTINGS_OPTIONS: 'SETTINGS_OPTIONS',
@@ -33,6 +34,7 @@ export const ROUTES_MAP = {
   SETTINGS_ACCOUNT_EDIT_ADDRESS: 'SETTINGS_ACCOUNT_EDIT_ADDRESS',
   SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS: 'SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS',
   SETTINGS_ACCOUNT_EDIT_SEEDPHRASE: 'SETTINGS_ACCOUNT_EDIT_SEEDPHRASE',
+  SETTINGS_ACCOUNT_EDIT_PRIVATEKEY: 'SETTINGS_ACCOUNT_EDIT_PRIVATEKEY',
   SETTINGS_ADDRESSBOOK: 'SETTINGS_ADDRESSBOOK',
   SETTINGS_ADDRESSBOOK_ADD: 'SETTINGS_ADDRESSBOOK_ADD',
   SETTINGS_ADDRESSBOOK_EDIT: 'SETTINGS_ADDRESSBOOK_EDIT',
@@ -123,6 +125,14 @@ const routes = [
     path: 'accounts/:address/seedphrase',
     route: '/wallet/settings/accounts/:address/seedphrase',
     Component: AccountEditSeedPhrasePage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_EDIT_PRIVATEKEY,
+    name: 'settingsEditAccountPrivateKey',
+    path: 'accounts/:address/privatekey',
+    route: '/wallet/settings/accounts/:address/privatekey',
+    Component: AccountEditPrivateKeyPage,
     default: false,
   },
   {
