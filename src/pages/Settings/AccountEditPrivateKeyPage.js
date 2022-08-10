@@ -58,7 +58,7 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
       address: params.address,
     });
 
-  const goToCopy = () => clipboard.copy(wallet.keyPair.secretKey.toString());
+  const goToCopy = () => clipboard.copy(wallet.retrieveSecurePrivateKey());
 
   const onReveal = () => {
     setShowSeedPhrase(!showSeedPhrase);
@@ -94,9 +94,7 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
           )}
           <GlobalInput
             value={
-              showSeedPhrase && wallet
-                ? wallet.keyPair.secretKey.toString()
-                : ''
+              showSeedPhrase && wallet ? wallet.retrieveSecurePrivateKey() : ''
             }
             setValue={() => {}}
             seedphrase
