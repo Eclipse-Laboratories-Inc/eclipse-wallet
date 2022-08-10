@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Modal } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -38,6 +38,7 @@ import AvatarImage from '../../component-library/Image/AvatarImage';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { isCollection } from '../../utils/nfts';
 import { getMediaRemoteUrl } from '../../utils/media';
+import QRScan from '../../features/QRScan/QRScan';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -81,6 +82,8 @@ const WalletOverviewPage = ({ t }) => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
+  const [showScan, setShowScan] = useState(false);
+
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
@@ -102,6 +105,16 @@ const WalletOverviewPage = ({ t }) => {
       });
     }
   }, [activeWallet, selectedEndpoints]);
+
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+
+  const onRead = qr => {
+    const data = qr;
+    console.log(data.data);
+    setShowScan(false);
+  };
 
   const goToSend = () =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
@@ -171,7 +184,7 @@ const WalletOverviewPage = ({ t }) => {
                   transparent
                   icon={IconQRCodeScanner}
                   style={styles.narrowBtn}
-                  onPress={() => {}}
+                  onPress={toggleScan}
                 />
               </View>
             </View>
@@ -223,6 +236,12 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
         </GlobalLayout.Header>
+        <Modal
+          animationType="slide"
+          onRequestClose={toggleScan}
+          visible={showScan}>
+          <QRScan onClose={toggleScan} onRead={onRead} />
+        </Modal>
       </GlobalLayout>
     )
   );
