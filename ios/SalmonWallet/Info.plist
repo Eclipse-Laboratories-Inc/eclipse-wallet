@@ -50,8 +50,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
@@ -60,6 +58,12 @@
 		<string>DMSans-Bold.ttf</string>
 		<string>DMSans-Medium.ttf</string>
 		<string>DMSans-Regular.ttf</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Salmon needs permission to access your camera</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
 	</array>
 </dict>
 </plist>

@@ -48,6 +48,11 @@ const TokenSelectPage = ({ params, t }) => {
   const onSelect = token => {
     if (params.action === 'send') {
       navigate(TOKEN_ROUTES_MAP.TOKEN_SEND, { tokenId: token.address });
+    } else if (params.action === 'sendTo') {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_SEND_TO, {
+        tokenId: token.address,
+        toAddress: params.toAddress,
+      });
     } else if (params.action === 'receive') {
       navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE, { tokenId: token.address });
     } else {

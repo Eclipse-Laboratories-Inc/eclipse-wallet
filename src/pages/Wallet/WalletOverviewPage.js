@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Modal } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -38,6 +38,8 @@ import AvatarImage from '../../component-library/Image/AvatarImage';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { isCollection } from '../../utils/nfts';
 import { getMediaRemoteUrl } from '../../utils/media';
+import QRScan from '../../features/QRScan/QRScan';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -81,6 +83,8 @@ const WalletOverviewPage = ({ t }) => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
+  const [showScan, setShowScan] = useState(false);
+
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
@@ -102,6 +106,19 @@ const WalletOverviewPage = ({ t }) => {
       });
     }
   }, [activeWallet, selectedEndpoints]);
+
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+
+  const onRead = qr => {
+    const data = qr;
+    setShowScan(false);
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT_TO, {
+      action: 'sendTo',
+      toAddress: data.data,
+    });
+  };
 
   const goToSend = () =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
@@ -166,13 +183,15 @@ const WalletOverviewPage = ({ t }) => {
                   style={styles.narrowBtn}
                   onPress={goToNotifications}
                 /> */}
-                <GlobalButton
-                  type="icon"
-                  transparent
-                  icon={IconQRCodeScanner}
-                  style={styles.narrowBtn}
-                  onPress={() => {}}
-                />
+                {isNative() && (
+                  <GlobalButton
+                    type="icon"
+                    transparent
+                    icon={IconQRCodeScanner}
+                    style={styles.narrowBtn}
+                    onPress={toggleScan}
+                  />
+                )}
               </View>
             </View>
           </SafeAreaView>
@@ -223,6 +242,9 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
         </GlobalLayout.Header>
+        {isNative() && (
+          <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+        )}
       </GlobalLayout>
     )
   );
