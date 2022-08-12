@@ -9,19 +9,21 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
-import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import { getWalletChain } from '../../utils/wallet';
 import InputAddress from '../../features/InputAddress/InputAddress';
+import { isNative } from '../../utils/platform';
+import QRScan from '../../features/QRScan/QRScan';
 
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
   const [saving, setSaving] = useState(false);
-  const [{ activeWallet, addressBook }, { addAddress }] =
-    useContext(AppContext);
+  const [{ activeWallet }, { addAddress }] = useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
   const [validAddress, setValidAddress] = useState(false);
+  const [showScan, setShowScan] = useState(false);
+
   const isValid = addressLabel && validAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
@@ -35,7 +37,14 @@ const AddressBookAddPage = ({ t }) => {
     setSaving(false);
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   };
-
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+  const onRead = qr => {
+    const data = qr;
+    setAddressAddress(data.data);
+    setShowScan(false);
+  };
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
@@ -61,6 +70,7 @@ const AddressBookAddPage = ({ t }) => {
           validAddress={validAddress}
           setValidAddress={setValidAddress}
           recipient={false}
+          onQR={toggleScan}
         />
       </GlobalLayout.Header>
 
@@ -73,6 +83,9 @@ const AddressBookAddPage = ({ t }) => {
           disabled={saving || !isValid}
         />
       </GlobalLayout.Footer>
+      {isNative() && (
+        <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+      )}
     </GlobalLayout>
   );
 };

@@ -39,6 +39,7 @@ import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { isCollection } from '../../utils/nfts';
 import { getMediaRemoteUrl } from '../../utils/media';
 import QRScan from '../../features/QRScan/QRScan';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -112,8 +113,11 @@ const WalletOverviewPage = ({ t }) => {
 
   const onRead = qr => {
     const data = qr;
-    console.log(data.data);
     setShowScan(false);
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT_TO, {
+      action: 'sendTo',
+      toAddress: data.data,
+    });
   };
 
   const goToSend = () =>
@@ -179,13 +183,15 @@ const WalletOverviewPage = ({ t }) => {
                   style={styles.narrowBtn}
                   onPress={goToNotifications}
                 /> */}
-                <GlobalButton
-                  type="icon"
-                  transparent
-                  icon={IconQRCodeScanner}
-                  style={styles.narrowBtn}
-                  onPress={toggleScan}
-                />
+                {isNative() && (
+                  <GlobalButton
+                    type="icon"
+                    transparent
+                    icon={IconQRCodeScanner}
+                    style={styles.narrowBtn}
+                    onPress={toggleScan}
+                  />
+                )}
               </View>
             </View>
           </SafeAreaView>
@@ -236,12 +242,9 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
         </GlobalLayout.Header>
-        <Modal
-          animationType="slide"
-          onRequestClose={toggleScan}
-          visible={showScan}>
-          <QRScan onClose={toggleScan} onRead={onRead} />
-        </Modal>
+        {isNative() && (
+          <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+        )}
       </GlobalLayout>
     )
   );

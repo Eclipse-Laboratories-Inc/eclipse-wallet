@@ -81,6 +81,7 @@
       "addToken": "Add Token",
       "add": "Add",
       "send": "Send",
+      "sendTo": "Send",
       "receive": "Receive",
       "select": "Select"
     },

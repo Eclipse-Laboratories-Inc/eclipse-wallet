@@ -1,42 +1,32 @@
 import React from 'react';
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Modal, StyleSheet, View } from 'react-native';
 
-const QRScan = ({ onClose, onRead }) => (
-  <QRCodeScanner
-    onRead={onRead}
-    topContent={
-      <Text style={styles.centerText}>
-        Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-        your computer and scan the QR code.
-      </Text>
-    }
-    bottomContent={
-      <TouchableOpacity style={styles.buttonTouchable} onPress={onClose}>
-        <Text style={styles.buttonText}>OK. Got it!</Text>
-      </TouchableOpacity>
-    }
-  />
+import theme from '../../component-library/Global/theme';
+import GlobalText from '../../component-library/Global/GlobalText';
+
+const QRScan = ({
+  active,
+  onClose,
+  onRead,
+  title = 'Scan QR Code',
+  chain = 'SOLANA',
+}) => (
+  <Modal animationType="slide" onRequestClose={onClose} visible={active}>
+    <View style={styles.mainContainer}>
+      <GlobalText>Option Unavailable</GlobalText>
+    </View>
+  </Modal>
 );
-
 const styles = StyleSheet.create({
-  centerText: {
+  mainContainer: {
     flex: 1,
-    fontSize: 18,
-    padding: 32,
-    color: '#777',
-  },
-  textBold: {
-    fontWeight: '500',
-    color: '#000',
-  },
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)',
-  },
-  buttonTouchable: {
-    padding: 16,
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    paddingVertical: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding4XL,
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+    backgroundColor: theme.colors.bgPrimary,
   },
 });
 
