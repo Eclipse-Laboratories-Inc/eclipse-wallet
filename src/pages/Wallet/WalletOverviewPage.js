@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Modal } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -13,7 +13,7 @@ import {
   getShortAddress,
   getWalletAvatar,
 } from '../../utils/wallet';
-import { cache, CACHE_TYPES } from '../../utils/cache';
+import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
   hiddenValue,
   getLabelValue,
@@ -80,6 +80,8 @@ const WalletOverviewPage = ({ t }) => {
     { activeWallet, config, selectedEndpoints, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
+  const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
@@ -88,6 +90,7 @@ const WalletOverviewPage = ({ t }) => {
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
+      setLoading(true);
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
@@ -103,14 +106,22 @@ const WalletOverviewPage = ({ t }) => {
         setTotalBalance(balance);
         setTokenList(balance.items);
         setNftsList(nfts);
+        setLoading(false);
       });
     }
-  }, [activeWallet, selectedEndpoints]);
+  }, [activeWallet, selectedEndpoints, reload]);
 
   const toggleScan = () => {
     setShowScan(!showScan);
   };
-
+  const onRefresh = () => {
+    invalidate(CACHE_TYPES.BALANCE);
+    invalidate(CACHE_TYPES.NFTS);
+    setTotalBalance({});
+    setTokenList(null);
+    setNftsList(null);
+    setReload(!reload);
+  };
   const onRead = qr => {
     const data = qr;
     setShowScan(false);
@@ -145,7 +156,7 @@ const WalletOverviewPage = ({ t }) => {
 
   return (
     activeWallet && (
-      <GlobalLayout>
+      <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
         <GlobalLayout.Header>
           <SafeAreaView edges={['top']}>
             <View style={styles.avatarWalletAddressActions}>

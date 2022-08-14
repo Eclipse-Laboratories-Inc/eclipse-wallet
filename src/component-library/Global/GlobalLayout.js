@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, StatusBar, ScrollView, View } from 'react-native';
+import {
+  StyleSheet,
+  StatusBar,
+  ScrollView,
+  View,
+  RefreshControl,
+} from 'react-native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
@@ -48,7 +54,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const GlobalLayout = ({ fullscreen, style, children }) => {
+const GlobalLayout = ({
+  fullscreen,
+  style,
+  children,
+  onRefresh,
+  refreshing,
+}) => {
   const layoutStyle = {
     ...styles.scrollViewContainer,
     ...style,
@@ -59,7 +71,14 @@ const GlobalLayout = ({ fullscreen, style, children }) => {
       <StatusBar barStyle={'light-content'} />
       <ScrollView
         contentContainerStyle={layoutStyle}
-        contentInsetAdjustmentBehavior="never">
+        contentInsetAdjustmentBehavior="never"
+        {...(onRefresh
+          ? {
+              refreshControl: (
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              ),
+            }
+          : {})}>
         <View
           style={fullscreen ? styles.mainTabContainer : styles.mainContainer}>
           {children}
