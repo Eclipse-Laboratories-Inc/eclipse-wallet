@@ -52,6 +52,20 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     minHeight: '100%',
   },
+  containerForTabs: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: theme.staticColor.transparent,
+  },
+  scrollViewForTabsInner: {
+    flex: 1,
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+    minHeight: '100%',
+    padding: theme.gutters.paddingNormal,
+    backgroundColor: theme.colors.bgPrimary,
+  },
 });
 
 const GlobalLayout = ({
@@ -115,5 +129,13 @@ const Footer = ({ inlineFlex, children }) => (
 GlobalLayout.Header = Header;
 GlobalLayout.Inner = Inner;
 GlobalLayout.Footer = Footer;
+
+export const GlobalLayoutForTabScreen = ({ children, style, ...props }) => (
+  <View style={[styles.containerForTabs, style]}>
+    <ScrollView contentInsetAdjustmentBehavior="automatic" {...props}>
+      <View style={styles.scrollViewForTabsInner}>{children}</View>
+    </ScrollView>
+  </View>
+);
 
 export default GlobalLayout;

@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@4m/wallet-adapter@^0.0.42":
-  version "0.0.42"
-  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.42.tgz#ca17e6831fc500cecea78e5869850ac0bca3ba7a"
-  integrity sha512-eSbY2qvLStMIXNN56Nak2SLMQ5fqCTXQKanfMcsZ6uJCn2Ma+Q5YOMxT7ZeDLNYCvv0isWbAY3QfSZGm+6GXbA==
+"@4m/wallet-adapter@^0.0.43":
+  version "0.0.43"
+  resolved "https://four-m-363894166745.d.codeartifact.us-east-1.amazonaws.com:443/npm/npm-modules/@4m/wallet-adapter/-/wallet-adapter-0.0.43.tgz#133d89b6da85d010cad2a7c049fd4a25a605925b"
+  integrity sha512-H0pr6FRv1eS4AmI21lU7K3sxppLFejp3gANVlT/Ck/U+vpHP8YRviSIGNcUH64lOoyEGHy71wDnH7qHZ42olCQ==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@metaplex-foundation/js-next" "^0.10.0"
@@ -12061,6 +12061,11 @@ mkdirp@^0.5.1, mkdirp@~0.5.1:
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
+
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 ms@2.0.0:
   version "2.0.0"
