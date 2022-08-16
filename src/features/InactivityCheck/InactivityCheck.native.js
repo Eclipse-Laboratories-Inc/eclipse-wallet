@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import UserInactivity from 'react-native-user-inactivity';
-const TIMEOUT_SEC = 60;
+import { TIMEOUT_SEC } from './constants';
 
 const InactivityCheck = ({ children, onIdle, active }) => {
   const [isActive, setIsActive] = useState(true);

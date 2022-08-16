@@ -7,13 +7,19 @@ import GlobalImage from '../Global/GlobalImage';
 import GlobalText from '../Global/GlobalText';
 
 import IconChevronRight from '../../assets/images/IconChevronRight.png';
+import IconExpandMore from '../../assets/images/IconExpandMore.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 import IconEdit from '../../assets/images/IconEdit.png';
+import ToggleOn from '../../assets/images/ToggleOn.png';
+import ToggleOff from '../../assets/images/ToggleOff.png';
 
 const styles = StyleSheet.create({
   touchable: {
-    marginBottom: theme.gutters.paddingNormal,
+    marginBottom: theme.gutters.paddingSM,
     width: '100%',
+  },
+  nospace: {
+    marginBottom: 0,
   },
   buttonCard: {
     width: '100%',
@@ -27,6 +33,9 @@ const styles = StyleSheet.create({
   buttonCardXL: {
     minHeight: 94,
   },
+  buttonCardSM: {
+    minHeight: 32,
+  },
   cardContent: {
     flex: 1,
     flexDirection: 'row',
@@ -35,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgPrimary,
   },
   spaceRight: {
-    marginRight: theme.gutters.paddingSM,
+    marginRight: theme.gutters.paddingXS,
   },
   main: {
     flex: 1,
@@ -64,11 +73,13 @@ const styles = StyleSheet.create({
 
 const CardButton = ({
   type,
+  size,
   icon,
   image,
   imageSize,
   mask,
   title,
+  caption,
   description,
   children,
   selected,
@@ -76,6 +87,7 @@ const CardButton = ({
   complete,
   actionIcon,
   actions,
+  nospace,
   onPress,
   onSecondaryPress,
   touchableStyles,
@@ -85,6 +97,7 @@ const CardButton = ({
 }) => {
   const buttonSize = {
     ...(title && description && styles.buttonCardLG),
+    ...(size === 'sm' && styles.buttonCardSM),
     ...(type === 'xl' && styles.buttonCardXL),
   };
 
@@ -96,7 +109,11 @@ const CardButton = ({
       active={active}
       onPress={onPress}
       style={[styles.buttonCard, buttonSize, buttonStyle]}
-      touchableStyles={[styles.touchable, touchableStyles]}
+      touchableStyles={[
+        styles.touchable,
+        touchableStyles,
+        nospace && styles.nospace,
+      ]}
       {...props}>
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
@@ -104,7 +121,7 @@ const CardButton = ({
         {image && (
           <GlobalImage
             source={image}
-            size={imageSize}
+            size={imageSize || 'md'}
             style={[styles.image, styles.spaceRight, imageStyle]}
             // mask={mask}
             maskColor={selected && 'accentPrimary'}
@@ -113,6 +130,12 @@ const CardButton = ({
         )}
 
         <View style={styles.main}>
+          {caption && (
+            <GlobalText type="caption" color="tertiary">
+              {caption}
+            </GlobalText>
+          )}
+
           {title && (
             <GlobalText type="body2" numberOfLines={1}>
               {title}
@@ -136,7 +159,25 @@ const CardButton = ({
       {children && <View>{children}</View>}
 
       {actionIcon === 'right' && (
-        <GlobalImage source={IconChevronRight} size="sm" />
+        <GlobalImage
+          source={IconChevronRight}
+          size="sm"
+          style={{ opacity: 0.5 }}
+        />
+      )}
+
+      {actionIcon === 'disclose' && (
+        <GlobalImage
+          source={IconExpandMore}
+          size="sm"
+          style={{ opacity: 0.5 }}
+        />
+      )}
+
+      {actionIcon === 'ToggleOn' && <GlobalImage source={ToggleOn} size="md" />}
+
+      {actionIcon === 'ToggleOff' && (
+        <GlobalImage source={ToggleOff} size="md" />
       )}
 
       {(complete || actionIcon === 'complete') && (

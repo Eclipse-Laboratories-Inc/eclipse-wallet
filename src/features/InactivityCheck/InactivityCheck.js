@@ -1,5 +1,5 @@
 import { useIdleTimer } from 'react-idle-timer';
-const TIMEOUT_SEC = 60;
+import { TIMEOUT_SEC } from './constants';
 
 const InactivityCheck = ({ children, onIdle, active }) => {
   useIdleTimer({

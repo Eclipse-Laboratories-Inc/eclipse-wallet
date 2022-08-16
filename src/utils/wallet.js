@@ -2,8 +2,10 @@ import {
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
+  getAvailableTokens as getAvailableTokens4m,
 } from '@4m/wallet-adapter';
 import chains from '@4m/wallet-adapter/constants/chains';
+import get from 'lodash/get';
 
 import ENDPOINTS from '../config/endpoints';
 
@@ -46,22 +48,32 @@ export const validateSeedPhrase = seedPhrase =>
   QTY_WORDS.includes(seedPhrase.split(' ').length) &&
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
 
-export const getWalletName = (wallet, number) => `Wallet ${number}`;
+export const getWalletName = (address, config) =>
+  get(config, `${address}.name`, 'Wallet Unknown');
+
+export const getWalletAvatar = (address, config) =>
+  get(
+    config,
+    `${address}.avatar`,
+    'https://cryptohasbullanft.com/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-09-at-5.45.22-AM-1-768x768.jpeg',
+  );
 
 export const getWalletChain = wallet => {
-  const type = wallet ? wallet.constructor.name : '';
-  switch (type) {
-    case 'SolanaAccount':
-      return 'SOLANA';
-    case 'NearAccount':
-      return 'NEAR';
-    default:
-      return getDefaultChain();
+  const type = wallet ? wallet.chain : '';
+  if (type) {
+    return type.toUpperCase();
   }
+  return getDefaultChain();
 };
 
 export const getShortAddress = address =>
   `${address.substr(0, 4)}...${address.substr(-4)}`;
+
+export const TRANSACTION_STATUS = {
+  FAIL: 'fail',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+};
 
 export const getTransactionImage = transaction => {
   const object = transaction;
@@ -88,3 +100,5 @@ export const getTransactionImage = transaction => {
       return IconTransactionSent;
   }
 };
+
+export const getAvailableTokens = getAvailableTokens4m;

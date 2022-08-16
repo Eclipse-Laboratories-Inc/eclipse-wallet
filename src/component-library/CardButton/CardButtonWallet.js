@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { getMediaRemoteUrl } from '../../utils/media';
 import { LOGOS, getShortAddress } from '../../utils/wallet';
+
 import CardButton from './CardButton';
 
 const CardButtonWallet = ({

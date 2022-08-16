@@ -19,8 +19,8 @@ export const getLabelValue = perc => {
   return 'neutral';
 };
 
-export const showPercentage = perc => {
-  const val = round(isNaN(perc) ? 0 : perc, 2).toFixed(2);
+export const showPercentage = (perc, decimals = 2) => {
+  const val = round(isNaN(perc) ? 0 : perc, decimals).toFixed(decimals);
   if (isPositive(perc)) {
     return `+${val} %`;
   } else if (isNegative(perc)) {

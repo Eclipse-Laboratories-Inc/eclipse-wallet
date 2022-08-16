@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
   },
+  uppercase: {
+    textTransform: 'uppercase',
+  },
   nospace: {
     marginBottom: 0,
   },
@@ -96,6 +99,9 @@ const styles = StyleSheet.create({
   negativeBright: {
     color: theme.colors.negativeBright,
   },
+  warningBright: {
+    color: theme.colors.warning,
+  },
   labelTertiary: {
     color: theme.colors.labelTertiary,
   },
@@ -113,6 +119,7 @@ const GlobalText = ({
   inverse,
   center,
   bold,
+  uppercase,
   nospace,
   style,
   ...props
@@ -135,10 +142,12 @@ const GlobalText = ({
       color === 'tertiary' && styles.labelTertiary,
       color === 'positive' && styles.positiveBright,
       color === 'negative' && styles.negativeBright,
+      color === 'warning' && styles.warningBright,
       color === 'bgLight' && styles.bgLight,
       inverse && styles.inverse,
       center && styles.center,
       bold && styles.bold,
+      uppercase && styles.uppercase,
       nospace && styles.nospace,
       style,
     ]}

@@ -1,7 +1,7 @@
-import CreateWallet from './CreateWallet';
-import DerivedAccounts from './DerivedAccounts';
-import RecoverWallet from './RecoverWallet';
-import SelectOptions from './SelectOptions';
+import CreateWalletPage from './CreateWalletPage';
+import DerivedAccountsPage from './DerivedAccountsPage';
+import RecoverWalletPage from './RecoverWalletPage';
+import SelectOptionsPage from './SelectOptionsPage';
 
 export const ROUTES_MAP = {
   ONBOARDING_HOME: 'ONBOARDING_HOME',
@@ -16,7 +16,7 @@ const routes = [
     name: 'onboardingHome',
     path: '',
     route: '/onboarding',
-    Component: SelectOptions,
+    Component: SelectOptionsPage,
     default: true,
   },
   {
@@ -24,22 +24,21 @@ const routes = [
     name: 'onboardingCreate',
     path: 'create/:chainCode',
     route: '/onboarding/create/:chainCode',
-    Component: CreateWallet,
+    Component: CreateWalletPage,
   },
   {
     key: ROUTES_MAP.ONBOARDING_RECOVER,
     name: 'onboardingRecover',
     path: 'recover/:chainCode',
     route: '/onboarding/recover/:chainCode',
-    Component: RecoverWallet,
+    Component: RecoverWalletPage,
   },
   {
     key: ROUTES_MAP.ONBOARDING_DERIVED,
     name: 'onboardingDerived',
     path: 'derived',
     route: '/onboarding/derived',
-    Component: DerivedAccounts,
-    default: true,
+    Component: DerivedAccountsPage,
   },
 ];
 

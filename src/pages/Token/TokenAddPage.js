@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -7,7 +7,7 @@ import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
 
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -17,25 +17,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 
 import IconCircleAdd from '../../assets/images/IconCircleAdd.png';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
-
-const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonTouchable: {
-    flex: 1,
-  },
-  button: {
-    alignSelf: 'stretch',
-  },
-  buttonLeft: {
-    marginRight: theme.gutters.paddingXS,
-  },
-  buttonRight: {
-    marginLeft: theme.gutters.paddingXS,
-  },
-});
 
 const TokenAddPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -76,15 +57,15 @@ const TokenAddPage = ({ params, t }) => {
 
   return (
     loaded && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
             inlineTitle="Wallet Name"
             inlineAddress={activeWallet.getReceiveAddress()}
           />
 
-          <View style={styles.centered}>
+          <View style={globalStyles.centered}>
             <GlobalText type="headline2">
               {t(`token.action.addToken`)}
             </GlobalText>
@@ -92,7 +73,7 @@ const TokenAddPage = ({ params, t }) => {
             <GlobalImage
               source={IconCircleAdd}
               size="xxl"
-              style={styles.bigImage}
+              style={globalStyles.bigImage}
               circle
             />
 
@@ -124,29 +105,27 @@ const TokenAddPage = ({ params, t }) => {
               setValue={setTokenSymbol}
             />
           </View>
-        </View>
+        </GlobalLayout.Header>
 
-        <View style={globalStyles.mainFooter}>
-          <View style={globalStyles.inlineFlexButtons}>
-            <GlobalButton
-              type="secondary"
-              flex
-              title="Cancel"
-              onPress={goToBack}
-              style={[styles.button, styles.buttonLeft]}
-              touchableStyles={styles.buttonTouchable}
-            />
+        <GlobalLayout.Footer inlineFlex>
+          <GlobalButton
+            type="secondary"
+            flex
+            title="Cancel"
+            onPress={goToBack}
+            style={[globalStyles.button, globalStyles.buttonLeft]}
+            touchableStyles={globalStyles.buttonTouchable}
+          />
 
-            <GlobalButton
-              type="primary"
-              flex
-              title="Add Token"
-              onPress={onAddToken}
-              style={[styles.button, styles.buttonRight]}
-              touchableStyles={styles.buttonTouchable}
-            />
-          </View>
-        </View>
+          <GlobalButton
+            type="primary"
+            flex
+            title="Add Token"
+            onPress={onAddToken}
+            style={[globalStyles.button, globalStyles.buttonRight]}
+            touchableStyles={globalStyles.buttonTouchable}
+          />
+        </GlobalLayout.Footer>
       </GlobalLayout>
     )
   );

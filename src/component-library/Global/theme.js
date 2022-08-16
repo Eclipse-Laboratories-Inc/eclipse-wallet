@@ -121,7 +121,8 @@ const themes = {
 
     // bgPrimary: 'hsla(225, 25%, 25%, 1)',
     bgPrimary: 'hsla(225, 27%, 9%, 1)',
-    bgDarken: '#10131C',
+    bgDarken: 'hsla(225, 27%, 9%, 1)',
+    bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
 
@@ -181,7 +182,8 @@ const themes = {
     black900: 'rgba(255, 255, 255, 0.9)',
 
     bgPrimary: 'hsla(225, 27%, 9%, 1)',
-    bgDarken: '#10131C',
+    bgDarken: 'hsla(225, 27%, 9%, 1)',
+    bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
 
@@ -215,43 +217,87 @@ const themes = {
   },
 };
 
+const colorTheme =
+  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
+
 export const globalStyles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    // flexGrow: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    paddingVertical: gutters.paddingNormal,
-    paddingBottom: gutters.padding4XL,
-    paddingHorizontal: gutters.paddingSM,
+  alignEnd: {
+    alignSelf: 'flex-end',
+  },
+  squareRatio: {
     width: '100%',
-    maxWidth: variables.mobileWidthLG,
+    aspectRatio: 1,
   },
-  mainHeader: {
-    // flexGrow: 1,
-  },
-  mainInner: {
-    // flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: gutters.paddingNormal,
-    paddingBottom: gutters.padding2XL,
-  },
-  mainFooter: {
-    paddingTop: gutters.paddingLG,
-    alignItems: 'center',
+  pagination: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    width: '100%',
   },
   inlineFlexButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
   },
+  inlineFlexAround: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  buttonTouchable: {
+    flex: 1,
+  },
+  button: {
+    alignSelf: 'stretch',
+  },
+  buttonLeft: {
+    marginRight: gutters.paddingXS,
+  },
+  buttonRight: {
+    marginLeft: gutters.paddingXS,
+  },
+  addressBookItem: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    minHeight: 60,
+  },
+  addressBookTouchable: {
+    marginBottom: 0,
+  },
+  centered: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredSmall: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    maxWidth: variables.buttonMaxWidthSmall,
+  },
+  floatingTransactionBox: {
+    marginVertical: gutters.paddingLG,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  floatingTransaction: {
+    position: 'absolute',
+    right: -10,
+    bottom: -10,
+  },
+  bigImage: {
+    backgroundColor: colorTheme.bgLight,
+  },
+  inlineWell: {
+    marginBottom: gutters.paddingSM,
+    paddingVertical: gutters.paddingXS,
+    paddingHorizontal: gutters.paddingSM,
+    width: '100%',
+    // maxWidth: variables.buttonMaxWidth,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: colorTheme.bgLight,
+    borderRadius: borderRadius.borderRadiusMD,
+  },
 });
-
-const colorTheme =
-  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
 
 const theme = {
   variables,

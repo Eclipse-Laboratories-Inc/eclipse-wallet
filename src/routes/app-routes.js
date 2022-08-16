@@ -1,10 +1,9 @@
-import OnboardingPage from '../pages/Onboarding/OnboardingPage';
+import OnboardingSection from '../pages/Onboarding';
 import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
 import TokenSection from '../pages/Token';
+import { getRoutesWithParent } from './utils';
 
-const getRoutesWithParent = (routes, parent) =>
-  routes.map(r => ({ ...r, parent }));
 export const ROUTES_MAP = {
   WELCOME: 'WELCOME',
   ONBOARDING: 'ONBOARDING',
@@ -33,7 +32,7 @@ const routes = [
     name: 'onboarding',
     path: 'onboarding/*',
     route: '/onboarding',
-    Component: OnboardingPage,
+    Component: OnboardingSection,
   },
   {
     key: ROUTES_MAP.TOKEN,
@@ -55,7 +54,6 @@ export const globalRoutes = [
     ROUTES_MAP.TOKEN,
   ),
   ...require('../pages/Wallet/routes').default,
-  ...require('../pages/Settings/routes').default,
   ...require('../pages/Transactions/routes').default,
 ];
 

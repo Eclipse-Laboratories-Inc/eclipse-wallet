@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -9,7 +8,6 @@ import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { hiddenValue, showAmount } from '../../utils/amount';
 
-import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
@@ -66,16 +64,16 @@ const TokenSelectPage = ({ params, t }) => {
 
   return (
     loaded && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
-            smallTitle={t(`token.action.${params.action || 'select'}`)}
+            secondaryTitle={t(`token.action.${params.action || 'select'}`)}
           />
 
           <GlobalInput
             forSearch
-            placeholder="Search..."
+            placeholder={t('actions.search_placeholder')}
             value={searchToken}
             setValue={setSearchToken}
           />
@@ -83,9 +81,9 @@ const TokenSelectPage = ({ params, t }) => {
           <GlobalPadding />
 
           <GlobalCollapse
-            title="Select Token"
+            title={t('wallet.select_token')}
             isOpen
-            actionTitle="Add New Token"
+            actionTitle={t('wallet.new_token')}
             viewAllAction={goToAddToken}
             hideCollapse>
             {tokens.map(token => (
@@ -102,7 +100,7 @@ const TokenSelectPage = ({ params, t }) => {
               />
             ))}
           </GlobalCollapse>
-        </View>
+        </GlobalLayout.Header>
       </GlobalLayout>
     )
   );

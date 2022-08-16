@@ -1,10 +1,73 @@
 {
   "general": {
+    "home": "Home",
+    "usd": "USD",
+    "name": "Name",
+    "address": "Address",
+    "to": "To",
+    "name_or_address": "Name or \"{{token}}\" Address",
+    "recipient_s_address": "Recipient´s \"{{token}}\" Address",
+    "seed_phrase": "Seed Phrase",
+    "balance": "Balance",
+    "sending": "Sending...",
+    "sent": "Sent!",
+    "close": "Close",
+    "max": "Max",
+    "back": "Back",
+    "confirm": "Confirm",
+    "error": "Unexpected error",
+    "address_validation": {
+      "ERROR": "Unexpected Error",
+      "INVALID_ADDRESS": "Address is not valid",
+      "EMPTY_ACCOUNT": "Account is empty",
+      "NO_FUNDS": "Address has no funds"
+    }
+  },
+  "actions": {
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Start",
     "copy": "Copy",
-    "close": "Close"
+    "close": "Close",
+    "save": "Save",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "done": "Done",
+    "send": "Send",
+    "receive": "Receive",
+    "view_all": "View All",
+    "search_placeholder": "Search...",
+    "logout": "Logout"
   },
   "settings": {
     "title": "Settings",
+    "address_book": "Address Book",
+    "display_language": "Display Language",
+    "change_network": "Change Network",
+    "security": "Security",
+    "notifications": "Notifications",
+    "trusted_apps": "Trusted Apps",
+    "help_support": "Help & Support",
+    "wallets": {
+      "your_wallets": "Your Wallets",
+      "add_new_wallet": "Add New Wallet",
+      "edit_wallet": "Edit Wallet",
+      "edit_name": "Edit Name",
+      "edit_address": "Edit Wallet",
+      "tap_to_reveal": "Tap to Reveal",
+      "set_profile_picture": "Set Profile Picture",
+      "select_nft": "Select NFT",
+      "upload_photo": "Upload Photo",
+      "select_nft_to_profile": "Select NFT to Profile",
+      "full_nft_description": "Full NFT Description"
+    },
+    "addressbook": {
+      "add": "Add Address",
+      "addnew": "Add New Address",
+      "edit": "Edit Address",
+      "save": "Save Address",
+      "label": "Label"
+    },
     "languages": {
       "title": "Language",
       "en": "English",
@@ -20,7 +83,99 @@
       "select": "Select"
     },
     "receive": {
-      "title": "Deposit"
+      "title": "Receive"
+    },
+    "send": {
+      "address": {
+        "INVALID_ADDRESS": "Destination address is not valid",
+        "EMPTY_ACCOUNT": "Destination address is empty",
+        "NO_FUNDS": "Destination address has no funds"
+      },
+      "amount": {
+        "invalid": "Amount should be a number less than {{max}}"
+      },
+      "next": "Next",
+      "validate": "Validate",
+      "from": "From: {{name}}",
+      "transaction_success": "Sent",
+      "transaction_warning": "Warning",
+      "transaction_fail": "Fail"
     }
+  },
+  "lock": {
+    "title": "Enter your password",
+    "placeholder": "Enter your password",
+    "error": "Invalid Password",
+    "buttonChecking": "Checking...",
+    "buttonUnlock": "Unlock"
+  },
+  "wallet": {
+    "my_tokens": "My Tokens",
+    "my_nfts": "My NFTs",
+    "create_wallet": "Create Wallet",
+    "recover_wallet": "Recover Wallet",
+    "select_token": "Select Token",
+    "new_token": "New Token",
+    "create": {
+      "messageTitle": "Keep your seed safe!",
+      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
+      "your_seed_phrase": "Your Seed Phrase",
+      "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
+      "copy_key": "Copy Key",
+      "ive_backed_up_seed_phrase": "I´ve backed up seed phrase",
+      "confirm_seed_phrase": "Confirm Seed Phrase",
+      "confirm_seed_phrase_body": "Please re-enter the following words of the seed phrase to confirm that you have saved it.",
+      "enter_word_number": "Enter Word #",
+      "buttonPreparing": "Preparing...",
+      "enter_your_password": "Enter your password",
+      "invalid_password": "Invalid Password",
+      "choose_a_password": "Choose a Password",
+      "choose_a_password_body": "You will need it to unlock your wallet",
+      "passwordNew": "New password",
+      "passwordRepeat": "Repeat password",
+      "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
+      "passwordChecking": "Checking...",
+      "success_message": "Success Message",
+      "success_message_body": "3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?",
+      "go_to_my_wallet": "Go to my Wallet",
+      "select_derivable": "Select Derivable",
+      "derivable_accounts": "Derivable Accounts",
+      "recover": "Recover"
+    },
+    "recover": {
+      "messageTitle": "Recover Existing Wallet",
+      "messageBody": "Recover your wallet using your 12/24 words seed phrase.",
+      "pasteSeed": "Paster your seed phrase"
+    },
+    "onboarding": {
+      "titleOnboarded": "Add New Wallet",
+      "titleWelcome": "Welcome to",
+      "select_blockchain": "Select Blockchain",
+      "title1": "Welcome to Salmon!",
+      "content1": "Open-source, non-custodial & multi-blockchain wallet",      
+      "title2": "Keep the control of your tokens",
+      "content2": "All your assets, in your hands. We don’t have access to them at all.",
+      "title3": "Stay tuned",
+      "content3": "Follow us at @salmonwallet"
+    }
+  },
+  "transactions": {
+    "your_transactions": "Your Transactions",
+    "recent_activity": "Recent Activity",
+    "view_transaction": "View Transaction"
+  },
+  "nft": {
+    "description": "Description",
+    "properties": "Properties",
+    "send_nft": "Send NFT",
+    "send_to": "Send to:"
+  },
+  "swap": {
+    "swap": "Swap",
+    "swap_tokens": "Swap Tokens",
+    "you_send": "You Send",
+    "you_receive": "You Receive",
+    "quote": "Quote",
+    "go_to_explorer": "Go to Explorer"
   }
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
+import get from 'lodash/get';
+
 import { lock, unlock } from '../utils/password';
 import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
 
@@ -9,6 +11,8 @@ const STORAGE_KEYS = {
   ENDPOINTS: 'endpoints',
   ACTIVE: 'active',
 };
+
+const WALLET_PLACEHOLDER = 'Wallet NRO';
 
 const noIndex = idx => idx === -1;
 
@@ -32,8 +36,9 @@ const getWalletAccount = async (index, wallets, endpoints) => {
 
 const useWallets = () => {
   const [wallets, setWallets] = useState([]);
+  const [config, setConfig] = useState({});
+  const [lastNumber, setLastNumber] = useState(0);
   const [activeWallet, setActiveWallet] = useState(null);
-  const [walletNumber, setWalletNumber] = useState();
   const [ready, setReady] = useState(false);
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
@@ -58,6 +63,8 @@ const useWallets = () => {
       const unlockedWallets = await unlock(storedWallets.wallets, password);
       const activeIndex = await storage.getItem(STORAGE_KEYS.ACTIVE);
       setWallets(unlockedWallets);
+      setConfig(storedWallets.config || {});
+      setLastNumber(storedWallets.lastNumber || unlockedWallets.length);
       if (!isNil(activeIndex)) {
         try {
           const account = await getWalletAccount(
@@ -66,7 +73,6 @@ const useWallets = () => {
             selectedEndpoints,
           );
           setActiveWallet(account);
-          setWalletNumber(activeIndex + 1);
         } catch (error) {
           // await storage.removeItem(STORAGE_KEYS.WALLETS);
           console.log(error);
@@ -94,6 +100,10 @@ const useWallets = () => {
       if (storedWallets && storedWallets.wallets) {
         if (!storedWallets.passwordRequired) {
           setWallets(storedWallets.wallets);
+          setConfig(storedWallets.config || {});
+          setLastNumber(
+            storedWallets.lastNumber || storedWallets.wallets.length,
+          );
           if (!isNil(activeIndex)) {
             try {
               const account = await getWalletAccount(
@@ -102,7 +112,6 @@ const useWallets = () => {
                 activeEndpoints,
               );
               setActiveWallet(account);
-              setWalletNumber(activeIndex + 1);
             } catch (error) {
               // await storage.removeItem(STORAGE_KEYS.WALLETS);
               console.log(error);
@@ -124,6 +133,13 @@ const useWallets = () => {
     const address = await account.getReceiveAddress();
     const path = account.path;
     const currentIndex = wallets.findIndex(w => w.address === address);
+    const _lastNumber = lastNumber + 1;
+    const _config = {
+      ...config,
+      [address]: {
+        name: WALLET_PLACEHOLDER.replace('NRO', _lastNumber),
+      },
+    };
     const storedWallets = [
       ...wallets,
       ...(noIndex(currentIndex)
@@ -141,22 +157,25 @@ const useWallets = () => {
       const encryptedWallets = await lock(storedWallets, password);
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: true,
+        lastNumber: _lastNumber,
+        config: _config,
         wallets: encryptedWallets,
       });
       setRequiredLock(true);
     } else {
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: false,
+        lastNumber: _lastNumber,
+        config: _config,
         wallets: storedWallets,
       });
     }
     setWallets(storedWallets);
+    setLastNumber(_lastNumber);
+    setConfig(_config);
     await storage.setItem(
       STORAGE_KEYS.ACTIVE,
       noIndex(currentIndex) ? storedWallets.length - 1 : currentIndex,
-    );
-    setWalletNumber(
-      noIndex(currentIndex) ? storedWallets.length : currentIndex + 1,
     );
   };
 
@@ -173,7 +192,19 @@ const useWallets = () => {
       ),
       ...derivedAccounts,
     ];
-    await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+    if (password) {
+      const encryptedWallets = await lock(storedWallets, password);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: true,
+        wallets: encryptedWallets,
+      });
+    } else {
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: false,
+        wallets: storedWallets,
+      });
+    }
+    setWallets(storedWallets);
   };
 
   const changeActiveWallet = async walletIndex => {
@@ -184,7 +215,6 @@ const useWallets = () => {
     );
     await storage.setItem(STORAGE_KEYS.ACTIVE, walletIndex);
     setActiveWallet(account);
-    setWalletNumber(walletIndex + 1);
   };
 
   const changeEndpoint = async (chain, value) => {
@@ -200,8 +230,37 @@ const useWallets = () => {
     await storage.clear();
     setWallets([]);
     setActiveWallet(null);
-    setWalletNumber();
     setRequiredLock(false);
+  };
+  const editWalletName = async (address, name) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        name,
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
+  const editWalletAvatar = async (address, avatar) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        avatar,
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
   };
   return [
     {
@@ -210,8 +269,8 @@ const useWallets = () => {
       wallets,
       activeWallet,
       selectedEndpoints,
-      walletNumber,
       requiredLock,
+      config,
     },
     {
       setWallets,
@@ -223,6 +282,8 @@ const useWallets = () => {
       lockWallets,
       checkPassword,
       removeAllWallets,
+      editWalletName,
+      editWalletAvatar,
     },
   ];
 };

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { withTranslation } from '../../hooks/useTranslations';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 
-import theme from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
@@ -13,46 +14,17 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
-import IconSuccessGradient from '../../assets/images/IconSuccessGradient.png';
+import IconSuccessGradient from '../../assets/images/Logo.png';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 40,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.mobileWidthLG,
-  },
-  containerTop: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  headerActions: {
-    width: '100%',
-    alignItems: 'flex-end',
-  },
-  inner: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.gutters.paddingNormal,
-  },
-  footerActions: {
-    paddingVertical: theme.gutters.responsivePadding,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   bigIcon: {
-    width: 219,
-    height: 219,
-  },
-  pagination: {
-    flexDirection: 'row',
+    paddingTop: 200,
+    width: 96,
+    height: 96,
   },
 });
 
-const WelcomePage = () => {
+const WelcomePage = ({ t }) => {
   const navigate = useNavigation();
   const [step, setStep] = useState(0);
   const nextStep = () => {
@@ -64,71 +36,66 @@ const WelcomePage = () => {
   };
   const steps = [
     {
-      title: '3 lines max Lorem ipsum dolor sit amet, consectetur adipiscing',
-      content:
-        '2 lines max Excepteur sint occaecat cupidatat non proident, sunt',
+      title: t('wallet.onboarding.title1'),
+      content: t('wallet.onboarding.content1'),
     },
     {
-      title: '2. lines max consectetur adipiscing',
-      content: '2. lines max cupidatat non proident, sunt',
+      title: t('wallet.onboarding.title2'),
+      content: t('wallet.onboarding.content2'),
     },
     {
-      title: '3. lines max Lorem ipsum dolor sit amet,',
-      content: '3. lines max Excepteur sint occaecat',
+      title: t('wallet.onboarding.title3'),
+      content: t('wallet.onboarding.content3'),
     },
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);
 
   return (
-    <GlobalLayout>
-      <View style={styles.container}>
-        <View style={styles.containerTop}>
-          <View style={styles.headerActions}>
-            <GlobalButton
-              type="text"
-              color="secondary"
-              title="Skip"
-              onPress={goToOnboarding}
-            />
-          </View>
-
-          <View style={styles.inner}>
-            <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
-
-            <GlobalPadding size="2xl" />
-
-            <GlobalDivider />
-
-            <GlobalText type="headline2" center>
-              {steps[step].title}
-            </GlobalText>
-
-            <GlobalText type="body1" center>
-              {steps[step].content}
-            </GlobalText>
-          </View>
-        </View>
-
-        <View style={styles.footerActions}>
-          <View style={styles.pagination}>
-            <GlobalPageDot active={step === 0} />
-            <GlobalPageDot active={step === 1} />
-            <GlobalPageDot active={step === 2} />
-          </View>
-
-          <GlobalPadding size="md" />
-
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header centered>
+        <View style={globalStyles.alignEnd}>
           <GlobalButton
-            type="secondary"
-            wide
-            title="Next"
-            onPress={nextStep}
-            key="next-w-button"
+            type="text"
+            color="secondary"
+            title={t('actions.skip')}
+            onPress={goToOnboarding}
           />
         </View>
-      </View>
+
+        <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
+
+        <GlobalPadding size="2xl" />
+
+        <GlobalDivider />
+
+        <GlobalText type="headline2" center>
+          {steps[step].title}
+        </GlobalText>
+
+        <GlobalText type="body1" center>
+          {steps[step].content}
+        </GlobalText>
+      </GlobalLayout.Header>
+
+      <GlobalLayout.Footer>
+        <View style={globalStyles.pagination}>
+          <GlobalPageDot active={step === 0} />
+          <GlobalPageDot active={step === 1} />
+          <GlobalPageDot active={step === 2} />
+        </View>
+
+        <GlobalPadding size="md" />
+
+        <GlobalButton
+          type="secondary"
+          wide
+          title={t('actions.next')}
+          onPress={nextStep}
+          key="next-w-button"
+        />
+      </GlobalLayout.Footer>
     </GlobalLayout>
   );
 };
 
-export default WelcomePage;
+export default withTranslation()(WelcomePage);

@@ -8,12 +8,11 @@ import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 import GlobalError from './features/ErrorHandler/GlobalError';
 import useTranslations from './hooks/useTranslations';
+import useAddressbook from './hooks/useAddressbook';
 
 export const AppContext = createContext([]);
 
 const ACTIONS = {
-  ADD_WALLET: 'addWallet',
-  CHANGE_WALLET: 'changeWallet',
   SET_LOGGEDIN: 'setLoggedIn',
   INITIATE_DONE: 'initiateDone',
   HIDE_BALANCE: 'hideBalance',
@@ -25,6 +24,7 @@ const initialState = {
   isLogged: false,
   ready: false,
   hiddenBalance: false,
+  isExtension: process.env.REACT_APP_IS_EXTENSION || false,
 };
 
 const reducer = (state, action) => {
@@ -45,7 +45,12 @@ const reducer = (state, action) => {
 };
 
 const AppProvider = ({ children }) => {
-  const [walletState, walletActions] = useWallets();
+  const [
+    { ready: walletReady, active: walletActive, ...walletState },
+    walletActions,
+  ] = useWallets();
+  const [{ ready: addressReady, ...addressBookState }, addressBookActions] =
+    useAddressbook();
   const {
     selected: selectedLanguage,
     loaded: translationsLoaded,
@@ -54,18 +59,19 @@ const AppProvider = ({ children }) => {
   } = useTranslations();
   const [appState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    if (walletState.ready && !appState.ready && translationsLoaded) {
+    if (walletReady && !appState.ready && translationsLoaded && addressReady) {
       splash.hide();
       dispatch({
         type: ACTIONS.INITIATE_DONE,
-        value: { isLogged: !isNil(walletState.active) },
+        value: { isLogged: !isNil(walletActive) },
       });
     }
   }, [
-    walletState.ready,
-    walletState.active,
+    walletReady,
+    walletActive,
     appState.ready,
     translationsLoaded,
+    addressReady,
   ]);
   const logout = async () => {
     await walletActions.removeAllWallets();
@@ -82,26 +88,37 @@ const AppProvider = ({ children }) => {
   };
   const appActions = {
     ...walletActions,
+    ...addressBookActions,
     changeLanguage,
     logout,
     toggleHideBalance,
   };
-
+  const onAppIdle = () => {
+    if (walletState.requiredLock) {
+      walletActions.lockWallets();
+    }
+  };
   return (
     <AppContext.Provider
       value={[
-        { ...appState, ...walletState, languages, selectedLanguage },
+        {
+          ...appState,
+          ...walletState,
+          ...addressBookState,
+          languages,
+          selectedLanguage,
+        },
         appActions,
       ]}>
       <GlobalError>
         {appState.ready && !walletState.locked && (
-          <InactivityCheck
-            onIdle={walletActions.lockWallets}
-            active={walletState.requiredLock}>
-            <RoutesProvider>
-              <ThemeProvider>{children}</ThemeProvider>
-            </RoutesProvider>
-          </InactivityCheck>
+          <RoutesProvider>
+            <ThemeProvider>
+              <InactivityCheck onIdle={onAppIdle} active>
+                {children}
+              </InactivityCheck>
+            </ThemeProvider>
+          </RoutesProvider>
         )}
         {walletState.locked && (
           <ThemeProvider>

@@ -1,29 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
-import theme from '../../component-library/Global/theme';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
-import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
-import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
-import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalNftList from '../../component-library/Global/GlobalNftList';
-
-import AvatarImage from '../../component-library/Image/AvatarImage';
-import Avatar from '../../assets/images/Avatar.png';
-import IconNotifications from '../../assets/images/IconNotifications.png';
-import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
-
 import TokenList from '../../features/TokenList/TokenList';
-import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
-import { getWalletName, getShortAddress } from '../../utils/wallet';
+import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../pages/Nfts/routes';
+import {
+  getWalletName,
+  getShortAddress,
+  getWalletAvatar,
+} from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   hiddenValue,
@@ -31,11 +20,26 @@ import {
   showAmount,
   showPercentage,
 } from '../../utils/amount';
+import { withTranslation } from '../../hooks/useTranslations';
+
+import theme from '../../component-library/Global/theme';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
+import GlobalButton from '../../component-library/Global/GlobalButton';
+import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
+import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalNftList from '../../component-library/Global/GlobalNftList';
+import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
+
+import AvatarImage from '../../component-library/Image/AvatarImage';
+// import IconNotifications from '../../assets/images/IconNotifications.png';
+// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
+import { isCollection } from '../../utils/nfts';
+import { getMediaRemoteUrl } from '../../utils/media';
 
 const styles = StyleSheet.create({
-  container: {
-    padding: theme.gutters.paddingMD,
-  },
   avatarWalletAddressActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -68,19 +72,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const WalletOverviewPage = () => {
+const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, walletNumber, selectedEndpoints, hiddenBalance },
+    { activeWallet, config, selectedEndpoints, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [totalBalance, setTotalBalance] = useState({});
-  const [tokenList, setTokenList] = useState([]);
-  const [ntfsList, setNtfsList] = useState([]);
-  // const [hasNotifications, setHasNotifications] = useState(false);
-
-  const [loaded, setLoaded] = useState(false);
-
+  const [tokenList, setTokenList] = useState(null);
+  const [nftsList, setNftsList] = useState(null);
+  //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -91,14 +92,13 @@ const WalletOverviewPage = () => {
         ),
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NTFS,
-          () => activeWallet.getAllNfts(),
+          CACHE_TYPES.NFTS,
+          () => activeWallet.getAllNftsGrouped(),
         ),
-      ]).then(([balance, ntfs]) => {
+      ]).then(([balance, nfts]) => {
         setTotalBalance(balance);
         setTokenList(balance.items);
-        setNtfsList(ntfs);
-        setLoaded(true);
+        setNftsList(nfts);
       });
     }
   }, [activeWallet, selectedEndpoints]);
@@ -108,106 +108,124 @@ const WalletOverviewPage = () => {
       action: 'send',
     });
 
-  const goToReceive = () =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
-      action: 'receive',
-    });
+  const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = t =>
+  const goToTokenDetail = tok =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
-      tokenId: t.address,
+      tokenId: tok.address,
     });
 
   // const goToNotifications = () => setHasNotifications(!hasNotifications);
-
-  const goToNFTs = t =>
-    navigate(WALLET_ROUTES_MAP.WALLET_NTFS, { tokenId: t.address });
+  const handleNftsClick = nft => {
+    if (isCollection(nft)) {
+      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
+    } else {
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
+    }
+  };
+  const goToNFTs = tok =>
+    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: tok.address });
 
   return (
-    loaded &&
     activeWallet && (
-      <GlobalLayoutForTabScreen styles={styles.container}>
-        <View style={styles.avatarWalletAddressActions}>
-          <View style={styles.avatarWalletAddress}>
-            <AvatarImage src={Avatar} size={42} />
+      <GlobalLayout>
+        <GlobalLayout.Header>
+          <SafeAreaView edges={['top']}>
+            <View style={styles.avatarWalletAddressActions}>
+              <View style={styles.avatarWalletAddress}>
+                <AvatarImage
+                  src={getMediaRemoteUrl(
+                    getWalletAvatar(activeWallet.getReceiveAddress(), config),
+                  )}
+                  size={42}
+                />
 
-            <View style={styles.walletNameAddress}>
-              <GlobalText
-                type="body2"
-                style={styles.walletName}
-                numberOfLines={1}>
-                {getWalletName(activeWallet, walletNumber)}
-              </GlobalText>
+                <View style={styles.walletNameAddress}>
+                  <GlobalText
+                    type="body2"
+                    style={styles.walletName}
+                    numberOfLines={1}>
+                    {getWalletName(activeWallet.getReceiveAddress(), config)}
+                  </GlobalText>
 
-              <GlobalText
-                type="body1"
-                color="tertiary"
-                style={styles.walletAddress}
-                numberOfLines={1}>
-                ({getShortAddress(activeWallet.getReceiveAddress())})
-              </GlobalText>
+                  <GlobalText
+                    type="body1"
+                    color="tertiary"
+                    style={styles.walletAddress}
+                    numberOfLines={1}>
+                    ({getShortAddress(activeWallet.getReceiveAddress())})
+                  </GlobalText>
+                </View>
+              </View>
+
+              <View style={styles.walletActions}>
+                {/* <GlobalButton
+                  type="icon"
+                  transparent
+                  icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
+                  style={styles.narrowBtn}
+                  onPress={goToNotifications}
+                /> */}
+                <GlobalButton
+                  type="icon"
+                  transparent
+                  icon={IconQRCodeScanner}
+                  style={styles.narrowBtn}
+                  onPress={() => {}}
+                />
+              </View>
             </View>
-          </View>
-
-          <View style={styles.walletActions}>
-            {/* <GlobalButton
-              type="icon"
-              transparent
-              icon={hasNotifications ? IconNotificationsAdd : IconNotifications}
-              style={styles.narrowBtn}
-              onPress={goToNotifications}
-            /> */}
-            <GlobalButton
-              type="icon"
-              transparent
-              icon={IconQRCodeScanner}
-              style={styles.narrowBtn}
-              onPress={() => {}}
+          </SafeAreaView>
+          {totalBalance && (
+            <WalletBalanceCard
+              total={
+                !hiddenBalance
+                  ? showAmount(totalBalance.usdTotal)
+                  : `$ ${hiddenValue}`
+              }
+              {...{
+                [`${getLabelValue(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                )}Total`]: showPercentage(
+                  get(totalBalance, 'last24HoursChage.perc', 0),
+                ),
+              }}
+              messages={[]}
+              showBalance={!hiddenBalance}
+              onToggleShow={toggleHideBalance}
+              actions={
+                <GlobalSendReceive
+                  goToSend={goToSend}
+                  goToReceive={goToReceive}
+                />
+              }
             />
-          </View>
-        </View>
+          )}
+          <GlobalPadding />
 
-        <WalletBalanceCard
-          total={
-            !hiddenBalance
-              ? showAmount(totalBalance.usdTotal)
-              : `$ ${hiddenValue}`
-          }
-          {...{
-            [`${getLabelValue(
-              get(totalBalance, 'last24HoursChage.perc', 0),
-            )}Total`]: showPercentage(
-              get(totalBalance, 'last24HoursChage.perc', 0),
-            ),
-          }}
-          messages={[]}
-          showBalance={!hiddenBalance}
-          onToggleShow={toggleHideBalance}
-          actions={
-            <GlobalSendReceive goToSend={goToSend} goToReceive={goToReceive} />
-          }
-        />
+          <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
+            <TokenList
+              tokens={tokenList}
+              onDetail={goToTokenDetail}
+              hiddenBalance={hiddenBalance}
+            />
+          </GlobalCollapse>
 
-        <GlobalPadding />
+          <GlobalPadding />
 
-        <GlobalCollapse title="My Tokens" isOpen>
-          <TokenList
-            tokens={tokenList}
-            onDetail={goToTokenDetail}
-            hiddenBalance={hiddenBalance}
-          />
-        </GlobalCollapse>
-
-        <GlobalPadding />
-
-        <GlobalCollapse title="My NFTs" viewAllAction={goToNFTs} isOpen>
-          <GlobalNftList nonFungibleTokens={ntfsList} />
-        </GlobalCollapse>
-
-        <GlobalPadding />
-      </GlobalLayoutForTabScreen>
+          <GlobalCollapse
+            title={t('wallet.my_nfts')}
+            viewAllAction={goToNFTs}
+            isOpen>
+            <GlobalNftList
+              nonFungibleTokens={nftsList}
+              onClick={handleNftsClick}
+            />
+          </GlobalCollapse>
+        </GlobalLayout.Header>
+      </GlobalLayout>
     )
   );
 };
 
-export default WalletOverviewPage;
+export default withTranslation()(WalletOverviewPage);

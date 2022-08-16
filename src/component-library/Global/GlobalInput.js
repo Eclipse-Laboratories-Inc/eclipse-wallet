@@ -12,6 +12,10 @@ const styles = StyleSheet.create({
   inputGroup: {
     flexDirection: 'row',
     width: '100%',
+    borderWidth: 1,
+    borderColor: theme.colors.btnBrandLight,
+    borderRadius: theme.borderRadius.borderRadiusMD,
+    backgroundColor: theme.colors.bgDarkenFaded,
   },
   input: {
     width: '100%',
@@ -20,10 +24,6 @@ const styles = StyleSheet.create({
     color: theme.colors.labelPrimary,
     fontSize: theme.fontSize.fontSizeNormal,
     fontFamily: theme.fonts.dmSansBold,
-    borderWidth: 1,
-    borderColor: theme.colors.btnBrandLight,
-    borderRadius: theme.borderRadius.borderRadiusMD,
-    backgroundColor: theme.colors.bgDarken,
   },
   multiline: {
     paddingVertical: theme.gutters.paddingSM,
@@ -36,9 +36,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   forSearch: {
-    width: 50,
+    // width: 50,
+    paddingLeft: theme.gutters.paddingSM,
     height: '100%',
-    position: 'absolute',
+    // position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.7,
@@ -47,13 +48,10 @@ const styles = StyleSheet.create({
   startLabel: {
     minWidth: 50,
     height: '100%',
-    position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
     borderColor: theme.colors.btnBrandLight,
-    opacity: 0.9,
-    zIndex: 1,
   },
   startLabelText: {
     alignItems: 'center',
@@ -63,17 +61,18 @@ const styles = StyleSheet.create({
   startLabelFocused: {
     borderColor: theme.colors.danger,
   },
+  endAction: {
+    minWidth: 50,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.gutters.paddingXS,
+  },
   isFocused: {
     borderColor: theme.colors.labelPrimary,
   },
   invalid: {
     borderColor: theme.colors.danger,
-  },
-  withSearch: {
-    paddingLeft: 50,
-  },
-  withStartLabel: {
-    paddingLeft: 64,
   },
   complete: {
     width: 50,
@@ -82,9 +81,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  completeInput: {
-    paddingRight: 42,
   },
   completeIcon: {
     width: 24,
@@ -100,7 +96,9 @@ const GlobalInput = ({
   setValue,
   invalid,
   complete,
+  action,
   style,
+  inputGroupStyles,
   seedphrase,
   multiline,
   numberOfLines,
@@ -114,7 +112,7 @@ const GlobalInput = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View style={styles.inputGroup}>
+    <View style={[styles.inputGroup, inputGroupStyles]}>
       {forSearch && (
         <View style={styles.forSearch}>
           <GlobalImage source={IconSearch} size="xs" />
@@ -142,11 +140,8 @@ const GlobalInput = ({
           styles.input,
           multiline && styles.multiline,
           seedphrase && styles.seedphrase,
-          forSearch && styles.withSearch,
-          startLabel && styles.withStartLabel,
           invalid && styles.invalid,
           isFocused && styles.isFocused,
-          complete && styles.completeInput,
           style,
         ]}
         value={value}
@@ -161,6 +156,17 @@ const GlobalInput = ({
         onFocus={() => setIsFocused(true)}
         {...props}
       />
+
+      {action && (
+        <View
+          style={[
+            styles.endAction,
+            invalid && styles.invalid,
+            isFocused && styles.isFocused,
+          ]}>
+          {action}
+        </View>
+      )}
 
       {complete && (
         <View style={styles.complete}>

@@ -34,7 +34,7 @@ const GlobalFloatingBadge = ({ title, number }) => (
         type="caption"
         color="bgLight"
         style={title && styles.badgeNumber}>
-        18
+        {number}
       </GlobalText>
     )}
   </View>

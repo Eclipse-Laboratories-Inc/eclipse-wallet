@@ -1,12 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
-import { getShortAddress } from '../../utils/wallet';
+import { getShortAddress, getWalletName } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -20,79 +19,43 @@ import QRImage from '../../features/QRImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   qrBox: {
     padding: theme.gutters.paddingMD,
     backgroundColor: theme.staticColor.alwaysWhite,
     borderRadius: theme.borderRadius.borderRadiusNormal,
   },
-  inlineWell: {
-    marginBottom: theme.gutters.paddingXS,
-    paddingVertical: theme.gutters.paddingXS,
-    paddingHorizontal: theme.gutters.paddingSM,
-    width: '100%',
-    maxWidth: theme.variables.buttonMaxWidth,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: theme.colors.bgLight,
-    borderRadius: theme.borderRadius.borderRadiusMD,
-  },
 });
 
-const TokenReceivePage = ({ params, t }) => {
+const TokenReceivePage = ({ t }) => {
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
-  const [token, setToken] = useState({});
 
-  const [{ activeWallet }] = useContext(AppContext);
-
-  useEffect(() => {
-    if (activeWallet) {
-      Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
-        ),
-      ]).then(([balance]) => {
-        const tokenSelected = (balance.items || []).find(
-          i => i.address === params.tokenId,
-        );
-        setToken(tokenSelected || {});
-        setloaded(true);
-      });
-    }
-  }, [activeWallet, params]);
+  const [{ activeWallet, config }] = useContext(AppContext);
 
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
   };
 
-  const onCopyAlias = () => clipboard.copy(token.address);
+  const onCopyAlias = () => clipboard.copy(activeWallet.getReceiveAddress());
 
-  const onCopyAddress = () => clipboard.copy(token.address);
+  const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
 
   return (
-    loaded && (
-      <GlobalLayout withContainer>
-        <View style={globalStyles.mainHeader}>
+    activeWallet && (
+      <GlobalLayout fullscreen>
+        <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
-            smallTitle={t('token.receive.title')}
+            secondaryTitle={t('token.receive.title')}
           />
 
-          <View style={styles.centered}>
+          <View style={globalStyles.centered}>
             <View style={styles.qrBox}>
-              <QRImage address={token.address} />
+              <QRImage address={activeWallet.getReceiveAddress()} size={225} />
             </View>
 
-            <GlobalPadding size="md" />
+            <GlobalPadding size="2xl" />
 
-            <View style={styles.inlineWell}>
+            <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">Name.acr</GlobalText>
 
               <GlobalButton onPress={onCopyAlias} size="medium">
@@ -101,9 +64,10 @@ const TokenReceivePage = ({ params, t }) => {
               </GlobalButton>
             </View>
 
-            <View style={styles.inlineWell}>
+            <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">
-                {token.name} ({getShortAddress(token.address)})
+                {getWalletName(activeWallet.getReceiveAddress(), config)} (
+                {getShortAddress(activeWallet.getReceiveAddress())})
               </GlobalText>
 
               <GlobalButton onPress={onCopyAddress} size="medium">
@@ -118,19 +82,19 @@ const TokenReceivePage = ({ params, t }) => {
               2 lines max Validation text sint occaecat cupidatat non proident
             </GlobalText>
           </View>
-        </View>
+        </GlobalLayout.Header>
 
-        <View style={globalStyles.mainFooter}>
+        <GlobalLayout.Footer>
           <GlobalButton
             type="secondary"
             wideSmall
-            title={t('general.close')}
+            title={t('actions.close')}
             onPress={goToBack}
           />
-        </View>
+        </GlobalLayout.Footer>
       </GlobalLayout>
     )
   );
 };
 
-export default withParams(withTranslation()(TokenReceivePage));
+export default withTranslation()(TokenReceivePage);

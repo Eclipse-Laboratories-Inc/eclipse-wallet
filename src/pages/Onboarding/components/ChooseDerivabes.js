@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 
-import { GlobalLayoutForTabScreen } from '../../../component-library/Global/GlobalLayout';
-import GlobalButton from '../../../component-library/Global/GlobalButton';
-import CardButton from '../../../component-library/CardButton/CardButton';
-import GlobalPadding from '../../../component-library/Global/GlobalPadding';
-import GlobalText from '../../../component-library/Global/GlobalText';
-
-import AvatarImage from '../../../component-library/Image/AvatarImage';
 import { getDefaultChain, LOGOS } from '../../../utils/wallet';
 
-const ChooseDerivabes = ({ accounts, onComplete }) => {
+import GlobalBackTitle from '../../../component-library/Global/GlobalBackTitle';
+import GlobalButton from '../../../component-library/Global/GlobalButton';
+import GlobalText from '../../../component-library/Global/GlobalText';
+import GlobalLayout from '../../../component-library/Global/GlobalLayout';
+import CardButton from '../../../component-library/CardButton/CardButton';
+
+import AvatarImage from '../../../component-library/Image/AvatarImage';
+
+const ChooseDerivabes = ({ accounts, onComplete, t }) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {
@@ -19,40 +20,35 @@ const ChooseDerivabes = ({ accounts, onComplete }) => {
     }
   };
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalPadding />
-
-      <GlobalText type="headline2" center>
-        Derivable Accounts
-      </GlobalText>
-
-      <GlobalText type="body1" center>
-        m/44´/501/...
-      </GlobalText>
-
-      <GlobalPadding size="xl" />
-
-      {accounts.map(({ index }) => (
-        <CardButton
-          key={`wallet-${index}`}
-          active={selected.includes(index)}
-          title="Public Key"
-          description="0.0000.00"
-          actions={<GlobalText type="body2">$0.000.000</GlobalText>}
-          onPress={() => updateSelected(index, !selected.includes(index))}
-          icon={<AvatarImage url={LOGOS[getDefaultChain()]} size={48} />}
+    <>
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          title={t('wallet.create.derivable_accounts')}
+          secondaryTitle="m/44´/501/..."
         />
-      ))}
 
-      <GlobalPadding />
+        {accounts.map(({ index }) => (
+          <CardButton
+            key={`wallet-${index}`}
+            active={selected.includes(index)}
+            title="Public Key"
+            description="0.0000.00"
+            actions={<GlobalText type="body2">$0.000.000</GlobalText>}
+            onPress={() => updateSelected(index, !selected.includes(index))}
+            icon={<AvatarImage url={LOGOS[getDefaultChain()]} size={48} />}
+          />
+        ))}
+      </GlobalLayout.Header>
 
-      <GlobalButton
-        type="primary"
-        wide
-        title="Recover"
-        onPress={() => onComplete(selected)}
-      />
-    </GlobalLayoutForTabScreen>
+      <GlobalLayout.Footer>
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('wallet.create.recover')}
+          onPress={() => onComplete(selected)}
+        />
+      </GlobalLayout.Footer>
+    </>
   );
 };
 

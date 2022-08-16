@@ -1,10 +1,62 @@
 {
   "general": {
+    "home": "Inicio",
+    "usd": "USD",
+    "name": "Nombre",
+    "address": "Dirección",
+    "to": "Para",
+    "name_or_address": "Nombre o Dirección \"{{token}}\"",
+    "recipient_s_address": "Dirección \"{{token}}\" Destinatario",
+    "seed_phrase": "Seed Phrase",
+    "balance": "Balance",
+    "sending": "Enviando...",
+    "sent": "¡Enviado!"
+  },
+  "actions": {
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "start": "Comenzar",
     "copy": "Copiar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "save": "Guardar",
+    "remove": "Eliminar",
+    "cancel": "Cancelar",
+    "done": "Done",
+    "send": "Enviar",
+    "receive": "Recibir",
+    "view_all": "Ver Todo",
+    "search_placeholder": "Buscar...",
+    "logout": "Cerrar Sesión"
   },
   "settings": {
     "title": "Configuración",
+    "address_book": "Contactos",
+    "display_language": "Idioma",
+    "change_network": "Cambiar Network",
+    "security": "Seguridad",
+    "notifications": "Notificaciones",
+    "trusted_apps": "Apps Autorizadas",
+    "help_support": "Ayuda & Soporte",
+    "wallets": {
+      "your_wallets": "Tus Wallets",
+      "add_new_wallet": "Nuevo Wallet",
+      "edit_wallet": "Edit Wallet",
+      "edit_name": "Edit Name",
+      "edit_address": "Edit Wallet",
+      "tap_to_reveal": "Tap to Reveal",
+      "set_profile_picture": "Set Profile Picture",
+      "select_nft": "Select NFT",
+      "upload_photo": "Upload Photo",
+      "select_nft_to_profile": "Select NFT to Profile",
+      "full_nft_description": "Full NFT Description"
+    },
+    "addressbook": {
+      "add": "Add Address",
+      "addnew": "Add New Address",
+      "edit": "Edit Address",
+      "save": "Save Address",
+      "label": "Label"
+    },
     "languages": {
       "title": "Idioma",
       "en": "Inglés",
@@ -20,7 +72,92 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Depositos"
+      "title": "Recibir"
+    },
+    "send": {
+      "address": {
+        "INVALID_ADDRESS": "La direccion destino no es valida",
+        "EMPTY_ACCOUNT": "La direccion destino esta vacia",
+        "NO_FUNDS": "La direccion destino no tiene fondos"
+      },
+      "amount": {
+        "invalid": "El monto debe ser un numero menor a {{max}}"
+      },
+      "next": "Next",
+      "validate": "Validate",
+      "from": "De: {{name}}",
+      "transaction_success": "Enviado",
+      "transaction_warning": "Warning",
+      "transaction_fail": "Error"
     }
+  },
+  "lock": {
+    "title": "Ingrese su contraseña",
+    "placeholder": "Ingrese su contraseña",
+    "error": "La constraseña es incorrecta",
+    "buttonChecking": "Validando...",
+    "buttonUnlock": "Desbloquear"
+  },
+  "wallet": {
+    "my_tokens": "Mis Tokens",
+    "my_nfts": "Mis NFTs",
+    "create_wallet": "Crear Wallet",
+    "recover_wallet": "Recuperar Wallet",
+    "select_token": "Seleccionar Token",
+    "new_token": "Nuevo Token",
+    "create": {
+      "messageTitle": "Keep your seed safe!",
+      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
+      "your_seed_phrase": "Your Seed Phrase",
+      "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
+      "copy_key": "Copy Key",
+      "ive_backed_up_seed_phrase": "I´ve backed up seed phrase",
+      "confirm_seed_phrase": "Confirm Seed Phrase",
+      "confirm_seed_phrase_body": "Please re-enter the following words of the seed phrase to confirm that you have saved it.",
+      "enter_word_number": "Enter Word #",
+      "buttonPreparing": "Preparing...",
+      "enter_your_password": "Enter your password",
+      "invalid_password": "Invalid Password",
+      "choose_a_password": "Choose a Password",
+      "choose_a_password_body": "You will need it to unlock your wallet",
+      "passwordNew": "New password",
+      "passwordRepeat": "Repeat password",
+      "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
+      "passwordChecking": "Checking...",
+      "success_message": "Success Message",
+      "success_message_body": "3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?",
+      "select_derivable": "Select Derivable",
+      "derivable_accounts": "Derivable Accounts",
+      "recover": "Recover"
+    },
+    "recover": {
+      "messageTitle": "Recover Existing Wallet",
+      "messageBody": "Recover your wallet using your 24 words seed phrase.",
+      "pasteSeed": "Paster your seed phrase"
+    },
+    "onboarding": {
+      "titleOnboarded": "Nuevo Wallet",
+      "titleWelcome": "Welcome to",
+      "select_blockchain": "Elegir Blockchain"
+    }
+  },
+  "transactions": {
+    "your_transactions": "Transacciones",
+    "recent_activity": "Actividad Reciente",
+    "view_transaction": "Ver Transacción"
+  },
+  "nft": {
+    "description": "Descripción",
+    "properties": "Propiedades",
+    "send_nft": "Enviar NFT",
+    "send_to": "Enviar a:"
+  },
+  "swap": {
+    "swap": "Swap",
+    "swap_tokens": "Swap Tokens",
+    "you_send": "Pagas",
+    "you_receive": "Recibes",
+    "quote": "Cotizar",
+    "go_to_explorer": "Go to Explorer"
   }
 }
