@@ -106,7 +106,7 @@ const TransactionsDetailPage = ({ params }) => {
                       source={getMediaRemoteUrl(
                         isUnknown
                           ? getTransactionImage('unknown')
-                          : LOGOS.SOLANA,
+                          : transactionDetail.nftAmount?.media || LOGOS.SOLANA,
                       )}
                       size="xxl"
                       style={styles.bigImage}
@@ -126,20 +126,33 @@ const TransactionsDetailPage = ({ params }) => {
                     />
                   </View>
 
-                  <GlobalText type="headline2" center>
-                    {transactionDetail.error
-                      ? `${'-'}${
-                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                        } SOL  `
-                      : `${isReceive ? '+' : '-'}${
-                          isReceive
-                            ? transactionDetail.amount
-                            : parseFloat(
-                                transactionDetail.amount +
-                                  transactionDetail.fee / TOKEN_DECIMALS.SOLANA,
-                              ).toFixed(8)
-                        } SOL`}
-                  </GlobalText>
+                  {transactionDetail.nftAmount ? (
+                    <GlobalText type="headline2" center>
+                      {transactionDetail.error
+                        ? `${'-'}${
+                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                          } SOL  `
+                        : `${isReceive ? '+ 1 ' : '- 1 '} ${
+                            transactionDetail.nftAmount?.collection?.name
+                          }`}
+                    </GlobalText>
+                  ) : (
+                    <GlobalText type="headline2" center>
+                      {transactionDetail.error
+                        ? `${'-'}${
+                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                          } SOL  `
+                        : `${isReceive ? '+' : '-'}${
+                            isReceive
+                              ? transactionDetail.amount
+                              : parseFloat(
+                                  transactionDetail.amount +
+                                    transactionDetail.fee /
+                                      TOKEN_DECIMALS.SOLANA,
+                                ).toFixed(8)
+                          } SOL`}
+                    </GlobalText>
+                  )}
 
                   <GlobalPadding size="sm" />
 
@@ -218,13 +231,15 @@ const TransactionsDetailPage = ({ params }) => {
                     ) : (
                       <>
                         <GlobalImage
-                          source={transactionDetail.tokenLogoOut}
+                          source={
+                            transactionDetail.tokenLogoOut || LOGOS.SOLANA
+                          }
                           size="xxl"
                           style={styles.bigImage}
                           circle
                         />
                         <GlobalImage
-                          source={transactionDetail.tokenLogoIn}
+                          source={transactionDetail.tokenLogoIn || LOGOS.SOLANA}
                           size="xxl"
                           style={styles.bigImage}
                           circle

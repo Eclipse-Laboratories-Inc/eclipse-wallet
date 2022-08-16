@@ -5,6 +5,7 @@ import { AppContext } from '../../AppProvider';
 import theme from '../../component-library/Global/theme';
 import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
+import { LOGOS } from '../../utils/wallet';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
@@ -109,6 +110,22 @@ const TransactionsListPage = () => {
                                 <GlobalImage source={IconFailed} size="xxs" />
                               </View>,
                             ]
+                          : transaction.nftAmount
+                          ? [
+                              <View style={styles.inline}>
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color={isReceive ? 'positive' : 'negative'}>
+                                  {isReceive ? '+ 1 ' : '- 1 '}
+                                  {`${transaction.nftAmount?.collection?.name} `}
+                                </GlobalText>
+                                <AvatarImage
+                                  url={transaction.nftAmount?.media}
+                                  size={18}
+                                />
+                              </View>,
+                            ]
                           : [
                               <View style={styles.inline}>
                                 <GlobalText
@@ -169,7 +186,7 @@ const TransactionsListPage = () => {
                                   } ${transaction.tokenNameIn || 'SOL'} `}
                                 </GlobalText>
                                 <AvatarImage
-                                  url={transaction.tokenLogoIn}
+                                  url={transaction.tokenLogoIn || LOGOS.SOLANA}
                                   size={18}
                                 />
                               </View>,
@@ -187,7 +204,7 @@ const TransactionsListPage = () => {
                                   } ${transaction.tokenNameOut || 'SOL'} `}
                                 </GlobalText>
                                 <AvatarImage
-                                  url={transaction.tokenLogoOut}
+                                  url={transaction.tokenLogoOut || LOGOS.SOLANA}
                                   size={18}
                                 />
                               </View>,
