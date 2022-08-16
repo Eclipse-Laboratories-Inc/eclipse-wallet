@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StyleSheet, View, Linking } from 'react-native';
 import moment from 'moment';
 
 import { AppContext } from '../../AppProvider';
-import { ROUTES_MAP } from './routes';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { withParams } from '../../routes/hooks';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
+import { TRANSACTION_TYPE, TOKEN_DECIMALS } from './constants';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import {
@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
 });
 
 const TransactionsDetailPage = ({ params }) => {
-  const navigate = useNavigation();
+  const navigate = useNavigate();
   const [{ activeWallet, wallets }, { changeActiveWallet }] =
     useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
 
-  const onBack = () => navigate(ROUTES_MAP.TRANSACTIONS_LIST);
+  const onBack = () => navigate(-1);
 
   useEffect(() => {
     if (activeWallet) {
@@ -283,6 +283,11 @@ const TransactionsDetailPage = ({ params }) => {
                             ? TOKEN_DECIMALS.SOLANA
                             : TOKEN_DECIMALS.COINS)
                         } ${transactionDetail.tokenNameOut || 'SOL'} `}
+                      </GlobalText>
+                      <GlobalText type="headline2" center>
+                        {`${'-'}${
+                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                        } SOL  `}
                       </GlobalText>
                     </>
                   )}

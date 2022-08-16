@@ -101,4 +101,12 @@ export const getTransactionImage = transaction => {
   }
 };
 
+export const getNonListedTokens = (balance, nfts) =>
+  balance.items?.filter(
+    tok => !tok.name && !!Object.values(nfts).includes(tok.mint),
+  );
+
+export const getListedTokens = balance =>
+  balance.items?.filter(tok => tok.name);
+
 export const getAvailableTokens = getAvailableTokens4m;

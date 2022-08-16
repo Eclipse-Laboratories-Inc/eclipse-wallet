@@ -114,6 +114,7 @@
   },
   "wallet": {
     "my_tokens": "My Tokens",
+    "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
     "create_wallet": "Create Wallet",
     "recover_wallet": "Recover Wallet",

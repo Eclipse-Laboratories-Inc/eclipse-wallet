@@ -12,6 +12,8 @@ import {
   getWalletName,
   getShortAddress,
   getWalletAvatar,
+  getListedTokens,
+  getNonListedTokens,
 } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
@@ -85,6 +87,7 @@ const WalletOverviewPage = ({ t }) => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
+  const [nonListedTokenList, setNonListedTokenList] = useState(null);
   const [showScan, setShowScan] = useState(false);
 
   //const [hasNotifications, setHasNotifications] = useState(false);
@@ -104,7 +107,8 @@ const WalletOverviewPage = ({ t }) => {
         ),
       ]).then(([balance, nfts]) => {
         setTotalBalance(balance);
-        setTokenList(balance.items);
+        setTokenList(getListedTokens(balance));
+        setNonListedTokenList(getNonListedTokens(balance, nfts));
         setNftsList(nfts);
         setLoading(false);
       });
@@ -240,6 +244,15 @@ const WalletOverviewPage = ({ t }) => {
               hiddenBalance={hiddenBalance}
             />
           </GlobalCollapse>
+
+          {nonListedTokenList?.length ? (
+            <GlobalCollapse title={t('wallet.non_listed_tokens')} isOpen>
+              <TokenList
+                tokens={nonListedTokenList}
+                hiddenBalance={hiddenBalance}
+              />
+            </GlobalCollapse>
+          ) : null}
 
           <GlobalPadding />
 

@@ -209,6 +209,17 @@ const TransactionsListPage = () => {
                                 size={18}
                               />
                             </View>,
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color="negative">
+                                {`${'-'}${
+                                  transaction.fee / TOKEN_DECIMALS.SOLANA
+                                } SOL  `}
+                              </GlobalText>
+                              <AvatarImage url={LOGOS.SOLANA} size={18} />
+                            </View>,
                           ].filter(Boolean)
                     }
                     onPress={() => onDetail(i)}
