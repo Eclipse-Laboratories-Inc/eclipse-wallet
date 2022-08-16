@@ -13,6 +13,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../../src/component-library/Global/GlobalButton';
 import GlobalImage from '../../../src/component-library/Global/GlobalImage';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import IconFailed from '../../assets/images/IconFailed.png';
 import IconSuccess from '../../assets/images/IconSuccessGreen.png';
@@ -56,6 +57,7 @@ const TransactionsListPage = () => {
   }, [activeWallet, selectedEndpoints]);
 
   const onLoadMore = () => {
+    setLoaded(false);
     Promise.resolve(
       activeWallet.getRecentTransactions(lastTransaction.signature),
     ).then(recTransactions => {
@@ -80,151 +82,152 @@ const TransactionsListPage = () => {
         titleStyle={styles.titleStyle}
         hideCollapse
         isOpen>
-        {loaded
-          ? recentTransactions?.map((transaction, i) => {
-              switch (transaction.type) {
-                case TRANSACTION_TYPE.TRANSFER:
-                case TRANSACTION_TYPE.CREATE_ACCOUNT:
-                case TRANSACTION_TYPE.CREATE:
-                  const isReceive = transaction.transferType === 'received';
-                  const isUnknown = !transaction.destination;
-                  return (
-                    <CardButtonTransaction
-                      transaction={
-                        isUnknown ? 'unknown' : isReceive ? 'received' : 'sent'
-                      }
-                      address={transaction.destination}
-                      // percentage="+0000%"
-                      actions={
-                        transaction.error
-                          ? [
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color="negative">
-                                  {`${'-'}${
-                                    transaction.fee / TOKEN_DECIMALS.SOLANA
-                                  } SOL  `}
-                                </GlobalText>
-                                <GlobalImage source={IconFailed} size="xxs" />
-                              </View>,
-                            ]
-                          : transaction.nftAmount
-                          ? [
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color={isReceive ? 'positive' : 'negative'}>
-                                  {isReceive ? '+ 1 ' : '- 1 '}
-                                  {`${transaction.nftAmount?.collection?.name} `}
-                                </GlobalText>
-                                <AvatarImage
-                                  url={transaction.nftAmount?.media}
-                                  size={18}
-                                />
-                              </View>,
-                            ]
-                          : [
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color={isReceive ? 'positive' : 'negative'}>
-                                  {isReceive ? '+' : '-'}
-                                  {isReceive
-                                    ? transaction.amount
-                                    : parseFloat(
-                                        transaction.amount +
-                                          transaction.fee /
-                                            TOKEN_DECIMALS.SOLANA,
-                                      ).toFixed(8)}
-                                  {` SOL  `}
-                                </GlobalText>
-                                <GlobalImage source={IconSuccess} size="xxs" />
-                              </View>,
-                            ].filter(Boolean)
-                      }
-                      onPress={() => onDetail(i)}
-                    />
-                  );
-                case TRANSACTION_TYPE.SWAP:
-                  return (
-                    <CardButtonTransaction
-                      transaction="swap"
-                      address={activeWallet.getReceiveAddress()}
-                      // percentage="+0000%"
-                      actions={
-                        transaction.error
-                          ? [
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color="negative">
-                                  {`${'-'}${
-                                    transaction.fee / TOKEN_DECIMALS.SOLANA
-                                  } SOL  `}
-                                </GlobalText>
-                                <GlobalImage source={IconFailed} size="xxs" />
-                              </View>,
-                            ]
-                          : transaction.swapAmountIn !== '0' &&
-                            [
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color="positive">
-                                  {`+${
-                                    transaction.swapAmountIn /
-                                    (transaction.tokenNameIn === 'SOL' ||
-                                    !transaction.tokenNameIn
-                                      ? TOKEN_DECIMALS.SOLANA
-                                      : TOKEN_DECIMALS.COINS)
-                                  } ${transaction.tokenNameIn || 'SOL'} `}
-                                </GlobalText>
-                                <AvatarImage
-                                  url={transaction.tokenLogoIn || LOGOS.SOLANA}
-                                  size={18}
-                                />
-                              </View>,
-                              <View style={styles.inline}>
-                                <GlobalText
-                                  key={'amount-action'}
-                                  type="body2"
-                                  color="negative">
-                                  {`-${
-                                    transaction.swapAmountOut /
-                                    (transaction.tokenNameOut === 'SOL' ||
-                                    !transaction.tokenNameOut
-                                      ? TOKEN_DECIMALS.SOLANA
-                                      : TOKEN_DECIMALS.COINS)
-                                  } ${transaction.tokenNameOut || 'SOL'} `}
-                                </GlobalText>
-                                <AvatarImage
-                                  url={transaction.tokenLogoOut || LOGOS.SOLANA}
-                                  size={18}
-                                />
-                              </View>,
-                            ].filter(Boolean)
-                      }
-                      onPress={() => onDetail(i)}
-                    />
-                  );
-                case TRANSACTION_TYPE.CLOSE_ACCOUNT:
-                  return (
-                    <CardButtonTransaction
-                      transaction="interaction"
-                      title={TYPES_MAP[transaction.type]}
-                      // percentage="+0000%"
-                      onPress={() => onDetail(i)}
-                    />
-                  );
-              }
-            })
-          : null}
+        {loaded ? (
+          recentTransactions?.map((transaction, i) => {
+            switch (transaction.type) {
+              case TRANSACTION_TYPE.TRANSFER:
+              case TRANSACTION_TYPE.CREATE_ACCOUNT:
+              case TRANSACTION_TYPE.CREATE:
+                const isReceive = transaction.transferType === 'received';
+                const isUnknown = !transaction.destination;
+                return (
+                  <CardButtonTransaction
+                    transaction={
+                      isUnknown ? 'unknown' : isReceive ? 'received' : 'sent'
+                    }
+                    address={transaction.destination}
+                    // percentage="+0000%"
+                    actions={
+                      transaction.error
+                        ? [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color="negative">
+                                {`${'-'}${
+                                  transaction.fee / TOKEN_DECIMALS.SOLANA
+                                } SOL  `}
+                              </GlobalText>
+                              <GlobalImage source={IconFailed} size="xxs" />
+                            </View>,
+                          ]
+                        : transaction.nftAmount
+                        ? [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color={isReceive ? 'positive' : 'negative'}>
+                                {isReceive ? '+ 1 ' : '- 1 '}
+                                {`${transaction.nftAmount?.collection?.name} `}
+                              </GlobalText>
+                              <AvatarImage
+                                url={transaction.nftAmount?.media}
+                                size={18}
+                              />
+                            </View>,
+                          ]
+                        : [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color={isReceive ? 'positive' : 'negative'}>
+                                {isReceive ? '+' : '-'}
+                                {isReceive
+                                  ? transaction.amount
+                                  : parseFloat(
+                                      transaction.amount +
+                                        transaction.fee / TOKEN_DECIMALS.SOLANA,
+                                    ).toFixed(8)}
+                                {` SOL  `}
+                              </GlobalText>
+                              <GlobalImage source={IconSuccess} size="xxs" />
+                            </View>,
+                          ].filter(Boolean)
+                    }
+                    onPress={() => onDetail(i)}
+                  />
+                );
+              case TRANSACTION_TYPE.SWAP:
+                return (
+                  <CardButtonTransaction
+                    transaction="swap"
+                    address={activeWallet.getReceiveAddress()}
+                    // percentage="+0000%"
+                    actions={
+                      transaction.error
+                        ? [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color="negative">
+                                {`${'-'}${
+                                  transaction.fee / TOKEN_DECIMALS.SOLANA
+                                } SOL  `}
+                              </GlobalText>
+                              <GlobalImage source={IconFailed} size="xxs" />
+                            </View>,
+                          ]
+                        : transaction.swapAmountIn !== '0' &&
+                          [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color="positive">
+                                {`+${
+                                  transaction.swapAmountIn /
+                                  (transaction.tokenNameIn === 'SOL' ||
+                                  !transaction.tokenNameIn
+                                    ? TOKEN_DECIMALS.SOLANA
+                                    : TOKEN_DECIMALS.COINS)
+                                } ${transaction.tokenNameIn || 'SOL'} `}
+                              </GlobalText>
+                              <AvatarImage
+                                url={transaction.tokenLogoIn || LOGOS.SOLANA}
+                                size={18}
+                              />
+                            </View>,
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color="negative">
+                                {`-${
+                                  transaction.swapAmountOut /
+                                  (transaction.tokenNameOut === 'SOL' ||
+                                  !transaction.tokenNameOut
+                                    ? TOKEN_DECIMALS.SOLANA
+                                    : TOKEN_DECIMALS.COINS)
+                                } ${transaction.tokenNameOut || 'SOL'} `}
+                              </GlobalText>
+                              <AvatarImage
+                                url={transaction.tokenLogoOut || LOGOS.SOLANA}
+                                size={18}
+                              />
+                            </View>,
+                          ].filter(Boolean)
+                    }
+                    onPress={() => onDetail(i)}
+                  />
+                );
+              case TRANSACTION_TYPE.CLOSE_ACCOUNT:
+                return (
+                  <CardButtonTransaction
+                    transaction="interaction"
+                    title={TYPES_MAP[transaction.type]}
+                    // percentage="+0000%"
+                    onPress={() => onDetail(i)}
+                  />
+                );
+            }
+          })
+        ) : (
+          <GlobalSkeleton type="ActivityList" />
+        )}
 
         {/*
         <CardButtonTransaction
