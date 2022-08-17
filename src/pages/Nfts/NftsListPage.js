@@ -3,10 +3,10 @@ import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP } from './routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
+import { cache, CACHE_TYPES } from '../../utils/cache';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as NTFS_ROUTES_MAP } from './routes';
 import { getWalletName } from '../../utils/wallet';
 import { isCollection } from '../../utils/nfts';
 
@@ -34,16 +34,14 @@ const NftsListPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
-
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
-
   const onClick = nft => {
     if (isCollection(nft)) {
-      navigate(ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
+      navigate(NTFS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
     } else {
-      navigate(ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
+      navigate(NTFS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
     }
   };
 

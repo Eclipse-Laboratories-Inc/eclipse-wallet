@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
-import Grid from '@mui/material/Grid';
+// import Grid from '@mui/material/Grid';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getWalletName } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { isCollection } from '../../utils/nfts';
 
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -67,9 +65,7 @@ const NftsDetailPage = ({ params, t }) => {
 
             <View style={globalStyles.squareRatio}>
               <GlobalImage
-                source={getMediaRemoteUrl(
-                  isCollection(nftDetail) ? nftDetail.thumb : nftDetail.media,
-                )}
+                source={getMediaRemoteUrl(nftDetail.media)}
                 style={globalStyles.bigImage}
                 square
                 squircle
@@ -123,7 +119,7 @@ const NftsDetailPage = ({ params, t }) => {
 
           <GlobalPadding size="sm" />
 
-          <Grid container spacing={1}>
+          {/* <Grid container spacing={1}>
             <Grid item xs={6}>
               <CardButton
                 caption="Background"
@@ -187,7 +183,7 @@ const NftsDetailPage = ({ params, t }) => {
                 readonly
               />
             </Grid>
-          </Grid>
+          </Grid> */}
         </GlobalLayout.Header>
       </GlobalLayout>
     )) ||

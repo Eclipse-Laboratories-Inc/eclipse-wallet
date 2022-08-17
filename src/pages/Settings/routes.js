@@ -18,12 +18,17 @@ import SecurityPage from './SecurityPage';
 import NotificationsPage from './NotificationsPage';
 import TrustedAppsPage from './TrustedAppsPage';
 import HelpSupportPage from './HelpSupportPage';
+import AccountEditProfileNftsPage from './AccountEditProfileNftsPage';
+import AccountEditProfileNftsDetailPage from './AccountEditProfileNftsDetailPage';
 
 export const ROUTES_MAP = {
   SETTINGS_OPTIONS: 'SETTINGS_OPTIONS',
   SETTINGS_ACCOUNT_SELECT: 'SETTINGS_ACCOUNT_SELECT',
   SETTINGS_ACCOUNT_EDIT: 'SETTINGS_ACCOUNT_EDIT',
   SETTINGS_ACCOUNT_EDIT_PROFILE: 'SETTINGS_ACCOUNT_EDIT_PROFILE',
+  SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS: 'SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS',
+  SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL:
+    'SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL',
   SETTINGS_ACCOUNT_EDIT_NAME: 'SETTINGS_ACCOUNT_EDIT_NAME',
   SETTINGS_ACCOUNT_EDIT_ADDRESS: 'SETTINGS_ACCOUNT_EDIT_ADDRESS',
   SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS: 'SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS',
@@ -70,6 +75,22 @@ const routes = [
     path: 'accounts/:address/profile',
     route: '/wallet/settings/accounts/:address/profile',
     Component: AccountEditProfilePage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS,
+    name: 'settingsEditAccountProfileNfts',
+    path: 'accounts/:address/profile/nfts',
+    route: '/wallet/settings/accounts/:address/profile/nfts',
+    Component: AccountEditProfileNftsPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL,
+    name: 'settingsEditAccountProfileNftsDetail',
+    path: 'accounts/:address/profile/nfts/:id',
+    route: '/wallet/settings/accounts/:address/profile/nfts/:id',
+    Component: AccountEditProfileNftsDetailPage,
     default: false,
   },
   {

@@ -63,8 +63,10 @@ const TokenDetailPage = ({ params, t }) => {
           () => activeWallet.getRecentTransactions(),
         ),
       ]).then(([balance, recentTransactions]) => {
-        const t = (balance.items || []).find(i => i.address === params.tokenId);
-        setToken(t || {});
+        const tk = (balance.items || []).find(
+          i => i.address === params.tokenId,
+        );
+        setToken(tk || {});
         setTransactions(recentTransactions || []);
         setloaded(true);
       });

@@ -14,12 +14,13 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
-import IconSuccessGradient from '../../assets/images/IconSuccessGradient.png';
+import IconSuccessGradient from '../../assets/images/Logo.png';
 
 const styles = StyleSheet.create({
   bigIcon: {
-    width: 219,
-    height: 219,
+    paddingTop: 200,
+    width: 96,
+    height: 96,
   },
 });
 
@@ -35,17 +36,16 @@ const WelcomePage = ({ t }) => {
   };
   const steps = [
     {
-      title: '3 lines max Lorem ipsum dolor sit amet, consectetur adipiscing',
-      content:
-        '2 lines max Excepteur sint occaecat cupidatat non proident, sunt',
+      title: t('wallet.onboarding.title1'),
+      content: t('wallet.onboarding.content1'),
     },
     {
-      title: '2. lines max consectetur adipiscing',
-      content: '2. lines max cupidatat non proident, sunt',
+      title: t('wallet.onboarding.title2'),
+      content: t('wallet.onboarding.content2'),
     },
     {
-      title: '3. lines max Lorem ipsum dolor sit amet,',
-      content: '3. lines max Excepteur sint occaecat',
+      title: t('wallet.onboarding.title3'),
+      content: t('wallet.onboarding.content3'),
     },
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);

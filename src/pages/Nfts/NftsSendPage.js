@@ -6,9 +6,12 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { getWalletName } from '../../utils/wallet';
+import {
+  getTransactionImage,
+  getWalletName,
+  TRANSACTION_STATUS,
+} from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { isCollection } from '../../utils/nfts';
 
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -18,11 +21,9 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
-
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
+import InputAddress from '../../features/InputAddress/InputAddress';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -36,15 +37,12 @@ const NftsSendPage = ({ params, t }) => {
   const [loaded, setLoaded] = useState(false);
   const [sending, setSending] = useState(false);
   const [finish, setFinish] = useState(false);
+  const [status, setStatus] = useState();
+  const [step, setStep] = useState(1);
   const [nftDetail, setNftDetail] = useState({});
   const [{ activeWallet, config, addressBook }] = useContext(AppContext);
-
   const [validAddress, setValidAddress] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState('');
-  const onRecipientChange = v => {
-    setValidAddress(false);
-    setRecipientAddress(v);
-  };
 
   useEffect(() => {
     if (activeWallet) {
@@ -66,12 +64,28 @@ const NftsSendPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_DETAIL, { id: params.id });
   };
 
-  const onSend = () => {
-    setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      setFinish(true);
-    }, 2000);
+  const onSend = async () => {
+    if (step === 1) {
+      setStep(2);
+    } else if (step === 2) {
+      setSending(true);
+      try {
+        console.log({ recipientAddress, s: nftDetail.mint });
+        const res = await activeWallet.transfer(
+          recipientAddress,
+          nftDetail.mint,
+          1,
+        );
+        setSending(false);
+        setFinish(true);
+        setStatus(TRANSACTION_STATUS.SUCCESS);
+      } catch (e) {
+        console.error(e);
+        setSending(false);
+        setFinish(true);
+        setStatus(TRANSACTION_STATUS.FAIL);
+      }
+    }
   };
 
   return (
@@ -97,11 +111,7 @@ const NftsSendPage = ({ params, t }) => {
                 <View
                   style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
                   <GlobalImage
-                    source={getMediaRemoteUrl(
-                      isCollection(nftDetail)
-                        ? nftDetail.thumb
-                        : nftDetail.media,
-                    )}
+                    source={getMediaRemoteUrl(nftDetail.media)}
                     style={globalStyles.bigImage}
                     square
                     squircle
@@ -110,89 +120,62 @@ const NftsSendPage = ({ params, t }) => {
               </View>
 
               <GlobalPadding size="xl" />
-
-              <GlobalInputWithButton
-                // startLabel={t('general.to')}
-                placeholder={t('general.recipient_s_address', {
-                  token: 'SOL',
-                })}
-                value={recipientAddress}
-                setValue={setRecipientAddress}
-                onActionPress={() => {}}
-                buttonIcon={IconQRCodeScanner}
-                buttonOnPress={() => {}}
-              />
-
-              {addressBook.size > 0 && (
+              {step === 1 && (
                 <>
+                  <InputAddress
+                    address={recipientAddress}
+                    onChange={setRecipientAddress}
+                    validAddress={validAddress}
+                    setValidAddress={setValidAddress}
+                  />
                   <GlobalPadding />
 
-                  <GlobalCollapse
-                    title={t('settings.address_book')}
-                    titleStyle={styles.titleStyle}
-                    isOpen
-                    hideCollapse>
-                    {addressBook.map(addressBookItem => (
-                      <CardButtonWallet
-                        key={addressBookItem.address}
-                        title={addressBookItem.name}
-                        address={addressBookItem.address}
-                        chain={addressBookItem.chain}
-                        imageSize="md"
-                        onPress={() =>
-                          onRecipientChange(addressBookItem.address)
-                        }
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
-                  </GlobalCollapse>
+                  {addressBook.length > 0 && (
+                    <GlobalCollapse
+                      title={t('settings.address_book')}
+                      titleStyle={styles.titleStyle}
+                      isOpen
+                      hideCollapse>
+                      {addressBook.map(addressBookItem => (
+                        <CardButtonWallet
+                          key={addressBookItem.address}
+                          title={addressBookItem.name}
+                          address={addressBookItem.address}
+                          chain={addressBookItem.chain}
+                          imageSize="md"
+                          onPress={() =>
+                            setRecipientAddress(addressBookItem.address)
+                          }
+                          buttonStyle={globalStyles.addressBookItem}
+                          touchableStyles={globalStyles.addressBookTouchable}
+                          transparent
+                        />
+                      ))}
+                    </GlobalCollapse>
+                  )}
                 </>
               )}
 
               <GlobalPadding />
+              {step === 2 && (
+                <View style={globalStyles.centered}>
+                  <GlobalPadding />
 
-              <View style={globalStyles.centered}>
-                <GlobalInputWithButton
-                  // startLabel={t('general.to')}
-                  placeholder={t('general.recipient_s_address', {
-                    token: 'SOL',
-                  })}
-                  value={recipientAddress}
-                  setValue={setRecipientAddress}
-                  invalid
-                />
+                  <GlobalText type="subtitle2" center>
+                    {t('nft.send_to')}
+                  </GlobalText>
 
-                <GlobalPadding />
+                  <GlobalPadding />
 
-                <GlobalInputWithButton
-                  // startLabel={t('general.to')}
-                  placeholder={t('general.recipient_s_address', {
-                    token: 'SOL',
-                  })}
-                  value={recipientAddress}
-                  setValue={setRecipientAddress}
-                  complete
-                  editable={false}
-                />
+                  <GlobalImage source={IconExpandMoreAccent1} size="md" />
 
-                <GlobalPadding />
+                  <GlobalPadding />
 
-                <GlobalText type="subtitle2" center>
-                  {t('nft.send_to')}
-                </GlobalText>
-
-                <GlobalPadding />
-
-                <GlobalImage source={IconExpandMoreAccent1} size="md" />
-
-                <GlobalPadding />
-
-                <GlobalText type="subtitle1" center>
-                  Bored Ape Yacht Club
-                </GlobalText>
-              </View>
+                  <GlobalText type="subtitle1" center>
+                    {recipientAddress}
+                  </GlobalText>
+                </View>
+              )}
             </GlobalLayout.Header>
 
             <GlobalLayout.Footer inlineFlex>
@@ -212,7 +195,7 @@ const NftsSendPage = ({ params, t }) => {
                 onPress={onSend}
                 style={[globalStyles.button, globalStyles.buttonRight]}
                 touchableStyles={globalStyles.buttonTouchable}
-                disabled={!recipientAddress}
+                disabled={!validAddress}
                 key={'send-button'}
               />
             </GlobalLayout.Footer>
@@ -248,18 +231,33 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
 
-              <GlobalText type="headline2" center>
-                {t('general.sent')}
-              </GlobalText>
+              <View style={globalStyles.centeredSmall}>
+                <GlobalImage
+                  source={getTransactionImage(status)}
+                  size="3xl"
+                  circle
+                />
+                <GlobalPadding />
+                <GlobalText type="headline2" center>
+                  {t(`token.send.transaction_${status}`)}
+                </GlobalText>
+                <GlobalText type="body1" center>
+                  3 lines max Excepteur sint occaecat cupidatat non proident,
+                  sunt ?
+                </GlobalText>
+
+                <GlobalPadding size="4xl" />
+              </View>
             </GlobalLayout.Header>
 
-            <GlobalLayout.Footer>
+            <GlobalLayout.Footer inlineFlex>
               <GlobalButton
-                type="primary"
-                wide
-                title={t('transactions.view_transaction')}
-                onPress={() => {}}
-                key={'send-button'}
+                type="secondary"
+                flex
+                title={t('general.close')}
+                onPress={goToBack}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
               />
             </GlobalLayout.Footer>
           </GlobalLayout>

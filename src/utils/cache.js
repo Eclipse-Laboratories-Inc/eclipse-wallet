@@ -8,6 +8,8 @@ export const CACHE_TYPES = {
   NFTS: 'NFTS',
   NFTS_ALL: 'NFTS_ALL',
   TRANSACTIONS: 'TRANSACTIONS',
+  TOKENS: 'TOKENS',
+  AVAILABLE_TOKENS: 'AVAILABLE_TOKENS',
 };
 
 var CACHE = {
@@ -27,6 +29,16 @@ var CACHE = {
     value: [],
   },
   [CACHE_TYPES.TRANSACTIONS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.TOKENS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.AVAILABLE_TOKENS]: {
     expires: null,
     key: '',
     value: [],
