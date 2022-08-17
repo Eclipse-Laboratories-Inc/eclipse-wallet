@@ -24,14 +24,7 @@ import { getMediaRemoteUrl } from '../../utils/media';
 
 const AccountEditPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ wallets, config }] = useContext(AppContext);
-  const [wallet, setWallet] = useState({});
-  useEffect(() => {
-    const w = wallets.find(f => f.address === params.address);
-    if (w) {
-      setWallet(w);
-    }
-  }, [params.address, wallets]);
+  const [{ config }] = useContext(AppContext);
   const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
 
   const goToEditProfile = () =>
@@ -59,6 +52,10 @@ const AccountEditPage = ({ params, t }) => {
       address: params.address,
     });
 
+  const goToPrivateKey = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PRIVATEKEY, {
+      address: params.address,
+    });
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
@@ -116,6 +113,12 @@ const AccountEditPage = ({ params, t }) => {
           title={t(`general.seed_phrase`)}
           actionIcon="right"
           onPress={goToSeedPhrase}
+        />
+
+        <CardButton
+          title={t(`general.private_key`)}
+          actionIcon="right"
+          onPress={goToPrivateKey}
         />
       </GlobalLayout.Header>
     </GlobalLayout>

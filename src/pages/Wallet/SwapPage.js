@@ -256,17 +256,20 @@ const SwapPage = ({ t }) => {
           <GlobalLayout.Footer inlineFlex>
             <GlobalButton
               type="default"
-              wideSmall
+              flex
               title={t('general.back')}
               onPress={() => setStep(1)}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
             />
-            <GlobalPadding size="xs" />
             <GlobalButton
               type="primary"
-              wideSmall
+              flex
               title={t('general.confirm')}
               onPress={onConfirm}
               disabled={processing}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
             />
           </GlobalLayout.Footer>
         </>

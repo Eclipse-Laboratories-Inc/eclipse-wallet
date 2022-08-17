@@ -12,8 +12,10 @@ import {
   getWalletName,
   getShortAddress,
   getWalletAvatar,
+  getListedTokens,
+  getNonListedTokens,
 } from '../../utils/wallet';
-import { cache, CACHE_TYPES } from '../../utils/cache';
+import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
   hiddenValue,
   getLabelValue,
@@ -38,6 +40,8 @@ import AvatarImage from '../../component-library/Image/AvatarImage';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { isCollection } from '../../utils/nfts';
 import { getMediaRemoteUrl } from '../../utils/media';
+import QRScan from '../../features/QRScan/QRScan';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -78,12 +82,18 @@ const WalletOverviewPage = ({ t }) => {
     { activeWallet, config, selectedEndpoints, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
+  const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
+  const [nonListedTokenList, setNonListedTokenList] = useState(null);
+  const [showScan, setShowScan] = useState(false);
+
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
+      setLoading(true);
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
@@ -97,11 +107,33 @@ const WalletOverviewPage = ({ t }) => {
         ),
       ]).then(([balance, nfts]) => {
         setTotalBalance(balance);
-        setTokenList(balance.items);
+        setTokenList(getListedTokens(balance));
+        setNonListedTokenList(getNonListedTokens(balance, nfts));
         setNftsList(nfts);
+        setLoading(false);
       });
     }
-  }, [activeWallet, selectedEndpoints]);
+  }, [activeWallet, selectedEndpoints, reload]);
+
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+  const onRefresh = () => {
+    invalidate(CACHE_TYPES.BALANCE);
+    invalidate(CACHE_TYPES.NFTS);
+    setTotalBalance({});
+    setTokenList(null);
+    setNftsList(null);
+    setReload(!reload);
+  };
+  const onRead = qr => {
+    const data = qr;
+    setShowScan(false);
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT_TO, {
+      action: 'sendTo',
+      toAddress: data.data,
+    });
+  };
 
   const goToSend = () =>
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
@@ -128,7 +160,7 @@ const WalletOverviewPage = ({ t }) => {
 
   return (
     activeWallet && (
-      <GlobalLayout>
+      <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
         <GlobalLayout.Header>
           <SafeAreaView edges={['top']}>
             <View style={styles.avatarWalletAddressActions}>
@@ -166,13 +198,15 @@ const WalletOverviewPage = ({ t }) => {
                   style={styles.narrowBtn}
                   onPress={goToNotifications}
                 /> */}
-                <GlobalButton
-                  type="icon"
-                  transparent
-                  icon={IconQRCodeScanner}
-                  style={styles.narrowBtn}
-                  onPress={() => {}}
-                />
+                {isNative() && (
+                  <GlobalButton
+                    type="icon"
+                    transparent
+                    icon={IconQRCodeScanner}
+                    style={styles.narrowBtn}
+                    onPress={toggleScan}
+                  />
+                )}
               </View>
             </View>
           </SafeAreaView>
@@ -211,6 +245,15 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
 
+          {nonListedTokenList?.length ? (
+            <GlobalCollapse title={t('wallet.non_listed_tokens')} isOpen>
+              <TokenList
+                tokens={nonListedTokenList}
+                hiddenBalance={hiddenBalance}
+              />
+            </GlobalCollapse>
+          ) : null}
+
           <GlobalPadding />
 
           <GlobalCollapse
@@ -223,6 +266,9 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
         </GlobalLayout.Header>
+        {isNative() && (
+          <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+        )}
       </GlobalLayout>
     )
   );

@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, StatusBar, ScrollView, View } from 'react-native';
+import {
+  StyleSheet,
+  StatusBar,
+  ScrollView,
+  View,
+  RefreshControl,
+} from 'react-native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
@@ -46,9 +52,29 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     minHeight: '100%',
   },
+  containerForTabs: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: theme.staticColor.transparent,
+  },
+  scrollViewForTabsInner: {
+    flex: 1,
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: theme.variables.mobileWidthLG,
+    minHeight: '100%',
+    padding: theme.gutters.paddingNormal,
+    backgroundColor: theme.colors.bgPrimary,
+  },
 });
 
-const GlobalLayout = ({ fullscreen, style, children }) => {
+const GlobalLayout = ({
+  fullscreen,
+  style,
+  children,
+  onRefresh,
+  refreshing,
+}) => {
   const layoutStyle = {
     ...styles.scrollViewContainer,
     ...style,
@@ -59,7 +85,14 @@ const GlobalLayout = ({ fullscreen, style, children }) => {
       <StatusBar barStyle={'light-content'} />
       <ScrollView
         contentContainerStyle={layoutStyle}
-        contentInsetAdjustmentBehavior="never">
+        contentInsetAdjustmentBehavior="never"
+        {...(onRefresh
+          ? {
+              refreshControl: (
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              ),
+            }
+          : {})}>
         <View
           style={fullscreen ? styles.mainTabContainer : styles.mainContainer}>
           {children}
@@ -96,5 +129,13 @@ const Footer = ({ inlineFlex, children }) => (
 GlobalLayout.Header = Header;
 GlobalLayout.Inner = Inner;
 GlobalLayout.Footer = Footer;
+
+export const GlobalLayoutForTabScreen = ({ children, style, ...props }) => (
+  <View style={[styles.containerForTabs, style]}>
+    <ScrollView contentInsetAdjustmentBehavior="automatic" {...props}>
+      <View style={styles.scrollViewForTabsInner}>{children}</View>
+    </ScrollView>
+  </View>
+);
 
 export default GlobalLayout;

@@ -24,6 +24,8 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import InputAddress from '../../features/InputAddress/InputAddress';
+import { isNative } from '../../utils/platform';
+import QRScan from '../../features/QRScan/QRScan';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -43,6 +45,7 @@ const NftsSendPage = ({ params, t }) => {
   const [{ activeWallet, config, addressBook }] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState('');
+  const [showScan, setShowScan] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -87,6 +90,14 @@ const NftsSendPage = ({ params, t }) => {
       }
     }
   };
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+  const onRead = qr => {
+    const data = qr;
+    setRecipientAddress(data.data);
+    setShowScan(false);
+  };
 
   return (
     (loaded && (
@@ -127,6 +138,7 @@ const NftsSendPage = ({ params, t }) => {
                     onChange={setRecipientAddress}
                     validAddress={validAddress}
                     setValidAddress={setValidAddress}
+                    onQR={toggleScan}
                   />
                   <GlobalPadding />
 
@@ -199,6 +211,9 @@ const NftsSendPage = ({ params, t }) => {
                 key={'send-button'}
               />
             </GlobalLayout.Footer>
+            {isNative() && (
+              <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+            )}
           </GlobalLayout>
         )}
 

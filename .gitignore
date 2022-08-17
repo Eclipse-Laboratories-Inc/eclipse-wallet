@@ -11,6 +11,7 @@
 # production
 /build
 /build-extension
+/build-extension-mozilla
 
 # misc
 .DS_Store

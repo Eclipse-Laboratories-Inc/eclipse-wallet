@@ -8,8 +8,10 @@
     "name_or_address": "Name or \"{{token}}\" Address",
     "recipient_s_address": "Recipient´s \"{{token}}\" Address",
     "seed_phrase": "Seed Phrase",
+    "private_key": "Private Key",
     "balance": "Balance",
     "sending": "Sending...",
+    "loading": "Loading...",
     "sent": "Sent!",
     "close": "Close",
     "max": "Max",
@@ -79,6 +81,7 @@
       "addToken": "Add Token",
       "add": "Add",
       "send": "Send",
+      "sendTo": "Send",
       "receive": "Receive",
       "select": "Select"
     },
@@ -111,6 +114,7 @@
   },
   "wallet": {
     "my_tokens": "My Tokens",
+    "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
     "create_wallet": "Create Wallet",
     "recover_wallet": "Recover Wallet",

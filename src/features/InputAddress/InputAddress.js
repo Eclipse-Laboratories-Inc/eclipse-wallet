@@ -8,6 +8,7 @@ import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import theme from '../../component-library/Global/theme';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   ERROR: {
@@ -24,6 +25,7 @@ const InputAddress = ({
   validAddress,
   setValidAddress,
   recipient = true,
+  onQR = () => {},
 }) => {
   const [{ activeWallet }] = useContext(AppContext);
   const [checkingAddress, setCheckingAddress] = useState(false);
@@ -71,8 +73,8 @@ const InputAddress = ({
         value={address}
         setValue={onChange}
         onActionPress={() => {}}
-        buttonIcon={!validAddress ? IconQRCodeScanner : undefined}
-        buttonOnPress={() => {}}
+        buttonIcon={!validAddress && isNative() ? IconQRCodeScanner : undefined}
+        buttonOnPress={onQR}
         disabled={checkingAddress}
         complete={validAddress}
         inputStyle={

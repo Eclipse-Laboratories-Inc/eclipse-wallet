@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   forSearch: {
     // width: 50,
     paddingLeft: theme.gutters.paddingSM,
-    height: '100%',
+    // height: '100%',
     // position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
   startLabel: {
     minWidth: 50,
-    height: '100%',
+    // height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   endAction: {
     minWidth: 50,
-    height: '100%',
+    // height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: theme.gutters.paddingXS,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   complete: {
     width: 50,
-    height: '100%',
+    // height: '100%',
     right: 0,
     position: 'absolute',
     alignItems: 'center',
