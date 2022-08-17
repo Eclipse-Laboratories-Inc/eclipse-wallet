@@ -27,7 +27,9 @@ const variables = {
   buttonMaxWidthSmall: 263,
   mobileWidth: 375,
   mobileWidthLG: 425,
+  mobileWidthXL: 480,
   tabletWidth: 690,
+  mobileHeightLG: 1000,
 };
 
 const debug = {

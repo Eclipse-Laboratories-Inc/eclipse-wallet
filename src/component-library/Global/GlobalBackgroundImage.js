@@ -2,14 +2,18 @@ import React from 'react';
 import { StyleSheet, ImageBackground } from 'react-native';
 
 import AppBackground from '../../assets/images/AppBackground.png';
+import theme from './theme';
 
 const styles = StyleSheet.create({
   image: {
     position: 'absolute',
+    margin: 'auto',
     top: 0,
     right: 0,
     bottom: -1,
     left: 0,
+    maxWidth: theme.variables.mobileWidthXL,
+    maxHeight: theme.variables.mobileHeightLG,
   },
 });
 
