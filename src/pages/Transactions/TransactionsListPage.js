@@ -216,7 +216,7 @@ const TransactionsListPage = () => {
                                 color="negative">
                                 {`${'-'}${
                                   transaction.fee / TOKEN_DECIMALS.SOLANA
-                                } SOL  `}
+                                } SOL `}
                               </GlobalText>
                               <AvatarImage url={LOGOS.SOLANA} size={18} />
                             </View>,
