@@ -17,6 +17,7 @@ import {
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme from '../../component-library/Global/theme';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -455,7 +456,7 @@ const TransactionsDetailPage = ({ params }) => {
           }
         })()
       ) : (
-        <View>Skeleton</View>
+        <GlobalSkeleton type="TransactionDetail" />
       )}
     </GlobalLayoutForTabScreen>
   );

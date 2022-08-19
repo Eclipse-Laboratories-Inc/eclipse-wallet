@@ -10,6 +10,7 @@ import { getWalletName } from '../../utils/wallet';
 import { isCollection } from '../../utils/nfts';
 
 import { globalStyles } from '../../component-library/Global/theme';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
@@ -43,26 +44,28 @@ const NftsListPage = ({ t }) => {
   };
 
   return (
-    (loaded && (
+    (
       <GlobalLayout fullscreen>
-        <GlobalLayout.Header>
-          <GlobalBackTitle
-            inlineTitle={getWalletName(
-              activeWallet.getReceiveAddress(),
-              config,
-            )}
-            inlineAddress={activeWallet.getReceiveAddress()}
-          />
+        {loaded && (
+          <GlobalLayout.Header>
+            <GlobalBackTitle
+              inlineTitle={getWalletName(
+                activeWallet.getReceiveAddress(),
+                config,
+              )}
+              inlineAddress={activeWallet.getReceiveAddress()}
+            />
 
-          <View style={globalStyles.centered}>
-            <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
-          </View>
+            <View style={globalStyles.centered}>
+              <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
+            </View>
 
-          <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
-        </GlobalLayout.Header>
+            <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
+          </GlobalLayout.Header>
+        )}
+        {!loaded && <GlobalSkeleton type="NftListScreen" />}
       </GlobalLayout>
-    )) ||
-    null
+    ) || null
   );
 };
 
