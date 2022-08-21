@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { StyleSheet, View, Linking } from 'react-native';
 import moment from 'moment';
 
 import { AppContext } from '../../AppProvider';
-import { withParams } from '../../routes/hooks';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { TRANSACTION_TYPE, TOKEN_DECIMALS } from './constants';
+import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import {
@@ -17,6 +17,7 @@ import {
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme from '../../component-library/Global/theme';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -64,13 +65,16 @@ const styles = StyleSheet.create({
 });
 
 const TransactionsDetailPage = ({ params }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigation();
   const [{ activeWallet, wallets }, { changeActiveWallet }] =
     useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
 
-  const onBack = () => navigate(-1);
+  const onBack = useCallback(
+    () => navigate(ROUTES_MAP.TRANSACTIONS_LIST),
+    [navigate],
+  );
 
   useEffect(() => {
     if (activeWallet) {
@@ -81,17 +85,21 @@ const TransactionsDetailPage = ({ params }) => {
           () => activeWallet.getRecentTransactions(),
         ),
       ]).then(([recentTransactions]) => {
-        const txDetail = recentTransactions[params.id] || [];
-        setTransactionDetail(txDetail || {});
-        setLoaded(true);
+        const txDetail = recentTransactions[params.id] || {};
+        if (Object.keys(txDetail).length !== 0) {
+          setTransactionDetail(txDetail || {});
+          setLoaded(true);
+        } else {
+          onBack();
+        }
       });
     }
-  }, [activeWallet, params]);
+  }, [activeWallet, onBack, params]);
 
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle onBack={onBack} smallTitle="Transaction Detail" />
-      {loaded &&
+      {loaded ? (
         (() => {
           switch (transactionDetail.type) {
             case TRANSACTION_TYPE.TRANSFER:
@@ -106,7 +114,10 @@ const TransactionsDetailPage = ({ params }) => {
                       source={getMediaRemoteUrl(
                         isUnknown
                           ? getTransactionImage('unknown')
-                          : transactionDetail.nftAmount?.media || LOGOS.SOLANA,
+                          : transactionDetail.nftAmount?.media ||
+                              transactionDetail.transferLogoIn ||
+                              transactionDetail.transferLogoOut ||
+                              LOGOS.SOLANA,
                       )}
                       size="xxl"
                       style={styles.bigImage}
@@ -135,6 +146,22 @@ const TransactionsDetailPage = ({ params }) => {
                         : `${isReceive ? '+ 1 ' : '- 1 '} ${
                             transactionDetail.nftAmount?.collection?.name
                           }`}
+                    </GlobalText>
+                  ) : (transactionDetail.transferNameIn?.length ||
+                      transactionDetail.transferNameOut?.length) &&
+                    transactionDetail.transferAmount ? (
+                    <GlobalText type="headline2" center>
+                      {transactionDetail.error
+                        ? `${'-'}${
+                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                          } SOL  `
+                        : `${isReceive ? '+' : '-'} ${
+                            transactionDetail.transferAmount
+                          } ${
+                            transactionDetail.transferNameIn ||
+                            transactionDetail.transferNameOut
+                          }
+                          `}
                     </GlobalText>
                   ) : (
                     <GlobalText type="headline2" center>
@@ -427,7 +454,10 @@ const TransactionsDetailPage = ({ params }) => {
                 </View>
               );
           }
-        })()}
+        })()
+      ) : (
+        <GlobalSkeleton type="TransactionDetail" />
+      )}
     </GlobalLayoutForTabScreen>
   );
 };

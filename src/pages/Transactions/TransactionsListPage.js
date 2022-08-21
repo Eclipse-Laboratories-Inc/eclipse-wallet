@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  emptyStyle: {
+    marginTop: 10,
+  },
 });
 
 const TransactionsListPage = () => {
@@ -50,7 +53,7 @@ const TransactionsListPage = () => {
         ),
       ]).then(([recTransactions]) => {
         setRecentTransactions(recTransactions);
-        setLastTransaction(recTransactions.slice(-1).pop());
+        setLastTransaction(recTransactions?.slice(-1).pop());
         setLoaded(true);
       });
     }
@@ -73,6 +76,22 @@ const TransactionsListPage = () => {
     });
   };
 
+  const showLoadMore = () =>
+    recentTransactions?.length &&
+    recentTransactions?.length % 8 === 0 &&
+    loaded;
+
+  const Empty = () => (
+    <GlobalText
+      type="body2"
+      color="primary"
+      numberOfLines={1}
+      center="true"
+      style={styles.emptyStyle}>
+      {'No Transaction Activity found'}
+    </GlobalText>
+  );
+
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle title="Your Transactions" />
@@ -82,7 +101,7 @@ const TransactionsListPage = () => {
         titleStyle={styles.titleStyle}
         hideCollapse
         isOpen>
-        {loaded ? (
+        {loaded && recentTransactions?.length ? (
           recentTransactions?.map((transaction, i) => {
             switch (transaction.type) {
               case TRANSACTION_TYPE.TRANSFER:
@@ -124,6 +143,31 @@ const TransactionsListPage = () => {
                               </GlobalText>
                               <AvatarImage
                                 url={transaction.nftAmount?.media}
+                                size={18}
+                              />
+                            </View>,
+                          ]
+                        : (transaction.transferNameIn?.length ||
+                            transaction.transferNameOut?.length) &&
+                          transaction.transferAmount
+                        ? [
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color={isReceive ? 'positive' : 'negative'}>
+                                {isReceive ? '+' : '-'}
+                                {`${transaction.transferAmount} `}
+                                {`${
+                                  transaction.transferNameIn ||
+                                  transaction.transferNameOut
+                                } `}
+                              </GlobalText>
+                              <AvatarImage
+                                url={
+                                  transaction.transferLogoIn ||
+                                  transaction.transferLogoOut
+                                }
                                 size={18}
                               />
                             </View>,
@@ -216,7 +260,7 @@ const TransactionsListPage = () => {
                                 color="negative">
                                 {`${'-'}${
                                   transaction.fee / TOKEN_DECIMALS.SOLANA
-                                } SOL  `}
+                                } SOL `}
                               </GlobalText>
                               <AvatarImage url={LOGOS.SOLANA} size={18} />
                             </View>,
@@ -236,6 +280,8 @@ const TransactionsListPage = () => {
                 );
             }
           })
+        ) : loaded && recentTransactions?.length === 0 ? (
+          <Empty />
         ) : (
           <GlobalSkeleton type="ActivityList" />
         )}
@@ -248,7 +294,9 @@ const TransactionsListPage = () => {
           percentage="+0000%"
           onPress={() => onDetail(1)}
         /> */}
-        <GlobalButton type="text" title="Load more" onPress={onLoadMore} />
+        {showLoadMore() ? (
+          <GlobalButton type="text" title="Load more" onPress={onLoadMore} />
+        ) : null}
       </GlobalCollapse>
     </GlobalLayoutForTabScreen>
   );

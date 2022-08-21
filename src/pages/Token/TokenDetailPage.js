@@ -17,6 +17,7 @@ import {
 } from '../../utils/amount';
 
 import theme from '../../component-library/Global/theme';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -75,8 +76,8 @@ const TokenDetailPage = ({ params, t }) => {
   const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
 
   return (
-    loaded && (
-      <GlobalLayout fullscreen>
+    <GlobalLayout fullscreen>
+      {loaded && (
         <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
@@ -125,8 +126,9 @@ const TokenDetailPage = ({ params, t }) => {
 
           <TransactionsListComponent t={t} />
         </GlobalLayout.Header>
-      </GlobalLayout>
-    )
+      )}
+      {!loaded && <GlobalSkeleton type="TokenDetail" />}
+    </GlobalLayout>
   );
 };
 
