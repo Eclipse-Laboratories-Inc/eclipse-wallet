@@ -49,32 +49,19 @@ const NftsListPage = ({ t }) => {
   return (
     (
       <GlobalLayout fullscreen>
-<<<<<<< HEAD
-        <GlobalLayout.Header>
-          <GlobalBackTitle
-            onBack={goToBack}
-            inlineTitle={getWalletName(
-              activeWallet.getReceiveAddress(),
-              config,
-            )}
-            inlineAddress={activeWallet.getReceiveAddress()}
-          />
-=======
         {loaded && (
           <GlobalLayout.Header>
             <GlobalBackTitle
+              onBack={goToBack}
               inlineTitle={getWalletName(
                 activeWallet.getReceiveAddress(),
                 config,
               )}
               inlineAddress={activeWallet.getReceiveAddress()}
             />
->>>>>>> develop
-
             <View style={globalStyles.centered}>
               <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
-
             <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
           </GlobalLayout.Header>
         )}
