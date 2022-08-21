@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
-// import Grid from '@mui/material/Grid';
+import { StyleSheet, View, FlatList, Dimensions } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -10,7 +9,7 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getWalletName } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
-import { globalStyles } from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -19,11 +18,61 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 
+const styles = StyleSheet.create({
+  renderItemStyle: {
+    width: '49%',
+    marginBottom: theme.gutters.paddingXS,
+  },
+  columnWrapperStyle: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+});
+
+const NFTS_DETAILS = [
+  {
+    caption: 'Background',
+    title: 'Light Blue',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Body',
+    title: 'Regular',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Clothing',
+    title: 'Animal Print',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Eyes',
+    title: 'One',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Head',
+    title: 'Glasses Wood',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Mouth',
+    title: 'Excited',
+    description: '5% have this trait',
+  },
+  {
+    caption: 'Legs',
+    title: 'Woodgrain Sweep',
+    description: '5% have this trait',
+  },
+];
+
 const NftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
   const [{ activeWallet, config }] = useContext(AppContext);
+
   useEffect(() => {
     if (activeWallet) {
       cache(
@@ -39,12 +88,30 @@ const NftsDetailPage = ({ params, t }) => {
       });
     }
   }, [activeWallet, params.id]);
+
   const goToBack = () => {
     navigate(ROUTES_MAP.NFTS_LIST);
   };
+
   const goToSend = () => {
     navigate(ROUTES_MAP.NFTS_SEND, { id: params.id });
   };
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.renderItemStyle}>
+        <CardButton
+          key={item.title}
+          caption={item.caption}
+          title={item.title}
+          description={item.description}
+          nospace
+          readonly
+        />
+      </View>
+    );
+  };
+
   return (
     (loaded && (
       <GlobalLayout fullscreen>
@@ -119,71 +186,12 @@ const NftsDetailPage = ({ params, t }) => {
 
           <GlobalPadding size="sm" />
 
-          {/* <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <CardButton
-                caption="Background"
-                title="Light Blue"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Body"
-                title="Regular"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Clothing"
-                title="Animal Print"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Eyes"
-                title="One"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Head"
-                title="Glasses Wood"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Mouth"
-                title="Excited"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <CardButton
-                caption="Legs"
-                title="Woodgrain Sweep"
-                description="5% have this trait"
-                nospace
-                readonly
-              />
-            </Grid>
-          </Grid> */}
+          <FlatList
+            data={NFTS_DETAILS}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapperStyle}
+          />
         </GlobalLayout.Header>
       </GlobalLayout>
     )) ||
