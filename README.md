@@ -25,3 +25,13 @@ You may also see any lint errors in the console.
 ## Run Android
 
 `yarn start:android`
+
+## Build extension
+
+`yarn build:extension`
+
+Create extensions builds for:
+
+- Chrome & Brave: /build-extension
+- Firefox: /build-extension-mozilla
+
