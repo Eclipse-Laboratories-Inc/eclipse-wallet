@@ -81,6 +81,7 @@
       "addToken": "Add Token",
       "add": "Add",
       "send": "Send",
+      "sendTo": "Send",
       "receive": "Receive",
       "select": "Select"
     },
@@ -113,6 +114,7 @@
   },
   "wallet": {
     "my_tokens": "My Tokens",
+    "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
     "create_wallet": "Create Wallet",
     "recover_wallet": "Recover Wallet",

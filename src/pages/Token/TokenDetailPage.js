@@ -6,7 +6,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
-import { ROUTES_MAP as TRANSACTIONS_ROUTES_MAP } from '../Transactions/routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
@@ -18,10 +17,10 @@ import {
 } from '../../utils/amount';
 
 import theme from '../../component-library/Global/theme';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
+import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
-// import GlobalChart from '../../component-library/Global/GlobalChart';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
@@ -39,13 +38,8 @@ const styles = StyleSheet.create({
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const onDetail = id =>
-    navigate(TRANSACTIONS_ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
-
   const [loaded, setloaded] = useState(false);
-
   const [token, setToken] = useState({});
-  const [transactions, setTransactions] = useState([]);
   const [{ activeWallet, hiddenBalance }, { toggleHideBalance }] =
     useContext(AppContext);
 
@@ -62,12 +56,11 @@ const TokenDetailPage = ({ params, t }) => {
           CACHE_TYPES.TRANSACTIONS,
           () => activeWallet.getRecentTransactions(),
         ),
-      ]).then(([balance, recentTransactions]) => {
+      ]).then(([balance]) => {
         const tk = (balance.items || []).find(
           i => i.address === params.tokenId,
         );
         setToken(tk || {});
-        setTransactions(recentTransactions || []);
         setloaded(true);
       });
     }
@@ -83,8 +76,8 @@ const TokenDetailPage = ({ params, t }) => {
   const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
 
   return (
-    loaded && (
-      <GlobalLayout fullscreen>
+    <GlobalLayout fullscreen>
+      {loaded && (
         <GlobalLayout.Header>
           <GlobalBackTitle
             onBack={goToBack}
@@ -131,27 +124,11 @@ const TokenDetailPage = ({ params, t }) => {
 
           <GlobalPadding size="lg" />
 
-          <GlobalCollapse
-            title={t('transactions.recent_activity')}
-            viewAllAction={() => {}}
-            hideCollapse
-            isOpen>
-            {transactions.map(transaction => (
-              <CardButtonTransaction
-                key={transaction.signature}
-                transaction="sent"
-                address={
-                  transaction.destination ? transaction.destination : '----'
-                }
-                amount={transaction.amount ? transaction.amount : '+1 SOL'}
-                percentage="+0000%"
-                onPress={() => onDetail(transaction.signature)}
-              />
-            ))}
-          </GlobalCollapse>
+          <TransactionsListComponent t={t} />
         </GlobalLayout.Header>
-      </GlobalLayout>
-    )
+      )}
+      {!loaded && <GlobalSkeleton type="TokenDetail" />}
+    </GlobalLayout>
   );
 };
 

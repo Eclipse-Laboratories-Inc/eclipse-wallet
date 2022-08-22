@@ -7,8 +7,10 @@ import TokenReceivePage from './TokenReceivePage';
 export const ROUTES_MAP = {
   TOKEN_DETAIL: 'TOKEN_DETAIL',
   TOKEN_SELECT: 'TOKEN_SELECT',
+  TOKEN_SELECT_TO: 'TOKEN_SELECT_TO',
   TOKEN_ADD: 'TOKEN_ADD',
   TOKEN_SEND: 'TOKEN_SEND',
+  TOKEN_SEND_TO: 'TOKEN_SEND_TO',
   TOKEN_RECEIVE: 'TOKEN_RECEIVE',
 };
 
@@ -29,6 +31,13 @@ const routes = [
     default: true,
   },
   {
+    key: ROUTES_MAP.TOKEN_SELECT_TO,
+    name: 'tokenSelectTo',
+    path: 'select/:action/:toAddress',
+    route: '/token/select/:action/:toAddress',
+    Component: TokenSelectPage,
+  },
+  {
     key: ROUTES_MAP.TOKEN_ADD,
     name: 'tokenAdd',
     path: 'add/:walletAddress/:action',
@@ -40,6 +49,13 @@ const routes = [
     name: 'tokenSend',
     path: 'send/:tokenId',
     route: '/token/send/:tokenId',
+    Component: TokenSendPage,
+  },
+  {
+    key: ROUTES_MAP.TOKEN_SEND_TO,
+    name: 'tokenSendTo',
+    path: 'send/:tokenId/:toAddress',
+    route: '/token/send/:tokenId/:toAddress',
     Component: TokenSendPage,
   },
   {

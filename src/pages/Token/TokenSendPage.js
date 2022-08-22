@@ -27,6 +27,8 @@ import CardButtonWallet from '../../component-library/CardButton/CardButtonWalle
 import IconCopy from '../../assets/images/IconCopy.png';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import InputAddress from '../../features/InputAddress/InputAddress';
+import QRScan from '../../features/QRScan/QRScan';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -48,8 +50,11 @@ const TokenSendPage = ({ params, t }) => {
   const [validAddress, setValidAddress] = useState(false);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState();
+  const [showScan, setShowScan] = useState(false);
 
-  const [recipientAddress, setRecipientAddress] = useState('');
+  const [recipientAddress, setRecipientAddress] = useState(
+    params.toAddress || '',
+  );
   const [recipientAmount, setRecipientAmount] = useState('');
 
   const validAmount =
@@ -76,6 +81,14 @@ const TokenSendPage = ({ params, t }) => {
       setStep(3);
       setSending(false);
     }
+  };
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+  const onRead = qr => {
+    const data = qr;
+    setRecipientAddress(data.data);
+    setShowScan(false);
   };
 
   return (
@@ -106,6 +119,7 @@ const TokenSendPage = ({ params, t }) => {
                 onChange={setRecipientAddress}
                 validAddress={validAddress}
                 setValidAddress={setValidAddress}
+                onQR={toggleScan}
               />
 
               {addressBook.length > 0 && (
@@ -166,6 +180,19 @@ const TokenSendPage = ({ params, t }) => {
               )}
 
               <GlobalPadding size="md" />
+              {!validAmount && !!recipientAmount && (
+                <GlobalText type="body1" center color="negative">
+                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
+                </GlobalText>
+              )}
+              {validAddress && validAddress.type !== 'SUCCESS' && (
+                <GlobalText
+                  type="body1"
+                  center
+                  color={validAddress.type === 'ERROR' ? 'negative' : ''}>
+                  {t(`token.send.address.${validAddress.code}`)}
+                </GlobalText>
+              )}
             </GlobalLayout.Header>
 
             <GlobalLayout.Footer inlineFlex>
@@ -188,6 +215,9 @@ const TokenSendPage = ({ params, t }) => {
                 touchableStyles={globalStyles.buttonTouchable}
               />
             </GlobalLayout.Footer>
+            {isNative() && (
+              <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+            )}
           </>
         )}
         {step === 2 && (
