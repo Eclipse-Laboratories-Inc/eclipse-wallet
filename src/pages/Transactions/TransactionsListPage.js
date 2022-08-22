@@ -109,25 +109,35 @@ const TransactionsListPage = () => {
               case TRANSACTION_TYPE.CREATE:
                 const isReceive = transaction.transferType === 'received';
                 const isUnknown = !transaction.destination;
+                const isCreate = isUnknown && !transaction.amount;
                 return (
                   <CardButtonTransaction
                     transaction={
-                      isUnknown ? 'unknown' : isReceive ? 'received' : 'sent'
+                      isCreate
+                        ? 'interaction'
+                        : isUnknown
+                        ? 'unknown'
+                        : isReceive
+                        ? 'received'
+                        : 'sent'
                     }
+                    title={isCreate && TYPES_MAP[transaction.type]}
                     address={transaction.destination}
                     // percentage="+0000%"
                     actions={
                       transaction.error
                         ? [
                             <View style={styles.inline}>
-                              <GlobalText
-                                key={'amount-action'}
-                                type="body2"
-                                color="negative">
-                                {`${'-'}${
-                                  transaction.fee / TOKEN_DECIMALS.SOLANA
-                                } SOL  `}
-                              </GlobalText>
+                              {!isReceive && (
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color="negative">
+                                  {`${'-'}${
+                                    transaction.fee / TOKEN_DECIMALS.SOLANA
+                                  } SOL  `}
+                                </GlobalText>
+                              )}
                               <GlobalImage source={IconFailed} size="xxs" />
                             </View>,
                           ]
@@ -174,19 +184,22 @@ const TransactionsListPage = () => {
                           ]
                         : [
                             <View style={styles.inline}>
-                              <GlobalText
-                                key={'amount-action'}
-                                type="body2"
-                                color={isReceive ? 'positive' : 'negative'}>
-                                {isReceive ? '+' : '-'}
-                                {isReceive
-                                  ? transaction.amount
-                                  : parseFloat(
-                                      transaction.amount +
-                                        transaction.fee / TOKEN_DECIMALS.SOLANA,
-                                    ).toFixed(8)}
-                                {` SOL  `}
-                              </GlobalText>
+                              {transaction.amount && (
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color={isReceive ? 'positive' : 'negative'}>
+                                  {isReceive ? '+' : '-'}
+                                  {isReceive
+                                    ? transaction.amount
+                                    : parseFloat(
+                                        transaction.amount +
+                                          transaction.fee /
+                                            TOKEN_DECIMALS.SOLANA,
+                                      ).toFixed(8)}
+                                  {` SOL  `}
+                                </GlobalText>
+                              )}
                               <GlobalImage source={IconSuccess} size="xxs" />
                             </View>,
                           ].filter(Boolean)

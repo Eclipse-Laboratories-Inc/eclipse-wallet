@@ -107,17 +107,20 @@ const TransactionsDetailPage = ({ params }) => {
             case TRANSACTION_TYPE.CREATE:
               const isReceive = transactionDetail.transferType === 'received';
               const isUnknown = !transactionDetail.destination;
+              const isCreate = isUnknown && !transactionDetail.transferAmount;
               return (
                 <View style={styles.centered}>
                   <View style={styles.floatingTransactionBox}>
                     <GlobalImage
                       source={getMediaRemoteUrl(
-                        isUnknown
+                        isCreate
+                          ? getTransactionImage('interaction')
+                          : isUnknown
                           ? getTransactionImage('unknown')
                           : transactionDetail.nftAmount?.media ||
-                              transactionDetail.transferLogoIn ||
-                              transactionDetail.transferLogoOut ||
-                              LOGOS.SOLANA,
+                            transactionDetail.transferLogoIn ||
+                            transactionDetail.transferLogoOut ||
+                            LOGOS.SOLANA,
                       )}
                       size="xxl"
                       style={styles.bigImage}
@@ -164,21 +167,23 @@ const TransactionsDetailPage = ({ params }) => {
                           `}
                     </GlobalText>
                   ) : (
-                    <GlobalText type="headline2" center>
-                      {transactionDetail.error
-                        ? `${'-'}${
-                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                          } SOL  `
-                        : `${isReceive ? '+' : '-'}${
-                            isReceive
-                              ? transactionDetail.amount
-                              : parseFloat(
-                                  transactionDetail.amount +
-                                    transactionDetail.fee /
-                                      TOKEN_DECIMALS.SOLANA,
-                                ).toFixed(8)
-                          } SOL`}
-                    </GlobalText>
+                    transactionDetail.amount && (
+                      <GlobalText type="headline2" center>
+                        {transactionDetail.error
+                          ? `${'-'}${
+                              transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                            } SOL  `
+                          : `${isReceive ? '+' : '-'}${
+                              isReceive
+                                ? transactionDetail.amount
+                                : parseFloat(
+                                    transactionDetail.amount +
+                                      transactionDetail.fee /
+                                        TOKEN_DECIMALS.SOLANA,
+                                  ).toFixed(8)
+                            } SOL`}
+                      </GlobalText>
+                    )
                   )}
 
                   <GlobalPadding size="sm" />
