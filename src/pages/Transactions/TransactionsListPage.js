@@ -92,8 +92,6 @@ const TransactionsListPage = () => {
     </GlobalText>
   );
 
-  console.log('recTransactions', recentTransactions);
-
   return (
     <GlobalLayoutForTabScreen>
       <GlobalBackTitle title="Your Transactions" />
