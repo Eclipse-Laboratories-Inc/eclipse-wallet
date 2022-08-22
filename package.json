@@ -74,7 +74,8 @@
   "scripts": {
     "start:web": "react-scripts start",
     "build": "react-scripts build",
-    "build:extension": "BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true react-scripts build && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
+    "build:extension:clean": "rm -rf build-extension && rm -rf build-extension-mozilla",
+    "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true react-scripts build && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:packager": "react-native start",
