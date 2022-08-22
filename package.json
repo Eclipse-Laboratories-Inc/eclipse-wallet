@@ -3,11 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
-    "4m-wallet-adapter": "^0.0.42",
-=======
-    "@4m/wallet-adapter": "^0.0.45",
->>>>>>> f7e9c74c9db22711fc0ba1ae9c0f8d85aba6b609
+    "@4m/wallet-adapter": "^0.0.47",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.7.0",

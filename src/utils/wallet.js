@@ -3,8 +3,8 @@ import {
   restoreAccount,
   restoreDerivedAccounts,
   getAvailableTokens as getAvailableTokens4m,
-} from '4m-wallet-adapter';
-import chains from '4m-wallet-adapter/constants/chains';
+} from '@4m/wallet-adapter';
+import chains from '@4m/wallet-adapter/constants/chains';
 import get from 'lodash/get';
 
 import ENDPOINTS from '../config/endpoints';
