@@ -88,9 +88,10 @@ const TokenDetailPage = ({ params, t }) => {
           <WalletBalanceCard
             total={
               !hiddenBalance
-                ? `${showValue(token.uiAmount)} ${token.symbol}`
+                ? `${showValue(token.uiAmount, 6)} ${token.symbol}`
                 : `${hiddenValue} ${token.symbol}`
             }
+            totalType="headline2"
             {...{
               [`${getLabelValue(
                 get(token, 'last24HoursChange.perc', 0),

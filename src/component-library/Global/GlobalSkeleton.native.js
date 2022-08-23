@@ -83,16 +83,16 @@ const TokenDetail = () => (
     foregroundColor={theme.colors.cards}
     backgroundColor={theme.colors.bgLight}
     viewBox="0 0 100 200">
-    <rect x="25" y="16" rx="3" ry="3" width="50" height="20" />
-    <rect x="0" y="44" rx="3" ry="3" width="49" height="14" />
-    <rect x="50" y="44" rx="3" ry="3" width="49" height="14" />
-    <rect x="0" y="63" rx="3" ry="3" width="100" height="20" />
-    <rect x="0" y="100" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="125" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="130" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="175" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="200" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="225" rx="3" ry="3" width="100" height="23" />
+    <Rect x="25" y="16" rx="3" ry="3" width="50" height="20" />
+    <Rect x="0" y="44" rx="3" ry="3" width="49" height="14" />
+    <Rect x="50" y="44" rx="3" ry="3" width="49" height="14" />
+    <Rect x="0" y="63" rx="3" ry="3" width="100" height="20" />
+    <Rect x="0" y="100" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="125" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="130" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="175" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="200" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="225" rx="3" ry="3" width="100" height="23" />
   </ContentLoader>
 );
 

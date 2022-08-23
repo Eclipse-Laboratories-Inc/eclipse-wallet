@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
 
 const WalletBalanceCard = ({
   total,
+  totalType = 'headline1',
   neutralTotal,
   negativeTotal,
   positiveTotal,
@@ -49,7 +50,7 @@ const WalletBalanceCard = ({
 }) => (
   <View style={styles.container}>
     <View style={styles.bigTotal}>
-      <GlobalText type="headline1" center nospace>
+      <GlobalText type={totalType} center nospace>
         {total}
 
         <GlobalButton

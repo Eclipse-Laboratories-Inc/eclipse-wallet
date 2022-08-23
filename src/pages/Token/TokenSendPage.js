@@ -105,7 +105,7 @@ const TokenSendPage = ({ params, t }) => {
 
               <CardButtonWallet
                 title={t('token.send.from', { name: token.name })}
-                address={token.address}
+                address={activeWallet.getReceiveAddress()}
                 chain="SOLANA"
                 imageSize="md"
                 buttonStyle={styles.buttonStyle}
