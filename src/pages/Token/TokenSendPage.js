@@ -29,6 +29,7 @@ import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png
 import InputAddress from '../../features/InputAddress/InputAddress';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
+import { showValue } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -61,7 +62,11 @@ const TokenSendPage = ({ params, t }) => {
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
   const goToBack = () => {
-    navigate(ROUTES_MAP.WALLET);
+    if (step > 1) {
+      setStep(step - 1);
+    } else {
+      navigate(ROUTES_MAP.WALLET);
+    }
   };
   const onNext = () => setStep(step + 1);
   const onSend = async () => {
@@ -73,12 +78,12 @@ const TokenSendPage = ({ params, t }) => {
         recipientAmount,
       );
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      setStep(3);
+      setStep(4);
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
-      setStep(3);
+      setStep(4);
       setSending(false);
     }
   };
@@ -106,7 +111,7 @@ const TokenSendPage = ({ params, t }) => {
               <CardButtonWallet
                 title={t('token.send.from', { name: token.name })}
                 address={activeWallet.getReceiveAddress()}
-                chain="SOLANA"
+                image={token.logo}
                 imageSize="md"
                 buttonStyle={styles.buttonStyle}
                 touchableStyles={styles.touchableStyles}
@@ -149,50 +154,6 @@ const TokenSendPage = ({ params, t }) => {
                   </GlobalCollapse>
                 </>
               )}
-
-              <GlobalPadding size="4xl" />
-              {validAddress && (
-                <>
-                  <GlobalInputWithButton
-                    startLabel={token.symbol}
-                    placeholder="Enter Amount"
-                    value={recipientAmount}
-                    setValue={setRecipientAmount}
-                    keyboardType="numeric"
-                    buttonLabel={t('general.max')}
-                    buttonOnPress={() =>
-                      setRecipientAmount(`${token.uiAmount}`)
-                    }
-                    invalid={!validAmount && !!recipientAmount}
-                  />
-                  {!validAmount && !!recipientAmount && (
-                    <GlobalText type="body1" center color="negative">
-                      {t(`token.send.amount.invalid`, { max: token.uiAmount })}
-                    </GlobalText>
-                  )}
-
-                  <GlobalPadding />
-
-                  <GlobalText type="subtitle2" center>
-                    -0 USD
-                  </GlobalText>
-                </>
-              )}
-
-              <GlobalPadding size="md" />
-              {!validAmount && !!recipientAmount && (
-                <GlobalText type="body1" center color="negative">
-                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
-                </GlobalText>
-              )}
-              {validAddress && validAddress.type !== 'SUCCESS' && (
-                <GlobalText
-                  type="body1"
-                  center
-                  color={validAddress.type === 'ERROR' ? 'negative' : ''}>
-                  {t(`token.send.address.${validAddress.code}`)}
-                </GlobalText>
-              )}
             </GlobalLayout.Header>
 
             <GlobalLayout.Footer inlineFlex>
@@ -208,7 +169,7 @@ const TokenSendPage = ({ params, t }) => {
               <GlobalButton
                 type="primary"
                 flex
-                disabled={!validAddress || !validAmount}
+                disabled={!validAddress}
                 title={t('token.send.next')}
                 onPress={onNext}
                 style={[globalStyles.button, globalStyles.buttonRight]}
@@ -221,6 +182,61 @@ const TokenSendPage = ({ params, t }) => {
           </>
         )}
         {step === 2 && (
+          <>
+            <GlobalLayout.Header>
+              <GlobalBackTitle
+                onBack={goToBack}
+                title={`${t('token.action.send')} ${token.symbol}`}
+                nospace
+              />
+              <GlobalPadding />
+              <GlobalInputWithButton
+                startLabel={token.symbol}
+                placeholder="Enter Amount"
+                value={recipientAmount}
+                setValue={setRecipientAmount}
+                keyboardType="numeric"
+                buttonLabel={t('general.max')}
+                buttonOnPress={() => setRecipientAmount(`${token.uiAmount}`)}
+                invalid={!validAmount && !!recipientAmount}
+              />
+              {!validAmount && !!recipientAmount && (
+                <GlobalText type="body1" center color="negative">
+                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
+                </GlobalText>
+              )}
+
+              <GlobalPadding />
+
+              <GlobalText type="subtitle2" center>
+                {showValue(recipientAmount * token.usdPrice, 6)} USD
+              </GlobalText>
+              <GlobalPadding size="md" />
+            </GlobalLayout.Header>
+
+            <GlobalLayout.Footer inlineFlex>
+              <GlobalButton
+                type="secondary"
+                flex
+                title="Cancel"
+                onPress={goToBack}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
+
+              <GlobalButton
+                type="primary"
+                flex
+                disabled={!validAmount}
+                title={t('token.send.next')}
+                onPress={onNext}
+                style={[globalStyles.button, globalStyles.buttonRight]}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
+            </GlobalLayout.Footer>
+          </>
+        )}
+        {step === 3 && (
           <>
             <GlobalLayout.Header>
               <GlobalBackTitle
@@ -292,7 +308,7 @@ const TokenSendPage = ({ params, t }) => {
             </GlobalLayout.Footer>
           </>
         )}
-        {step === 3 && (
+        {step === 4 && (
           <>
             <GlobalLayout.Header>
               <GlobalPadding size="4xl" />

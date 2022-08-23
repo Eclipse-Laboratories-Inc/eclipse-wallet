@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import theme from './theme';
 import GlobalImage from './GlobalImage';
@@ -7,6 +7,7 @@ import GlobalText from './GlobalText';
 
 import IconSearch from '../../assets/images/IconSearch.png';
 import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
+import GlobalTextInput from './GlobalTextInput';
 
 const styles = StyleSheet.create({
   inputGroup: {
@@ -135,7 +136,7 @@ const GlobalInput = ({
         </View>
       )}
 
-      <TextInput
+      <GlobalTextInput
         style={[
           styles.input,
           multiline && styles.multiline,

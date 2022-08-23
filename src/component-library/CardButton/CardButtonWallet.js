@@ -9,6 +9,7 @@ const CardButtonWallet = ({
   title,
   address,
   chain,
+  image,
   imageSize,
   selected,
   active,
@@ -22,7 +23,7 @@ const CardButtonWallet = ({
     key={address}
     title={title}
     description={`${getShortAddress(address)}`}
-    image={getMediaRemoteUrl(LOGOS[chain])}
+    image={getMediaRemoteUrl(image || LOGOS[chain])}
     imageSize={imageSize ? imageSize : 'xl'}
     mask="lg"
     active={active}
