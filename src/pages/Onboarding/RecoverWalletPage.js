@@ -22,6 +22,7 @@ import {
 } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
+import clipboard from '../../utils/clipboard';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState(
@@ -29,7 +30,10 @@ const Form = ({ onComplete, onBack, t }) => {
   );
 
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
-
+  const onPaste = async () => {
+    const seed = await clipboard.paste();
+    setSeedPhrase(seed);
+  };
   return (
     <>
       <GlobalLayout.Header>
@@ -62,14 +66,13 @@ const Form = ({ onComplete, onBack, t }) => {
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer>
-        {!isValid && (
-          <GlobalButton
-            type="secondary"
-            wide
-            title={t('wallet.recover.pasteSeed')}
-            onPress={() => {}}
-          />
-        )}
+        <GlobalButton
+          type="secondary"
+          wide
+          title={t('wallet.recover.pasteSeed')}
+          onPress={onPaste}
+        />
+        <GlobalPadding size="md" />
         {!!isValid && (
           <GlobalButton
             type="primary"
