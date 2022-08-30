@@ -1,4 +1,4 @@
-import CHANNELS from './../../src/rpc/channels';
+/* eslint-disable no-undef */
 
 window.salmon = {
   postMessage: message => {
@@ -8,12 +8,10 @@ window.salmon = {
         window.postMessage(event.detail);
       }
     };
-    window.addEventListener(CHANNELS.content_script_background, listener);
+    window.addEventListener('salmon_contentscript_message', listener);
 
     window.dispatchEvent(
-      new window.CustomEvent('salmon_injected_script_message', {
-        detail: message,
-      }),
+      new CustomEvent('salmon_injected_script_message', { detail: message }),
     );
   },
 };

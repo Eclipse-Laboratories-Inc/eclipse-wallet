@@ -8,7 +8,7 @@
   },
   "manifest_version": 3,
   "icons": {
-    "16": "favicon.ico",
+    "16": "favicon.png",
     "192": "logo192.png",
     "512": "logo512.png"
   },
@@ -30,6 +30,18 @@
       ],
       "run_at": "document_start",
       "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "script.js"
+      ],
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ]
     }
   ],
   "content_security_policy": {

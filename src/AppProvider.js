@@ -1,8 +1,10 @@
-import React, { createContext, useEffect, useReducer } from 'react';
+import React, { createContext, useEffect, useMemo, useReducer } from 'react';
 import isNil from 'lodash/isNil';
 import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
+import { isExtension } from './utils/platform';
+import { getContext, getOpener } from './utils/runtime';
 import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
@@ -24,7 +26,6 @@ const initialState = {
   isLogged: false,
   ready: false,
   hiddenBalance: false,
-  isExtension: process.env.REACT_APP_IS_EXTENSION || false,
 };
 
 const reducer = (state, action) => {
@@ -98,6 +99,9 @@ const AppProvider = ({ children }) => {
       walletActions.lockWallets();
     }
   };
+  const context = useMemo(() => getContext(), []);
+  const isAdapter = context.has('origin') && (isExtension() || !!getOpener());
+
   return (
     <AppContext.Provider
       value={[
@@ -107,6 +111,8 @@ const AppProvider = ({ children }) => {
           ...addressBookState,
           languages,
           selectedLanguage,
+          isAdapter,
+          context,
         },
         appActions,
       ]}>

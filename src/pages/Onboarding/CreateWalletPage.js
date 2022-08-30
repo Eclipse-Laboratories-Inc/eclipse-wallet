@@ -7,6 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
+import { ROUTES_MAP as ADAPTER_ROUTES_MAP } from '../Adapter/routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
 
@@ -182,8 +183,10 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
 
 const CreateWalletPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ selectedEndpoints, requiredLock }, { addWallet, checkPassword }] =
-    useContext(AppContext);
+  const [
+    { selectedEndpoints, requiredLock, isAdapter },
+    { addWallet, checkPassword },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
   const [waiting, setWaiting] = useState(false);
@@ -208,7 +211,10 @@ const CreateWalletPage = ({ params, t }) => {
     await addWallet(account, password, params.chainCode);
     setStep(5);
   };
-  const goToWallet = () => navigate(APP_ROUTES_MAP.WALLET);
+  const goToWallet = () =>
+    navigate(
+      isAdapter ? ADAPTER_ROUTES_MAP.ADAPTER_DETAIL : APP_ROUTES_MAP.WALLET,
+    );
   const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
   return (
@@ -216,7 +222,13 @@ const CreateWalletPage = ({ params, t }) => {
       {step === 1 && (
         <Message
           onNext={onAddAccount}
-          onBack={() => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME)}
+          onBack={() =>
+            navigate(
+              isAdapter
+                ? APP_ROUTES_MAP.ADAPTER
+                : ONBOARDING_ROUTES_MAP.ONBOARDING_HOME,
+            )
+          }
           waiting={waiting}
           t={t}
         />

@@ -8,16 +8,15 @@ import {
 } from 'react-native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
+import { isExtension } from '../../utils/platform';
 import GlobalBackgroundImage from './GlobalBackgroundImage';
-
-const isExtension = process.env.REACT_APP_IS_EXTENSION || false;
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     justifyContent: 'space-between',
     alignSelf: 'center',
-    paddingVertical: isExtension ? 10 : theme.gutters.paddingNormal,
+    paddingVertical: isExtension() ? 10 : theme.gutters.paddingNormal,
     paddingBottom: theme.gutters.padding4XL,
     paddingHorizontal: theme.gutters.paddingSM,
     width: '100%',

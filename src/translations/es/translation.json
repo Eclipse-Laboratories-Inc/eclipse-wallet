@@ -16,10 +16,13 @@
     "skip": "Omitir",
     "next": "Siguiente",
     "start": "Comenzar",
+    "connect": "Connect",
+    "deny": "Denegar",
     "copy": "Copiar",
     "close": "Cerrar",
     "save": "Guardar",
     "remove": "Eliminar",
+    "accept": "Acepter",
     "cancel": "Cancelar",
     "done": "Done",
     "send": "Enviar",
@@ -142,6 +145,36 @@
       "titleOnboarded": "Nueva Wallet",
       "titleWelcome": "Welcome to",
       "select_blockchain": "Elegir Blockchain"
+    }
+  },
+  "adapter": {
+    "select": {
+      "title": "Seleccione Billetera"
+    },
+    "detail": {
+      "connection": {
+        "title": "¿Permitir que este sitio acceda a su cuenta de Solana?",
+        "advice": "Conéctese sólo con sitios de confianza",
+        "auto_approve": "Aprobar transacciones automáticamente",
+        "disclaimer": "Úselo bajo su propio riesgo",
+        "warning": "Esta configuración permite enviar algunas transacciones en su nombre sin solicitar su permiso por el resto de esta sesión",
+        "agree": "Entendido"
+      },
+      "banner": {
+        "message": "Mantenga esta ventana abierta en segundo plano"
+      },
+      "signature": {
+        "title": "Firmar transacción",
+        "sign": "Firmar mensaje",
+        "signTransaction": "Firmar transacción",
+        "signAllTransactions": "Firmar todas las transacciones",
+        "fee": "Tarifa",
+        "instructions": "Instrucciones",
+        "program": "Programa",
+        "account": "Cuenta {{number}}",
+        "data": "Datos",
+        "simulation": "Simulation"
+      }
     }
   },
   "transactions": {

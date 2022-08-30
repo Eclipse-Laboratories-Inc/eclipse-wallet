@@ -1,10 +1,12 @@
-import { AppContext } from '../AppProvider';
-import React, { useContext } from 'react';
+import React from 'react';
 import { MemoryRouter, BrowserRouter } from 'react-router-dom';
+import { isExtension } from '../utils/platform';
 
-const RoutesProvider = ({ children }) => {
-  const [{ isExtension }] = useContext(AppContext);
-  if (isExtension) return <MemoryRouter>{children}</MemoryRouter>;
-  else return <BrowserRouter>{children}</BrowserRouter>;
-};
+const RoutesProvider = ({ children }) =>
+  isExtension() ? (
+    <MemoryRouter>{children}</MemoryRouter>
+  ) : (
+    <BrowserRouter>{children}</BrowserRouter>
+  );
+
 export default RoutesProvider;

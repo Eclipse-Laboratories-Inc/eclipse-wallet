@@ -29,10 +29,13 @@
     "skip": "Skip",
     "next": "Next",
     "start": "Start",
+    "connect": "Connect",
+    "deny": "Deny",
     "copy": "Copy",
     "close": "Close",
     "save": "Save",
     "remove": "Remove",
+    "accept": "Accept",
     "cancel": "Cancel",
     "done": "Done",
     "send": "Send",
@@ -163,6 +166,35 @@
       "content2": "All your assets, in your hands. We don’t have access to them at all.",
       "title3": "Stay tuned",
       "content3": "Follow us at @salmonwallet"
+    }
+  },
+  "adapter": {
+    "select": {
+      "title": "Select Wallet"
+    },
+    "detail": {
+      "connection": {
+        "title": "Allow this site to access your Solana account?",
+        "advice": "Only connect with sites you trust",
+        "auto_approve": "Automatically approve transactions",
+        "disclaimer": "Use at your own risk",
+        "warning": "This setting allows sending some transactions on your behalf without requesting your permission for the remainder of this session",
+        "agree": "I understand"
+      },
+      "banner": {
+        "message": "Please keep this window open in the background"
+      },
+      "signature": {
+        "sign": "Sign message",
+        "signTransaction": "Sign transaction",
+        "signAllTransactions": "Sign all transactions",
+        "fee": "Fee",
+        "instructions": "Instructions",
+        "program": "Program",
+        "account": "Account {{number}}",
+        "data": "Data",
+        "simulation": "Simulation"
+      }
     }
   },
   "transactions": {
