@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -28,44 +29,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
-
-const NFTS_DETAILS = [
-  {
-    caption: 'Background',
-    title: 'Light Blue',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Body',
-    title: 'Regular',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Clothing',
-    title: 'Animal Print',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Eyes',
-    title: 'One',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Head',
-    title: 'Glasses Wood',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Mouth',
-    title: 'Excited',
-    description: '5% have this trait',
-  },
-  {
-    caption: 'Legs',
-    title: 'Woodgrain Sweep',
-    description: '5% have this trait',
-  },
-];
 
 const NftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -173,11 +136,7 @@ const NftsDetailPage = ({ params, t }) => {
           <GlobalPadding size="sm" />
 
           <GlobalText type="body1" color="secondary">
-            Dour Darcels are a collection of 10,000 moody frens from the world
-            of Darcel Disappoints. Randomly generated and carefully curated,
-            every Darcel is individual and unique – just like frens IRL. Each
-            Darcel is a NFT that lives on the Ethereum blockchain and is the key
-            to the Dour Darcels community.
+            {nftDetail.description}
           </GlobalText>
 
           <GlobalPadding size="xl" />
@@ -187,7 +146,11 @@ const NftsDetailPage = ({ params, t }) => {
           <GlobalPadding size="sm" />
 
           <FlatList
-            data={NFTS_DETAILS}
+            data={get(nftDetail, 'extras.attributes', []).map(a => ({
+              caption: a.trait_type,
+              title: a.value,
+              description: '',
+            }))}
             renderItem={renderItem}
             numColumns={2}
             columnWrapperStyle={styles.columnWrapperStyle}

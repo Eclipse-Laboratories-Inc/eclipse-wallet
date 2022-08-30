@@ -96,7 +96,7 @@ const RecoverWalletPage = ({ t }) => {
   const handleRecover = async seedPhrase => {
     const a = await recoverAccount(
       getDefaultChain(),
-      seedPhrase,
+      seedPhrase.trim(),
       selectedEndpoints[getDefaultChain()],
     );
     setAccount(a);

@@ -50,6 +50,8 @@ const TokenSendPage = ({ params, t }) => {
   const [{ activeWallet, addressBook }] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [sending, setSending] = useState(false);
+  const [fee, setFee] = useState({});
+  const [transactionId, setTransactionId] = useState();
   const [status, setStatus] = useState();
   const [showScan, setShowScan] = useState(false);
 
@@ -68,15 +70,28 @@ const TokenSendPage = ({ params, t }) => {
       navigate(ROUTES_MAP.WALLET);
     }
   };
-  const onNext = () => setStep(step + 1);
-  const onSend = async () => {
-    setSending(true);
-    try {
-      const result = await activeWallet.transfer(
+  const onNext = async () => {
+    if (step === 2) {
+      debugger;
+      const feeSend = await activeWallet.estimateTransferFee(
         recipientAddress,
         token.address,
         recipientAmount,
       );
+      setFee(feeSend);
+    }
+    setStep(step + 1);
+  };
+  const onSend = async () => {
+    setSending(true);
+    try {
+      const txId = await activeWallet.createTransferTransaction(
+        recipientAddress,
+        token.address,
+        recipientAmount,
+      );
+      setTransactionId(txId);
+      await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       setStep(4);
       setSending(false);
