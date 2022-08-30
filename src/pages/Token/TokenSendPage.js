@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
@@ -30,6 +30,7 @@ import InputAddress from '../../features/InputAddress/InputAddress';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
+import clipboard from '../../utils/clipboard';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -54,12 +55,19 @@ const TokenSendPage = ({ params, t }) => {
   const [transactionId, setTransactionId] = useState();
   const [status, setStatus] = useState();
   const [showScan, setShowScan] = useState(false);
-
+  const [recipientName, setRecipientName] = useState('');
   const [recipientAddress, setRecipientAddress] = useState(
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-
+  useEffect(() => {
+    if (validAddress) {
+      activeWallet.getDomainFromPublicKey(recipientAddress).then(
+        domain => setRecipientName(domain),
+        () => setRecipientName('-'),
+      );
+    }
+  }, [recipientAddress, validAddress, activeWallet]);
   const validAmount =
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
@@ -72,7 +80,6 @@ const TokenSendPage = ({ params, t }) => {
   };
   const onNext = async () => {
     if (step === 2) {
-      debugger;
       const feeSend = await activeWallet.estimateTransferFee(
         recipientAddress,
         token.address,
@@ -277,16 +284,14 @@ const TokenSendPage = ({ params, t }) => {
 
                 <GlobalPadding />
 
-                <GlobalText type="subtitle2" center>
-                  Name.SOL
-                </GlobalText>
-
                 <GlobalPadding size="md" />
 
                 <View style={globalStyles.inlineWell}>
-                  <GlobalText type="body2">Name.SOL</GlobalText>
+                  <GlobalText type="body2">{recipientName}</GlobalText>
 
-                  <GlobalButton onPress={() => {}} transparent>
+                  <GlobalButton
+                    onPress={() => clipboard.copy(recipientName)}
+                    transparent>
                     <GlobalImage source={IconCopy} size="xs" />
                   </GlobalButton>
                 </View>

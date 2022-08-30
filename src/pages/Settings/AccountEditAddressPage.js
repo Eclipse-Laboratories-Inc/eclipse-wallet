@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
@@ -26,18 +26,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const name = 'Name.acr';
-
 const AccountEditAddressPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ config }] = useContext(AppContext);
+  const [name, setName] = useState('');
+  const [{ activeWallet, config }] = useContext(AppContext);
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
       address: params.address,
     });
+  useEffect(() => {
+    activeWallet.getDomainFromPublicKey(params.address).then(
+      domain => setName(domain),
+      () => setName('-'),
+    );
+  }, [params, activeWallet]);
   const onCopyAlias = () => clipboard.copy(name);
   const onCopyAddress = () => clipboard.copy(params.address);
-
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
