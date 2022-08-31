@@ -75,17 +75,11 @@ const TokenDetail = () => (
   <ContentLoader
     foregroundColor={theme.colors.cards}
     backgroundColor={theme.colors.bgLight}
-    viewBox="0 0 100 250">
+    viewBox="0 0 100 95">
     <rect x="25" y="16" rx="3" ry="3" width="50" height="20" />
     <rect x="0" y="44" rx="3" ry="3" width="49" height="14" />
     <rect x="50" y="44" rx="3" ry="3" width="49" height="14" />
     <rect x="0" y="63" rx="3" ry="3" width="100" height="20" />
-    <rect x="0" y="100" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y="125" rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y={25 * 6} rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y={25 * 7} rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y={25 * 8} rx="3" ry="3" width="100" height="23" />
-    <rect x="0" y={25 * 9} rx="3" ry="3" width="100" height="23" />
   </ContentLoader>
 );
 

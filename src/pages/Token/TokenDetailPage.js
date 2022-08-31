@@ -51,11 +51,6 @@ const TokenDetailPage = ({ params, t }) => {
           CACHE_TYPES.BALANCE,
           () => activeWallet.getBalance(),
         ),
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.TRANSACTIONS,
-          () => activeWallet.getRecentTransactions(),
-        ),
       ]).then(([balance]) => {
         const tk = (balance.items || []).find(
           i => i.address === params.tokenId,
@@ -77,6 +72,7 @@ const TokenDetailPage = ({ params, t }) => {
 
   return (
     <GlobalLayout fullscreen>
+      {!loaded && <GlobalSkeleton type="TokenDetail" />}
       {loaded && (
         <GlobalLayout.Header>
           <GlobalBackTitle
@@ -124,11 +120,9 @@ const TokenDetailPage = ({ params, t }) => {
           </View>
 
           <GlobalPadding size="lg" />
-
-          <TransactionsListComponent t={t} />
         </GlobalLayout.Header>
       )}
-      {!loaded && <GlobalSkeleton type="TokenDetail" />}
+      <TransactionsListComponent t={t} />
     </GlobalLayout>
   );
 };
