@@ -126,8 +126,9 @@
       "passwordRepeat": "Repeat password",
       "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
       "passwordChecking": "Checking...",
-      "success_message": "Success Message",
-      "success_message_body": "3 lines max Excepteur sint occaecat cupidatat non proident, sunt ?",
+      "success_message": "Felicitaciones!",
+      "success_message_body": "Tu billetera ya esta lista.",
+      "go_to_my_wallet": "Ir a mi billetera!",
       "select_derivable": "Select Derivable",
       "derivable_accounts": "Derivable Accounts",
       "recover": "Recover"
