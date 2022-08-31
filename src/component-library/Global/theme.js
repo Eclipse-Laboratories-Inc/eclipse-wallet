@@ -14,6 +14,14 @@ const calculateResponsivePadding = () => {
   return padding;
 };
 
+const calculateResponsiveMargin = () => {
+  let margin = 0;
+  if (Dimensions.get('window').width > 720) {
+    margin = 40;
+  }
+  return margin;
+};
+
 const APPBAR_HEIGHT = Platform.select({ ios: 44, android: 56 });
 const STATUSBAR_HEIGHT = Platform.select({ ios: 20, android: 0 });
 const HEADER_HEIGHT = STATUSBAR_HEIGHT + APPBAR_HEIGHT;
@@ -30,6 +38,7 @@ const variables = {
   mobileWidthXL: 480,
   tabletWidth: 690,
   mobileHeightLG: 1000,
+  margin: calculateResponsiveMargin(),
 };
 
 const debug = {
