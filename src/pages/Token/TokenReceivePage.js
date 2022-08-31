@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
+import useDomain from '../../hooks/useDomain';
+
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
@@ -28,6 +30,8 @@ const styles = StyleSheet.create({
 
 const TokenReceivePage = ({ t }) => {
   const navigate = useNavigation();
+  const { domain } = useDomain();
+  console.log(domain);
 
   const [{ activeWallet, config }] = useContext(AppContext);
 
@@ -54,15 +58,16 @@ const TokenReceivePage = ({ t }) => {
             </View>
 
             <GlobalPadding size="2xl" />
+            {domain != null && (
+              <View style={globalStyles.inlineWell}>
+                <GlobalText type="body2">{JSON.stringify(domain)}</GlobalText>
 
-            <View style={globalStyles.inlineWell}>
-              <GlobalText type="body2">Name.acr</GlobalText>
-
-              <GlobalButton onPress={onCopyAlias} size="medium">
-                <GlobalImage source={IconCopy} size="xs" />
-                <GlobalText type="button">Copy</GlobalText>
-              </GlobalButton>
-            </View>
+                <GlobalButton onPress={onCopyAlias} size="medium">
+                  <GlobalImage source={IconCopy} size="xs" />
+                  <GlobalText type="button">Copy</GlobalText>
+                </GlobalButton>
+              </View>
+            )}
 
             <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">
@@ -79,7 +84,7 @@ const TokenReceivePage = ({ t }) => {
             <GlobalPadding size="md" />
 
             <GlobalText type="body1" center>
-              2 lines max Validation text sint occaecat cupidatat non proident
+              {t('token.receive.warning')}
             </GlobalText>
           </View>
         </GlobalLayout.Header>

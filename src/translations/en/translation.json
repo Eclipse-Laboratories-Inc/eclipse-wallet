@@ -86,7 +86,8 @@
       "select": "Select"
     },
     "receive": {
-      "title": "Receive"
+      "title": "Receive",
+      "warning": "This address is for receive SOL and SPL tokens only on Solana"
     },
     "send": {
       "address": {
