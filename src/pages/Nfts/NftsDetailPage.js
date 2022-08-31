@@ -52,6 +52,10 @@ const NftsDetailPage = ({ params, t }) => {
     }
   }, [activeWallet, params.id]);
 
+  const hasProperties = () => {
+    return get(nftDetail, 'extras.attributes', []).length > 0;
+  };
+
   const goToBack = () => {
     navigate(ROUTES_MAP.NFTS_LIST);
   };
@@ -111,8 +115,7 @@ const NftsDetailPage = ({ params, t }) => {
               onPress={goToSend}
             />
 
-            <GlobalPadding size="3xl" />
-
+            {/*
             <View style={globalStyles.inlineFlexAround}>
               <GlobalText type="overline" color="tertiary">
                 Lorem ipsum
@@ -127,6 +130,7 @@ const NftsDetailPage = ({ params, t }) => {
                 Lorem ipsum
               </GlobalText>
             </View>
+            */}
           </View>
 
           <GlobalPadding size="3xl" />
@@ -140,21 +144,24 @@ const NftsDetailPage = ({ params, t }) => {
           </GlobalText>
 
           <GlobalPadding size="xl" />
+          {hasProperties() && (
+            <>
+              <GlobalText type="body2">{t('nft.properties')}</GlobalText>
 
-          <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+              <GlobalPadding size="sm" />
 
-          <GlobalPadding size="sm" />
-
-          <FlatList
-            data={get(nftDetail, 'extras.attributes', []).map(a => ({
-              caption: a.trait_type,
-              title: a.value,
-              description: '',
-            }))}
-            renderItem={renderItem}
-            numColumns={2}
-            columnWrapperStyle={styles.columnWrapperStyle}
-          />
+              <FlatList
+                data={get(nftDetail, 'extras.attributes', []).map(a => ({
+                  caption: a.trait_type,
+                  title: a.value,
+                  description: '',
+                }))}
+                renderItem={renderItem}
+                numColumns={2}
+                columnWrapperStyle={styles.columnWrapperStyle}
+              />
+            </>
+          )}
         </GlobalLayout.Header>
       </GlobalLayout>
     )) ||

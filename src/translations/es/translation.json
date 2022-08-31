@@ -152,7 +152,7 @@
   "nft": {
     "description": "Descripción",
     "properties": "Propiedades",
-    "send_nft": "Enviar NFT",
+    "send_nft": "Enviar",
     "send_to": "Enviar a:"
   },
   "swap": {
