@@ -6,7 +6,7 @@ import theme from '../../component-library/Global/theme';
 import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import { LOGOS } from '../../utils/wallet';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -25,6 +25,16 @@ const styles = StyleSheet.create({
   titleStyle: {
     lineHeight: theme.gutters.padding3XL,
   },
+  viewStyle: {
+    position: 'sticky',
+    top: '0px',
+    width: '100%',
+    zIndex: 99,
+    backgroundColor: '#2e374e',
+  },
+  stickySubTitle: {
+    top: '70px',
+  },
   inline: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -42,6 +52,7 @@ const TransactionsListPage = () => {
   const [recentTransactions, setRecentTransactions] = useState({});
   const [lastTransaction, setLastTransaction] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -60,7 +71,7 @@ const TransactionsListPage = () => {
   }, [activeWallet, selectedEndpoints]);
 
   const onLoadMore = () => {
-    setLoaded(false);
+    setLoading(true);
     Promise.resolve(
       activeWallet.getRecentTransactions(lastTransaction.signature),
     ).then(recTransactions => {
@@ -72,14 +83,15 @@ const TransactionsListPage = () => {
       );
       setLastTransaction(recTransactions.slice(-1).pop());
       setRecentTransactions(recentTransactions.concat(recTransactions));
-      setLoaded(true);
+      setLoading(false);
     });
   };
 
   const showLoadMore = () =>
     recentTransactions?.length &&
     recentTransactions?.length % 8 === 0 &&
-    loaded;
+    loaded &&
+    !loading;
 
   const Empty = () => (
     <GlobalText
@@ -93,12 +105,13 @@ const TransactionsListPage = () => {
   );
 
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle title="Your Transactions" />
+    <GlobalLayout>
+      <GlobalBackTitle title="Your Transactions" viewStyle={styles.viewStyle} />
 
       <GlobalCollapse
         title="Recent Activity"
         titleStyle={styles.titleStyle}
+        viewStyle={[styles.viewStyle, styles.stickySubTitle]}
         hideCollapse
         isOpen>
         {loaded && recentTransactions?.length ? (
@@ -293,12 +306,12 @@ const TransactionsListPage = () => {
                 );
             }
           })
-        ) : loaded && recentTransactions?.length === 0 ? (
+        ) : recentTransactions?.length === 0 ? (
           <Empty />
         ) : (
           <GlobalSkeleton type="ActivityList" />
         )}
-
+        {loading && <GlobalSkeleton type="ActivityList" />}
         {/*
         <CardButtonTransaction
           transaction="paid"
@@ -311,7 +324,7 @@ const TransactionsListPage = () => {
           <GlobalButton type="text" title="Load more" onPress={onLoadMore} />
         ) : null}
       </GlobalCollapse>
-    </GlobalLayoutForTabScreen>
+    </GlobalLayout>
   );
 };
 

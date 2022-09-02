@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
 const GlobalCollapse = ({
   title,
   titleStyle,
+  viewStyle,
   narrowTitle,
   actionTitle,
   viewAllAction,
@@ -62,7 +63,7 @@ const GlobalCollapse = ({
 
   return (
     <>
-      <View style={styles.inline}>
+      <View style={[styles.inline, viewStyle]}>
         {title && (
           <>
             {hideCollapse && (
