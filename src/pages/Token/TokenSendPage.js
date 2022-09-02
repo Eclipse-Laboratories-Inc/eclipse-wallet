@@ -50,8 +50,9 @@ const TokenSendPage = ({ params, t }) => {
   const [step, setStep] = useState(1);
   const [{ activeWallet, addressBook }] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
+  const [addressEmpty, setAddressEmpty] = useState(false);
   const [sending, setSending] = useState(false);
-  const [fee, setFee] = useState({});
+  const [fee, setFee] = useState(null);
   const [transactionId, setTransactionId] = useState();
   const [status, setStatus] = useState();
   const [showScan, setShowScan] = useState(false);
@@ -80,12 +81,14 @@ const TokenSendPage = ({ params, t }) => {
   };
   const onNext = async () => {
     if (step === 2) {
-      const feeSend = await activeWallet.estimateTransferFee(
-        recipientAddress,
-        token.address,
-        recipientAmount,
-      );
-      setFee(feeSend);
+      if (!addressEmpty) {
+        const feeSend = await activeWallet.estimateTransferFee(
+          recipientAddress,
+          token.address,
+          recipientAmount,
+        );
+        setFee(feeSend);
+      }
     }
     setStep(step + 1);
   };
@@ -118,6 +121,8 @@ const TokenSendPage = ({ params, t }) => {
     setShowScan(false);
   };
 
+  const recipient = recipientName ? recipientName : recipientAddress;
+
   return (
     loaded && (
       <GlobalLayout fullscreen>
@@ -145,7 +150,9 @@ const TokenSendPage = ({ params, t }) => {
                 address={recipientAddress}
                 onChange={setRecipientAddress}
                 validAddress={validAddress}
+                addressEmpty={addressEmpty}
                 setValidAddress={setValidAddress}
+                setAddressEmpty={setAddressEmpty}
                 onQR={toggleScan}
               />
 
@@ -270,7 +277,7 @@ const TokenSendPage = ({ params, t }) => {
 
               <View style={globalStyles.centered}>
                 <GlobalImage
-                  source={getMediaRemoteUrl(LOGOS.SOLANA)}
+                  source={token.logo}
                   size="xxl"
                   style={globalStyles.bigImage}
                   circle
@@ -287,22 +294,28 @@ const TokenSendPage = ({ params, t }) => {
                 <GlobalPadding size="md" />
 
                 <View style={globalStyles.inlineWell}>
-                  <GlobalText type="body2">{recipientName}</GlobalText>
+                  <GlobalText type="caption">{recipient}</GlobalText>
 
                   <GlobalButton
-                    onPress={() => clipboard.copy(recipientName)}
+                    onPress={() => clipboard.copy(recipient)}
                     transparent>
                     <GlobalImage source={IconCopy} size="xs" />
                   </GlobalButton>
                 </View>
+                {fee && (
+                  <View style={globalStyles.inlineWell}>
+                    <GlobalText type="caption" color="tertiary">
+                      Network Fee
+                    </GlobalText>
 
-                <View style={globalStyles.inlineWell}>
-                  <GlobalText type="caption" color="tertiary">
-                    Network Fee
+                    <GlobalText type="body2">{fee} SOL</GlobalText>
+                  </View>
+                )}
+                {addressEmpty && (
+                  <GlobalText type="caption" center color={'warning'}>
+                    {t(`token.send.empty_account_fee`)}
                   </GlobalText>
-
-                  <GlobalText type="body2">$ 8.888.16</GlobalText>
-                </View>
+                )}
               </View>
             </GlobalLayout.Header>
 

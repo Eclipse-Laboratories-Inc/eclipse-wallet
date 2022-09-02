@@ -23,7 +23,9 @@ const InputAddress = ({
   address,
   onChange,
   validAddress,
+  addressEmpty,
   setValidAddress,
+  setAddressEmpty,
   recipient = true,
   onQR = () => {},
 }) => {
@@ -38,6 +40,8 @@ const InputAddress = ({
           const r = await activeWallet.validateDestinationAccount(a);
           setCheckingAddress(false);
           setValidAddress(r.type !== 'ERROR');
+          console.log(r.code);
+          setAddressEmpty(r.code === 'EMPTY_ACCOUNT');
           setResult(r);
         } catch (error) {
           setCheckingAddress(false);

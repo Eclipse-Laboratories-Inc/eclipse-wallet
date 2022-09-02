@@ -103,7 +103,8 @@
       "from": "From: {{name}}",
       "transaction_success": "Sent",
       "transaction_warning": "Warning",
-      "transaction_fail": "Fail"
+      "transaction_fail": "Fail",
+      "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
     }
   },
   "lock": {

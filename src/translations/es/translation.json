@@ -39,7 +39,7 @@
     "help_support": "Ayuda & Soporte",
     "wallets": {
       "your_wallets": "Tus Wallets",
-      "add_new_wallet": "Nuevo Wallet",
+      "add_new_wallet": "Agregar Wallet",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
       "edit_address": "Edit Wallet",
@@ -139,7 +139,7 @@
       "pasteSeed": "Paster your seed phrase"
     },
     "onboarding": {
-      "titleOnboarded": "Nuevo Wallet",
+      "titleOnboarded": "Nueva Wallet",
       "titleWelcome": "Welcome to",
       "select_blockchain": "Elegir Blockchain"
     }
