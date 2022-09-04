@@ -147,7 +147,10 @@
   "transactions": {
     "your_transactions": "Transacciones",
     "recent_activity": "Actividad Reciente",
-    "view_transaction": "Ver Transacción"
+    "view_transaction": "Ver Transacción",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "empty": "No se encontraron transacciones"
   },
   "nft": {
     "description": "Descripción",
