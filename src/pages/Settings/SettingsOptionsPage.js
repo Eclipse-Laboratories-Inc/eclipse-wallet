@@ -92,17 +92,21 @@ const SettingsOptionsPage = ({ t }) => {
           </GlobalText>
         </CardButton>
 
+        {/*Not implemented yet
         <CardButton
           title={t(`settings.security`)}
           actionIcon="right"
           onPress={goToSecurity}
         />
+         */}
 
+        {/*Not implemented yet
         <CardButton
           title={t(`settings.notifications`)}
           actionIcon="right"
           onPress={goToNofifications}
         />
+         */}
 
         <CardButton
           title={t(`settings.trusted_apps`)}

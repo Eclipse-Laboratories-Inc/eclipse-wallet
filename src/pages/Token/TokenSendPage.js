@@ -283,6 +283,8 @@ const TokenSendPage = ({ params, t }) => {
                   circle
                 />
 
+                <GlobalPadding size="4xl" />
+
                 <GlobalText type="headline1" center>
                   {recipientAmount} {token.symbol}
                 </GlobalText>

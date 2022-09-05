@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Touchable } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -42,6 +42,8 @@ import { isCollection } from '../../utils/nfts';
 import { getMediaRemoteUrl } from '../../utils/media';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
+import clipboard from '../../utils/clipboard';
+import { TouchableOpacity } from 'react-native-web';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -158,6 +160,8 @@ const WalletOverviewPage = ({ t }) => {
   const goToNFTs = tok =>
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: tok.address });
 
+  const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
+
   return (
     activeWallet && (
       <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
@@ -180,13 +184,15 @@ const WalletOverviewPage = ({ t }) => {
                     {getWalletName(activeWallet.getReceiveAddress(), config)}
                   </GlobalText>
 
-                  <GlobalText
-                    type="body1"
-                    color="tertiary"
-                    style={styles.walletAddress}
-                    numberOfLines={1}>
-                    ({getShortAddress(activeWallet.getReceiveAddress())})
-                  </GlobalText>
+                  <TouchableOpacity onPress={onCopyAddress}>
+                    <GlobalText
+                      type="body1"
+                      color="tertiary"
+                      style={styles.walletAddress}
+                      numberOfLines={1}>
+                      ({getShortAddress(activeWallet.getReceiveAddress())})
+                    </GlobalText>
+                  </TouchableOpacity>
                 </View>
               </View>
 
