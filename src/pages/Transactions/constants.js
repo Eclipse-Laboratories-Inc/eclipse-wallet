@@ -1,5 +1,7 @@
 const TRANSACTION_TYPE = {
   TRANSFER: 'transfer',
+  TRANSFER_CHECKED: 'transferChecked',
+  GET_ACC_DATA: 'getAccountDataSize',
   SWAP: 'swap',
   CLOSE_ACCOUNT: 'closeAccount',
   CREATE_ACCOUNT: 'createAccount',

@@ -132,8 +132,11 @@ const TransactionsListPage = ({ t }) => {
             recentTransactions?.map((transaction, i) => {
               switch (transaction.type) {
                 case TRANSACTION_TYPE.TRANSFER:
+                case TRANSACTION_TYPE.TRANSFER_CHECKED:
+                case TRANSACTION_TYPE.GET_ACC_DATA:
                 case TRANSACTION_TYPE.CREATE_ACCOUNT:
                 case TRANSACTION_TYPE.CREATE:
+                case TRANSACTION_TYPE.CLOSE_ACCOUNT:
                   const isReceive = transaction.transferType === 'received';
                   const isUnknown = !transaction.destination;
                   const isCreate = isUnknown && !transaction.amount;
@@ -330,23 +333,6 @@ const TransactionsListPage = ({ t }) => {
                                 </View>,
                               ].filter(Boolean)
                         }
-                        onPress={() => onDetail(i)}
-                      />
-                    </>
-                  );
-                case TRANSACTION_TYPE.CLOSE_ACCOUNT:
-                  return (
-                    <>
-                      <GlobalText
-                        type="body2"
-                        color="secondary"
-                        style={styles.dateStyle}>
-                        {showDate(recentTransactions, i)}
-                      </GlobalText>
-                      <CardButtonTransaction
-                        transaction="interaction"
-                        title={TYPES_MAP[transaction.type]}
-                        // percentage="+0000%"
                         onPress={() => onDetail(i)}
                       />
                     </>

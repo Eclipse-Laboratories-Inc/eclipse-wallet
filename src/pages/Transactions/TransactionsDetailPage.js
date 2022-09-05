@@ -103,8 +103,11 @@ const TransactionsDetailPage = ({ params }) => {
         (() => {
           switch (transactionDetail.type) {
             case TRANSACTION_TYPE.TRANSFER:
+            case TRANSACTION_TYPE.TRANSFER_CHECKED:
+            case TRANSACTION_TYPE.GET_ACC_DATA:
             case TRANSACTION_TYPE.CREATE_ACCOUNT:
             case TRANSACTION_TYPE.CREATE:
+            case TRANSACTION_TYPE.CLOSE_ACCOUNT:
               const isReceive = transactionDetail.transferType === 'received';
               const isUnknown = !transactionDetail.destination;
               const isCreate = isUnknown && !transactionDetail.transferAmount;
@@ -357,79 +360,6 @@ const TransactionsDetailPage = ({ params }) => {
 
                     <GlobalText type="body2" numberOfLines={1}>
                       {getShortAddress(activeWallet.getReceiveAddress())}
-                    </GlobalText>
-                  </View>
-
-                  <GlobalPadding size="2xl" />
-
-                  <GlobalButton
-                    type="secondary"
-                    wideSmall
-                    title="GO TO SOLSCAN"
-                    onPress={() =>
-                      Linking.openURL(
-                        `https://solscan.io/tx/${transactionDetail.signature}`,
-                      )
-                    }
-                  />
-
-                  <GlobalPadding />
-
-                  <GlobalButton
-                    type="primary"
-                    wideSmall
-                    title="Back to Wallet"
-                    onPress={onBack}
-                  />
-
-                  <GlobalPadding size="xl" />
-                </View>
-              );
-            case TRANSACTION_TYPE.CLOSE_ACCOUNT:
-              return (
-                <View style={styles.centered}>
-                  <View style={styles.floatingTransactionBox}>
-                    <GlobalImage
-                      source={getTransactionImage('interaction')}
-                      size="xxl"
-                      style={styles.bigImage}
-                      circle
-                    />
-                    <GlobalImage
-                      source={
-                        transactionDetail.error
-                          ? getTransactionImage('fail')
-                          : getTransactionImage('success')
-                      }
-                      size="md"
-                      circle
-                      style={styles.floatingTransaction}
-                    />
-                  </View>
-
-                  <GlobalPadding size="sm" />
-
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Date
-                    </GlobalText>
-
-                    <GlobalText type="body2">
-                      {moment
-                        .unix(transactionDetail.timestamp)
-                        .format('MMM D, YYYY - h.mm A')}
-                    </GlobalText>
-                  </View>
-
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Status
-                    </GlobalText>
-
-                    <GlobalText
-                      type="body2"
-                      color={transactionDetail.error ? 'negative' : 'positive'}>
-                      {transactionDetail.error ? 'Failed' : 'Confirmed'}
                     </GlobalText>
                   </View>
 
