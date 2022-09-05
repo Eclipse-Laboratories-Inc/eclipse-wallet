@@ -1,9 +1,5 @@
-/*global chrome*/
-import METHODS from './../../src/rpc/methods';
-import CHANNELS from './../../src/rpc/channels';
-
+/* global chrome */
 const responseHandlers = new Map();
-let unlockedMnemonic = '';
 
 const launchPopup = (message, sender, sendResponse) => {
   const searchParams = new URLSearchParams();
@@ -11,16 +7,14 @@ const launchPopup = (message, sender, sendResponse) => {
   searchParams.set('network', message.data.params.network);
   searchParams.set('request', JSON.stringify(message.data));
 
-  // TODO consolidate popup dimensions
   chrome.windows.getLastFocused(focusedWindow => {
     chrome.windows.create({
       url: 'index.html#' + searchParams.toString(),
       type: 'popup',
-      width: 450,
-      height: 600,
+      width: 460,
+      height: 675,
       top: focusedWindow.top,
-      left: focusedWindow.left + (focusedWindow.width - 450),
-      setSelfAsOpener: true,
+      left: focusedWindow.left + (focusedWindow.width - 460),
       focused: true,
     });
   });
@@ -28,63 +22,63 @@ const launchPopup = (message, sender, sendResponse) => {
   responseHandlers.set(message.data.id, sendResponse);
 };
 
+const getConnection = (origin, { wallets, active }) => {
+  if (!wallets || isNaN(active)) {
+    return null;
+  }
+  const json = JSON.parse(wallets);
+  if (!json.wallets || active < 0 || active >= json.wallets.length) {
+    return null;
+  }
+  const wallet = json.wallets[active];
+  if (wallet.chain !== 'SOLANA') {
+    return null;
+  }
+  const { address } = wallet;
+  const trustedApp = json?.config?.[address]?.trustedApps?.[origin];
+  if (!trustedApp) {
+    return null;
+  }
+  const { autoApprove } = trustedApp;
+  return { address, autoApprove };
+};
+
 const handleConnect = (message, sender, sendResponse) => {
-  chrome.storage.local.get('connectedWallets', result => {
-    const connectedWallet = (result.connectedWallets || {})[sender.origin];
-    if (!connectedWallet) {
-      launchPopup(message, sender, sendResponse);
-    } else {
+  chrome.storage.local.get(['wallets', 'active'], result => {
+    const connection = getConnection(sender.origin, result);
+    if (connection) {
       sendResponse({
-        method: METHODS.CONNECTED,
+        method: 'connected',
         params: {
-          publicKey: connectedWallet.publicKey,
-          autoApprove: connectedWallet.autoApprove,
+          publicKey: connection.address,
+          autoApprove: connection.autoApprove,
         },
         id: message.data.id,
       });
+    } else {
+      launchPopup(message, sender, sendResponse);
     }
   });
 };
 
 const handleDisconnect = (message, sender, sendResponse) => {
-  chrome.storage.local.get('connectedWallets', result => {
-    delete result.connectedWallets[sender.origin];
-    chrome.storage.local.set(
-      { connectedWallets: result.connectedWallets },
-      () => sendResponse({ method: METHODS.DISCONNECTED, id: message.data.id }),
-    );
-  });
+  sendResponse({ method: 'disconnected', id: message.data.id });
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  switch (message.channel) {
-    case CHANNELS.content_script_background:
-      switch (message.data.method) {
-        case METHODS.CONNECT:
-          handleDisconnect(message, sender, sendResponse);
-          break;
-        case METHODS.DISCONNECT:
-          handleConnect(message, sender, sendResponse);
-          break;
-        default:
-          launchPopup(message, sender, sendResponse);
-          break;
-      }
-      break;
-    case CHANNELS.extension_background:
-      const responseHandler = responseHandlers.get(message.data.id);
-      responseHandlers.delete(message.data.id);
-      responseHandler(message.data);
-      break;
-    case CHANNELS.extension_mnemonic:
-      switch (message.method) {
-        case 'set':
-          unlockedMnemonic = message.data;
-          break;
-        case 'get':
-          sendResponse(unlockedMnemonic);
-          break;
-      }
-      break;
+  if (message.channel === 'salmon_contentscript_background_channel') {
+    if (message.data.method === 'connect') {
+      handleConnect(message, sender, sendResponse);
+    } else if (message.data.method === 'disconnect') {
+      handleDisconnect(message, sender, sendResponse);
+    } else {
+      launchPopup(message, sender, sendResponse);
+    }
+    // keeps response channel open
+    return true;
+  } else if (message.channel === 'salmon_extension_background_channel') {
+    const responseHandler = responseHandlers.get(message.data.id);
+    responseHandlers.delete(message.data.id);
+    responseHandler(message.data);
   }
 });

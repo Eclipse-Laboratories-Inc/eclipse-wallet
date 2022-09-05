@@ -19,6 +19,7 @@
     "browserify-zlib": "^0.2.0",
     "bs58": "^5.0.0",
     "crypto-browserify": "^3.12.0",
+    "fetch-opengraph": "^1.0.35",
     "i18next": "^21.8.14",
     "moment": "^2.29.4",
     "patch-package": "^6.4.7",
@@ -78,7 +79,8 @@
     "start:web": "react-scripts start",
     "build": "react-scripts build",
     "build:extension:clean": "rm -rf build-extension && rm -rf build-extension-mozilla",
-    "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true react-scripts build && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
+    "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true react-scripts build && npm run build:extension-scripts && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
+    "build:extension-scripts": "cp -a ./extension/src/. ./build-extension/.",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:packager": "react-native start",
@@ -99,9 +101,11 @@
   },
   "browserslist": {
     "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "chrome >= 67",
+      "edge >= 79",
+      "firefox >= 68",
+      "opera >= 54",
+      "safari >= 14"
     ],
     "development": [
       "last 1 chrome version",

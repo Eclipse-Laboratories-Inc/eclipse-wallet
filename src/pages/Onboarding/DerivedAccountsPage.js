@@ -7,11 +7,14 @@ import ChooseDerivabes from './components/ChooseDerivabes';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as ROUTES_MAP_ADAPTER } from '../Adapter/routes';
 
 const DerivedAccountsPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, selectedEndpoints }, { addDerivedAccounts }] =
-    useContext(AppContext);
+  const [
+    { activeWallet, selectedEndpoints, isAdapter },
+    { addDerivedAccounts },
+  ] = useContext(AppContext);
   const [accounts, setAccounts] = useState([]);
   useEffect(() => {
     getDerivedAccounts(
@@ -28,7 +31,7 @@ const DerivedAccountsPage = ({ t }) => {
       null,
       getDefaultChain(),
     );
-    navigate(ROUTES_MAP.WALLET);
+    navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
   };
   return (
     <GlobalLayout fullscreen>

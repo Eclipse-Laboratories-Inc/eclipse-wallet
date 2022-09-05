@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
 import get from 'lodash/get';
+import omit from 'lodash/omit';
 
 import { lock, unlock } from '../utils/password';
 import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
@@ -224,7 +225,9 @@ const useWallets = () => {
     };
     setSelectedEndpoints(endpoints);
     await storage.setItem(STORAGE_KEYS.ENDPOINTS, endpoints);
-    activeWallet.setNetwork(value);
+    if (activeWallet) {
+      activeWallet.setNetwork(value);
+    }
   };
   const removeAllWallets = async () => {
     await storage.clear();
@@ -238,6 +241,45 @@ const useWallets = () => {
       [address]: {
         ...get(config, address, {}),
         name,
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
+  const addTrustedApp = async (
+    address,
+    domain,
+    { name, icon, autoApprove = false } = {},
+  ) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        trustedApps: {
+          ...get(config, `${address}.trustedApps`, {}),
+          [domain]: { name, icon, autoApprove },
+        },
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
+  const removeTrustedApp = async (address, domain) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        trustedApps: {
+          ...omit(get(config, `${address}.trustedApps`, {}), domain),
+        },
       },
     };
     const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
@@ -284,6 +326,8 @@ const useWallets = () => {
       removeAllWallets,
       editWalletName,
       editWalletAvatar,
+      addTrustedApp,
+      removeTrustedApp,
     },
   ];
 };

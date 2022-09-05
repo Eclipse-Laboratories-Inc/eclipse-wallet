@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
   },
+  italic: {
+    fontStyle: 'italic',
+  },
   uppercase: {
     textTransform: 'uppercase',
   },
@@ -119,6 +122,7 @@ const GlobalText = ({
   inverse,
   center,
   bold,
+  italic,
   uppercase,
   nospace,
   style,
@@ -147,6 +151,7 @@ const GlobalText = ({
       inverse && styles.inverse,
       center && styles.center,
       bold && styles.bold,
+      italic && styles.italic,
       uppercase && styles.uppercase,
       nospace && styles.nospace,
       style,

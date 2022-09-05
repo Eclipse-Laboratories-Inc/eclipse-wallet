@@ -6,6 +6,7 @@ import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
+import { ROUTES_MAP as ROUTES_ADAPTER } from '../Adapter/routes';
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -88,8 +89,10 @@ const Form = ({ onComplete, onBack, t }) => {
 
 const RecoverWalletPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ selectedEndpoints, requiredLock }, { addWallet, checkPassword }] =
-    useContext(AppContext);
+  const [
+    { selectedEndpoints, requiredLock, isAdapter },
+    { addWallet, checkPassword },
+  ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
@@ -108,7 +111,8 @@ const RecoverWalletPage = ({ t }) => {
     setWaiting(false);
     setStep(3);
   };
-  const goToWallet = () => navigate(ROUTES_MAP.WALLET);
+  const goToWallet = () =>
+    navigate(isAdapter ? ROUTES_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
   return (
@@ -116,7 +120,13 @@ const RecoverWalletPage = ({ t }) => {
       {step === 1 && (
         <Form
           onComplete={handleRecover}
-          onBack={() => navigate(ROUTES_ONBOARDING.ONBOARDING_HOME)}
+          onBack={() =>
+            navigate(
+              isAdapter
+                ? ROUTES_MAP.ADAPTER
+                : ROUTES_ONBOARDING.ONBOARDING_HOME,
+            )
+          }
           t={t}
         />
       )}

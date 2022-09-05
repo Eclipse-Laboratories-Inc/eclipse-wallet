@@ -52,14 +52,13 @@ const styles = StyleSheet.create({
 const GlobalBackTitle = ({
   onBack,
   title,
-  viewStyle,
   secondaryTitle,
   inlineTitle,
   inlineAddress,
   nospace,
   children,
 }) => (
-  <SafeAreaView edges={['top']} style={viewStyle}>
+  <SafeAreaView edges={['top']}>
     <View style={[styles.container, nospace && styles.nospace]}>
       {onBack && (
         <GlobalButton
