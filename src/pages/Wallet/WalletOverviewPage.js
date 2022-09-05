@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Touchable } from 'react-native';
+import { StyleSheet, SafeAreaView, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -33,8 +33,8 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-
 import AvatarImage from '../../component-library/Image/AvatarImage';
+import GlobalToast from '../../component-library/Global/GlobalToast';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
@@ -91,6 +91,7 @@ const WalletOverviewPage = ({ t }) => {
   const [nftsList, setNftsList] = useState(null);
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
   const [showScan, setShowScan] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
@@ -160,7 +161,10 @@ const WalletOverviewPage = ({ t }) => {
   const goToNFTs = tok =>
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: tok.address });
 
-  const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
+  const onCopyAddress = () => {
+    clipboard.copy(activeWallet.getReceiveAddress());
+    setShowToast(true);
+  };
 
   return (
     activeWallet && (
@@ -183,7 +187,6 @@ const WalletOverviewPage = ({ t }) => {
                     numberOfLines={1}>
                     {getWalletName(activeWallet.getReceiveAddress(), config)}
                   </GlobalText>
-
                   <TouchableOpacity onPress={onCopyAddress}>
                     <GlobalText
                       type="body1"
@@ -271,6 +274,11 @@ const WalletOverviewPage = ({ t }) => {
               onClick={handleNftsClick}
             />
           </GlobalCollapse>
+          <GlobalToast
+            message={'Copied !'}
+            open={showToast}
+            setOpen={setShowToast}
+          />
         </GlobalLayout.Header>
         {isNative() && (
           <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
