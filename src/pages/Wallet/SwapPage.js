@@ -17,7 +17,7 @@ import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
 import { getAvailableTokens, getTransactionImage } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { showPercentage } from '../../utils/amount';
+import { showPercentage, showValue } from '../../utils/amount';
 
 const DetailItem = ({ title, value, t }) => (
   <View style={globalStyles.inlineWell}>
@@ -79,7 +79,7 @@ const SwapPage = ({ t }) => {
     }
   }, [activeWallet]);
   const [inAmount, setInAmount] = useState(0);
-  const [outAmount, setOutAmount] = useState(0);
+  const [outAmount, setOutAmount] = useState('--');
   useEffect(() => {
     setError(false);
   }, [inAmount, inToken, outToken]);
@@ -173,7 +173,7 @@ const SwapPage = ({ t }) => {
                 <GlobalPadding size="xs" />
 
                 <GlobalText type="body1" color="tertiary">
-                  88 {t('general.usd')}
+                  {showValue(inAmount * inToken.usdPrice, 6)} {t('general.usd')}
                 </GlobalText>
 
                 <GlobalPadding size="xs" />
