@@ -1,4 +1,5 @@
 import Snackbar from '@mui/material/Snackbar';
+import GlobalText from './GlobalText';
 
 const GlobalToast = ({ message, open, setOpen }) => {
   const handleClose = () => {

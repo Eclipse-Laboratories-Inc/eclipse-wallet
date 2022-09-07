@@ -275,7 +275,7 @@ const WalletOverviewPage = ({ t }) => {
             />
           </GlobalCollapse>
           <GlobalToast
-            message={'Copied !'}
+            message={t('wallet.copied')}
             open={showToast}
             setOpen={setShowToast}
           />
