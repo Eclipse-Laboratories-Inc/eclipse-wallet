@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View } from 'react-native';
+import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -44,7 +44,6 @@ import { getMediaRemoteUrl } from '../../utils/media';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard';
-import { TouchableOpacity } from 'react-native-web';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
