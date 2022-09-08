@@ -86,7 +86,7 @@ const InputWithTokenSelector = ({
 
       <Modal
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setIsVisible(false)}
         visible={isVisible}>
         <GlobalLayout
@@ -130,7 +130,7 @@ const InputWithTokenSelector = ({
                   type="default"
                   wideSmall
                   onPress={onViewMore}
-                  title={t('actions.viewMore')}
+                  title={t('actions.view_more')}
                   disabled={filteredTokens.length <= drawedList.length}
                 />
                 <GlobalPadding size="xs" />

@@ -29,7 +29,8 @@
     "receive": "Recibir",
     "view_all": "Ver Todo",
     "search_placeholder": "Buscar...",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "view_more": "Ver más"
   },
   "settings": {
     "title": "Configuración",
@@ -110,7 +111,7 @@
     "create_wallet": "Crear Wallet",
     "recover_wallet": "Recuperar Wallet",
     "select_token": "Seleccionar Token",
-    "new_token": "Nuevo Token",
+    "new_token": "Agregar token",
     "create": {
       "messageTitle": "Keep your seed safe!",
       "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
