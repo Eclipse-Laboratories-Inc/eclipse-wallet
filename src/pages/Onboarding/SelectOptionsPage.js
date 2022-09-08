@@ -12,6 +12,7 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import CardButton from '../../component-library/CardButton/CardButton';
 
@@ -20,6 +21,8 @@ import AvatarImage from '../../component-library/Image/AvatarImage';
 import AppIcon from '../../assets/images/AppIcon.png';
 import AppTitle from '../../assets/images/AppTitle.png';
 import { AppContext } from '../../AppProvider';
+import Logo from '../../assets/images/Logo.png';
+import { autocompleteClasses } from '@mui/material';
 
 const styles = StyleSheet.create({
   appIconImage: {
@@ -30,6 +33,11 @@ const styles = StyleSheet.create({
   appTitleImage: {
     width: 124,
     height: 26,
+  },
+  appLogo: {
+    width: 88,
+    height: 88,
+    margin: 'auto',
   },
   touchable: {
     maxWidth: theme.variables.buttonMaxWidth,
@@ -83,7 +91,13 @@ const SelectChain = ({ onNext, blockChains, onBack, t }) => (
       secondaryTitle={t('wallet.onboarding.select_blockchain')}
     />
 
-    <GlobalPadding size="xs" />
+    <GlobalPadding size="md" />
+
+    <GlobalText type="body2" center>
+      {t('wallet.onboarding.select_blockchain_text')}
+    </GlobalText>
+
+    <GlobalPadding size="md" />
 
     {blockChains.map(chain => (
       <CardButton

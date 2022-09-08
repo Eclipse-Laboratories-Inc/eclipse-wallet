@@ -9,6 +9,7 @@ import GlobalInput from '../../../component-library/Global/GlobalInput';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../../component-library/Global/GlobalPageDot';
+import Logo from './Logo';
 
 const Password = ({
   onComplete,
@@ -79,6 +80,10 @@ const Password = ({
 
         {!requiredLock && (
           <>
+            <Logo />
+
+            <GlobalPadding size="2xl" />
+
             <GlobalText type="headline2" center>
               {t('wallet.create.choose_a_password')}
             </GlobalText>

@@ -162,6 +162,7 @@
       "titleOnboarded": "Add New Wallet",
       "titleWelcome": "Welcome to",
       "select_blockchain": "Select Blockchain",
+      "select_blockchain_text": "2 lines max Validation text sint occaecat cupidatat non proident",
       "title1": "Welcome to Salmon!",
       "content1": "Open-source, non-custodial & multi-blockchain wallet",
       "title2": "Keep the control of your tokens",

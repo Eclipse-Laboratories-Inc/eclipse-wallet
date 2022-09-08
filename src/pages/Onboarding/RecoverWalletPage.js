@@ -15,6 +15,7 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
+import Logo from './components/Logo';
 
 import {
   getDefaultChain,
@@ -45,6 +46,9 @@ const Form = ({ onComplete, onBack, t }) => {
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
+        <Logo />
+
+        <GlobalPadding size="2xl" />
 
         <GlobalText type="headline2" center>
           {t('wallet.recover.messageTitle')}

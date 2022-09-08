@@ -23,6 +23,7 @@ import GlobalDivider from '../../component-library/Global/GlobalDivider';
 
 import Password from './components/Password';
 import Success from './components/Success';
+import Logo from './components/Logo';
 
 const Message = ({ onNext, onBack, waiting, t }) => (
   <>
@@ -31,6 +32,10 @@ const Message = ({ onNext, onBack, waiting, t }) => (
     </GlobalLayout.Header>
 
     <GlobalLayout.Inner>
+      <Logo />
+
+      <GlobalPadding size="2xl" />
+
       <GlobalDivider />
 
       <GlobalText type="headline2" center>
@@ -41,6 +46,9 @@ const Message = ({ onNext, onBack, waiting, t }) => (
         {t('wallet.create.messageBody')}
       </GlobalText>
     </GlobalLayout.Inner>
+
+    <GlobalPadding size="4xl" />
+    <GlobalPadding size="4xl" />
 
     <GlobalLayout.Footer>
       <GlobalButton
@@ -67,6 +75,10 @@ const Form = ({ account, onComplete, onBack, t }) => (
         </View>
       </GlobalBackTitle>
 
+      <Logo />
+
+      <GlobalPadding size="2xl" />
+
       <GlobalText type="headline2" center>
         {t('wallet.create.your_seed_phrase')}
       </GlobalText>
@@ -82,7 +94,7 @@ const Form = ({ account, onComplete, onBack, t }) => (
         readonly
         seedphrase
         multiline
-        numberOfLines={8}
+        numberOfLines={4}
         invalid={false}
       />
     </GlobalLayout.Header>
@@ -142,6 +154,10 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
+
+        <Logo />
+
+        <GlobalPadding size="2xl" />
 
         <GlobalText type="headline2" center>
           {t('wallet.create.confirm_seed_phrase')}

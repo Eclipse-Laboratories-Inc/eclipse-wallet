@@ -146,7 +146,8 @@
     "onboarding": {
       "titleOnboarded": "Nueva Wallet",
       "titleWelcome": "Welcome to",
-      "select_blockchain": "Elegir Blockchain"
+      "select_blockchain": "Elegir Blockchain",
+      "select_blockchain_text": "2 lines max Validation text sint occaecat cupidatat non proident"
     }
   },
   "adapter": {
