@@ -201,6 +201,7 @@
   "transactions": {
     "your_transactions": "Your Transactions",
     "recent_activity": "Recent Activity",
+    "transaction_detail": "Transaction Detail",
     "view_transaction": "View Transaction",
     "today": "Today",
     "yesterday": "Yesterday",

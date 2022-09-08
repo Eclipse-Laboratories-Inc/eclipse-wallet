@@ -181,6 +181,7 @@
   "transactions": {
     "your_transactions": "Transacciones",
     "recent_activity": "Actividad Reciente",
+    "transaction_detail": "Detalle de la Transacción",
     "view_transaction": "Ver Transacción",
     "today": "Hoy",
     "yesterday": "Ayer",

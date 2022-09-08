@@ -18,7 +18,7 @@ import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import { GlobalLayoutForTabScreen } from '../../component-library/Global/GlobalLayout';
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const TransactionsDetailPage = ({ params }) => {
+const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
   const [{ activeWallet, wallets }, { changeActiveWallet }] =
     useContext(AppContext);
@@ -97,303 +97,314 @@ const TransactionsDetailPage = ({ params }) => {
   }, [activeWallet, onBack, params]);
 
   return (
-    <GlobalLayoutForTabScreen>
-      <GlobalBackTitle onBack={onBack} smallTitle="Transaction Detail" />
-      {loaded ? (
-        (() => {
-          switch (transactionDetail.type) {
-            case TRANSACTION_TYPE.TRANSFER:
-            case TRANSACTION_TYPE.TRANSFER_CHECKED:
-            case TRANSACTION_TYPE.GET_ACC_DATA:
-            case TRANSACTION_TYPE.CREATE_ACCOUNT:
-            case TRANSACTION_TYPE.CREATE:
-            case TRANSACTION_TYPE.CLOSE_ACCOUNT:
-              const isReceive = transactionDetail.transferType === 'received';
-              const isUnknown = !transactionDetail.destination;
-              const isCreate = isUnknown && !transactionDetail.transferAmount;
-              return (
-                <View style={styles.centered}>
-                  <View style={styles.floatingTransactionBox}>
-                    <GlobalImage
-                      source={getMediaRemoteUrl(
-                        isCreate
-                          ? getTransactionImage('interaction')
-                          : isUnknown
-                          ? getTransactionImage('unknown')
-                          : transactionDetail.nftAmount?.media ||
-                            transactionDetail.transferLogoIn ||
-                            transactionDetail.transferLogoOut ||
-                            LOGOS.SOLANA,
-                      )}
-                      size="xxl"
-                      style={styles.bigImage}
-                      circle
-                    />
-                    <GlobalImage
-                      source={
-                        transactionDetail.error
-                          ? getTransactionImage('fail')
-                          : isReceive
-                          ? getTransactionImage('received')
-                          : getTransactionImage('sent')
-                      }
-                      size="md"
-                      circle
-                      style={styles.floatingTransaction}
-                    />
-                  </View>
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={onBack}
+          title={t('transactions.transaction_detail')}
+        />
+        {loaded ? (
+          (() => {
+            switch (transactionDetail.type) {
+              case TRANSACTION_TYPE.TRANSFER:
+              case TRANSACTION_TYPE.TRANSFER_CHECKED:
+              case TRANSACTION_TYPE.GET_ACC_DATA:
+              case TRANSACTION_TYPE.CREATE_ACCOUNT:
+              case TRANSACTION_TYPE.CREATE:
+              case TRANSACTION_TYPE.CLOSE_ACCOUNT:
+                const isReceive = transactionDetail.transferType === 'received';
+                const isUnknown = !transactionDetail.destination;
+                const isCreate = isUnknown && !transactionDetail.transferAmount;
+                return (
+                  <View style={styles.centered}>
+                    <View style={styles.floatingTransactionBox}>
+                      <GlobalImage
+                        source={getMediaRemoteUrl(
+                          isCreate
+                            ? getTransactionImage('interaction')
+                            : isUnknown
+                            ? getTransactionImage('unknown')
+                            : transactionDetail.nftAmount?.media ||
+                              transactionDetail.transferLogoIn ||
+                              transactionDetail.transferLogoOut ||
+                              LOGOS.SOLANA,
+                        )}
+                        size="xxl"
+                        style={styles.bigImage}
+                        circle
+                      />
+                      <GlobalImage
+                        source={
+                          transactionDetail.error
+                            ? getTransactionImage('fail')
+                            : isReceive
+                            ? getTransactionImage('received')
+                            : getTransactionImage('sent')
+                        }
+                        size="md"
+                        circle
+                        style={styles.floatingTransaction}
+                      />
+                    </View>
 
-                  {transactionDetail.nftAmount ? (
-                    <GlobalText type="headline2" center>
-                      {transactionDetail.error
-                        ? `${'-'}${
-                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                          } SOL  `
-                        : `${isReceive ? '+ 1 ' : '- 1 '} ${
-                            transactionDetail.nftAmount?.collection?.name
-                          }`}
-                    </GlobalText>
-                  ) : (transactionDetail.transferNameIn?.length ||
-                      transactionDetail.transferNameOut?.length) &&
-                    transactionDetail.transferAmount ? (
-                    <GlobalText type="headline2" center>
-                      {transactionDetail.error
-                        ? `${'-'}${
-                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                          } SOL  `
-                        : `${isReceive ? '+' : '-'} ${
-                            transactionDetail.transferAmount
-                          } ${
-                            transactionDetail.transferNameIn ||
-                            transactionDetail.transferNameOut
-                          }
-                          `}
-                    </GlobalText>
-                  ) : (
-                    transactionDetail.amount && (
+                    {transactionDetail.nftAmount ? (
                       <GlobalText type="headline2" center>
                         {transactionDetail.error
                           ? `${'-'}${
                               transactionDetail.fee / TOKEN_DECIMALS.SOLANA
                             } SOL  `
-                          : `${isReceive ? '+' : '-'}${
-                              isReceive
-                                ? transactionDetail.amount
-                                : parseFloat(
-                                    transactionDetail.amount +
-                                      transactionDetail.fee /
-                                        TOKEN_DECIMALS.SOLANA,
-                                  ).toFixed(8)
-                            } SOL`}
+                          : `${isReceive ? '+ 1 ' : '- 1 '} ${
+                              transactionDetail.nftAmount?.collection?.name
+                            }`}
                       </GlobalText>
-                    )
-                  )}
+                    ) : (transactionDetail.transferNameIn?.length ||
+                        transactionDetail.transferNameOut?.length) &&
+                      transactionDetail.transferAmount ? (
+                      <GlobalText type="headline2" center>
+                        {transactionDetail.error
+                          ? `${'-'}${
+                              transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                            } SOL  `
+                          : `${isReceive ? '+' : '-'} ${
+                              transactionDetail.transferAmount
+                            } ${
+                              transactionDetail.transferNameIn ||
+                              transactionDetail.transferNameOut
+                            }
+                          `}
+                      </GlobalText>
+                    ) : (
+                      transactionDetail.amount && (
+                        <GlobalText type="headline2" center>
+                          {transactionDetail.error
+                            ? `${'-'}${
+                                transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                              } SOL  `
+                            : `${isReceive ? '+' : '-'}${
+                                isReceive
+                                  ? transactionDetail.amount
+                                  : parseFloat(
+                                      transactionDetail.amount +
+                                        transactionDetail.fee /
+                                          TOKEN_DECIMALS.SOLANA,
+                                    ).toFixed(8)
+                              } SOL`}
+                        </GlobalText>
+                      )
+                    )}
 
-                  <GlobalPadding size="sm" />
+                    <GlobalPadding size="sm" />
 
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Date
-                    </GlobalText>
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Date
+                      </GlobalText>
 
-                    <GlobalText type="body2">
-                      {moment
-                        .unix(transactionDetail.timestamp)
-                        .format('MMM D, YYYY - h.mm A')}
-                    </GlobalText>
+                      <GlobalText type="body2">
+                        {moment
+                          .unix(transactionDetail.timestamp)
+                          .format('MMM D, YYYY - h.mm A')}
+                      </GlobalText>
+                    </View>
+
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Status
+                      </GlobalText>
+
+                      <GlobalText
+                        type="body2"
+                        color={
+                          transactionDetail.error ? 'negative' : 'positive'
+                        }>
+                        {transactionDetail.error ? 'Failed' : 'Confirmed'}
+                      </GlobalText>
+                    </View>
+
+                    {!isUnknown && (
+                      <View style={styles.inlineWell}>
+                        <GlobalText type="caption" color="tertiary">
+                          To
+                        </GlobalText>
+
+                        <GlobalText type="body2" numberOfLines={1}>
+                          {getShortAddress(transactionDetail.destination)}
+                        </GlobalText>
+                      </View>
+                    )}
+
+                    <GlobalPadding size="2xl" />
+
+                    <GlobalButton
+                      type="secondary"
+                      wideSmall
+                      title="GO TO SOLSCAN"
+                      onPress={() =>
+                        Linking.openURL(
+                          `https://solscan.io/tx/${transactionDetail.signature}`,
+                        )
+                      }
+                    />
+
+                    <GlobalPadding />
+
+                    <GlobalButton
+                      type="primary"
+                      wideSmall
+                      title="Back to Wallet"
+                      onPress={onBack}
+                    />
+
+                    <GlobalPadding size="xl" />
                   </View>
+                );
+              case TRANSACTION_TYPE.SWAP:
+                return (
+                  <View style={styles.centered}>
+                    <View style={styles.floatingTransactionBoxSwap}>
+                      {transactionDetail.error ? (
+                        <GlobalImage
+                          source={getTransactionImage('swap')}
+                          size="xxl"
+                          style={styles.bigImage}
+                          circle
+                        />
+                      ) : (
+                        <>
+                          <GlobalImage
+                            source={
+                              transactionDetail.tokenLogoOut || LOGOS.SOLANA
+                            }
+                            size="xxl"
+                            style={styles.bigImage}
+                            circle
+                          />
+                          <GlobalImage
+                            source={
+                              transactionDetail.tokenLogoIn || LOGOS.SOLANA
+                            }
+                            size="xxl"
+                            style={styles.bigImage}
+                            circle
+                          />
+                        </>
+                      )}
+                      <GlobalImage
+                        source={
+                          transactionDetail.error
+                            ? getTransactionImage('fail')
+                            : getTransactionImage('swap')
+                        }
+                        size="md"
+                        circle
+                        style={styles.floatingTransaction}
+                      />
+                    </View>
 
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Status
-                    </GlobalText>
+                    {transactionDetail.error ? (
+                      <GlobalText type="headline2" center>
+                        {`${'-'}${
+                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                        } SOL  `}
+                      </GlobalText>
+                    ) : (
+                      <>
+                        <GlobalText type="headline2" center>
+                          {`+${
+                            transactionDetail.swapAmountIn /
+                            (transactionDetail.tokenNameIn === 'SOL' ||
+                            !transactionDetail.tokenNameIn
+                              ? TOKEN_DECIMALS.SOLANA
+                              : TOKEN_DECIMALS.COINS)
+                          } ${transactionDetail.tokenNameIn || 'SOL'} `}
+                        </GlobalText>
+                        <GlobalText type="headline2" center>
+                          {`-${
+                            transactionDetail.swapAmountOut /
+                            (transactionDetail.tokenNameOut === 'SOL' ||
+                            !transactionDetail.tokenNameOut
+                              ? TOKEN_DECIMALS.SOLANA
+                              : TOKEN_DECIMALS.COINS)
+                          } ${transactionDetail.tokenNameOut || 'SOL'} `}
+                        </GlobalText>
+                        <GlobalText type="headline2" center>
+                          {`${'-'}${
+                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA
+                          } SOL  `}
+                        </GlobalText>
+                      </>
+                    )}
 
-                    <GlobalText
-                      type="body2"
-                      color={transactionDetail.error ? 'negative' : 'positive'}>
-                      {transactionDetail.error ? 'Failed' : 'Confirmed'}
-                    </GlobalText>
-                  </View>
+                    <GlobalPadding size="sm" />
 
-                  {!isUnknown && (
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Date
+                      </GlobalText>
+
+                      <GlobalText type="body2">
+                        {moment
+                          .unix(transactionDetail.timestamp)
+                          .format('MMM D, YYYY - h.mm A')}
+                      </GlobalText>
+                    </View>
+
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Status
+                      </GlobalText>
+
+                      <GlobalText
+                        type="body2"
+                        color={
+                          transactionDetail.error ? 'negative' : 'positive'
+                        }>
+                        {transactionDetail.error ? 'Failed' : 'Confirmed'}
+                      </GlobalText>
+                    </View>
+
                     <View style={styles.inlineWell}>
                       <GlobalText type="caption" color="tertiary">
                         To
                       </GlobalText>
 
                       <GlobalText type="body2" numberOfLines={1}>
-                        {getShortAddress(transactionDetail.destination)}
+                        {getShortAddress(activeWallet.getReceiveAddress())}
                       </GlobalText>
                     </View>
-                  )}
 
-                  <GlobalPadding size="2xl" />
+                    <GlobalPadding size="2xl" />
 
-                  <GlobalButton
-                    type="secondary"
-                    wideSmall
-                    title="GO TO SOLSCAN"
-                    onPress={() =>
-                      Linking.openURL(
-                        `https://solscan.io/tx/${transactionDetail.signature}`,
-                      )
-                    }
-                  />
-
-                  <GlobalPadding />
-
-                  <GlobalButton
-                    type="primary"
-                    wideSmall
-                    title="Back to Wallet"
-                    onPress={onBack}
-                  />
-
-                  <GlobalPadding size="xl" />
-                </View>
-              );
-            case TRANSACTION_TYPE.SWAP:
-              return (
-                <View style={styles.centered}>
-                  <View style={styles.floatingTransactionBoxSwap}>
-                    {transactionDetail.error ? (
-                      <GlobalImage
-                        source={getTransactionImage('swap')}
-                        size="xxl"
-                        style={styles.bigImage}
-                        circle
-                      />
-                    ) : (
-                      <>
-                        <GlobalImage
-                          source={
-                            transactionDetail.tokenLogoOut || LOGOS.SOLANA
-                          }
-                          size="xxl"
-                          style={styles.bigImage}
-                          circle
-                        />
-                        <GlobalImage
-                          source={transactionDetail.tokenLogoIn || LOGOS.SOLANA}
-                          size="xxl"
-                          style={styles.bigImage}
-                          circle
-                        />
-                      </>
-                    )}
-                    <GlobalImage
-                      source={
-                        transactionDetail.error
-                          ? getTransactionImage('fail')
-                          : getTransactionImage('swap')
+                    <GlobalButton
+                      type="secondary"
+                      wideSmall
+                      title="GO TO SOLSCAN"
+                      onPress={() =>
+                        Linking.openURL(
+                          `https://solscan.io/tx/${transactionDetail.signature}`,
+                        )
                       }
-                      size="md"
-                      circle
-                      style={styles.floatingTransaction}
                     />
+
+                    <GlobalPadding />
+
+                    <GlobalButton
+                      type="primary"
+                      wideSmall
+                      title="Back to Wallet"
+                      onPress={onBack}
+                    />
+
+                    <GlobalPadding size="xl" />
                   </View>
-
-                  {transactionDetail.error ? (
-                    <GlobalText type="headline2" center>
-                      {`${'-'}${
-                        transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                      } SOL  `}
-                    </GlobalText>
-                  ) : (
-                    <>
-                      <GlobalText type="headline2" center>
-                        {`+${
-                          transactionDetail.swapAmountIn /
-                          (transactionDetail.tokenNameIn === 'SOL' ||
-                          !transactionDetail.tokenNameIn
-                            ? TOKEN_DECIMALS.SOLANA
-                            : TOKEN_DECIMALS.COINS)
-                        } ${transactionDetail.tokenNameIn || 'SOL'} `}
-                      </GlobalText>
-                      <GlobalText type="headline2" center>
-                        {`-${
-                          transactionDetail.swapAmountOut /
-                          (transactionDetail.tokenNameOut === 'SOL' ||
-                          !transactionDetail.tokenNameOut
-                            ? TOKEN_DECIMALS.SOLANA
-                            : TOKEN_DECIMALS.COINS)
-                        } ${transactionDetail.tokenNameOut || 'SOL'} `}
-                      </GlobalText>
-                      <GlobalText type="headline2" center>
-                        {`${'-'}${
-                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA
-                        } SOL  `}
-                      </GlobalText>
-                    </>
-                  )}
-
-                  <GlobalPadding size="sm" />
-
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Date
-                    </GlobalText>
-
-                    <GlobalText type="body2">
-                      {moment
-                        .unix(transactionDetail.timestamp)
-                        .format('MMM D, YYYY - h.mm A')}
-                    </GlobalText>
-                  </View>
-
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Status
-                    </GlobalText>
-
-                    <GlobalText
-                      type="body2"
-                      color={transactionDetail.error ? 'negative' : 'positive'}>
-                      {transactionDetail.error ? 'Failed' : 'Confirmed'}
-                    </GlobalText>
-                  </View>
-
-                  <View style={styles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      To
-                    </GlobalText>
-
-                    <GlobalText type="body2" numberOfLines={1}>
-                      {getShortAddress(activeWallet.getReceiveAddress())}
-                    </GlobalText>
-                  </View>
-
-                  <GlobalPadding size="2xl" />
-
-                  <GlobalButton
-                    type="secondary"
-                    wideSmall
-                    title="GO TO SOLSCAN"
-                    onPress={() =>
-                      Linking.openURL(
-                        `https://solscan.io/tx/${transactionDetail.signature}`,
-                      )
-                    }
-                  />
-
-                  <GlobalPadding />
-
-                  <GlobalButton
-                    type="primary"
-                    wideSmall
-                    title="Back to Wallet"
-                    onPress={onBack}
-                  />
-
-                  <GlobalPadding size="xl" />
-                </View>
-              );
-          }
-        })()
-      ) : (
-        <GlobalSkeleton type="TransactionDetail" />
-      )}
-    </GlobalLayoutForTabScreen>
+                );
+            }
+          })()
+        ) : (
+          <GlobalSkeleton type="TransactionDetail" />
+        )}
+      </GlobalLayout.Header>
+    </GlobalLayout>
   );
 };
 

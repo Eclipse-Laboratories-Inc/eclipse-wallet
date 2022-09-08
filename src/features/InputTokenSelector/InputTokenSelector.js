@@ -83,6 +83,7 @@ const InputWithTokenSelector = ({
       />
 
       <Modal
+        transparent
         animationType="slide"
         onRequestClose={() => setIsVisible(false)}
         visible={isVisible}>

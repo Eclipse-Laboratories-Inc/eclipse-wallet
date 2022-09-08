@@ -8,6 +8,7 @@ import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../pages/Nfts/routes';
+import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from '../../pages/Settings/routes';
 import {
   getWalletName,
   getShortAddress,
@@ -166,6 +167,10 @@ const WalletOverviewPage = ({ t }) => {
     setShowToast(true);
   };
 
+  const onClickAvatar = () => {
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
+  };
+
   return (
     activeWallet && (
       <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
@@ -173,13 +178,14 @@ const WalletOverviewPage = ({ t }) => {
           <SafeAreaView edges={['top']}>
             <View style={styles.avatarWalletAddressActions}>
               <View style={styles.avatarWalletAddress}>
-                <AvatarImage
-                  src={getMediaRemoteUrl(
-                    getWalletAvatar(activeWallet.getReceiveAddress(), config),
-                  )}
-                  size={42}
-                />
-
+                <TouchableOpacity onPress={onClickAvatar}>
+                  <AvatarImage
+                    src={getMediaRemoteUrl(
+                      getWalletAvatar(activeWallet.getReceiveAddress(), config),
+                    )}
+                    size={42}
+                  />
+                </TouchableOpacity>
                 <View style={styles.walletNameAddress}>
                   <GlobalText
                     type="body2"

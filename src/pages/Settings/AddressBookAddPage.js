@@ -22,6 +22,7 @@ const AddressBookAddPage = ({ t }) => {
   const [addressLabel, setAddressLabel] = useState('');
   const [addressAddress, setAddressAddress] = useState('');
   const [validAddress, setValidAddress] = useState(false);
+  const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
 
   const isValid = addressLabel && validAddress;
@@ -68,7 +69,9 @@ const AddressBookAddPage = ({ t }) => {
           address={addressAddress}
           onChange={setAddressAddress}
           validAddress={validAddress}
+          addressEmpty={addressEmpty}
           setValidAddress={setValidAddress}
+          setAddressEmpty={setAddressEmpty}
           recipient={false}
           onQR={toggleScan}
         />

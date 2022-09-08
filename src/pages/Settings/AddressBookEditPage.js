@@ -9,9 +9,11 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
-import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
+import InputAddress from '../../features/InputAddress/InputAddress';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import { getWalletChain } from '../../utils/wallet';
+import { isNative } from '../../utils/platform';
+import QRScan from '../../features/QRScan/QRScan';
 
 const AddressBookEditPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -21,7 +23,10 @@ const AddressBookEditPage = ({ params, t }) => {
   const [addressAddress, setAddressAddress] = useState('');
   const [currentAddress, setCurrentAddress] = useState('');
   const [currentLabel, setCurrentLabel] = useState('');
+  const [validAddress, setValidAddress] = useState(false);
+  const [addressEmpty, setAddressEmpty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showScan, setShowScan] = useState(false);
   useEffect(() => {
     const address = addressBook.find(a => a.address === params.address);
     if (address) {
@@ -32,10 +37,7 @@ const AddressBookEditPage = ({ params, t }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.addressbook]);
-  const isValid =
-    addressLabel &&
-    addressAddress &&
-    (addressLabel !== currentLabel || addressAddress !== currentAddress);
+  const isValid = addressLabel && validAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
@@ -49,6 +51,14 @@ const AddressBookEditPage = ({ params, t }) => {
     );
     setSaving(false);
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
+  };
+  const toggleScan = () => {
+    setShowScan(!showScan);
+  };
+  const onRead = qr => {
+    const data = qr;
+    setAddressAddress(data.data);
+    setShowScan(false);
   };
 
   return (
@@ -71,12 +81,15 @@ const AddressBookEditPage = ({ params, t }) => {
 
         <GlobalPadding size="md" />
 
-        <GlobalInputWithButton
-          placeholder={t('settings.addressbook.add')}
-          value={addressAddress}
-          setValue={setAddressAddress}
-          buttonLabel="Paste"
-          buttonOnPress={() => {}}
+        <InputAddress
+          address={addressAddress}
+          onChange={setAddressAddress}
+          validAddress={validAddress}
+          addressEmpty={addressEmpty}
+          setValidAddress={setValidAddress}
+          setAddressEmpty={setAddressEmpty}
+          recipient={false}
+          onQR={toggleScan}
         />
       </GlobalLayout.Header>
 
@@ -89,6 +102,9 @@ const AddressBookEditPage = ({ params, t }) => {
           disabled={saving || !isValid}
         />
       </GlobalLayout.Footer>
+      {isNative() && (
+        <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+      )}
     </GlobalLayout>
   );
 };
