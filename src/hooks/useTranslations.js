@@ -20,6 +20,7 @@ const useTranslations = () => {
       storage.getItem(STORAGE_KEYS.LANGUAGE).then(language => {
         i18n
           .init({
+            compatibilityJSON: 'v3',
             resources,
             lng: language || DEFAULT_LANGUAGE,
             fallbackLng: DEFAULT_LANGUAGE,
