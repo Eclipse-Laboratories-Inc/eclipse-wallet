@@ -28,6 +28,7 @@ const InputWithTokenSelector = ({
   params,
   value,
   setValue,
+  placeholder,
   image,
   title,
   t,
@@ -65,6 +66,7 @@ const InputWithTokenSelector = ({
       <GlobalInputWithButton
         value={value}
         setValue={setValue}
+        placeholder={placeholder}
         action={
           <CardButton
             type="secondary"

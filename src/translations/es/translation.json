@@ -197,6 +197,7 @@
     "swap": "Swap",
     "swap_tokens": "Swap Tokens",
     "you_send": "Pagas",
+    "enter_amount": "Ingresa un monto",
     "you_receive": "Recibes",
     "quote": "Cotizar",
     "go_to_explorer": "Go to Explorer"

@@ -217,6 +217,7 @@
     "swap": "Swap",
     "swap_tokens": "Swap Tokens",
     "you_send": "You Send",
+    "enter_amount": "Enter an amount",
     "you_receive": "You Receive",
     "quote": "Quote",
     "go_to_explorer": "Go to Explorer"

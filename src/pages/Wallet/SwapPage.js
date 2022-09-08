@@ -78,7 +78,7 @@ const SwapPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
-  const [inAmount, setInAmount] = useState(0);
+  const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
   useEffect(() => {
     setError(false);
@@ -158,6 +158,7 @@ const SwapPage = ({ t }) => {
                 <InputWithTokenSelector
                   value={inAmount}
                   setValue={setInAmount}
+                  placeholder={t('swap.enter_amount')}
                   title={inToken.symbol}
                   tokens={tokens}
                   hiddenValue={hiddenValue}
