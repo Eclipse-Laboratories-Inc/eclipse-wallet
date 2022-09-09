@@ -10,6 +10,7 @@ export const CACHE_TYPES = {
   TRANSACTIONS: 'TRANSACTIONS',
   TOKENS: 'TOKENS',
   AVAILABLE_TOKENS: 'AVAILABLE_TOKENS',
+  FEATURED_TOKENS: 'FEATURED_TOKENS',
 };
 
 var CACHE = {
@@ -39,6 +40,11 @@ var CACHE = {
     value: [],
   },
   [CACHE_TYPES.AVAILABLE_TOKENS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.FEATURED_TOKENS]: {
     expires: null,
     key: '',
     value: [],

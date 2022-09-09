@@ -131,7 +131,7 @@ const CardButton = ({
 
         <View style={styles.main}>
           {caption && (
-            <GlobalText type="caption" color="tertiary">
+            <GlobalText type="caption" color={title ? 'tertiary' : 'primary'}>
               {caption}
             </GlobalText>
           )}

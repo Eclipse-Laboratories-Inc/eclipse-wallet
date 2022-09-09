@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Modal } from 'react-native';
+import { Modal, View } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { hiddenValue } from '../../utils/amount';
@@ -34,6 +34,7 @@ const InputWithTokenSelector = ({
   t,
   hiddenBalance,
   tokens,
+  featuredTokens,
   onChange = () => {},
   ...props
 }) => {
@@ -103,6 +104,23 @@ const InputWithTokenSelector = ({
               value={searchToken}
               setValue={setSearchToken}
             />
+            <GlobalPadding />
+            {featuredTokens && (
+              <View style={theme.globalStyles.inline}>
+                {featuredTokens?.map(token => (
+                  <View>
+                    <CardButton
+                      key={token.mint || token.address}
+                      onPress={() => onSelect(token)}
+                      size="sm"
+                      icon={<GlobalImage url={token.logo} size="xs" circle />}
+                      caption={token.symbol || token.name}
+                      buttonStyle={{ width: 112, marginRight: 10 }}
+                    />
+                  </View>
+                ))}
+              </View>
+            )}
             <GlobalPadding />
             {drawedList.map(token => (
               <CardButton

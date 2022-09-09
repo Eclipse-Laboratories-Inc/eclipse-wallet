@@ -3,6 +3,7 @@ import {
   restoreAccount,
   restoreDerivedAccounts,
   getAvailableTokens as getAvailableTokens4m,
+  getFeaturedTokens as getFeaturedTokens4m,
 } from '4m-wallet-adapter';
 import chains from '4m-wallet-adapter/constants/chains';
 import get from 'lodash/get';
@@ -110,3 +111,5 @@ export const getListedTokens = balance =>
   balance.items?.filter(tok => tok.name);
 
 export const getAvailableTokens = getAvailableTokens4m;
+
+export const getFeaturedTokens = getFeaturedTokens4m;

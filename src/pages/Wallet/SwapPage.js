@@ -14,7 +14,11 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
 import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
-import { getAvailableTokens, getTransactionImage } from '../../utils/wallet';
+import {
+  getAvailableTokens,
+  getFeaturedTokens,
+  getTransactionImage,
+} from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showPercentage, showValue } from '../../utils/amount';
@@ -54,6 +58,7 @@ const SwapPage = ({ t }) => {
   const [error, setError] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
+  const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
   const [quote, setQuote] = useState({});
@@ -69,11 +74,15 @@ const SwapPage = ({ t }) => {
         cache(`${activeWallet.chain}`, CACHE_TYPES.AVAILABLE_TOKENS, () =>
           getAvailableTokens(activeWallet.chain),
         ),
-      ]).then(([balance, atks]) => {
+        cache(`${activeWallet.chain}`, CACHE_TYPES.FEATURED_TOKENS, () =>
+          getFeaturedTokens(activeWallet.chain),
+        ),
+      ]).then(([balance, atks, ftks]) => {
         const tks = balance.items || [];
         setTokens(tks);
         setInToken(tks.length ? tks[0] : null);
         setAvailableTokens(atks);
+        setFeaturedTokens(ftks);
         setReady(true);
       });
     }
@@ -194,6 +203,7 @@ const SwapPage = ({ t }) => {
                   setValue={setOutAmount}
                   title={outToken ? outToken.symbol : '-'}
                   tokens={availableTokens}
+                  featuredTokens={featuredTokens}
                   image={
                     outToken ? getMediaRemoteUrl(outToken.logo) : undefined
                   }
