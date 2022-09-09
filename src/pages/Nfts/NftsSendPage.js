@@ -13,7 +13,7 @@ import {
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
-import { globalStyles } from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -32,6 +32,9 @@ const styles = StyleSheet.create({
     width: 234,
     height: 234,
   },
+  titleStyle: {
+    color: theme.colors.labelTertiary,
+  },
 });
 
 const NftsSendPage = ({ params, t }) => {
@@ -42,7 +45,8 @@ const NftsSendPage = ({ params, t }) => {
   const [status, setStatus] = useState();
   const [step, setStep] = useState(1);
   const [nftDetail, setNftDetail] = useState({});
-  const [{ activeWallet, config, addressBook }] = useContext(AppContext);
+  const [{ activeWallet, wallets, config, addressBook }] =
+    useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState('');
   const [addressEmpty, setAddressEmpty] = useState(false);
@@ -143,30 +147,58 @@ const NftsSendPage = ({ params, t }) => {
                     setAddressEmpty={setAddressEmpty}
                     onQR={toggleScan}
                   />
-                  <GlobalPadding />
+
+                  {wallets.length > 0 && (
+                    <>
+                      <GlobalPadding />
+
+                      <GlobalCollapse
+                        title={t('settings.wallets.my_wallets')}
+                        titleStyle={styles.titleStyle}
+                        isOpen
+                        hideCollapse>
+                        {wallets.map(wallet => (
+                          <CardButtonWallet
+                            key={wallet.address}
+                            title={getWalletName(wallet.address, config)}
+                            address={wallet.address}
+                            chain={wallet.chain}
+                            imageSize="md"
+                            onPress={() => setRecipientAddress(wallet.address)}
+                            buttonStyle={globalStyles.addressBookItem}
+                            touchableStyles={globalStyles.addressBookTouchable}
+                            transparent
+                          />
+                        ))}
+                      </GlobalCollapse>
+                    </>
+                  )}
 
                   {addressBook.length > 0 && (
-                    <GlobalCollapse
-                      title={t('settings.address_book')}
-                      titleStyle={styles.titleStyle}
-                      isOpen
-                      hideCollapse>
-                      {addressBook.map(addressBookItem => (
-                        <CardButtonWallet
-                          key={addressBookItem.address}
-                          title={addressBookItem.name}
-                          address={addressBookItem.address}
-                          chain={addressBookItem.chain}
-                          imageSize="md"
-                          onPress={() =>
-                            setRecipientAddress(addressBookItem.address)
-                          }
-                          buttonStyle={globalStyles.addressBookItem}
-                          touchableStyles={globalStyles.addressBookTouchable}
-                          transparent
-                        />
-                      ))}
-                    </GlobalCollapse>
+                    <>
+                      <GlobalPadding />
+                      <GlobalCollapse
+                        title={t('settings.address_book')}
+                        titleStyle={styles.titleStyle}
+                        isOpen
+                        hideCollapse>
+                        {addressBook.map(addressBookItem => (
+                          <CardButtonWallet
+                            key={addressBookItem.address}
+                            title={addressBookItem.name}
+                            address={addressBookItem.address}
+                            chain={addressBookItem.chain}
+                            imageSize="md"
+                            onPress={() =>
+                              setRecipientAddress(addressBookItem.address)
+                            }
+                            buttonStyle={globalStyles.addressBookItem}
+                            touchableStyles={globalStyles.addressBookTouchable}
+                            transparent
+                          />
+                        ))}
+                      </GlobalCollapse>
+                    </>
                   )}
                 </>
               )}

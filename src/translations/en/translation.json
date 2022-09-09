@@ -56,6 +56,7 @@
     "help_support": "Help & Support",
     "wallets": {
       "your_wallets": "Your Wallets",
+      "my_wallets": "My Wallets",
       "add_new_wallet": "Add New Wallet",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",

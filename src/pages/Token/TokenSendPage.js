@@ -9,6 +9,7 @@ import {
   LOGOS,
   getTransactionImage,
   TRANSACTION_STATUS,
+  getWalletName,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
@@ -48,7 +49,8 @@ const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(1);
-  const [{ activeWallet, addressBook }] = useContext(AppContext);
+  const [{ activeWallet, wallets, addressBook, config }] =
+    useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [sending, setSending] = useState(false);
@@ -155,6 +157,32 @@ const TokenSendPage = ({ params, t }) => {
                 setAddressEmpty={setAddressEmpty}
                 onQR={toggleScan}
               />
+
+              {wallets.length > 0 && (
+                <>
+                  <GlobalPadding />
+
+                  <GlobalCollapse
+                    title={t('settings.wallets.my_wallets')}
+                    titleStyle={styles.titleStyle}
+                    isOpen
+                    hideCollapse>
+                    {wallets.map(wallet => (
+                      <CardButtonWallet
+                        key={wallet.address}
+                        title={getWalletName(wallet.address, config)}
+                        address={wallet.address}
+                        chain={wallet.chain}
+                        imageSize="md"
+                        onPress={() => setRecipientAddress(wallet.address)}
+                        buttonStyle={globalStyles.addressBookItem}
+                        touchableStyles={globalStyles.addressBookTouchable}
+                        transparent
+                      />
+                    ))}
+                  </GlobalCollapse>
+                </>
+              )}
 
               {addressBook.length > 0 && (
                 <>
