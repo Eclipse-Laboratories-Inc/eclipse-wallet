@@ -122,12 +122,14 @@ const SwapPage = ({ t }) => {
     setError(false);
     setProcessing(true);
     try {
-      const st = await activeWallet.createSwapTransaction(quote.route.id);
-      setTransaction(st);
+      const sts = await activeWallet.createSwapTransaction(quote.route.id);
+      setTransaction(sts[0]);
       setStep(3);
-      const result = await activeWallet.executeSwapTransaction(st);
-      if (get(result, 'value.err')) {
-        setError(true);
+      for (let st of sts) {
+        const result = await activeWallet.executeSwapTransaction(st);
+        if (get(result, 'value.err')) {
+          setError(true);
+        }
       }
       setProcessing(false);
     } catch (e) {
