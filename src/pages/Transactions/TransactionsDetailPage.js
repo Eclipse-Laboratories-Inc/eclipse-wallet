@@ -76,6 +76,25 @@ const TransactionsDetailPage = ({ t, params }) => {
     [navigate],
   );
 
+  const getTransactionTitle = type => {
+    switch (type) {
+      case 'sent':
+        return 'Sent';
+      case 'received':
+        return 'Received';
+      case 'swap':
+        return 'Swap';
+      case 'interaction':
+        return 'Interaction';
+      case 'paid':
+        return 'Paid';
+      case 'unknown':
+        return 'Unknown';
+      default:
+        return 'Sent';
+    }
+  };
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -204,6 +223,24 @@ const TransactionsDetailPage = ({ t, params }) => {
                         {moment
                           .unix(transactionDetail.timestamp)
                           .format('MMM D, YYYY - h.mm A')}
+                      </GlobalText>
+                    </View>
+
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Type
+                      </GlobalText>
+
+                      <GlobalText type="body2">
+                        {getTransactionTitle(
+                          isCreate
+                            ? 'interaction'
+                            : isUnknown
+                            ? 'unknown'
+                            : isReceive
+                            ? 'received'
+                            : 'sent',
+                        )}
                       </GlobalText>
                     </View>
 
@@ -346,6 +383,16 @@ const TransactionsDetailPage = ({ t, params }) => {
                         {moment
                           .unix(transactionDetail.timestamp)
                           .format('MMM D, YYYY - h.mm A')}
+                      </GlobalText>
+                    </View>
+
+                    <View style={styles.inlineWell}>
+                      <GlobalText type="caption" color="tertiary">
+                        Type
+                      </GlobalText>
+
+                      <GlobalText type="body2">
+                        {getTransactionTitle('swap')}
                       </GlobalText>
                     </View>
 

@@ -43,6 +43,7 @@
     "help_support": "Ayuda & Soporte",
     "wallets": {
       "your_wallets": "Tus Wallets",
+      "my_wallets": "Mis Wallets",
       "add_new_wallet": "Agregar Wallet",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
