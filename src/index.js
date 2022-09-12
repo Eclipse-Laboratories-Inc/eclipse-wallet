@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './globals';
 import './index.css';
 import { isExtension } from './utils/platform';
 isExtension() ? import('./index-extension.css') : import('./index-web.css');
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import './globals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
