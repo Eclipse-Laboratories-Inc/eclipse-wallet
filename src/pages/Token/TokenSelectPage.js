@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -17,6 +17,8 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 
+const MAX_PAG = 20;
+
 const TokenSelectPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setloaded] = useState(false);
@@ -25,6 +27,29 @@ const TokenSelectPage = ({ params, t }) => {
   const [{ activeWallet, hiddenBalance }] = useContext(AppContext);
 
   const [searchToken, setSearchToken] = useState('');
+  const [drawedList, setDrawedList] = useState([]);
+
+  const getFilterItems = (items, search) =>
+    search.length >= 3
+      ? items.filter(
+          token =>
+            (token.name || '').toLowerCase().includes(search.toLowerCase()) ||
+            (token.symbol || '').toLowerCase().includes(search.toLowerCase()),
+        )
+      : items;
+
+  const filteredTokens = useMemo(
+    () => getFilterItems(tokens, searchToken),
+    [tokens, searchToken],
+  );
+
+  useEffect(() => {
+    if (filteredTokens.length > MAX_PAG) {
+      setDrawedList(filteredTokens.slice(0, MAX_PAG));
+    } else {
+      setDrawedList(filteredTokens);
+    }
+  }, [filteredTokens]);
 
   useEffect(() => {
     if (activeWallet) {
@@ -60,7 +85,7 @@ const TokenSelectPage = ({ params, t }) => {
     }
   };
 
-  const goToAddToken = token => {
+  const goToAddToken = () => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_ADD, {
       action: params.action,
       walletAddress: activeWallet.getReceiveAddress(),
@@ -91,9 +116,9 @@ const TokenSelectPage = ({ params, t }) => {
             actionTitle={t('wallet.new_token')}
             viewAllAction={goToAddToken}
             hideCollapse>
-            {tokens.map(token => (
+            {drawedList.map(token => (
               <CardButton
-                key={token.mint}
+                key={token.mint || token.address}
                 onPress={() => onSelect(token)}
                 icon={<GlobalImage url={token.logo} size="md" circle />}
                 title={token.name}
