@@ -8,6 +8,7 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import { AppContext } from '../../AppProvider';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import { withTranslation } from '../../hooks/useTranslations';
+import Logo from '../Onboarding/components/Logo';
 
 const LockedPage = ({ t }) => {
   const [, { unlockWallets }] = useContext(AppContext);
@@ -34,6 +35,8 @@ const LockedPage = ({ t }) => {
       </GlobalLayout.Header>
 
       <GlobalLayout.Inner>
+        <Logo />
+        <GlobalPadding size="2xl" />
         <GlobalText type="headline2" center>
           {t('lock.title')}
         </GlobalText>

@@ -57,6 +57,8 @@ const Password = ({
 
         {requiredLock && (
           <>
+            <Logo />
+            <GlobalPadding size="2xl" />
             <GlobalText type="headline2" center>
               {t('wallet.create.enter_your_password')}
             </GlobalText>
