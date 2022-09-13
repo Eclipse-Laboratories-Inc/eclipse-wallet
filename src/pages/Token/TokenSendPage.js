@@ -247,6 +247,9 @@ const TokenSendPage = ({ params, t }) => {
                 nospace
               />
               <GlobalPadding />
+              <GlobalText type="body1" style={globalStyles.labelRight}>
+                {`${t('general.balance')}: ${token.uiAmount}`}
+              </GlobalText>
               <GlobalInputWithButton
                 startLabel={token.symbol}
                 placeholder="Enter Amount"
