@@ -269,6 +269,9 @@ export const globalStyles = StyleSheet.create({
   buttonRight: {
     marginLeft: gutters.paddingXS,
   },
+  labelRight: {
+    textAlign: 'right',
+  },
   addressBookItem: {
     paddingVertical: 0,
     paddingHorizontal: 0,

@@ -210,22 +210,26 @@ const TransactionsListComponent = ({ t }) => {
                             />
                           </View>,
                           <View style={styles.inline}>
-                            <GlobalText
-                              key={'amount-action'}
-                              type="body2"
-                              color="negative">
-                              {`-${
-                                transaction.swapAmountOut /
-                                (transaction.tokenNameOut === 'SOL' ||
-                                !transaction.tokenNameOut
-                                  ? TOKEN_DECIMALS.SOLANA
-                                  : TOKEN_DECIMALS.COINS)
-                              } ${transaction.tokenNameOut || 'SOL'} `}
-                            </GlobalText>
-                            <AvatarImage
-                              url={transaction.tokenLogoOut || LOGOS.SOLANA}
-                              size={18}
-                            />
+                            {transaction.swapAmountOut && (
+                              <>
+                                <GlobalText
+                                  key={'amount-action'}
+                                  type="body2"
+                                  color="negative">
+                                  {`-${
+                                    transaction.swapAmountOut /
+                                    (transaction.tokenNameOut === 'SOL' ||
+                                    !transaction.tokenNameOut
+                                      ? TOKEN_DECIMALS.SOLANA
+                                      : TOKEN_DECIMALS.COINS)
+                                  } ${transaction.tokenNameOut || 'SOL'} `}
+                                </GlobalText>
+                                <AvatarImage
+                                  url={transaction.tokenLogoOut || LOGOS.SOLANA}
+                                  size={18}
+                                />
+                              </>
+                            )}
                           </View>,
                           <View style={styles.inline}>
                             <GlobalText

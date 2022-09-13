@@ -265,6 +265,13 @@ const SwapPage = ({ t }) => {
                   value={showPercentage(get(m, 'lpFee.pct'), 10)}
                 />
               ))}
+            {quote?.fee && (
+              <DetailItem
+                key={quote?.fee}
+                title={t('swap.total_fee')}
+                value={`${quote.fee.toFixed(8)} SOL`}
+              />
+            )}
           </GlobalLayout.Header>
           <GlobalLayout.Footer inlineFlex>
             <GlobalButton

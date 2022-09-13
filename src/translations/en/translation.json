@@ -223,6 +223,7 @@
     "enter_amount": "Enter an amount",
     "you_receive": "You Receive",
     "quote": "Quote",
+    "total_fee": "Total fee",
     "go_to_explorer": "Go to Explorer"
   }
 }
