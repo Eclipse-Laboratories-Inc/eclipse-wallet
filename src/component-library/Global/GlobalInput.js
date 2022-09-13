@@ -33,8 +33,10 @@ const styles = StyleSheet.create({
   },
   seedphrase: {
     paddingVertical: theme.gutters.paddingLG,
-    fontSize: theme.fontSize.fontSizeMD,
+    fontSize: theme.fontSize.fontSizeNormal,
+    lineHeight: '1.5',
     textAlign: 'center',
+    wordSpacing: '10px',
   },
   forSearch: {
     // width: 50,

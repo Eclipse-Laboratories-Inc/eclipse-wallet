@@ -27,6 +27,8 @@ export const LOGOS = {
   SOLANA:
     'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png',
   NEAR: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/near/info/logo.png',
+  ETHEREUM:
+    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
@@ -38,7 +40,8 @@ export const recoverAccount = (chain, mnemonic, endpoint) =>
 export const getDerivedAccounts = (chain, mnemonic, endpoint) =>
   restoreDerivedAccounts(chains[chain], mnemonic, { networkId: endpoint });
 
-export const getChains = () => Object.keys(chains);
+//export const getChains = () => Object.keys(chains);
+export const getChains = () => ['SOLANA'];
 
 export const getDefaultChain = () => 'SOLANA';
 
