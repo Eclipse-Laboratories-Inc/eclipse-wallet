@@ -12,6 +12,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconStyle: {
+    width: '32px',
+    height: '32px',
+  },
   tabsContainer: {
     width: '100%',
     flexDirection: 'row',
@@ -35,6 +39,7 @@ export const GlobalTabBar = ({ tabs }) => {
           key={`btn-${t.title}`}
           type="tabbar"
           size="medium"
+          iconStyle={styles.iconStyle}
           color={currentTab !== t.title ? 'tertiary' : ''}
           transparent
           title={t.title}
