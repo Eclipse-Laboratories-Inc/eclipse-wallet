@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 export const GlobalTabBar = ({ tabs }) => {
-  let currentTab = useCurrentTab({ tabs });
+  const currentTab = useCurrentTab({ tabs });
 
   return (
     <View style={styles.tabsContainer}>
