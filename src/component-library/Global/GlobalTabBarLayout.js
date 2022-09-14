@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconStyle: {
-    width: '32px',
-    height: '32px',
+    width: 32,
+    height: 32,
   },
   tabsContainer: {
     width: '100%',
