@@ -39,3 +39,7 @@ code {
   margin-left: auto;
   margin-right: auto;
 }
+
+div, input, button, a {
+  outline: none;
+}
