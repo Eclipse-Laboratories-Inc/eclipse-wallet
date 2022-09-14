@@ -36,3 +36,7 @@ export const withParams =
     const params = route.params;
     return <Component {...props} params={params} />;
   };
+
+export const useCurrentTab = ({ tabs }) => {
+  return tabs[0];
+};

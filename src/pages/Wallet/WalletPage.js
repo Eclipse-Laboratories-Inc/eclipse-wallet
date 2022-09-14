@@ -19,6 +19,7 @@ const WalletPage = () => {
           title: r.name,
           onClick: () => navigate(r.key),
           icon: r.icon,
+          route: r.route,
         }))}>
       <RoutesBuilder routes={routes} type={ROUTES_TYPES.TABS} />
     </GlobalTabBarLayout>

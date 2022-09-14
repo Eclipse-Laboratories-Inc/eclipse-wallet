@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { globalRoutes } from './app-routes';
 import { getRoute } from './utils';
 
@@ -24,4 +24,18 @@ export const useNavigation = () => {
 export const withParams = Component => props => {
   const params = useParams();
   return <Component {...props} params={params} />;
+};
+
+export const useCurrentTab = ({ tabs }) => {
+  const [tab, setTab] = useState({});
+  const location = useLocation();
+  useEffect(() => {
+    const selected = tabs.find(
+      t =>
+        (location.pathname.startsWith(t.route) && t.title !== 'Wallet') ||
+        (location.pathname === t.route && t.title === 'Wallet'),
+    );
+    setTab(selected);
+  }, [location, tabs]);
+  return tab;
 };

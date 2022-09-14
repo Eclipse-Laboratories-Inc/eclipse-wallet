@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 
 import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
+import { useCurrentTab } from '../../routes/hooks';
 import GlobalButton from './GlobalButton';
 
 const styles = StyleSheet.create({
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
 });
 
 export const GlobalTabBar = ({ tabs }) => {
-  const [currentTab, setCurrentTab] = useState('Wallet');
+  const currentTab = useCurrentTab({ tabs });
 
   return (
     <View style={styles.tabsContainer}>
@@ -40,13 +41,12 @@ export const GlobalTabBar = ({ tabs }) => {
           type="tabbar"
           size="medium"
           iconStyle={styles.iconStyle}
-          color={currentTab !== t.title ? 'tertiary' : ''}
+          color={currentTab.title !== t.title ? 'tertiary' : ''}
           transparent
           title={t.title}
           icon={t.icon}
           onPress={() => {
             t.onClick();
-            setCurrentTab(t.title);
           }}
         />
       ))}

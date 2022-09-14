@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   disabledAvatar: {
     backgroundColor: '#999',
     opacity: 0.5,
-    borderRadius: '50%',
+    borderRadius: 50,
   },
 });
 
