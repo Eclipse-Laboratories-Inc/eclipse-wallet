@@ -42,15 +42,19 @@ const AccountEditAddressPage = ({ params, t }) => {
   }, [params, activeWallet]);
   const onCopyAlias = () => clipboard.copy(name);
   const onCopyAddress = () => clipboard.copy(params.address);
+
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
         <GlobalBackTitle
           onBack={onBack}
-          title={t(`settings.wallets.edit_wallet`)}
+          title={t(`settings.wallets.wallet_address`)}
         />
-
-        <GlobalPadding size="md" />
+      </GlobalLayout.Header>
+      <GlobalLayout.Inner>
+        <GlobalText center type="headline2">
+          {getWalletName(params.address, config)}
+        </GlobalText>
 
         <View style={globalStyles.centered}>
           <View style={styles.qrBox}>
@@ -58,20 +62,20 @@ const AccountEditAddressPage = ({ params, t }) => {
           </View>
 
           <GlobalPadding size="2xl" />
+          {name && (
+            <View style={globalStyles.inlineWell}>
+              <GlobalText type="body2">{name}</GlobalText>
 
-          <View style={globalStyles.inlineWell}>
-            <GlobalText type="body2">{name}</GlobalText>
-
-            <GlobalButton onPress={onCopyAlias} size="medium">
-              <GlobalImage source={IconCopy} size="xs" />
-              <GlobalText type="button">Copy</GlobalText>
-            </GlobalButton>
-          </View>
+              <GlobalButton onPress={onCopyAlias} size="medium">
+                <GlobalImage source={IconCopy} size="xs" />
+                <GlobalText type="button">Copy</GlobalText>
+              </GlobalButton>
+            </View>
+          )}
 
           <View style={globalStyles.inlineWell}>
             <GlobalText type="body2">
-              {getWalletName(params.address, config)} (
-              {getShortAddress(params.address)})
+              {getShortAddress(params.address)}
             </GlobalText>
 
             <GlobalButton onPress={onCopyAddress} size="medium">
@@ -83,10 +87,10 @@ const AccountEditAddressPage = ({ params, t }) => {
           <GlobalPadding size="md" />
 
           <GlobalText type="body1" center>
-            2 lines max Validation text sint occaecat cupidatat non proident
+            {t(`token.receive.${activeWallet.chain}_warning`)}
           </GlobalText>
         </View>
-      </GlobalLayout.Header>
+      </GlobalLayout.Inner>
     </GlobalLayout>
   );
 };

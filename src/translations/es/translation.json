@@ -55,7 +55,8 @@
       "select_nft": "Select NFT",
       "upload_photo": "Upload Photo",
       "select_nft_to_profile": "Select NFT to Profile",
-      "full_nft_description": "Full NFT Description"
+      "full_nft_description": "Full NFT Description",
+      "wallet_address": "Wallet info"
     },
     "addressbook": {
       "add": "Add Address",
