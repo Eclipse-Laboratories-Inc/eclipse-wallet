@@ -33,7 +33,8 @@ export const useCurrentTab = ({ tabs }) => {
     const selected = tabs.find(
       t =>
         (location.pathname.startsWith(t.route) && t.title !== 'Wallet') ||
-        (location.pathname === t.route && t.title === 'Wallet'),
+        ((location.pathname === t.route || location.pathname === '/') &&
+          t.title === 'Wallet'),
     );
     if (selected) {
       setTab(selected);
