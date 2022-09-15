@@ -16,6 +16,7 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalText from '../../component-library/Global/GlobalText';
+import Header from '../../component-library/Layout/Header';
 
 const NftsListPage = ({ t }) => {
   const navigate = useNavigation();
@@ -48,17 +49,10 @@ const NftsListPage = ({ t }) => {
 
   return (
     (
-      <GlobalLayout fullscreen>
+      <GlobalLayout>
         {loaded && (
           <GlobalLayout.Header>
-            <GlobalBackTitle
-              onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
-            />
+            <Header activeWallet={activeWallet} config={config} t={t} />
             <View style={globalStyles.centered}>
               <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
             </View>

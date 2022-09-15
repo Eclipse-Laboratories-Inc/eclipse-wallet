@@ -22,6 +22,7 @@ import {
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showPercentage, showValue } from '../../utils/amount';
+import Header from '../../component-library/Layout/Header';
 
 const DetailItem = ({ title, value, t }) => (
   <View style={globalStyles.inlineWell}>
@@ -51,7 +52,7 @@ const BigDetailItem = ({ title, value, t }) => (
 
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, hiddenValue }] = useContext(AppContext);
+  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
@@ -152,6 +153,7 @@ const SwapPage = ({ t }) => {
       {step === 1 && (
         <>
           <GlobalLayout.Header>
+            <Header activeWallet={activeWallet} config={config} t={t} />
             <GlobalBackTitle title={t('swap.swap_tokens')} />
 
             <GlobalPadding />
