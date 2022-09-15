@@ -4,6 +4,7 @@ import { StyleSheet, View, SafeAreaView } from 'react-native';
 import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
 import { useCurrentTab } from '../../routes/hooks';
 import GlobalButton from './GlobalButton';
+import theme from './theme';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -17,12 +18,17 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
   },
+  bottomNavContainer: {
+    alignItems: 'center',
+  },
   tabsContainer: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     overflowX: 'scroll',
+    maxWidth: theme.variables.mobileWidthLG,
+    paddingHorizontal: theme.gutters.paddingSM,
   },
 });
 
@@ -58,7 +64,7 @@ export const GlobalTabBar = ({ tabs }) => {
 const GlobalTabBarLayout = ({ children, tabs }) => (
   <GlobalBackgroundImage>
     <View style={styles.wrapper}>{children}</View>
-    <SafeAreaView edges={['bottom']}>
+    <SafeAreaView edges={['bottom']} style={styles.bottomNavContainer}>
       <GlobalTabBar tabs={tabs} />
     </SafeAreaView>
   </GlobalBackgroundImage>
