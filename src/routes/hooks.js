@@ -35,7 +35,9 @@ export const useCurrentTab = ({ tabs }) => {
         (location.pathname.startsWith(t.route) && t.title !== 'Wallet') ||
         (location.pathname === t.route && t.title === 'Wallet'),
     );
-    setTab(selected);
+    if (selected) {
+      setTab(selected);
+    }
   }, [location, tabs]);
   return tab;
 };
