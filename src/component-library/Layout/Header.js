@@ -49,14 +49,22 @@ const styles = StyleSheet.create({
   },
   walletActions: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   narrowBtn: {
-    paddingHorizontal: theme.gutters.paddingXS,
+    paddingHorizontal: theme.gutters.paddingSM,
   },
   addressCopyIcon: {
     marginLeft: theme.gutters.margin,
     marginTop: 1,
     position: 'absolute',
+  },
+  appConnectedStatus: {
+    marginRight: theme.gutters.paddingNormal,
+    backgroundColor: theme.colors.negativeBright,
+    borderRadius: '50%',
+    height: 14,
+    width: 14,
   },
 });
 
@@ -141,6 +149,7 @@ const Header = ({ activeWallet, config, t }) => {
               onPress={toggleScan}
             />
           )}
+          <View style={styles.appConnectedStatus} />
         </View>
       </View>
       <GlobalToast
