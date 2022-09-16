@@ -110,9 +110,13 @@
       "next": "Next",
       "validate": "Validate",
       "from": "From: {{name}}",
+      "transaction_creating": "Creating Transaction...",
+      "transaction_sending": "Sending...",
       "transaction_success": "Sent",
       "transaction_warning": "Warning",
       "transaction_fail": "Fail",
+      "goto_explorer": "Go to Explorer",
+      "view_transaction": "View Transaction",
       "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
     }
   },
@@ -145,6 +149,7 @@
       "enter_word_number": "Enter Word #",
       "buttonPreparing": "Preparing...",
       "enter_your_password": "Enter your password",
+      "passwords_dont_match": "Passwords don't match",
       "invalid_password": "Invalid Password",
       "choose_a_password": "Choose a Password",
       "choose_a_password_body": "You will need it to unlock your wallet",
@@ -157,6 +162,8 @@
       "go_to_my_wallet": "Go to my Wallet!",
       "select_derivable": "Select Derivable",
       "derivable_accounts": "Derivable Accounts",
+      "derivable_info_icon": "ⓘ  What is a derivable?",
+      "derivable_info": "What is a derivable?",
       "recover": "Recover"
     },
     "recover": {

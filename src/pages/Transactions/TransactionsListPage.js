@@ -170,7 +170,7 @@ const TransactionsListPage = ({ t }) => {
                                       <GlobalText
                                         key={'amount-action'}
                                         type="body2"
-                                        color="negative">
+                                        color="negativeLight">
                                         {`${'-'}${
                                           transaction.fee /
                                           TOKEN_DECIMALS.SOLANA
@@ -279,7 +279,7 @@ const TransactionsListPage = ({ t }) => {
                                     <GlobalText
                                       key={'amount-action'}
                                       type="body2"
-                                      color="negative">
+                                      color="negativeLight">
                                       {`${'-'}${
                                         transaction.fee / TOKEN_DECIMALS.SOLANA
                                       } SOL  `}
@@ -318,7 +318,7 @@ const TransactionsListPage = ({ t }) => {
                                         <GlobalText
                                           key={'amount-action'}
                                           type="body2"
-                                          color="negative">
+                                          color="negativeLight">
                                           {`-${
                                             transaction.swapAmountOut /
                                             (transaction.tokenNameOut ===
@@ -343,7 +343,7 @@ const TransactionsListPage = ({ t }) => {
                                     <GlobalText
                                       key={'amount-action'}
                                       type="body2"
-                                      color="negative">
+                                      color="negativeLight">
                                       {`${'-'}${
                                         transaction.fee / TOKEN_DECIMALS.SOLANA
                                       } SOL `}

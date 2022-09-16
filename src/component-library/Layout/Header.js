@@ -14,6 +14,8 @@ import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalImage from '../../component-library/Global/GlobalImage';
+import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard';
@@ -50,6 +52,11 @@ const styles = StyleSheet.create({
   },
   narrowBtn: {
     paddingHorizontal: theme.gutters.paddingXS,
+  },
+  addressCopyIcon: {
+    marginLeft: theme.gutters.margin,
+    marginTop: 1,
+    position: 'absolute',
   },
 });
 
@@ -107,6 +114,11 @@ const Header = ({ activeWallet, config, t }) => {
                 style={styles.walletAddress}
                 numberOfLines={1}>
                 ({getShortAddress(activeWallet.getReceiveAddress())})
+                <GlobalImage
+                  source={IconCopy}
+                  style={styles.addressCopyIcon}
+                  size="xxs"
+                />
               </GlobalText>
             </TouchableOpacity>
           </View>

@@ -5,7 +5,7 @@ import { globalStyles } from '../../../component-library/Global/theme';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../../component-library/Global/GlobalText';
-import GlobalInput from '../../../component-library/Global/GlobalInput';
+import GlobalInputWithButton from '../../../component-library/Global/GlobalInputWithButton';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../../component-library/Global/GlobalPageDot';
@@ -23,6 +23,7 @@ const Password = ({
   const [repass, setRepass] = useState('');
   const [wrongpass, setWrongpass] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [showValue, setShowValue] = useState(false);
   const isValid =
     (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
     (requiredLock && pass);
@@ -64,13 +65,15 @@ const Password = ({
             </GlobalText>
             <GlobalPadding size="2xl" />
 
-            <GlobalInput
+            <GlobalInputWithButton
               placeholder={t('wallet.create.enter_your_password')}
               value={pass}
               setValue={onChange}
+              actionIcon={showValue ? 'show' : 'hide'}
+              onActionPress={() => setShowValue(!showValue)}
               invalid={wrongpass}
               autoComplete="password-new"
-              secureTextEntry
+              secureTextEntry={!showValue}
             />
             {wrongpass && (
               <GlobalText type="body1" color="negative">
@@ -96,24 +99,26 @@ const Password = ({
 
             <GlobalPadding size="2xl" />
 
-            <GlobalInput
+            <GlobalInputWithButton
               placeholder={t('wallet.create.passwordNew')}
               value={pass}
               setValue={setPass}
+              actionIcon={showValue ? 'show' : 'hide'}
+              onActionPress={() => setShowValue(!showValue)}
               invalid={false}
               autoComplete="password-new"
-              secureTextEntry
+              secureTextEntry={!showValue}
             />
 
             <GlobalPadding />
 
-            <GlobalInput
+            <GlobalInputWithButton
               placeholder={t('wallet.create.passwordRepeat')}
               value={repass}
               setValue={setRepass}
               invalid={false}
               autoComplete="password-new"
-              secureTextEntry
+              secureTextEntry={!showValue}
             />
           </>
         )}

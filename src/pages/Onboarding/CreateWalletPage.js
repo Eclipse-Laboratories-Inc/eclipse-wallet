@@ -20,6 +20,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
+import GlobalToast from '../../component-library/Global/GlobalToast';
 
 import Password from './components/Password';
 import Success from './components/Success';
@@ -64,60 +65,72 @@ const Message = ({ onNext, onBack, waiting, t }) => (
   </>
 );
 
-const Form = ({ account, onComplete, onBack, t }) => (
-  <>
-    <GlobalLayout.Header>
-      <GlobalBackTitle onBack={onBack}>
-        <View style={globalStyles.pagination}>
-          <GlobalPageDot active />
-          <GlobalPageDot />
-          <GlobalPageDot />
-        </View>
-      </GlobalBackTitle>
+const Form = ({ account, onComplete, onBack, t }) => {
+  const [showToast, setShowToast] = useState(false);
+  const onCopySeed = () => {
+    clipboard.copy(account.mnemonic);
+    setShowToast(true);
+  };
+  return (
+    <>
+      <GlobalLayout.Header>
+        <GlobalBackTitle onBack={onBack}>
+          <View style={globalStyles.pagination}>
+            <GlobalPageDot active />
+            <GlobalPageDot />
+            <GlobalPageDot />
+          </View>
+        </GlobalBackTitle>
 
-      <Logo />
+        <Logo />
 
-      <GlobalPadding size="2xl" />
+        <GlobalPadding size="2xl" />
 
-      <GlobalText type="headline2" center>
-        {t('wallet.create.your_seed_phrase')}
-      </GlobalText>
+        <GlobalText type="headline2" center>
+          {t('wallet.create.your_seed_phrase')}
+        </GlobalText>
 
-      <GlobalText type="body1" center>
-        {t('wallet.create.your_seed_phrase_body')}
-      </GlobalText>
+        <GlobalText type="body1" center>
+          {t('wallet.create.your_seed_phrase_body')}
+        </GlobalText>
 
-      <GlobalPadding size="xl" />
+        <GlobalPadding size="xl" />
 
-      <GlobalInput
-        value={account.mnemonic}
-        readonly
-        seedphrase
-        multiline
-        numberOfLines={4}
-        invalid={false}
-      />
-    </GlobalLayout.Header>
+        <GlobalInput
+          value={account.mnemonic}
+          readonly
+          seedphrase
+          multiline
+          numberOfLines={4}
+          invalid={false}
+        />
+      </GlobalLayout.Header>
 
-    <GlobalLayout.Footer>
-      <GlobalButton
-        type="secondary"
-        wide
-        title={t('wallet.create.copy_key')}
-        onPress={() => clipboard.copy(account.mnemonic)}
-      />
+      <GlobalLayout.Footer>
+        <GlobalButton
+          type="secondary"
+          wide
+          title={t('wallet.create.copy_key')}
+          onPress={onCopySeed}
+        />
+        <GlobalToast
+          message={t('wallet.copied')}
+          open={showToast}
+          setOpen={setShowToast}
+        />
 
-      <GlobalPadding size="md" />
+        <GlobalPadding size="md" />
 
-      <GlobalButton
-        type="primary"
-        wide
-        title={t('wallet.create.ive_backed_up_seed_phrase')}
-        onPress={onComplete}
-      />
-    </GlobalLayout.Footer>
-  </>
-);
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('wallet.create.ive_backed_up_seed_phrase')}
+          onPress={onComplete}
+        />
+      </GlobalLayout.Footer>
+    </>
+  );
+};
 
 const ValidateSeed = ({ account, onComplete, onBack, t }) => {
   const [positions, setPositions] = useState([]);

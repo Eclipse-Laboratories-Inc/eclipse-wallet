@@ -95,9 +95,13 @@
       "next": "Next",
       "validate": "Validate",
       "from": "De: {{name}}",
+      "transaction_creating": "Creando Transacción...",
+      "transaction_sending": "Enviando...",
       "transaction_success": "Enviado",
       "transaction_warning": "Warning",
-      "transaction_fail": "Error"
+      "transaction_fail": "Error",
+      "goto_explorer": "Ir al Explorer",
+      "view_transaction": "Ver Transacción"
     }
   },
   "lock": {
@@ -129,6 +133,7 @@
       "enter_word_number": "Enter Word #",
       "buttonPreparing": "Preparing...",
       "enter_your_password": "Enter your password",
+      "passwords_dont_match": "Los passwords no coinciden",
       "invalid_password": "Invalid Password",
       "choose_a_password": "Choose a Password",
       "choose_a_password_body": "You will need it to unlock your wallet",
@@ -137,10 +142,13 @@
       "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
       "passwordChecking": "Checking...",
       "success_message": "Felicitaciones!",
-      "success_message_body": "Tu billetera ya esta lista.",
+      "success_message_body": "Tu billetera ya está lista.",
       "go_to_my_wallet": "Ir a mi billetera!",
       "select_derivable": "Select Derivable",
       "derivable_accounts": "Derivable Accounts",
+      "derivable_info_icon": "ⓘ  Qué es una cuenta derivable?",
+      "derivable_info": "Qué es una cuenta derivable?",
+
       "recover": "Recover"
     },
     "recover": {

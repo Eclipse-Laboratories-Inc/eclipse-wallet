@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -13,6 +13,7 @@ import {
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
+import { TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -42,6 +43,18 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: theme.colors.labelTertiary,
+  },
+  viewTxLink: {
+    fontFamily: theme.fonts.dmSansRegular,
+    color: theme.colors.accentPrimary,
+    fontWeight: 'normal',
+    textTransform: 'none',
+  },
+  creatingTx: {
+    fontFamily: theme.fonts.dmSansRegular,
+    color: theme.colors.labelSecondary,
+    fontWeight: 'normal',
+    textTransform: 'none',
   },
 });
 
@@ -97,15 +110,17 @@ const TokenSendPage = ({ params, t }) => {
   const onSend = async () => {
     setSending(true);
     try {
+      setStatus(TRANSACTION_STATUS.CREATING);
+      setStep(4);
       const txId = await activeWallet.createTransferTransaction(
         recipientAddress,
         token.address,
         recipientAmount,
       );
       setTransactionId(txId);
+      setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      setStep(4);
       setSending(false);
     } catch (e) {
       console.error(e);
@@ -341,7 +356,9 @@ const TokenSendPage = ({ params, t }) => {
                       Network Fee
                     </GlobalText>
 
-                    <GlobalText type="body2">{fee} SOL</GlobalText>
+                    <GlobalText type="body2">
+                      {fee / TOKEN_DECIMALS.SOLANA} SOL
+                    </GlobalText>
                   </View>
                 )}
                 {addressEmpty && (
@@ -379,6 +396,15 @@ const TokenSendPage = ({ params, t }) => {
             <GlobalLayout.Header>
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
+              <GlobalPadding size="4xl" />
+
+              {status !== 'success' && (
+                <>
+                  <GlobalPadding size="4xl" />
+                  <GlobalPadding size="4xl" />
+                </>
+              )}
+
               <View style={globalStyles.centeredSmall}>
                 <GlobalImage
                   source={getTransactionImage(status)}
@@ -386,27 +412,68 @@ const TokenSendPage = ({ params, t }) => {
                   circle
                 />
                 <GlobalPadding />
-                <GlobalText type="headline2" center>
-                  {t(`token.send.transaction_${status}`)}
-                </GlobalText>
-                <GlobalText type="body1" center>
-                  3 lines max Excepteur sint occaecat cupidatat non proident,
-                  sunt ?
-                </GlobalText>
+                {status !== 'creating' && (
+                  <GlobalText
+                    type={status === 'sending' ? 'subtitle2' : 'headline2'}
+                    color={status === 'sending' && 'secondary'}
+                    center>
+                    {t(`token.send.transaction_${status}`)}
+                  </GlobalText>
+                )}
+                {status === 'success' && (
+                  <GlobalText type="body1" center>
+                    3 lines max Excepteur sint occaecat cupidatat non proident,
+                    sunt ?
+                  </GlobalText>
+                )}
 
                 <GlobalPadding size="4xl" />
               </View>
             </GlobalLayout.Header>
 
-            <GlobalLayout.Footer inlineFlex>
-              <GlobalButton
-                type="secondary"
-                flex
-                title="Close"
-                onPress={goToBack}
-                style={[globalStyles.button, globalStyles.buttonLeft]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
+            <GlobalLayout.Footer>
+              {status === 'success' ? (
+                <>
+                  <GlobalButton
+                    type="primary"
+                    wide
+                    title={t(`token.send.goto_explorer`)}
+                    onPress={() =>
+                      Linking.openURL(`https://solscan.io/tx/${transactionId}`)
+                    }
+                  />
+
+                  <GlobalPadding size="md" />
+
+                  <GlobalButton
+                    type="secondary"
+                    title={t(`general.close`)}
+                    wide
+                    onPress={goToBack}
+                    style={[globalStyles.button, globalStyles.buttonLeft]}
+                    touchableStyles={globalStyles.buttonTouchable}
+                  />
+                </>
+              ) : (
+                <GlobalButton
+                  type="text"
+                  wide
+                  textStyle={
+                    status === 'creating'
+                      ? styles.creatingTx
+                      : styles.viewTxLink
+                  }
+                  title={
+                    status === 'creating'
+                      ? t(`token.send.transaction_creating`)
+                      : t(`token.send.view_transaction`)
+                  }
+                  readonly={status === 'creating'}
+                  onPress={() =>
+                    Linking.openURL(`https://solscan.io/tx/${transactionId}`)
+                  }
+                />
+              )}
             </GlobalLayout.Footer>
           </>
         )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import GlobalButton from './GlobalButton';
@@ -9,6 +9,9 @@ import GlobalText from './GlobalText';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import IconEdit from '../../assets/images/IconEdit.png';
 import IconCopy from '../../assets/images/IconCopy.png';
+import IconVisibilityShow from '../../assets/images/IconVisibilityShow.png';
+import IconVisibilityHidden from '../../assets/images/IconVisibilityHidden.png';
+
 import theme from './theme';
 
 const styles = StyleSheet.create({
@@ -101,6 +104,12 @@ const GlobalInputWithButton = ({
             )}
             {actionIcon === 'copy' && (
               <GlobalImage source={IconCopy} size="xs" />
+            )}
+            {actionIcon === 'show' && (
+              <GlobalImage source={IconVisibilityShow} size="xs" />
+            )}
+            {actionIcon === 'hide' && (
+              <GlobalImage source={IconVisibilityHidden} size="xs" />
             )}
             {actionIcon === 'sendmax' && (
               <GlobalText type="button" color="primary">
