@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   appConnectedStatus: {
     marginRight: theme.gutters.paddingNormal,
     backgroundColor: theme.colors.negativeBright,
-    borderRadius: '50%',
+    borderRadius: 50,
     height: 14,
     width: 14,
   },

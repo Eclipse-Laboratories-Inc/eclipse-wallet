@@ -1,7 +1,11 @@
-import React, { useContext } from 'react';
-import { NavigationContext } from '@react-navigation/native';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  NavigationContext,
+  useNavigationState,
+} from '@react-navigation/native';
 import { globalRoutes } from './app-routes';
 import { getRoute } from './utils';
+import get from 'lodash/get';
 
 export const useNavigation = () => {
   const navigation = useContext(NavigationContext);
@@ -38,5 +42,20 @@ export const withParams =
   };
 
 export const useCurrentTab = ({ tabs }) => {
-  return tabs[0];
+  const [currentTab, setCurrentTab] = useState(tabs[0]);
+  const focusedRoute = useNavigationState(state => {
+    const route = get(state, `routes[${state.index}]`);
+    if (route && route.name === 'wallet' && route.state) {
+      return get(route, `state.routes[${route.state.index}].name`);
+    } else {
+      return tabs[0].title;
+    }
+  });
+  useEffect(() => {
+    const selectedTab = tabs.find(t => t.title === focusedRoute);
+    if (selectedTab) {
+      setCurrentTab(selectedTab);
+    }
+  }, [focusedRoute, tabs]);
+  return currentTab;
 };
