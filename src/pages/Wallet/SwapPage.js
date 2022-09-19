@@ -23,6 +23,7 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showPercentage, showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 const DetailItem = ({ title, value, t }) => (
   <View style={globalStyles.inlineWell}>
@@ -148,7 +149,7 @@ const SwapPage = ({ t }) => {
       console.log(`UNSUPPORTED LINK ${url}`);
     }
   };
-  return ready ? (
+  return (
     <GlobalLayout>
       {step === 1 && (
         <>
@@ -157,7 +158,7 @@ const SwapPage = ({ t }) => {
             <GlobalBackTitle title={t('swap.swap_tokens')} />
 
             <GlobalPadding />
-            {tokens.length && (
+            {ready && tokens.length && (
               <>
                 <View style={globalStyles.inlineFlexButtons}>
                   <GlobalText type="body2">{t('swap.you_send')}</GlobalText>
@@ -224,6 +225,7 @@ const SwapPage = ({ t }) => {
                 )}
               </>
             )}
+            {!ready && <GlobalSkeleton type="Swap" />}
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
@@ -356,7 +358,7 @@ const SwapPage = ({ t }) => {
         </>
       )}
     </GlobalLayout>
-  ) : null;
+  );
 };
 
 export default withTranslation()(SwapPage);
