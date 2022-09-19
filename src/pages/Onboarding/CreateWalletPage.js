@@ -225,8 +225,10 @@ const CreateWalletPage = ({ params, t }) => {
       setWaiting(false);
     }
   };
+
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
+
     await addWallet(account, password, params.chainCode);
     setStep(5);
   };
