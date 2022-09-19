@@ -124,7 +124,7 @@ const Password = ({
             <GlobalInputWithButton
               placeholder={t('wallet.create.passwordNew')}
               value={pass}
-              setValue={onchange}
+              setValue={onChange}
               actionIcon={showValue ? 'show' : 'hide'}
               onActionPress={() => setShowValue(!showValue)}
               invalid={wrongpass}
