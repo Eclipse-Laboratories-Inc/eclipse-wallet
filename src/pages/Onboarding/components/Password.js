@@ -27,6 +27,16 @@ const Password = ({
   const isValid =
     (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
     (requiredLock && pass);
+
+  const validatePasswordStrength = password => {
+    const minLength = 8;
+    const maxLength = 20;
+
+    return (
+      password && password.length >= minLength && password.length <= maxLength
+    );
+  };
+
   const onContinue = async () => {
     if (requiredLock) {
       setChecking(true);
@@ -38,11 +48,23 @@ const Password = ({
         onComplete(pass);
       }
     } else {
-      onComplete(pass);
+      await onComplete(pass);
     }
   };
   const onChange = v => {
-    setWrongpass(false);
+    if (requiredLock) {
+      setWrongpass(false);
+    } else {
+      const isStrongPassword = validatePasswordStrength(v);
+
+      if (isStrongPassword) {
+        setWrongpass(false);
+      } else {
+        setWrongpass(true);
+        setChecking(false);
+      }
+    }
+
     setPass(v);
   };
   return (
@@ -102,13 +124,18 @@ const Password = ({
             <GlobalInputWithButton
               placeholder={t('wallet.create.passwordNew')}
               value={pass}
-              setValue={setPass}
+              setValue={onchange}
               actionIcon={showValue ? 'show' : 'hide'}
               onActionPress={() => setShowValue(!showValue)}
-              invalid={false}
+              invalid={wrongpass}
               autoComplete="password-new"
               secureTextEntry={!showValue}
             />
+            {wrongpass && (
+              <GlobalText type="body1" color="negative">
+                {t('wallet.create.wrong_password')}
+              </GlobalText>
+            )}
 
             <GlobalPadding />
 
@@ -116,7 +143,7 @@ const Password = ({
               placeholder={t('wallet.create.passwordRepeat')}
               value={repass}
               setValue={setRepass}
-              invalid={false}
+              invalid={pass === repass}
               autoComplete="password-new"
               secureTextEntry={!showValue}
             />
@@ -140,7 +167,7 @@ const Password = ({
               : t('wallet.create_wallet')
           }
           onPress={onContinue}
-          disabled={!isValid || checking || waiting}
+          disabled={!isValid || checking || waiting || wrongpass}
         />
       </GlobalLayout.Footer>
     </>

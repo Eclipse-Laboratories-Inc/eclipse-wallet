@@ -135,6 +135,7 @@
       "enter_your_password": "Enter your password",
       "passwords_dont_match": "Los passwords no coinciden",
       "invalid_password": "Invalid Password",
+      "wrong_password": "Password must be between 8 and 20 characters",
       "choose_a_password": "Choose a Password",
       "choose_a_password_body": "You will need it to unlock your wallet",
       "passwordNew": "New password",
