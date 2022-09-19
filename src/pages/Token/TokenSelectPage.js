@@ -110,26 +110,30 @@ const TokenSelectPage = ({ params, t }) => {
 
           <GlobalPadding />
 
-          <GlobalCollapse
-            title={t('wallet.select_token')}
-            isOpen
-            actionTitle={t('wallet.new_token')}
-            viewAllAction={goToAddToken}
-            hideCollapse>
-            {drawedList.map(token => (
-              <CardButton
-                key={token.mint || token.address}
-                onPress={() => onSelect(token)}
-                icon={<GlobalImage url={token.logo} size="md" circle />}
-                title={token.name}
-                actions={[
-                  <GlobalText key={'amount-action'} type="body2">
-                    {hiddenBalance ? hiddenValue : showAmount(token.usdBalance)}
-                  </GlobalText>,
-                ]}
-              />
-            ))}
-          </GlobalCollapse>
+          {drawedList && drawedList.lenght > 0 && (
+            <GlobalCollapse
+              title={t('wallet.select_token')}
+              isOpen
+              actionTitle={t('wallet.new_token')}
+              viewAllAction={goToAddToken}
+              hideCollapse>
+              {drawedList.map(token => (
+                <CardButton
+                  key={token.mint || token.address}
+                  onPress={() => onSelect(token)}
+                  icon={<GlobalImage url={token.logo} size="md" circle />}
+                  title={token.name}
+                  actions={[
+                    <GlobalText key={'amount-action'} type="body2">
+                      {hiddenBalance
+                        ? hiddenValue
+                        : showAmount(token.usdBalance)}
+                    </GlobalText>,
+                  ]}
+                />
+              ))}
+            </GlobalCollapse>
+          )}
         </GlobalLayout.Header>
       </GlobalLayout>
     )

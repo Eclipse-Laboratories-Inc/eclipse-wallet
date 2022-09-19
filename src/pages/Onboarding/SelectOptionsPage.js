@@ -108,7 +108,7 @@ const ComingSoon = ({ currentChain, comingSoon, setComingSoon, t }) => {
           onPress={goToTwitter}
           type="subtitle1"
           numberOfLines={1}>
-          stay tuned
+          Stay tuned
         </GlobalText>
       }
     />

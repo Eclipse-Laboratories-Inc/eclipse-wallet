@@ -30,27 +30,17 @@ const Message = ({ onNext, onBack, waiting, t }) => (
   <>
     <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack} />
+      <Logo size={'sm'} />
     </GlobalLayout.Header>
 
     <GlobalLayout.Inner>
-      <Logo />
-
-      <GlobalPadding size="2xl" />
-
-      <GlobalDivider />
-
       <GlobalText type="headline2" center>
         {t('wallet.create.messageTitle')}
       </GlobalText>
-
       <GlobalText type="body1" center>
         {t('wallet.create.messageBody')}
       </GlobalText>
     </GlobalLayout.Inner>
-
-    <GlobalPadding size="4xl" />
-    <GlobalPadding size="4xl" />
-
     <GlobalLayout.Footer>
       <GlobalButton
         type="primary"

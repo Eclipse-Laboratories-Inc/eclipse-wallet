@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
   image: {
     position: 'absolute',
     margin: 'auto',
-    marginTop: theme.variables.margin,
+    marginTop: 0,
     marginBottom: theme.variables.margin,
     top: 0,
     right: 0,

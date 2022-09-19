@@ -9,7 +9,7 @@ import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import SimpleDialog from '../../../component-library/Dialog/SimpleDialog';
 
-import Logo from '../../../assets/images/AppIcon.png';
+import Logo from '../components/Logo';
 
 const styles = StyleSheet.create({
   bigIcon: {
@@ -40,7 +40,7 @@ const Success = ({ goToWallet, goToDerived, t }) => {
       <GlobalLayout.Inner>
         <GlobalPadding size="md" />
 
-        <GlobalImage source={Logo} style={styles.bigIcon} circle />
+        <Logo />
 
         <GlobalPadding size="xl" />
 
