@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import { AppContext } from '../../AppProvider';
 import { getDefaultChain, getDerivedAccounts } from '../../utils/wallet';
 import ChooseDerivabes from './components/ChooseDerivabes';
@@ -33,11 +32,7 @@ const DerivedAccountsPage = ({ t }) => {
     );
     navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
   };
-  return (
-    <GlobalLayout fullscreen>
-      <ChooseDerivabes accounts={accounts} onComplete={onComplete} t={t} />
-    </GlobalLayout>
-  );
+  return <ChooseDerivabes accounts={accounts} onComplete={onComplete} />;
 };
 
 export default withTranslation()(DerivedAccountsPage);

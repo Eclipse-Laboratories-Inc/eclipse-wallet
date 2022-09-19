@@ -111,7 +111,6 @@ const ComingSoon = ({ currentChain, comingSoon, setComingSoon, t }) => {
           stay tuned
         </GlobalText>
       }
-      t={t}
     />
   );
 };

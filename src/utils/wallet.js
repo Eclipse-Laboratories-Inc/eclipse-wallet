@@ -19,6 +19,8 @@ import IconTransactionUnknown from '../assets/images/IconTransactionUnknown.png'
 import IconTransactionResultSuccess from '../assets/images/IconTransactionResultSuccess.png';
 import IconTransactionResultWarning from '../assets/images/IconTransactionResultWarning.png';
 import IconTransactionResultFail from '../assets/images/IconTransactionResultFail.png';
+import IconTransactionCreating from '../assets/images/IconTransactionCreating.png';
+import IconTransactionSending from '../assets/images/IconTransactionSending.gif';
 
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
@@ -77,6 +79,8 @@ export const TRANSACTION_STATUS = {
   FAIL: 'fail',
   SUCCESS: 'success',
   WARNING: 'warning',
+  CREATING: 'creating',
+  SENDING: 'sending',
 };
 
 export const getTransactionImage = transaction => {
@@ -100,6 +104,10 @@ export const getTransactionImage = transaction => {
       return IconTransactionResultWarning;
     case 'fail':
       return IconTransactionResultFail;
+    case 'creating':
+      return IconTransactionCreating;
+    case 'sending':
+      return IconTransactionSending;
     default:
       return IconTransactionSent;
   }

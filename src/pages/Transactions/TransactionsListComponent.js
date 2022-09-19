@@ -94,7 +94,7 @@ const TransactionsListComponent = ({ t }) => {
                               <GlobalText
                                 key={'amount-action'}
                                 type="body2"
-                                color="negative">
+                                color="negativeLight">
                                 {`${'-'}${
                                   transaction.fee / TOKEN_DECIMALS.SOLANA
                                 } SOL  `}
@@ -181,7 +181,7 @@ const TransactionsListComponent = ({ t }) => {
                             <GlobalText
                               key={'amount-action'}
                               type="body2"
-                              color="negative">
+                              color="negativeLight">
                               {`${'-'}${
                                 transaction.fee / TOKEN_DECIMALS.SOLANA
                               } SOL  `}
@@ -215,7 +215,7 @@ const TransactionsListComponent = ({ t }) => {
                                 <GlobalText
                                   key={'amount-action'}
                                   type="body2"
-                                  color="negative">
+                                  color="negativeLight">
                                   {`-${
                                     transaction.swapAmountOut /
                                     (transaction.tokenNameOut === 'SOL' ||
@@ -235,7 +235,7 @@ const TransactionsListComponent = ({ t }) => {
                             <GlobalText
                               key={'amount-action'}
                               type="body2"
-                              color="negative">
+                              color="negativeLight">
                               {`${'-'}${
                                 transaction.fee / TOKEN_DECIMALS.SOLANA
                               } SOL `}

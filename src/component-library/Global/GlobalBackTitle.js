@@ -53,6 +53,7 @@ const GlobalBackTitle = ({
   onBack,
   title,
   secondaryTitle,
+  tertiaryTitle,
   inlineTitle,
   inlineAddress,
   nospace,
@@ -70,7 +71,7 @@ const GlobalBackTitle = ({
       )}
       {!onBack && <View style={styles.buttonSizeSmall} />}
 
-      {(title || secondaryTitle) && (
+      {(title || secondaryTitle || tertiaryTitle) && (
         <View style={styles.vertical}>
           {title && (
             <GlobalText type={'headline2'} center nospace>
@@ -81,6 +82,11 @@ const GlobalBackTitle = ({
           {secondaryTitle && (
             <GlobalText type={'subtitle2'} center nospace>
               {secondaryTitle}
+            </GlobalText>
+          )}
+          {tertiaryTitle && (
+            <GlobalText type={'body1'} center nospace>
+              {tertiaryTitle}
             </GlobalText>
           )}
         </View>

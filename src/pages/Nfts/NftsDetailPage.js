@@ -90,13 +90,16 @@ const NftsDetailPage = ({ params, t }) => {
               config,
             )}
             inlineAddress={activeWallet.getReceiveAddress()}
+            nospace
           />
+
+          <GlobalPadding size="xxs" />
 
           <View style={globalStyles.centered}>
             <GlobalText type="headline2" center>
               {nftDetail.name}
             </GlobalText>
-
+            <GlobalPadding size="xs" />
             <View style={globalStyles.squareRatio}>
               <GlobalImage
                 source={getMediaRemoteUrl(nftDetail.media)}
@@ -133,7 +136,7 @@ const NftsDetailPage = ({ params, t }) => {
             */}
           </View>
 
-          <GlobalPadding size="3xl" />
+          <GlobalPadding size="2xl" />
 
           <GlobalText type="body2">{t('nft.description')}</GlobalText>
 

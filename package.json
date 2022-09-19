@@ -50,6 +50,7 @@
     "react-native-user-inactivity": "^1.2.0",
     "react-native-vector-icons": "^9.1.0",
     "react-native-web": "^0.18.9",
+    "react-native-web-hover": "^0.2.9",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "stream-browserify": "^3.0.0",

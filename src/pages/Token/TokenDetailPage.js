@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -16,25 +15,13 @@ import {
   showValue,
 } from '../../utils/amount';
 
-import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
-import GlobalText from '../../component-library/Global/GlobalText';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-
-const styles = StyleSheet.create({
-  cardBox: {
-    paddingVertical: theme.gutters.paddingSM,
-    paddingHorizontal: theme.gutters.paddingSM,
-    borderRadius: theme.borderRadius.borderRadiusMD,
-    backgroundColor: theme.colors.cards,
-  },
-});
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -107,17 +94,6 @@ const TokenDetailPage = ({ params, t }) => {
               />
             }
           />
-
-          <GlobalPadding size="lg" />
-
-          <View style={styles.cardBox}>
-            <GlobalCollapse title="Chart Data Range" narrowTitle isOpen={false}>
-              <GlobalPadding />
-              {/* <GlobalChart /> */}
-              <GlobalText type="body2">[CHART GOES HERE]</GlobalText>
-              <GlobalPadding />
-            </GlobalCollapse>
-          </View>
 
           <GlobalPadding size="lg" />
         </GlobalLayout.Header>

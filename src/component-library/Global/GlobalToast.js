@@ -1,4 +1,6 @@
+import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import GlobalText from './GlobalText';
 
 const GlobalToast = ({ message, open, setOpen }) => {
@@ -10,9 +12,15 @@ const GlobalToast = ({ message, open, setOpen }) => {
       open={open}
       autoHideDuration={1000}
       onClose={handleClose}
-      message={message}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-    />
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <Alert
+        icon={false}
+        onClose={handleClose}
+        severity="success"
+        sx={{ width: '100%', bgcolor: '#202536' }}>
+        <GlobalText type="body1">{message}</GlobalText>
+      </Alert>
+    </Snackbar>
   );
 };
 

@@ -102,6 +102,9 @@ const styles = StyleSheet.create({
   negativeBright: {
     color: theme.colors.negativeBright,
   },
+  negativeLight: {
+    color: theme.colors.negativeLight,
+  },
   warningBright: {
     color: theme.colors.warning,
   },
@@ -146,6 +149,7 @@ const GlobalText = ({
       color === 'tertiary' && styles.labelTertiary,
       color === 'positive' && styles.positiveBright,
       color === 'negative' && styles.negativeBright,
+      color === 'negativeLight' && styles.negativeLight,
       color === 'warning' && styles.warningBright,
       color === 'bgLight' && styles.bgLight,
       inverse && styles.inverse,

@@ -26,6 +26,8 @@ import Header from '../../component-library/Layout/Header';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import { isCollection } from '../../utils/nfts';
+// import IconNotifications from '../../assets/images/IconNotifications.png';
+// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
