@@ -25,7 +25,9 @@ import { useNavigation } from '../../routes/hooks';
 
 const styles = StyleSheet.create({
   titleStyle: {
-    marginTop: 15,
+    marginTop: theme.gutters.paddingNormal,
+    marginLeft: theme.gutters.paddingSM,
+    marginRight: theme.gutters.paddingSM,
   },
   dateStyle: {
     lineHeight: theme.gutters.padding3XL,
@@ -124,10 +126,12 @@ const TransactionsListPage = ({ t }) => {
 
   return (
     <>
+      <View style={styles.titleStyle}>
+        <Header activeWallet={activeWallet} config={config} t={t} />
+        <GlobalBackTitle title={t('transactions.your_transactions')} nospace />
+      </View>
       <GlobalLayout>
         <GlobalLayout.Header>
-          <Header activeWallet={activeWallet} config={config} t={t} />
-          <GlobalBackTitle title={t('transactions.your_transactions')} />
           <View>
             {loaded && recentTransactions?.length ? (
               recentTransactions?.map((transaction, i) => {

@@ -32,7 +32,16 @@ const DerivedAccountsPage = ({ t }) => {
     );
     navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
   };
-  return <ChooseDerivabes accounts={accounts} onComplete={onComplete} />;
+  const goToWallet = () =>
+    navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
+
+  return (
+    <ChooseDerivabes
+      accounts={accounts}
+      onComplete={onComplete}
+      goToWallet={goToWallet}
+    />
+  );
 };
 
 export default withTranslation()(DerivedAccountsPage);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
+import theme from '../../../component-library/Global/theme';
 import { globalStyles } from '../../../component-library/Global/theme';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../../component-library/Global/GlobalBackTitle';
@@ -98,7 +99,10 @@ const Password = ({
               secureTextEntry={!showValue}
             />
             {wrongpass && (
-              <GlobalText type="body1" color="negative">
+              <GlobalText
+                type="body1"
+                color="negative"
+                style={{ paddingHorizontal: theme.gutters.paddingXS }}>
                 {t('wallet.create.invalid_password')}
               </GlobalText>
             )}
@@ -131,11 +135,6 @@ const Password = ({
               autoComplete="password-new"
               secureTextEntry={!showValue}
             />
-            {wrongpass && (
-              <GlobalText type="body1" color="negative">
-                {t('wallet.create.wrong_password')}
-              </GlobalText>
-            )}
 
             <GlobalPadding />
 
@@ -147,6 +146,17 @@ const Password = ({
               autoComplete="password-new"
               secureTextEntry={!showValue}
             />
+
+            {(wrongpass || !isValid) && (
+              <GlobalText
+                type="body1"
+                color="negative"
+                style={{ padding: theme.gutters.paddingXS }}>
+                {wrongpass
+                  ? t('wallet.create.wrong_password')
+                  : repass && t('wallet.create.passwords_dont_match')}
+              </GlobalText>
+            )}
           </>
         )}
       </GlobalLayout.Header>

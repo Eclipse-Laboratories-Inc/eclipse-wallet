@@ -4,15 +4,23 @@ import { StyleSheet, View } from 'react-native';
 import { withTranslation } from '../../../hooks/useTranslations';
 import { getDefaultChain, LOGOS } from '../../../utils/wallet';
 
+import theme from '../../../component-library/Global/theme';
 import GlobalBackTitle from '../../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import CardButton from '../../../component-library/CardButton/CardButton';
+import GlobalBackgroundImage from '../../../component-library/Global/GlobalBackgroundImage';
+import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 
 import AvatarImage from '../../../component-library/Image/AvatarImage';
 
 const styles = StyleSheet.create({
+  titleStyle: {
+    marginTop: theme.gutters.paddingNormal,
+    marginLeft: theme.gutters.paddingSM,
+    marginRight: theme.gutters.paddingSM,
+  },
   recoverBtnContainer: {
     alignItems: 'center',
     position: 'absolute',
@@ -25,7 +33,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChooseDerivabes = ({ accounts, onComplete, t }) => {
+const ChooseDerivabes = ({ accounts, onComplete, goToWallet, t }) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {
@@ -35,14 +43,15 @@ const ChooseDerivabes = ({ accounts, onComplete, t }) => {
     }
   };
   return (
-    <>
-      <GlobalLayout fullscreen>
+    <GlobalBackgroundImage>
+      <View style={styles.titleStyle}>
+        <GlobalBackTitle
+          title={t('wallet.create.derivable_accounts')}
+          tertiaryTitle="m/44'/501'/0'"
+        />
+      </View>
+      <GlobalLayout>
         <GlobalLayout.Header>
-          <GlobalBackTitle
-            title={t('wallet.create.derivable_accounts')}
-            tertiaryTitle="m/44'/501'/0'"
-          />
-
           {accounts.map(({ index }) => (
             <CardButton
               key={`wallet-${index}`}
@@ -58,13 +67,20 @@ const ChooseDerivabes = ({ accounts, onComplete, t }) => {
       </GlobalLayout>
       <View style={styles.recoverBtnContainer}>
         <GlobalButton
-          type="primary"
+          type="accent"
           wide
           title={t('wallet.create.recover')}
           onPress={() => onComplete(selected)}
         />
+        <GlobalPadding size="sm" />
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('wallet.create.skip')}
+          onPress={goToWallet}
+        />
       </View>
-    </>
+    </GlobalBackgroundImage>
   );
 };
 

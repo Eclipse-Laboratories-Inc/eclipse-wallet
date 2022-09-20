@@ -165,7 +165,9 @@
       "derivable_accounts": "Derivable Accounts",
       "derivable_info_icon": "ⓘ  What is a derivable?",
       "derivable_info": "What is a derivable?",
-      "recover": "Recover"
+      "info_icon": "ⓘ",
+      "recover": "Recover",
+      "skip": "Skip"
     },
     "recover": {
       "messageTitle": "Recover Existing Wallet",

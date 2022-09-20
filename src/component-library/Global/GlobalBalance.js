@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import theme from './theme';
@@ -22,6 +22,8 @@ const styles = StyleSheet.create({
   },
   inline: {
     marginTop: theme.gutters.paddingXXS,
+    marginBottom: theme.gutters.paddingXL,
+    marginLeft: theme.gutters.paddingSM,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -37,12 +39,14 @@ const styles = StyleSheet.create({
     lineHeight: theme.fontSize.fontSizeNormal,
   },
   infoLink: {
-    marginBottom: theme.gutters.paddingLG,
+    marginLeft: theme.gutters.paddingXXS,
     fontFamily: theme.fonts.dmSansRegular,
     fontSize: theme.fontSize.fontSizeXS,
+    lineHeight: theme.fontSize.fontSizeNormal,
     color: theme.colors.labelSecondary,
     fontWeight: 'normal',
     textTransform: 'none',
+    marginTop: 2,
   },
 });
 
@@ -107,14 +111,12 @@ const WalletBalanceCard = ({
             </GlobalText>
           </>
         )}
+        <TouchableOpacity onPress={toggleDialog}>
+          <GlobalText type="body2" style={styles.infoLink}>
+            {t(`wallet.create.info_icon`)}
+          </GlobalText>
+        </TouchableOpacity>
       </View>
-      <GlobalButton
-        type="text"
-        wide
-        textStyle={styles.infoLink}
-        title={t(`wallet.create.derivable_info_icon`)}
-        onPress={toggleDialog}
-      />
       <SimpleDialog
         title={
           <GlobalText center type="headline3" numberOfLines={1}>

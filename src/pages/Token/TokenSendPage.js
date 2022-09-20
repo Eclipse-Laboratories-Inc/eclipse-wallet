@@ -140,6 +140,16 @@ const TokenSendPage = ({ params, t }) => {
 
   const recipient = recipientName ? recipientName : recipientAddress;
 
+  const openTransaction = async () => {
+    const url = `https://solscan.io/tx/${transactionId}`;
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
+
   return (
     loaded && (
       <GlobalLayout fullscreen>
@@ -469,9 +479,7 @@ const TokenSendPage = ({ params, t }) => {
                       : t(`token.send.view_transaction`)
                   }
                   readonly={status === 'creating'}
-                  onPress={() =>
-                    Linking.openURL(`https://solscan.io/tx/${transactionId}`)
-                  }
+                  onPress={openTransaction}
                 />
               )}
             </GlobalLayout.Footer>
