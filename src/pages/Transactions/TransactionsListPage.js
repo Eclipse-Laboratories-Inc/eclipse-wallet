@@ -295,7 +295,7 @@ const TransactionsListPage = ({ t }) => {
                                   <View style={styles.inline}>
                                     <GlobalText
                                       key={'amount-action'}
-                                      type="body2"
+                                      type="body1"
                                       color="positive">
                                       {`+${
                                         transaction.swapAmountIn /
@@ -317,7 +317,7 @@ const TransactionsListPage = ({ t }) => {
                                       <>
                                         <GlobalText
                                           key={'amount-action'}
-                                          type="body2"
+                                          type="body1"
                                           color="negativeLight">
                                           {`-${
                                             transaction.swapAmountOut /
@@ -338,17 +338,6 @@ const TransactionsListPage = ({ t }) => {
                                         />
                                       </>
                                     )}
-                                  </View>,
-                                  <View style={styles.inline}>
-                                    <GlobalText
-                                      key={'amount-action'}
-                                      type="body2"
-                                      color="negativeLight">
-                                      {`${'-'}${
-                                        transaction.fee / TOKEN_DECIMALS.SOLANA
-                                      } SOL `}
-                                    </GlobalText>
-                                    <AvatarImage url={LOGOS.SOLANA} size={18} />
                                   </View>,
                                 ].filter(Boolean)
                           }

@@ -100,7 +100,6 @@ const TokenSelectPage = ({ params, t }) => {
             onBack={goToBack}
             secondaryTitle={t(`token.action.${params.action || 'select'}`)}
           />
-
           <GlobalInput
             forSearch
             placeholder={t('actions.search_placeholder')}
@@ -109,8 +108,7 @@ const TokenSelectPage = ({ params, t }) => {
           />
 
           <GlobalPadding />
-
-          {drawedList && drawedList.lenght > 0 && (
+          {drawedList && drawedList.length > 0 && (
             <GlobalCollapse
               title={t('wallet.select_token')}
               isOpen

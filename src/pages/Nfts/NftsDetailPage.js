@@ -18,6 +18,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
+import Header from '../../component-library/Layout/Header';
 
 const styles = StyleSheet.create({
   renderItemStyle: {
@@ -78,27 +79,26 @@ const NftsDetailPage = ({ params, t }) => {
       </View>
     );
   };
+  const title = nftDetail.name ? nftDetail.name : nftDetail.symbol;
 
   return (
     (loaded && (
       <GlobalLayout fullscreen>
         <GlobalLayout.Header>
+          <Header activeWallet={activeWallet} config={config} t={t} />
           <GlobalBackTitle
             onBack={goToBack}
-            inlineTitle={getWalletName(
-              activeWallet.getReceiveAddress(),
-              config,
-            )}
-            inlineAddress={activeWallet.getReceiveAddress()}
+            inlineTitle={
+              <GlobalText type="headline2" center>
+                {title}
+              </GlobalText>
+            }
             nospace
           />
 
           <GlobalPadding size="xxs" />
 
           <View style={globalStyles.centered}>
-            <GlobalText type="headline2" center>
-              {nftDetail.name}
-            </GlobalText>
             <GlobalPadding size="xs" />
             <View style={globalStyles.squareRatio}>
               <GlobalImage

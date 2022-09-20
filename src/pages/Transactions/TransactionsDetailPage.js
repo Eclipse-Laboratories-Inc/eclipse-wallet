@@ -312,7 +312,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                             source={
                               transactionDetail.tokenLogoOut || LOGOS.SOLANA
                             }
-                            size="xxl"
+                            size="xl"
                             style={styles.bigImage}
                             circle
                           />
@@ -320,7 +320,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                             source={
                               transactionDetail.tokenLogoIn || LOGOS.SOLANA
                             }
-                            size="xxl"
+                            size="xl"
                             style={styles.bigImage}
                             circle
                           />
@@ -332,8 +332,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                             ? getTransactionImage('fail')
                             : getTransactionImage('swap')
                         }
-                        size="md"
-                        circle
+                        size="sm"
                         style={styles.floatingTransaction}
                       />
                     </View>
@@ -346,7 +345,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                       </GlobalText>
                     ) : (
                       <>
-                        <GlobalText type="headline2" center>
+                        <GlobalText type="headline3" center>
                           {`+${
                             transactionDetail.swapAmountIn /
                             (transactionDetail.tokenNameIn === 'SOL' ||
@@ -355,7 +354,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                               : TOKEN_DECIMALS.COINS)
                           } ${transactionDetail.tokenNameIn || 'SOL'} `}
                         </GlobalText>
-                        <GlobalText type="headline2" center>
+                        <GlobalText type="headline3" center>
                           {`-${
                             transactionDetail.swapAmountOut /
                             (transactionDetail.tokenNameOut === 'SOL' ||
@@ -364,7 +363,7 @@ const TransactionsDetailPage = ({ t, params }) => {
                               : TOKEN_DECIMALS.COINS)
                           } ${transactionDetail.tokenNameOut || 'SOL'} `}
                         </GlobalText>
-                        <GlobalText type="headline2" center>
+                        <GlobalText type="headline3" center>
                           {`${'-'}${
                             transactionDetail.fee / TOKEN_DECIMALS.SOLANA
                           } SOL  `}
