@@ -442,7 +442,7 @@ const TokenSendPage = ({ params, t }) => {
             </GlobalLayout.Header>
 
             <GlobalLayout.Footer>
-              {status === 'success' ? (
+              {status === 'success' || status === 'fail' ? (
                 <>
                   <GlobalButton
                     type="primary"

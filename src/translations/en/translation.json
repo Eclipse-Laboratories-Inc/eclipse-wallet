@@ -113,6 +113,7 @@
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
       "transaction_success": "Sent",
+      "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Fail",
       "goto_explorer": "Go to Explorer",

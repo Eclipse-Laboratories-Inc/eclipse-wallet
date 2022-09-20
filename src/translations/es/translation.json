@@ -98,6 +98,7 @@
       "transaction_creating": "Creando Transacción...",
       "transaction_sending": "Enviando...",
       "transaction_success": "Enviado",
+      "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Error",
       "goto_explorer": "Ir al Explorer",

@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Linking, View } from 'react-native';
+import { StyleSheet, Linking, View } from 'react-native';
 import get from 'lodash/get';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { globalStyles } from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -18,12 +18,28 @@ import {
   getAvailableTokens,
   getFeaturedTokens,
   getTransactionImage,
+  TRANSACTION_STATUS,
 } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showPercentage, showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
+
+const styles = StyleSheet.create({
+  viewTxLink: {
+    fontFamily: theme.fonts.dmSansRegular,
+    color: theme.colors.accentPrimary,
+    fontWeight: 'normal',
+    textTransform: 'none',
+  },
+  creatingTx: {
+    fontFamily: theme.fonts.dmSansRegular,
+    color: theme.colors.labelSecondary,
+    fontWeight: 'normal',
+    textTransform: 'none',
+  },
+});
 
 const DetailItem = ({ title, value, t }) => (
   <View style={globalStyles.inlineWell}>
@@ -65,6 +81,7 @@ const SwapPage = ({ t }) => {
   const [outToken, setOutToken] = useState(null);
   const [quote, setQuote] = useState({});
   const [transaction, setTransaction] = useState('');
+  const [status, setStatus] = useState();
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -124,19 +141,29 @@ const SwapPage = ({ t }) => {
     setError(false);
     setProcessing(true);
     try {
+      setStatus(TRANSACTION_STATUS.CREATING);
+      setStep(3);
       const sts = await activeWallet.createSwapTransaction(quote.route.id);
       setTransaction(sts[0]);
-      setStep(3);
+      setStatus(TRANSACTION_STATUS.SWAPPING);
+
       for (let st of sts) {
+        setTransaction(st);
         const result = await activeWallet.executeSwapTransaction(st);
         if (get(result, 'value.err')) {
           setError(true);
+          setStatus(TRANSACTION_STATUS.FAIL);
+        } else {
+          setError(false);
+          setStatus(TRANSACTION_STATUS.SUCCESS);
         }
       }
+
       setProcessing(false);
     } catch (e) {
       console.log(e);
       setError(true);
+      setStatus(TRANSACTION_STATUS.FAIL);
       setProcessing(false);
     }
   };
@@ -303,56 +330,77 @@ const SwapPage = ({ t }) => {
           <GlobalLayout.Header>
             <GlobalPadding size="4xl" />
             <GlobalPadding size="4xl" />
-            <View style={globalStyles.centeredSmall}>
-              {!processing && (
-                <GlobalImage
-                  source={getTransactionImage(!error ? 'success' : 'fail')}
-                  size="3xl"
-                  circle
-                />
-              )}
-              <GlobalPadding />
-              {processing && (
-                <GlobalText type="headline2" center>
-                  {t(`general.sending`)}
-                </GlobalText>
-              )}
-              {!processing && (
-                <GlobalText type="headline2" center>
-                  {t(`token.send.transaction_${!error ? 'success' : 'fail'}`)}
-                </GlobalText>
-              )}
+            <GlobalPadding size="4xl" />
 
-              <GlobalText type="body1" center>
-                3 lines max Excepteur sint occaecat cupidatat non proident, sunt
-                ?
-              </GlobalText>
+            {status !== 'success' && (
+              <>
+                <GlobalPadding size="4xl" />
+                <GlobalPadding size="4xl" />
+              </>
+            )}
+            <View style={globalStyles.centeredSmall}>
+              <GlobalImage
+                source={getTransactionImage(status)}
+                size="3xl"
+                circle
+              />
+              <GlobalPadding />
+              {status !== 'creating' && (
+                <GlobalText
+                  type={status === 'swapping' ? 'subtitle2' : 'headline2'}
+                  color={status === 'swapping' && 'secondary'}
+                  center>
+                  {t(`token.send.transaction_${status}`)}
+                </GlobalText>
+              )}
+              {status === 'success' ||
+                (status === 'fail' && (
+                  <GlobalText type="body1" center>
+                    3 lines max Excepteur sint occaecat cupidatat non proident,
+                    sunt ?
+                  </GlobalText>
+                ))}
 
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
 
-          <GlobalLayout.Footer inlineFlex>
-            <GlobalButton
-              type="secondary"
-              flex
-              title="View Transaction"
-              onPress={openTransaction}
-              style={[globalStyles.button, globalStyles.buttonLeft]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-            {!processing && (
+          <GlobalLayout.Footer>
+            {status === 'success' || status === 'fail' ? (
               <>
-                <GlobalPadding size="xs" />
+                <GlobalButton
+                  type="primary"
+                  wide
+                  title={t(`token.send.goto_explorer`)}
+                  onPress={openTransaction}
+                />
+
+                <GlobalPadding size="md" />
+
                 <GlobalButton
                   type="secondary"
-                  flex
-                  title="Close"
+                  title={t(`general.close`)}
+                  wide
                   onPress={goToBack}
                   style={[globalStyles.button, globalStyles.buttonLeft]}
                   touchableStyles={globalStyles.buttonTouchable}
                 />
               </>
+            ) : (
+              <GlobalButton
+                type="text"
+                wide
+                textStyle={
+                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
+                }
+                title={
+                  status === 'creating'
+                    ? t(`token.send.transaction_creating`)
+                    : t(`token.send.view_transaction`)
+                }
+                readonly={status === 'creating'}
+                onPress={openTransaction}
+              />
             )}
           </GlobalLayout.Footer>
         </>
