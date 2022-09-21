@@ -33,7 +33,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const ChooseDerivabes = ({ accounts, onComplete, goToWallet, t }) => {
+const SPACE_CHAR = '\u00A0';
+
+const formatTitle = (index, publicKey) => {
+  let title = index;
+  const numberOfSpaces = 4;
+
+  for (let i = 0; i < numberOfSpaces; i++) {
+    title += SPACE_CHAR;
+  }
+
+  const visiblePart = 8;
+
+  return `${title}${publicKey.substring(
+    0,
+    visiblePart,
+  )} ... ${publicKey.substring(publicKey.length - visiblePart)}`;
+};
+
+const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {
@@ -52,13 +70,20 @@ const ChooseDerivabes = ({ accounts, onComplete, goToWallet, t }) => {
       </View>
       <GlobalLayout>
         <GlobalLayout.Header>
-          {accounts.map(({ index }) => (
+          {accounts.map(({ index, publicKey }) => (
             <CardButton
               key={`wallet-${index}`}
               active={selected.includes(index)}
-              title="Public Key"
-              description="0.0000.00"
-              actions={<GlobalText type="body2">$0.000.000</GlobalText>}
+              title={
+                <GlobalText type="body1">
+                  {formatTitle(index, publicKey.toString())}
+                </GlobalText>
+              }
+              actions={
+                <GlobalText type="body2">
+                  {balances[publicKey.toString()]?.amount ?? 0} SOL
+                </GlobalText>
+              }
               onPress={() => updateSelected(index, !selected.includes(index))}
               icon={<AvatarImage url={LOGOS[getDefaultChain()]} size={48} />}
             />
@@ -84,4 +109,4 @@ const ChooseDerivabes = ({ accounts, onComplete, goToWallet, t }) => {
   );
 };
 
-export default withTranslation()(ChooseDerivabes);
+export default withTranslation()(ChooseDerivable);

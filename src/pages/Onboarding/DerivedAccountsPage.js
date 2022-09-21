@@ -2,11 +2,24 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { getDefaultChain, getDerivedAccounts } from '../../utils/wallet';
-import ChooseDerivabes from './components/ChooseDerivabes';
+import ChooseDerivable from './components/ChooseDerivable';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_MAP_ADAPTER } from '../Adapter/routes';
+import { getSolanaBalance } from '4m-wallet-adapter/services/solana/solana-balance-service';
+
+const getSolBalances = async (activeWallet, derivAccounts) => {
+  const connection = await activeWallet.getConnection();
+  const items = {};
+
+  for (const { publicKey } of derivAccounts) {
+    const solBalance = await getSolanaBalance(connection, publicKey);
+    items[publicKey.toString()] = solBalance;
+  }
+
+  return items;
+};
 
 const DerivedAccountsPage = ({ t }) => {
   const navigate = useNavigation();
@@ -14,7 +27,10 @@ const DerivedAccountsPage = ({ t }) => {
     { activeWallet, selectedEndpoints, isAdapter },
     { addDerivedAccounts },
   ] = useContext(AppContext);
+
   const [accounts, setAccounts] = useState([]);
+  const [balances, setBalances] = useState([]);
+
   useEffect(() => {
     getDerivedAccounts(
       getDefaultChain(),
@@ -24,6 +40,13 @@ const DerivedAccountsPage = ({ t }) => {
       setAccounts(derived.filter(d => d.index));
     });
   }, [activeWallet, selectedEndpoints]);
+
+  useEffect(() => {
+    getSolBalances(activeWallet, accounts).then(accBalance => {
+      setBalances(accBalance);
+    });
+  }, [activeWallet, accounts]);
+
   const onComplete = async selected => {
     await addDerivedAccounts(
       accounts.filter(a => selected.includes(a.index)),
@@ -36,9 +59,10 @@ const DerivedAccountsPage = ({ t }) => {
     navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
 
   return (
-    <ChooseDerivabes
+    <ChooseDerivable
       accounts={accounts}
       onComplete={onComplete}
+      balances={balances}
       goToWallet={goToWallet}
     />
   );
