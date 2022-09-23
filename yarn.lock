@@ -2,8 +2,10 @@
 # yarn lockfile v1
 
 
-"4m-wallet-adapter@../4m-modules/crypto/wallet-adapter/":
-  version "0.0.57"
+"4m-wallet-adapter@^0.0.58":
+  version "0.0.58"
+  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.58.tgz#c72c03b7a44d6f7597c7106d2c64891e13653320"
+  integrity sha512-QneCa4Lm6yYtmDGTTjD3sNygDtGcvYEV8SrPwprd5ds4hjHDKKQNq3awxrSRgKLT1RkB8IhifoZbwG/vci80tg==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@metaplex-foundation/js-next" "^0.10.0"
