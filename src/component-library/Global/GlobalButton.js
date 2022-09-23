@@ -101,6 +101,12 @@ const styles = StyleSheet.create({
   secondary: {
     backgroundColor: theme.colors.cards,
   },
+  danger: {
+    backgroundColor: theme.colors.danger,
+  },
+  dangerLight: {
+    backgroundColor: theme.colors.accentSecondary,
+  },
   secondaryText: {
     color: theme.colors.labelPrimary,
   },
@@ -171,6 +177,8 @@ const GlobalButton = ({
     ...(type === 'accent' ? styles.accent : {}),
     ...(type === 'primary' ? styles.primary : {}),
     ...(type === 'secondary' ? styles.secondary : {}),
+    ...(type === 'danger' ? styles.danger : {}),
+    ...(type === 'dangerLight' ? styles.dangerLight : {}),
     ...(type === 'text' ? styles.textButton : {}),
     ...(type === 'card' ? styles.cardButton : {}),
     ...(type === 'tabbar' ? styles.tabbar : {}),

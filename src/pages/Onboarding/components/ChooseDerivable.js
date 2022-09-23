@@ -21,6 +21,9 @@ const styles = StyleSheet.create({
     marginLeft: theme.gutters.paddingSM,
     marginRight: theme.gutters.paddingSM,
   },
+  accountsView: {
+    minHeight: 800,
+  },
   recoverBtnContainer: {
     alignItems: 'center',
     position: 'absolute',
@@ -68,7 +71,7 @@ const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
           tertiaryTitle="m/44'/501'/0'"
         />
       </View>
-      <GlobalLayout>
+      <GlobalLayout style={styles.accountsView}>
         <GlobalLayout.Header>
           {accounts.map(({ index, publicKey }) => (
             <CardButton

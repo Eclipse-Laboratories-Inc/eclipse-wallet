@@ -99,6 +99,8 @@ const ComingSoon = ({ currentChain, comingSoon, setComingSoon, t }) => {
           {`${currentChain} ${t('wallet.is_coming_soon')}`}
         </GlobalText>
       }
+      btn1Title={t('actions.follow_us')}
+      btn2Title={t('actions.continue')}
       onClose={onClose}
       isOpen={comingSoon}
       action={goToTwitter}
