@@ -19,6 +19,8 @@ const GlobalSkeleton = ({ type }) => {
       return <TokenDetail />;
     case 'TransactionDetail':
       return <TransactionDetail />;
+    case 'Swap':
+      return <Swap />;
   }
 };
 
@@ -102,6 +104,18 @@ const TransactionDetail = () => (
     <Rect x="20" y="120" rx="1" ry="1" width="61" height="12" />
     <Rect x="5" y="59" rx="1" ry="1" width="90" height="10" />
     <Rect x="5" y="72" rx="1" ry="1" width="90" height="10" />
+  </ContentLoader>
+);
+
+const Swap = () => (
+  <ContentLoader
+    foregroundColor={theme.colors.cards}
+    backgroundColor={theme.colors.bgLight}
+    viewBox="0 0 100 100">
+    <Rect x="0" y="0" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="25" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="50" rx="3" ry="3" width="100" height="23" />
+    <Rect x="0" y="75" rx="3" ry="3" width="100" height="23" />
   </ContentLoader>
 );
 

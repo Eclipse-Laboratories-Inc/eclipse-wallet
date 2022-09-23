@@ -231,9 +231,20 @@ const useWallets = () => {
   };
   const removeAllWallets = async () => {
     await storage.clear();
+    setConfig({});
+    setLastNumber(0);
     setWallets([]);
     setActiveWallet(null);
     setRequiredLock(false);
+  };
+  const removeWallet = async address => {
+    const newWallArr = wallets.filter(w => w.address !== address);
+    setWallets(newWallArr);
+    if (newWallArr.length) {
+      await changeActiveWallet(wallets.findIndex(w => w.address !== address));
+    } else {
+      removeAllWallets();
+    }
   };
   const editWalletName = async (address, name) => {
     const _config = {
@@ -324,6 +335,7 @@ const useWallets = () => {
       lockWallets,
       checkPassword,
       removeAllWallets,
+      removeWallet,
       editWalletName,
       editWalletAvatar,
       addTrustedApp,

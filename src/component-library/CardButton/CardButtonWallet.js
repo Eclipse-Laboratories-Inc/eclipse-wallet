@@ -15,6 +15,7 @@ const CardButtonWallet = ({
   active,
   onPress,
   onSecondaryPress,
+  onTertiaryPress,
   buttonStyle,
   touchableStyles,
   ...props
@@ -30,6 +31,7 @@ const CardButtonWallet = ({
     selected={selected}
     onPress={onPress}
     onSecondaryPress={onSecondaryPress}
+    onTertiaryPress={onTertiaryPress}
     buttonStyle={buttonStyle}
     touchableStyles={touchableStyles}
     {...props}

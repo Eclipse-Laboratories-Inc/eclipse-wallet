@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { useNavigation } from '../../routes/hooks';
 import { getWalletChain, getWalletName } from '../../utils/wallet';
 
@@ -14,16 +15,32 @@ import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
     { activeWallet, config, selectedEndpoints, selectedLanguage },
-    { logout },
+    { logout, removeWallet },
   ] = useContext(AppContext);
+  const [showSingleDialog, setShowSingleDialog] = useState(false);
+  const [showAllDialog, setShowAllDialog] = useState(false);
+
+  const toggleSingleDialog = () => {
+    setShowSingleDialog(!showSingleDialog);
+  };
+  const toggleAllDialog = () => {
+    setShowAllDialog(!showAllDialog);
+  };
   const handleLogout = () => {
     logout();
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
+  };
+
+  const handleRemove = async () => {
+    await removeWallet(activeWallet.getReceiveAddress());
+    toggleSingleDialog();
+    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
   };
 
   const goToAccounts = () =>
@@ -123,13 +140,65 @@ const SettingsOptionsPage = ({ t }) => {
 
       <GlobalLayout.Footer>
         <GlobalButton
-          type="text"
-          block
-          title={t(`actions.logout`)}
-          color="secondary"
-          onPress={handleLogout}
+          type="danger"
+          wide
+          title={t(`settings.wallets.remove_wallet`)}
+          onPress={toggleSingleDialog}
+        />
+
+        <GlobalPadding size="sm" />
+
+        <GlobalButton
+          type="dangerLight"
+          wide
+          title={t(`settings.wallets.remove_all_wallets`)}
+          onPress={toggleAllDialog}
         />
       </GlobalLayout.Footer>
+      <SimpleDialog
+        type="danger"
+        title={
+          <GlobalText center type="headline3" numberOfLines={1}>
+            Are your sure?
+          </GlobalText>
+        }
+        btn1Title={t('actions.remove')}
+        btn2Title={t('actions.cancel')}
+        onClose={toggleSingleDialog}
+        isOpen={showSingleDialog}
+        action={handleRemove}
+        text={
+          <GlobalText
+            center
+            onPress={handleRemove}
+            type="subtitle1"
+            numberOfLines={1}>
+            {getWalletName(activeWallet.getReceiveAddress(), config)}
+          </GlobalText>
+        }
+      />
+      <SimpleDialog
+        type="danger"
+        title={
+          <GlobalText center type="headline3" numberOfLines={1}>
+            Are your sure?
+          </GlobalText>
+        }
+        btn1Title={t('actions.remove_all')}
+        btn2Title={t('actions.cancel')}
+        onClose={toggleAllDialog}
+        isOpen={showAllDialog}
+        action={handleLogout}
+        text={
+          <GlobalText
+            center
+            onPress={handleLogout}
+            type="subtitle1"
+            numberOfLines={1}>
+            remove all wallets
+          </GlobalText>
+        }
+      />
     </GlobalLayout>
   );
 };

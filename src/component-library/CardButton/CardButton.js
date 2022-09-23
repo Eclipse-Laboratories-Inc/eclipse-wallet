@@ -10,6 +10,7 @@ import IconChevronRight from '../../assets/images/IconChevronRight.png';
 import IconExpandMore from '../../assets/images/IconExpandMore.png';
 import IconInteractionRed from '../../assets/images/IconInteractionRed.png';
 import IconEdit from '../../assets/images/IconEdit.png';
+import IconDelete from '../../assets/images/IconDelete.png';
 import ToggleOn from '../../assets/images/ToggleOn.png';
 import ToggleOff from '../../assets/images/ToggleOff.png';
 
@@ -64,6 +65,11 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderLeftColor: theme.colors.labelPrimary,
   },
+  tertiaryAction: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: theme.gutters.responsivePadding * -0.5,
+  },
   touchableActionButton: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -90,6 +96,7 @@ const CardButton = ({
   nospace,
   onPress,
   onSecondaryPress,
+  onTertiaryPress,
   touchableStyles,
   buttonStyle,
   imageStyle,
@@ -190,7 +197,17 @@ const CardButton = ({
             onPress={onSecondaryPress}
             touchableStyles={[styles.touchableActionButton, buttonSize]}
             transparent>
-            <GlobalImage source={IconEdit} size="sm" />
+            <GlobalImage source={IconEdit} size="xs" />
+          </GlobalButton>
+        </View>
+      )}
+      {onTertiaryPress && (
+        <View style={styles.tertiaryAction}>
+          <GlobalButton
+            onPress={onTertiaryPress}
+            touchableStyles={[styles.touchableActionButton, buttonSize]}
+            transparent>
+            <GlobalImage source={IconDelete} size="xs" />
           </GlobalButton>
         </View>
       )}

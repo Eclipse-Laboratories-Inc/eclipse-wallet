@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import groupBy from 'lodash/groupBy';
 
@@ -19,6 +19,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -34,8 +35,12 @@ const styles = StyleSheet.create({
 
 const AccountSelectPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets, locked, config }, { changeActiveWallet }] =
-    useContext(AppContext);
+  const [
+    { activeWallet, wallets, locked, config },
+    { removeWallet, changeActiveWallet },
+  ] = useContext(AppContext);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [toRemove, setToRemove] = useState([]);
   const addNewWallet = () =>
     navigate(APP_ROUTES_MAP.ONBOARDING, {
       Screen: ONBOARDING_ROUTES_MAP.ONBOARDING_HOME,
@@ -50,7 +55,15 @@ const AccountSelectPage = ({ t }) => {
   const editWallet = ({ address }) => {
     navigate(ROUTES_MAP.SETTINGS_ACCOUNT_EDIT, { address });
   };
-
+  const toggleRemoveDialog = ({ address }) => {
+    setToRemove(address);
+    setShowRemoveDialog(!showRemoveDialog);
+  };
+  const handleRemoveWallet = async address => {
+    await removeWallet(address);
+    setShowRemoveDialog(!showRemoveDialog);
+    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
+  };
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
   return (
@@ -75,17 +88,42 @@ const AccountSelectPage = ({ t }) => {
               </View>
               <>
                 {groupedWallets[chain].map(wallet => (
-                  <CardButtonWallet
-                    key={wallet.address}
-                    title={getWalletName(wallet.address, config)}
-                    address={wallet.address}
-                    chain={wallet.chain}
-                    selected={
-                      activeWallet.getReceiveAddress() === wallet.address
-                    }
-                    onPress={() => selectWallet(wallet)}
-                    onSecondaryPress={() => editWallet(wallet)}
-                  />
+                  <>
+                    <CardButtonWallet
+                      key={wallet.address}
+                      title={getWalletName(wallet.address, config)}
+                      address={wallet.address}
+                      chain={wallet.chain}
+                      selected={
+                        activeWallet.getReceiveAddress() === wallet.address
+                      }
+                      onPress={() => selectWallet(wallet)}
+                      onSecondaryPress={() => editWallet(wallet)}
+                      onTertiaryPress={() => toggleRemoveDialog(wallet)}
+                    />
+                    <SimpleDialog
+                      type="danger"
+                      title={
+                        <GlobalText center type="headline3" numberOfLines={1}>
+                          Are your sure?
+                        </GlobalText>
+                      }
+                      btn1Title={t('actions.remove')}
+                      btn2Title={t('actions.cancel')}
+                      onClose={toggleRemoveDialog}
+                      isOpen={showRemoveDialog}
+                      action={() => handleRemoveWallet(toRemove)}
+                      text={
+                        <GlobalText
+                          center
+                          onPress={() => handleRemoveWallet(toRemove)}
+                          type="subtitle1"
+                          numberOfLines={1}>
+                          Loren ipsum
+                        </GlobalText>
+                      }
+                    />
+                  </>
                 ))}
               </>
             </React.Fragment>

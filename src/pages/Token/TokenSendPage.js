@@ -430,7 +430,7 @@ const TokenSendPage = ({ params, t }) => {
                     {t(`token.send.transaction_${status}`)}
                   </GlobalText>
                 )}
-                {status === 'success' && (
+                {(status === 'success' || status === 'fail') && (
                   <GlobalText type="body1" center>
                     3 lines max Excepteur sint occaecat cupidatat non proident,
                     sunt ?

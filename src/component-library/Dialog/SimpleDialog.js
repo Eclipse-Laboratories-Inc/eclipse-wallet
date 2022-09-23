@@ -8,7 +8,17 @@ import IconClose from '../../assets/images/IconClose.png';
 import { View } from 'react-native';
 import { withTranslation } from '../../hooks/useTranslations';
 
-const SimpleDialog = ({ title, onClose, isOpen, action, text, t }) => (
+const SimpleDialog = ({
+  type,
+  title,
+  onClose,
+  isOpen,
+  action,
+  text,
+  btn1Title,
+  btn2Title,
+  t,
+}) => (
   <Dialog
     fullWidth
     open={isOpen}
@@ -45,9 +55,9 @@ const SimpleDialog = ({ title, onClose, isOpen, action, text, t }) => (
       {action && (
         <View>
           <GlobalButton
-            type="primary"
+            type={type || 'primary'}
             flex
-            title={t('actions.follow_us')}
+            title={btn1Title}
             onPress={action}
             style={[globalStyles.button, globalStyles.buttonRight]}
             touchableStyles={globalStyles.buttonTouchable}
@@ -56,7 +66,7 @@ const SimpleDialog = ({ title, onClose, isOpen, action, text, t }) => (
           <GlobalButton
             type="secondary"
             flex
-            title={t('actions.continue')}
+            title={btn2Title}
             onPress={onClose}
             style={[globalStyles.button, globalStyles.buttonRight]}
             touchableStyles={globalStyles.buttonTouchable}
