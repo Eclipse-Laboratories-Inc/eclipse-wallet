@@ -32,6 +32,11 @@ const AddressBookPage = ({ t }) => {
           <CardButtonWallet
             key={addressBookItem.address}
             title={addressBookItem.name}
+            subtitle={
+              addressBookItem.domain
+                ? `domain: ${addressBookItem.domain}`
+                : null
+            }
             address={addressBookItem.address}
             chain={addressBookItem.chain}
             imageSize="md"

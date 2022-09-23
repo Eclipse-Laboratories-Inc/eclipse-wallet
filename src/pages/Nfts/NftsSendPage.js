@@ -49,8 +49,10 @@ const NftsSendPage = ({ params, t }) => {
     useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState('');
+  const [recipientName, setRecipientName] = useState('');
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [inputAddress, setInputAddress] = useState('');
 
   useEffect(() => {
     if (activeWallet) {
@@ -139,12 +141,16 @@ const NftsSendPage = ({ params, t }) => {
               {step === 1 && (
                 <>
                   <InputAddress
-                    address={recipientAddress}
-                    onChange={setRecipientAddress}
+                    address={inputAddress}
+                    publicKey={recipientAddress}
+                    domain={recipientName}
                     validAddress={validAddress}
                     addressEmpty={addressEmpty}
+                    onChange={setInputAddress}
                     setValidAddress={setValidAddress}
+                    setDomain={setRecipientName}
                     setAddressEmpty={setAddressEmpty}
+                    setPublicKey={setRecipientAddress}
                     onQR={toggleScan}
                   />
 

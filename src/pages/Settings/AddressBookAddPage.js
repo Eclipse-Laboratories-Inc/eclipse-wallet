@@ -20,10 +20,12 @@ const AddressBookAddPage = ({ t }) => {
   const [saving, setSaving] = useState(false);
   const [{ activeWallet }, { addAddress }] = useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
-  const [addressAddress, setAddressAddress] = useState('');
+  const [recipientAddress, setRecipientAddress] = useState('');
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [recipientName, setRecipientName] = useState(null);
+  const [inputAddress, setInputAddress] = useState('');
 
   const isValid = addressLabel && validAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
@@ -31,7 +33,7 @@ const AddressBookAddPage = ({ t }) => {
     setSaving(true);
     // check valid address and non existant
     await addAddress({
-      address: addressAddress,
+      address: recipientAddress,
       name: addressLabel,
       chain: getWalletChain(activeWallet),
     });
@@ -43,7 +45,7 @@ const AddressBookAddPage = ({ t }) => {
   };
   const onRead = qr => {
     const data = qr;
-    setAddressAddress(data.data);
+    setRecipientAddress(data.data);
     setShowScan(false);
   };
   return (
@@ -66,13 +68,16 @@ const AddressBookAddPage = ({ t }) => {
         <GlobalPadding size="md" />
 
         <InputAddress
-          address={addressAddress}
-          onChange={setAddressAddress}
+          address={inputAddress}
+          publicKey={recipientAddress}
+          domain={recipientName}
           validAddress={validAddress}
           addressEmpty={addressEmpty}
+          onChange={setInputAddress}
           setValidAddress={setValidAddress}
+          setDomain={setRecipientName}
           setAddressEmpty={setAddressEmpty}
-          recipient={false}
+          setPublicKey={setRecipientAddress}
           onQR={toggleScan}
         />
       </GlobalLayout.Header>

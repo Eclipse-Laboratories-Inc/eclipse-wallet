@@ -79,6 +79,7 @@ const CardButton = ({
   imageSize,
   mask,
   title,
+  subtitle,
   caption,
   description,
   children,
@@ -149,6 +150,12 @@ const CardButton = ({
               color="secondary"
               style={styles.description}>
               {description}
+            </GlobalText>
+          )}
+
+          {subtitle && (
+            <GlobalText type="caption" color="warning" numberOfLines={1}>
+              {subtitle}
             </GlobalText>
           )}
         </View>

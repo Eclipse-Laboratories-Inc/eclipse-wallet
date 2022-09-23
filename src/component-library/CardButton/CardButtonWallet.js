@@ -8,6 +8,7 @@ import CardButton from './CardButton';
 const CardButtonWallet = ({
   title,
   address,
+  subtitle,
   chain,
   image,
   imageSize,
@@ -22,6 +23,7 @@ const CardButtonWallet = ({
   <CardButton
     key={address}
     title={title}
+    subtitle={subtitle}
     description={`${getShortAddress(address)}`}
     image={getMediaRemoteUrl(image || LOGOS[chain])}
     imageSize={imageSize ? imageSize : 'xl'}

@@ -20,19 +20,23 @@ const AddressBookEditPage = ({ params, t }) => {
   const [{ activeWallet, addressBook }, { editAddress }] =
     useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
-  const [addressAddress, setAddressAddress] = useState('');
+  const [recipientAddress, setRecipientAddress] = useState('');
   const [currentAddress, setCurrentAddress] = useState('');
-  const [currentLabel, setCurrentLabel] = useState('');
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [recipientName, setRecipientName] = useState(null);
+  const [inputAddress, setInputAddress] = useState('');
+
   useEffect(() => {
     const address = addressBook.find(a => a.address === params.address);
     if (address) {
+      console.log(JSON.stringify(address));
       setCurrentAddress(address.address);
-      setCurrentLabel(address.name);
-      setAddressAddress(address.address);
+      setRecipientName(address.domain);
+      setInputAddress(address.address);
+      setRecipientAddress(address.address);
       setAddressLabel(address.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,8 +48,9 @@ const AddressBookEditPage = ({ params, t }) => {
     await editAddress(
       { address: currentAddress },
       {
-        address: addressAddress,
+        address: recipientAddress,
         name: addressLabel,
+        domain: recipientName,
         chain: getWalletChain(activeWallet),
       },
     );
@@ -57,7 +62,7 @@ const AddressBookEditPage = ({ params, t }) => {
   };
   const onRead = qr => {
     const data = qr;
-    setAddressAddress(data.data);
+    setRecipientAddress(data.data);
     setShowScan(false);
   };
 
@@ -82,13 +87,16 @@ const AddressBookEditPage = ({ params, t }) => {
         <GlobalPadding size="md" />
 
         <InputAddress
-          address={addressAddress}
-          onChange={setAddressAddress}
+          address={inputAddress}
+          publicKey={recipientAddress}
+          domain={recipientName}
           validAddress={validAddress}
           addressEmpty={addressEmpty}
+          onChange={setInputAddress}
           setValidAddress={setValidAddress}
+          setDomain={setRecipientName}
           setAddressEmpty={setAddressEmpty}
-          recipient={false}
+          setPublicKey={setRecipientAddress}
           onQR={toggleScan}
         />
       </GlobalLayout.Header>

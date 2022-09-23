@@ -9,6 +9,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import theme from '../../component-library/Global/theme';
 import { isNative } from '../../utils/platform';
+import GlobalPadding from '../../component-library/Global/GlobalPadding';
 
 const styles = StyleSheet.create({
   ERROR: {
@@ -21,10 +22,14 @@ const styles = StyleSheet.create({
 const InputAddress = ({
   t,
   address,
+  publicKey,
+  domain,
   onChange,
   validAddress,
   addressEmpty,
   setValidAddress,
+  setPublicKey,
+  setDomain,
   setAddressEmpty,
   recipient = true,
   onQR = () => {},
@@ -32,33 +37,63 @@ const InputAddress = ({
   const [{ activeWallet }] = useContext(AppContext);
   const [checkingAddress, setCheckingAddress] = useState(false);
   const [result, setResult] = useState(false);
+  const [isDomain, setIsDomain] = useState(false);
+
+  useEffect(() => {
+    setDomain('');
+    setPublicKey('');
+    if (address && validAddress) {
+      activeWallet.getPublicKeyFromDomain(address).then(
+        value => {
+          setPublicKey(value);
+          setDomain(address);
+          setIsDomain(true);
+        },
+        () => {
+          setPublicKey(address);
+          setIsDomain(false);
+        },
+      );
+    }
+  }, [
+    address,
+    validAddress,
+    activeWallet,
+    setDomain,
+    setPublicKey,
+    setIsDomain,
+  ]);
+
   const validateAddress = useMemo(
     () =>
       debounce(async a => {
         setCheckingAddress(true);
-        try {
-          const r = await activeWallet.validateDestinationAccount(a);
-          setCheckingAddress(false);
-          setValidAddress(r.type !== 'ERROR');
-          console.log(r.code);
-          setAddressEmpty(r.code === 'EMPTY_ACCOUNT');
-          setResult(r);
-        } catch (error) {
-          setCheckingAddress(false);
-          setValidAddress(false);
-          setResult({ type: 'ERROR', code: 'ERROR' });
-          console.log(error);
+        setValidAddress(null);
+        if (a) {
+          try {
+            console.log('a');
+            const r = await activeWallet.validateDestinationAccount(a);
+            setCheckingAddress(false);
+            setValidAddress(r.type !== 'ERROR');
+            setAddressEmpty(r.code === 'EMPTY_ACCOUNT');
+            setResult(r);
+          } catch (error) {
+            setCheckingAddress(false);
+            setValidAddress(false);
+            setResult({ type: 'ERROR', code: 'ERROR' });
+            console.log(error);
+          }
         }
       }, 500),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeWallet],
   );
   useEffect(() => {
-    setValidAddress(false);
+    setResult();
     if (address) {
       validateAddress(address);
     } else {
-      setResult();
+      setValidAddress(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
@@ -79,19 +114,35 @@ const InputAddress = ({
         onActionPress={() => {}}
         buttonIcon={!validAddress && isNative() ? IconQRCodeScanner : undefined}
         buttonOnPress={onQR}
-        disabled={checkingAddress}
+        editable={!checkingAddress}
+        validating={checkingAddress}
         complete={validAddress}
         inputStyle={
           result && result.type !== 'SUCCESS' ? styles[result.type] : {}
         }
       />
       {result && result.type !== 'SUCCESS' && (
-        <GlobalText
-          type="body1"
-          center
-          color={result.type === 'ERROR' ? 'negative' : 'warning'}>
-          {t(`general.address_validation.${result.code}`)}
-        </GlobalText>
+        <>
+          <GlobalPadding size="sm" />
+          <GlobalText
+            type="body1"
+            center
+            color={result.type === 'ERROR' ? 'negative' : 'warning'}>
+            {t(`general.address_validation.${result.code}`)}
+          </GlobalText>
+        </>
+      )}
+      {publicKey && isDomain && (
+        <>
+          <GlobalPadding size="sm" />
+          <GlobalText type="caption">Public key: {publicKey}</GlobalText>
+        </>
+      )}
+      {domain && (
+        <>
+          <GlobalPadding size="sm" />
+          <GlobalText type="caption">Domain: {domain}</GlobalText>
+        </>
       )}
     </>
   );

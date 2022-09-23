@@ -72,18 +72,12 @@ const TokenSendPage = ({ params, t }) => {
   const [status, setStatus] = useState();
   const [showScan, setShowScan] = useState(false);
   const [recipientName, setRecipientName] = useState('');
+  const [inputAddress, setInputAddress] = useState('');
   const [recipientAddress, setRecipientAddress] = useState(
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  useEffect(() => {
-    if (validAddress) {
-      activeWallet.getDomainFromPublicKey(recipientAddress).then(
-        domain => setRecipientName(domain),
-        () => setRecipientName('-'),
-      );
-    }
-  }, [recipientAddress, validAddress, activeWallet]);
+
   const validAmount =
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
@@ -134,7 +128,7 @@ const TokenSendPage = ({ params, t }) => {
   };
   const onRead = qr => {
     const data = qr;
-    setRecipientAddress(data.data);
+    setInputAddress(data.data);
     setShowScan(false);
   };
 
@@ -174,12 +168,16 @@ const TokenSendPage = ({ params, t }) => {
               />
 
               <InputAddress
-                address={recipientAddress}
-                onChange={setRecipientAddress}
+                address={inputAddress}
+                publicKey={recipientAddress}
+                domain={recipientName}
                 validAddress={validAddress}
                 addressEmpty={addressEmpty}
+                onChange={setInputAddress}
                 setValidAddress={setValidAddress}
+                setDomain={setRecipientName}
                 setAddressEmpty={setAddressEmpty}
+                setPublicKey={setRecipientAddress}
                 onQR={toggleScan}
               />
 
@@ -199,7 +197,7 @@ const TokenSendPage = ({ params, t }) => {
                         address={wallet.address}
                         chain={wallet.chain}
                         imageSize="md"
-                        onPress={() => setRecipientAddress(wallet.address)}
+                        onPress={() => setInputAddress(wallet.address)}
                         buttonStyle={globalStyles.addressBookItem}
                         touchableStyles={globalStyles.addressBookTouchable}
                         transparent
@@ -225,9 +223,7 @@ const TokenSendPage = ({ params, t }) => {
                         address={addressBookItem.address}
                         chain={addressBookItem.chain}
                         imageSize="md"
-                        onPress={() =>
-                          setRecipientAddress(addressBookItem.address)
-                        }
+                        onPress={() => setInputAddress(addressBookItem.address)}
                         buttonStyle={globalStyles.addressBookItem}
                         touchableStyles={globalStyles.addressBookTouchable}
                         transparent
@@ -360,7 +356,7 @@ const TokenSendPage = ({ params, t }) => {
                     <GlobalImage source={IconCopy} size="xs" />
                   </GlobalButton>
                 </View>
-                {fee && (
+                {fee && !addressEmpty && (
                   <View style={globalStyles.inlineWell}>
                     <GlobalText type="caption" color="tertiary">
                       Network Fee

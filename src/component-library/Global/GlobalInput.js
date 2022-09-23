@@ -7,6 +7,7 @@ import GlobalText from './GlobalText';
 
 import IconSearch from '../../assets/images/IconSearch.png';
 import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
+import IconSpinner from '../../assets/images/IconTransactionSending.gif';
 import GlobalTextInput from './GlobalTextInput';
 
 const styles = StyleSheet.create({
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   },
   complete: {
     width: 50,
-    // height: '100%',
+    height: 50,
     right: 0,
     position: 'absolute',
     alignItems: 'center',
@@ -105,6 +106,7 @@ const GlobalInput = ({
   seedphrase,
   multiline,
   numberOfLines,
+  validating,
   ...props
 }) => {
   const handleChange = event => {
@@ -177,6 +179,11 @@ const GlobalInput = ({
             source={IconInteractionGreen}
             style={styles.completeIcon}
           />
+        </View>
+      )}
+      {validating && (
+        <View style={styles.complete}>
+          <GlobalImage source={IconSpinner} style={styles.completeIcon} />
         </View>
       )}
     </View>

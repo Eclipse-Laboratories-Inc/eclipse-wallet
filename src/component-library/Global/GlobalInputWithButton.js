@@ -64,6 +64,7 @@ const GlobalInputWithButton = ({
   buttonIcon,
   onActionPress,
   buttonOnPress,
+  validating,
   ...props
 }) => {
   // console.log('Test');
@@ -87,6 +88,7 @@ const GlobalInputWithButton = ({
           inputStyle,
         ]}
         numberOfLines={1}
+        validating={validating}
         {...props}
       />
 
