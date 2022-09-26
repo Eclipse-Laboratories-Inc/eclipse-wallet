@@ -157,6 +157,7 @@ const WalletOverviewPage = ({ t }) => {
             <GlobalNftList
               nonFungibleTokens={nftsList}
               onClick={handleNftsClick}
+              t={t}
             />
           </GlobalCollapse>
         </GlobalLayout.Header>

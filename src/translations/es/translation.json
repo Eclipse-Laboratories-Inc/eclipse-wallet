@@ -52,6 +52,7 @@
       "remove_all_wallets": "Remover Todas las Wallets",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
+      "edit_name_disclaimer": "Ten en cuenta que el nombre funciona únicamente para identificar tu wallet localmente. Esta información no se guarda en el blockchain.",
       "edit_address": "Edit Wallet",
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
@@ -100,7 +101,7 @@
       "from": "De: {{name}}",
       "transaction_creating": "Creando Transacción...",
       "transaction_sending": "Enviando...",
-      "transaction_success": "Enviado",
+      "transaction_success": "Transacción Exitosa",
       "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Error",
@@ -153,6 +154,7 @@
       "derivable_accounts": "Derivable Accounts",
       "derivable_info_icon": "ⓘ  Qué es una cuenta derivable?",
       "derivable_info": "Qué es una cuenta derivable?",
+      "derivable_description": "Las Derivables son \"sub cuentas\" que nacen del mismo seed phrase. Usando criptografía, se combina la seed phrase con un patrón de derivación que genera estas diferentes cuentas. Permite así la generación de tantas cuentas como se quieran crear bajo la misma seed phrase.",
       "info_icon": "ⓘ",
       "recover": "Recover",
       "skip": "Omitir"
@@ -164,9 +166,9 @@
     },
     "onboarding": {
       "titleOnboarded": "Nueva Wallet",
-      "titleWelcome": "Welcome to",
+      "titleWelcome": "Welcome",
       "select_blockchain": "Elegir Blockchain",
-      "select_blockchain_text": "2 lines max Validation text sint occaecat cupidatat non proident"
+      "select_blockchain_text": "Ten en cuenta que la billetera que estás por crear funcionara únicamente en esta blockchain.\nPodrás agregar wallets de otras blockchains más tarde."
     }
   },
   "adapter": {

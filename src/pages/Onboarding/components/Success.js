@@ -86,9 +86,7 @@ const Success = ({ goToWallet, goToDerived, t }) => {
           isOpen={showDialog}
           text={
             <GlobalText center type="subtitle1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam.
+              {t(`wallet.create.derivable_description`)}
             </GlobalText>
           }
         />

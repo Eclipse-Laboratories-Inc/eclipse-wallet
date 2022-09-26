@@ -9,6 +9,7 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const AddressBookPage = ({ t }) => {
   const navigate = useNavigation();
@@ -27,6 +28,12 @@ const AddressBookPage = ({ t }) => {
     <GlobalLayout>
       <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack} title={t('settings.address_book')} />
+
+        {addressBook.length === 0 && (
+          <GlobalText center type="body1">
+            {t(`settings.addressbook.empty`)}
+          </GlobalText>
+        )}
 
         {addressBook.map(addressBookItem => (
           <CardButtonWallet

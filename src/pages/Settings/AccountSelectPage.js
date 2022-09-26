@@ -108,18 +108,17 @@ const AccountSelectPage = ({ t }) => {
                           Are your sure?
                         </GlobalText>
                       }
-                      btn1Title={t('actions.remove')}
+                      btn1Title={`${t('actions.remove')} ${getWalletName(
+                        toRemove,
+                        config,
+                      )}`}
                       btn2Title={t('actions.cancel')}
                       onClose={toggleRemoveDialog}
                       isOpen={showRemoveDialog}
                       action={() => handleRemoveWallet(toRemove)}
                       text={
-                        <GlobalText
-                          center
-                          onPress={() => handleRemoveWallet(toRemove)}
-                          type="subtitle1"
-                          numberOfLines={1}>
-                          Loren ipsum
+                        <GlobalText center type="body1">
+                          {t(`settings.wallets.remove_wallet_description`)}
                         </GlobalText>
                       }
                     />

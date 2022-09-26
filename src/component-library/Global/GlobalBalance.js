@@ -118,18 +118,11 @@ const WalletBalanceCard = ({
         </TouchableOpacity>
       </View>
       <SimpleDialog
-        title={
-          <GlobalText center type="headline3" numberOfLines={1}>
-            {t(`wallet.create.derivable_info`)}
-          </GlobalText>
-        }
         onClose={toggleDialog}
         isOpen={showDialog}
         text={
-          <GlobalText center type="subtitle1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam.
+          <GlobalText center type="body1">
+            {t(`token.balance.percentage_info`)}
           </GlobalText>
         }
       />

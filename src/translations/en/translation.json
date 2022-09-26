@@ -21,7 +21,7 @@
     "address_validation": {
       "ERROR": "Unexpected Error",
       "INVALID_ADDRESS": "Address is not valid",
-      "EMPTY_ACCOUNT": "Account is empty",
+      "EMPTY_ACCOUNT": "This address has no funds. Please check if this address is correct.",
       "NO_FUNDS": "Address has no funds"
     }
   },
@@ -34,8 +34,8 @@
     "copy": "Copy",
     "close": "Close",
     "save": "Save",
-    "remove": "Remove",
-    "remove_all": "Remove All",
+    "remove": "Yes, remove",
+    "remove_all": "Yes, remove all",
     "accept": "Accept",
     "cancel": "Cancel",
     "done": "Done",
@@ -63,8 +63,11 @@
       "add_new_wallet": "Add New Wallet",
       "remove_wallet": "Remove Wallet",
       "remove_all_wallets": "Remove All Wallets",
+      "remove_all_wallets_description": "You're about to disconnect all your wallets. Keep in mind that you will need your seed phrases or private keys to connect them again.",
+      "remove_wallet_description": "You're about to remove this wallet. Keep in mind that, to use it again, you will need to re-select it from derivables, or use your seed phrase.",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
+      "edit_name_disclaimer": "Keep in mind that this name works locally for you to easily identify your wallet. None of this data is reflected on the blockchain.",
       "edit_address": "Edit Wallet",
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
@@ -79,7 +82,8 @@
       "addnew": "Add New Address",
       "edit": "Edit Address",
       "save": "Save Address",
-      "label": "Label"
+      "label": "Label",
+      "empty": "Looks empty in here.\nAdd your first contact clicking the button."
     },
     "languages": {
       "title": "Language",
@@ -108,20 +112,23 @@
         "NO_FUNDS": "Destination address has no funds"
       },
       "amount": {
-        "invalid": "Amount should be a number less than {{max}}"
+        "invalid": "Insufficient funds"
       },
       "next": "Next",
       "validate": "Validate",
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
-      "transaction_success": "Sent",
+      "transaction_success": "Transaction Completed",
       "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Fail",
       "goto_explorer": "Go to Explorer",
       "view_transaction": "View Transaction",
       "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
+    },
+    "balance": {
+      "percentage_info": "Variation of your position in the last 24 hours."
     }
   },
   "lock": {
@@ -169,6 +176,7 @@
       "derivable_accounts": "Derivable Accounts",
       "derivable_info_icon": "ⓘ  What is a derivable?",
       "derivable_info": "What is a derivable?",
+      "derivable_description": "Derivables are \"sub accounts\" that are born from the same seed phrase. Using cryptography, the seed phrase it combined with a derivation path to create these different accounts. It allows the generation of as many accounts as you wish to have under the same seed phrase.",
       "info_icon": "ⓘ",
       "recover": "Recover",
       "skip": "Skip"
@@ -180,13 +188,13 @@
     },
     "onboarding": {
       "titleOnboarded": "Add New Wallet",
-      "titleWelcome": "Welcome to",
+      "titleWelcome": "Welcome",
       "select_blockchain": "Select Blockchain",
-      "select_blockchain_text": "Keep in mind that the wallet you are about to create will only work in that particular blockchain. You can add other blockchains later from this same menu.",
+      "select_blockchain_text": "Keep in mind that the wallet you are about to create will only work in that particular blockchain.\nYou can add other blockchains later from this same menu.",
       "title1": "Welcome to Salmon!",
-      "content1": "Open-source, non-custodial & multi-blockchain wallet",
-      "title2": "Keep the control of your tokens",
-      "content2": "All your assets, in your hands. We don’t have access to them at all.",
+      "content1": "Your all-in-one & open-source wallet\nfor the crypto space",
+      "title2": "Keep the control\nof your tokens",
+      "content2": "All your assets, in your hands.\nWe don’t have access to them at all.",
       "title3": "Stay tuned",
       "content3": "Follow us at @salmonwallet"
     }
@@ -233,7 +241,8 @@
     "description": "Description",
     "properties": "Properties",
     "send_nft": "Send",
-    "send_to": "Send to:"
+    "send_to": "Send to:",
+    "no_nft_found": "No NFTs found"
   },
   "swap": {
     "swap": "Swap",

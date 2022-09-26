@@ -26,6 +26,8 @@ const SettingsOptionsPage = ({ t }) => {
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
 
+  const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
+
   const toggleSingleDialog = () => {
     setShowSingleDialog(!showSingleDialog);
   };
@@ -162,18 +164,14 @@ const SettingsOptionsPage = ({ t }) => {
             Are your sure?
           </GlobalText>
         }
-        btn1Title={t('actions.remove')}
+        btn1Title={`${t('actions.remove')} ${walletName}`}
         btn2Title={t('actions.cancel')}
         onClose={toggleSingleDialog}
         isOpen={showSingleDialog}
         action={handleRemove}
         text={
-          <GlobalText
-            center
-            onPress={handleRemove}
-            type="subtitle1"
-            numberOfLines={1}>
-            {getWalletName(activeWallet.getReceiveAddress(), config)}
+          <GlobalText center type="body1">
+            {t(`settings.wallets.remove_wallet_description`)}
           </GlobalText>
         }
       />
@@ -190,12 +188,8 @@ const SettingsOptionsPage = ({ t }) => {
         isOpen={showAllDialog}
         action={handleLogout}
         text={
-          <GlobalText
-            center
-            onPress={handleLogout}
-            type="subtitle1"
-            numberOfLines={1}>
-            remove all wallets
+          <GlobalText center type="body1">
+            {t(`settings.wallets.remove_all_wallets_description`)}
           </GlobalText>
         }
       />

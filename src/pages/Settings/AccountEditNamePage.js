@@ -9,6 +9,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalText from '../../component-library/Global/GlobalText';
 import { AppContext } from '../../AppProvider';
 import { getWalletName } from '../../utils/wallet';
 
@@ -49,6 +50,10 @@ const AddressBookEditPage = ({ params, t }) => {
           invalid={!accountName}
           autoComplete="off"
         />
+        <GlobalPadding siz="sm" />
+        <GlobalText type="caption" center>
+          {t(`settings.wallets.edit_name_disclaimer`)}
+        </GlobalText>
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer>

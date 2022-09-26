@@ -8,21 +8,11 @@ import { ROUTES_MAP } from '../../routes/app-routes';
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
-import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
-
-import IconSuccessGradient from '../../assets/images/Logo.png';
-
-const styles = StyleSheet.create({
-  bigIcon: {
-    paddingTop: 200,
-    width: 96,
-    height: 96,
-  },
-});
+import Logo from '../Onboarding/components/Logo';
 
 const WelcomePage = ({ t }) => {
   const navigate = useNavigation();
@@ -61,8 +51,8 @@ const WelcomePage = ({ t }) => {
             onPress={goToOnboarding}
           />
         </View>
-
-        <GlobalImage source={IconSuccessGradient} style={styles.bigIcon} />
+        <GlobalPadding size="4xl" />
+        <Logo />
 
         <GlobalPadding size="2xl" />
 
