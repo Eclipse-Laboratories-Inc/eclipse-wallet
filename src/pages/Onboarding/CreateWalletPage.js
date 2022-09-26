@@ -10,6 +10,7 @@ import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
 import { ROUTES_MAP as ADAPTER_ROUTES_MAP } from '../Adapter/routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
+import { isExtension } from '../../utils/platform';
 
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -30,7 +31,7 @@ const Message = ({ onNext, onBack, waiting, t }) => (
   <>
     <GlobalLayout.Header>
       <GlobalBackTitle onBack={onBack} />
-      <Logo size={'sm'} />
+      <Logo size={isExtension() ? 'sm' : null} />
     </GlobalLayout.Header>
 
     <GlobalLayout.Inner>
@@ -72,9 +73,9 @@ const Form = ({ account, onComplete, onBack, t }) => {
           </View>
         </GlobalBackTitle>
 
-        <Logo />
+        <Logo size={isExtension() ? 'sm' : null} />
 
-        <GlobalPadding size="2xl" />
+        <GlobalPadding size={isExtension() ? 'lg' : '2xl'} />
 
         <GlobalText type="headline2" center>
           {t('wallet.create.your_seed_phrase')}
@@ -158,9 +159,9 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
           </View>
         </GlobalBackTitle>
 
-        <Logo />
+        <Logo size={isExtension() ? 'sm' : null} />
 
-        <GlobalPadding size="2xl" />
+        <GlobalPadding size={isExtension() ? 'lg' : '2xl'} />
 
         <GlobalText type="headline2" center>
           {t('wallet.create.confirm_seed_phrase')}

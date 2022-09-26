@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
+import { isExtension } from '../../../utils/platform';
 import theme from '../../../component-library/Global/theme';
 import { globalStyles } from '../../../component-library/Global/theme';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
@@ -81,8 +82,9 @@ const Password = ({
 
         {requiredLock && (
           <>
-            <Logo />
-            <GlobalPadding size="2xl" />
+            <Logo size={isExtension() ? 'sm' : null} />
+
+            <GlobalPadding size={isExtension() ? 'lg' : '2xl'} />
             <GlobalText type="headline2" center>
               {t('wallet.create.enter_your_password')}
             </GlobalText>
@@ -111,9 +113,9 @@ const Password = ({
 
         {!requiredLock && (
           <>
-            <Logo />
+            <Logo size={isExtension() ? 'sm' : null} />
 
-            <GlobalPadding size="2xl" />
+            <GlobalPadding size={isExtension() ? 'lg' : '2xl'} />
 
             <GlobalText type="headline2" center>
               {t('wallet.create.choose_a_password')}

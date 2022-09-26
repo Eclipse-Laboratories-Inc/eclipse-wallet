@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
   spaceRight: {
     marginRight: theme.gutters.paddingXS,
   },
+  tokenRight: {
+    marginRight: theme.gutters.paddingXS,
+    marginLeft: -theme.gutters.paddingXS,
+    marginTop: theme.gutters.paddingNormal,
+  },
   main: {
     flex: 1,
     justifyContent: 'center',
@@ -82,6 +87,8 @@ const CardButton = ({
   size,
   icon,
   image,
+  tokenImg1,
+  tokenImg2,
   imageSize,
   mask,
   title,
@@ -126,7 +133,7 @@ const CardButton = ({
       <View style={styles.cardContent}>
         {icon && <View style={styles.spaceRight}>{icon}</View>}
 
-        {image && (
+        {(!tokenImg1 || !tokenImg2) && image && (
           <GlobalImage
             source={image}
             size={imageSize || 'md'}
@@ -135,6 +142,27 @@ const CardButton = ({
             maskColor={selected && 'accentPrimary'}
             circle
           />
+        )}
+
+        {tokenImg1 && tokenImg2 && (
+          <>
+            <GlobalImage
+              source={tokenImg2}
+              size="xs"
+              style={[styles.image, imageStyle]}
+              // mask={mask}
+              maskColor={selected && 'accentPrimary'}
+              circle
+            />
+            <GlobalImage
+              source={tokenImg1}
+              size="xs"
+              style={[styles.image, styles.tokenRight, imageStyle]}
+              // mask={mask}
+              maskColor={selected && 'accentPrimary'}
+              circle
+            />
+          </>
         )}
 
         <View style={styles.main}>

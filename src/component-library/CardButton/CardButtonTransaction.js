@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
 const CardButtonTransaction = ({
   transaction,
   address,
+  tokenNames,
   // amount,
   percentage,
   title,
@@ -26,6 +27,8 @@ const CardButtonTransaction = ({
   actions,
   onPress,
   touchableStyles,
+  tokenImg1,
+  tokenImg2,
 }) => {
   const getTransactionTitle = () => {
     const object = transaction;
@@ -50,9 +53,11 @@ const CardButtonTransaction = ({
   return (
     <CardButton
       image={getTransactionImage(transaction)}
+      tokenImg1={tokenImg1}
+      tokenImg2={tokenImg2}
       imageSize="normal"
       title={title || getTransactionTitle(transaction)}
-      description={address && `To: ${getShortAddress(address)}`}
+      description={address ? `To: ${getShortAddress(address)}` : tokenNames}
       active={active}
       complete={complete}
       actionIcon={actionIcon}

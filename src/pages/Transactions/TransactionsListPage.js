@@ -194,7 +194,7 @@ const TransactionsListPage = ({ t }) => {
                                       key={'amount-action'}
                                       type="body2"
                                       color={
-                                        isReceive ? 'positive' : 'negative'
+                                        isReceive ? 'positive' : 'negativeLight'
                                       }>
                                       {isReceive ? '+ 1 ' : '- 1 '}
                                       {`${transaction.nftAmount?.collection?.name} `}
@@ -214,7 +214,7 @@ const TransactionsListPage = ({ t }) => {
                                       key={'amount-action'}
                                       type="body2"
                                       color={
-                                        isReceive ? 'positive' : 'negative'
+                                        isReceive ? 'positive' : 'negativeLight'
                                       }>
                                       {isReceive ? '+' : '-'}
                                       {`${transaction.transferAmount} `}
@@ -239,16 +239,12 @@ const TransactionsListPage = ({ t }) => {
                                         key={'amount-action'}
                                         type="body2"
                                         color={
-                                          isReceive ? 'positive' : 'negative'
+                                          isReceive
+                                            ? 'positive'
+                                            : 'negativeLight'
                                         }>
                                         {isReceive ? '+' : '-'}
-                                        {isReceive
-                                          ? transaction.amount
-                                          : parseFloat(
-                                              transaction.amount +
-                                                transaction.fee /
-                                                  TOKEN_DECIMALS.SOLANA,
-                                            ).toFixed(8)}
+                                        {transaction.amount}
                                         {` SOL  `}
                                       </GlobalText>
                                     )}
@@ -274,7 +270,14 @@ const TransactionsListPage = ({ t }) => {
                         </GlobalText>
                         <CardButtonTransaction
                           transaction="swap"
-                          address={activeWallet.getReceiveAddress()}
+                          tokenImg1={transaction.tokenLogoIn}
+                          tokenImg2={transaction.tokenLogoOut}
+                          tokenNames={
+                            transaction.tokenNameIn && transaction.tokenNameOut
+                              ? `${transaction.tokenNameIn} → ${transaction.tokenNameOut}
+                                `
+                              : 'Unknown'
+                          }
                           // percentage="+0000%"
                           actions={
                             transaction.error
@@ -309,12 +312,12 @@ const TransactionsListPage = ({ t }) => {
                                           : TOKEN_DECIMALS.COINS)
                                       } ${transaction.tokenNameIn || 'SOL'} `}
                                     </GlobalText>
-                                    <AvatarImage
+                                    {/* <AvatarImage
                                       url={
                                         transaction.tokenLogoIn || LOGOS.SOLANA
                                       }
                                       size={18}
-                                    />
+                                    /> */}
                                   </View>,
                                   <View style={styles.inline}>
                                     {transaction.swapAmountOut && (
@@ -333,13 +336,13 @@ const TransactionsListPage = ({ t }) => {
                                             transaction.tokenNameOut || 'SOL'
                                           } `}
                                         </GlobalText>
-                                        <AvatarImage
+                                        {/* <AvatarImage
                                           url={
                                             transaction.tokenLogoOut ||
                                             LOGOS.SOLANA
                                           }
                                           size={18}
-                                        />
+                                        /> */}
                                       </>
                                     )}
                                   </View>,

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { StyleSheet, View, Linking } from 'react-native';
+import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 
 import { AppContext } from '../../AppProvider';
@@ -15,6 +15,7 @@ import {
   getTransactionImage,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
+import clipboard from '../../utils/clipboard';
 
 import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
@@ -24,6 +25,8 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalToast from '../../component-library/Global/GlobalToast';
+import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
   centered: {
@@ -46,6 +49,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: -10,
     bottom: -10,
+  },
+  floatingSwap: {
+    position: 'absolute',
+    zIndex: 1,
+    right: 55,
+    bottom: -5,
+  },
+  addressCopyIcon: {
+    marginLeft: theme.gutters.paddingXXS,
+    marginBottom: -1,
   },
   bigImage: {
     backgroundColor: theme.colors.bgLight,
@@ -70,6 +83,7 @@ const TransactionsDetailPage = ({ t, params }) => {
     useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const onBack = useCallback(
     () => navigate(ROUTES_MAP.TRANSACTIONS_LIST),
@@ -93,6 +107,11 @@ const TransactionsDetailPage = ({ t, params }) => {
       default:
         return 'Sent';
     }
+  };
+
+  const onCopyAddress = () => {
+    clipboard.copy(transactionDetail.signature);
+    setShowToast(true);
   };
 
   useEffect(() => {
@@ -154,42 +173,37 @@ const TransactionsDetailPage = ({ t, params }) => {
 
         {transactionDetail.nftAmount ? (
           <GlobalText type="headline2" center>
-            {transactionDetail.error
-              ? `${'-'}${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `
-              : `${isReceive ? '+ 1 ' : '- 1 '} ${
-                  transactionDetail.nftAmount?.collection?.name
-                }`}
+            {!transactionDetail.error &&
+              `${isReceive ? '+ 1 ' : '- 1 '} ${
+                transactionDetail.nftAmount?.collection?.name
+              }`}
           </GlobalText>
         ) : (transactionDetail.transferNameIn?.length ||
             transactionDetail.transferNameOut?.length) &&
           transactionDetail.transferAmount ? (
           <GlobalText type="headline2" center>
-            {transactionDetail.error
-              ? `${'-'}${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `
-              : `${isReceive ? '+' : '-'} ${transactionDetail.transferAmount} ${
-                  transactionDetail.transferNameIn ||
-                  transactionDetail.transferNameOut
-                }
+            {!transactionDetail.error &&
+              `${isReceive ? '+' : '-'}${transactionDetail.transferAmount} ${
+                transactionDetail.transferNameIn ||
+                transactionDetail.transferNameOut
+              }
             `}
           </GlobalText>
         ) : (
           transactionDetail.amount && (
             <GlobalText type="headline2" center>
-              {transactionDetail.error
-                ? `${'-'}${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `
-                : `${isReceive ? '+' : '-'}${
-                    isReceive
-                      ? transactionDetail.amount
-                      : parseFloat(
-                          transactionDetail.amount +
-                            transactionDetail.fee / TOKEN_DECIMALS.SOLANA,
-                        ).toFixed(8)
-                  } SOL`}
+              {!transactionDetail.error &&
+                `${isReceive ? '+' : '-'}${
+                  isReceive
+                    ? transactionDetail.amount
+                    : parseFloat(
+                        transactionDetail.amount +
+                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA,
+                      ).toFixed(8)
+                } SOL`}
             </GlobalText>
           )
         )}
-
-        <GlobalPadding size="sm" />
 
         <View style={styles.inlineWell}>
           <GlobalText type="caption" color="tertiary">
@@ -223,6 +237,22 @@ const TransactionsDetailPage = ({ t, params }) => {
 
         <View style={styles.inlineWell}>
           <GlobalText type="caption" color="tertiary">
+            Transaction ID
+          </GlobalText>
+          <TouchableOpacity onPress={onCopyAddress}>
+            <GlobalText type="body2">
+              {getShortAddress(transactionDetail.signature)}
+              <GlobalImage
+                source={IconCopy}
+                style={styles.addressCopyIcon}
+                size="xxs"
+              />
+            </GlobalText>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
             Status
           </GlobalText>
 
@@ -244,6 +274,16 @@ const TransactionsDetailPage = ({ t, params }) => {
             </GlobalText>
           </View>
         )}
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Fee
+          </GlobalText>
+
+          <GlobalText type="body2">
+            {`${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `}
+          </GlobalText>
+        </View>
 
         <GlobalPadding size="2xl" />
 
@@ -276,12 +316,19 @@ const TransactionsDetailPage = ({ t, params }) => {
     <View style={styles.centered}>
       <View style={styles.floatingTransactionBoxSwap}>
         {transactionDetail.error ? (
-          <GlobalImage
-            source={getTransactionImage('swap')}
-            size="xxl"
-            style={styles.bigImage}
-            circle
-          />
+          <>
+            <GlobalImage
+              source={getTransactionImage('swap')}
+              size="xxl"
+              style={styles.bigImage}
+              circle
+            />
+            <GlobalImage
+              source={getTransactionImage('fail')}
+              size="sm"
+              style={styles.floatingTransaction}
+            />
+          </>
         ) : (
           <>
             <GlobalImage
@@ -291,6 +338,11 @@ const TransactionsDetailPage = ({ t, params }) => {
               circle
             />
             <GlobalImage
+              source={getTransactionImage('swap')}
+              size="sm"
+              style={styles.floatingSwap}
+            />
+            <GlobalImage
               source={transactionDetail.tokenLogoIn || LOGOS.SOLANA}
               size="xl"
               style={styles.bigImage}
@@ -298,22 +350,9 @@ const TransactionsDetailPage = ({ t, params }) => {
             />
           </>
         )}
-        <GlobalImage
-          source={
-            transactionDetail.error
-              ? getTransactionImage('fail')
-              : getTransactionImage('swap')
-          }
-          size="sm"
-          style={styles.floatingTransaction}
-        />
       </View>
 
-      {transactionDetail.error ? (
-        <GlobalText type="headline2" center>
-          {`${'-'}${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `}
-        </GlobalText>
-      ) : (
+      {!transactionDetail.error && (
         <>
           <GlobalText type="headline3" center>
             {`+${
@@ -331,10 +370,7 @@ const TransactionsDetailPage = ({ t, params }) => {
               !transactionDetail.tokenNameOut
                 ? TOKEN_DECIMALS.SOLANA
                 : TOKEN_DECIMALS.COINS)
-            } ${transactionDetail.tokenNameOut || 'SOL'} `}
-          </GlobalText>
-          <GlobalText type="headline3" center>
-            {`${'-'}${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `}
+            }${transactionDetail.tokenNameOut || 'SOL'} `}
           </GlobalText>
         </>
       )}
@@ -363,6 +399,22 @@ const TransactionsDetailPage = ({ t, params }) => {
 
       <View style={styles.inlineWell}>
         <GlobalText type="caption" color="tertiary">
+          Transaction ID
+        </GlobalText>
+        <TouchableOpacity onPress={onCopyAddress}>
+          <GlobalText type="body2">
+            {getShortAddress(transactionDetail.signature)}
+            <GlobalImage
+              source={IconCopy}
+              style={styles.addressCopyIcon}
+              size="xxs"
+            />
+          </GlobalText>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inlineWell}>
+        <GlobalText type="caption" color="tertiary">
           Status
         </GlobalText>
 
@@ -380,6 +432,16 @@ const TransactionsDetailPage = ({ t, params }) => {
 
         <GlobalText type="body2" numberOfLines={1}>
           {getShortAddress(activeWallet.getReceiveAddress())}
+        </GlobalText>
+      </View>
+
+      <View style={styles.inlineWell}>
+        <GlobalText type="caption" color="tertiary">
+          Fee
+        </GlobalText>
+
+        <GlobalText type="body2">
+          {`${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `}
         </GlobalText>
       </View>
 
@@ -415,6 +477,7 @@ const TransactionsDetailPage = ({ t, params }) => {
         <GlobalBackTitle
           onBack={onBack}
           title={t('transactions.transaction_detail')}
+          nospace
         />
         {loaded ? (
           (() => {
@@ -429,6 +492,11 @@ const TransactionsDetailPage = ({ t, params }) => {
           <GlobalSkeleton type="TransactionDetail" />
         )}
       </GlobalLayout.Header>
+      <GlobalToast
+        message={t('wallet.copied')}
+        open={showToast}
+        setOpen={setShowToast}
+      />
     </GlobalLayout>
   );
 };
