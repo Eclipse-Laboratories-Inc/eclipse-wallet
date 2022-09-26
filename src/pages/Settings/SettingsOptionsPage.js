@@ -42,7 +42,7 @@ const SettingsOptionsPage = ({ t }) => {
   const handleRemove = async () => {
     await removeWallet(activeWallet.getReceiveAddress());
     toggleSingleDialog();
-    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
   };
 
   const goToAccounts = () =>

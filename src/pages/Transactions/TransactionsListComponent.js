@@ -109,7 +109,7 @@ const TransactionsListComponent = ({ t }) => {
                             <GlobalText
                               key={'amount-action'}
                               type="body2"
-                              color={isReceive ? 'positive' : 'negative'}>
+                              color={isReceive ? 'positive' : 'negativeLight'}>
                               {isReceive ? '+ 1 ' : '- 1 '}
                               {`${transaction.nftAmount?.collection?.name} `}
                             </GlobalText>
@@ -127,7 +127,7 @@ const TransactionsListComponent = ({ t }) => {
                             <GlobalText
                               key={'amount-action'}
                               type="body2"
-                              color={isReceive ? 'positive' : 'negative'}>
+                              color={isReceive ? 'positive' : 'negativeLight'}>
                               {isReceive ? '+' : '-'}
                               {`${transaction.transferAmount} `}
                               {`${
@@ -150,7 +150,9 @@ const TransactionsListComponent = ({ t }) => {
                               <GlobalText
                                 key={'amount-action'}
                                 type="body2"
-                                color={isReceive ? 'positive' : 'negative'}>
+                                color={
+                                  isReceive ? 'positive' : 'negativeLight'
+                                }>
                                 {isReceive ? '+' : '-'}
                                 {isReceive
                                   ? transaction.amount

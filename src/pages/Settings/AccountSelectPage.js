@@ -62,7 +62,6 @@ const AccountSelectPage = ({ t }) => {
   const handleRemoveWallet = async address => {
     await removeWallet(address);
     setShowRemoveDialog(!showRemoveDialog);
-    navigate(WALLET_ROUTES_MAP.WALLET_OVERVIEW);
   };
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 

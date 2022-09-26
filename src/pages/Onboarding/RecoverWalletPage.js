@@ -8,6 +8,7 @@ import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
 import { ROUTES_MAP as ROUTES_ADAPTER } from '../Adapter/routes';
 import { globalStyles } from '../../component-library/Global/theme';
+import { isExtension } from '../../utils/platform';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -46,9 +47,9 @@ const Form = ({ onComplete, onBack, t }) => {
             <GlobalPageDot />
           </View>
         </GlobalBackTitle>
-        <Logo />
+        <Logo size={isExtension() ? 'sm' : null} />
 
-        <GlobalPadding size="2xl" />
+        <GlobalPadding size={isExtension() ? 'lg' : '2xl'} />
 
         <GlobalText type="headline2" center>
           {t('wallet.recover.messageTitle')}
@@ -65,7 +66,7 @@ const Form = ({ onComplete, onBack, t }) => {
           setValue={setSeedPhrase}
           seedphrase
           multiline
-          numberOfLines={8}
+          numberOfLines={4}
           invalid={false}
         />
       </GlobalLayout.Header>
