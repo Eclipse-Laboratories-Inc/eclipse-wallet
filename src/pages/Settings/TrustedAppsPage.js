@@ -40,7 +40,7 @@ const TrustedAppsPage = ({ t }) => {
     useContext(AppContext);
 
   const address = activeWallet.getReceiveAddress();
-  const trustedApps = get(config, `${address}.trustedApps`, []);
+  const trustedApps = get(config, `${address}.trustedApps`, {});
 
   return (
     <GlobalLayout>
