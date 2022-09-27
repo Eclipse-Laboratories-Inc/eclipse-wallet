@@ -32,7 +32,6 @@ const AddressBookEditPage = ({ params, t }) => {
   useEffect(() => {
     const address = addressBook.find(a => a.address === params.address);
     if (address) {
-      console.log(JSON.stringify(address));
       setCurrentAddress(address.address);
       setRecipientName(address.domain);
       setInputAddress(address.address);

@@ -71,7 +71,6 @@ const InputAddress = ({
         setValidAddress(null);
         if (a) {
           try {
-            console.log('a');
             const r = await activeWallet.validateDestinationAccount(a);
             setCheckingAddress(false);
             setValidAddress(r.type !== 'ERROR');

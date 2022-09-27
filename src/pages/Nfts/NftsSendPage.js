@@ -111,7 +111,6 @@ const NftsSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      console.log({ recipientAddress, s: nftDetail.mint });
       const txId = await activeWallet.createTransferTransaction(
         recipientAddress,
         nftDetail.mint,

@@ -9,7 +9,6 @@ const useDomain = () => {
   useEffect(() => {
     if (activeWallet) {
       activeWallet.getDomain().then(result => {
-        console.log(result);
         setDomain(result);
       });
     }
