@@ -5,6 +5,7 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
 
+import theme from '../../component-library/Global/theme';
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -37,8 +38,11 @@ const WelcomePage = ({ t }) => {
     {
       title: t('wallet.onboarding.title3'),
       content: (
-        <TouchableOpacity onPress={goToTwitter}>
+        <TouchableOpacity style={globalStyles.inline} onPress={goToTwitter}>
           {t('wallet.onboarding.content3')}
+          <View style={{ color: theme.colors.labelSecondary }}>
+            {t('wallet.onboarding.content3b')}
+          </View>
         </TouchableOpacity>
       ),
     },

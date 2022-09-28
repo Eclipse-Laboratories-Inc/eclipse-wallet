@@ -196,7 +196,8 @@
       "title2": "Keep the control\nof your tokens",
       "content2": "All your assets, in your hands.\nWe don’t have access to them at all.",
       "title3": "Stay tuned",
-      "content3": "Follow us at @salmonwallet"
+      "content3": "Follow us at ",
+      "content3b": "@salmonwallet"
     }
   },
   "adapter": {
