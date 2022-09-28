@@ -28,9 +28,7 @@ import Success from './components/Success';
 import clipboard from '../../utils/clipboard';
 
 const Form = ({ onComplete, onBack, t }) => {
-  const [seedPhrase, setSeedPhrase] = useState(
-    'grow oblige neck same spend east come small dinosaur frost rice vintage',
-  );
+  const [seedPhrase, setSeedPhrase] = useState('');
 
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
   const onPaste = async () => {

@@ -43,14 +43,13 @@ const TokenReceivePage = ({ t }) => {
 
   const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
 
+  const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
+
   return (
     activeWallet && (
       <GlobalLayout fullscreen>
         <GlobalLayout.Header>
-          <GlobalBackTitle
-            onBack={goToBack}
-            secondaryTitle={t('token.receive.title')}
-          />
+          <GlobalBackTitle onBack={goToBack} secondaryTitle={walletName} />
 
           <View style={globalStyles.centered}>
             <View style={styles.qrBox}>
@@ -71,8 +70,7 @@ const TokenReceivePage = ({ t }) => {
 
             <View style={globalStyles.inlineWell}>
               <GlobalText type="body2">
-                {getWalletName(activeWallet.getReceiveAddress(), config)} (
-                {getShortAddress(activeWallet.getReceiveAddress())})
+                {getShortAddress(activeWallet.getReceiveAddress())}
               </GlobalText>
 
               <GlobalButton onPress={onCopyAddress} size="medium">
