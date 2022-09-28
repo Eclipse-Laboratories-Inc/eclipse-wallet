@@ -82,6 +82,8 @@ const SwapPage = ({ t }) => {
   const [quote, setQuote] = useState({});
   const [transaction, setTransaction] = useState('');
   const [status, setStatus] = useState();
+  const [quoteCountdown, setQuoteCountdown] = useState(10);
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
@@ -111,7 +113,19 @@ const SwapPage = ({ t }) => {
   useEffect(() => {
     setError(false);
   }, [inAmount, inToken, outToken]);
-  const startExpiration = () => {};
+  useEffect(() => {
+    const timer = setTimeout(function () {
+      setQuoteCountdown(quoteCountdown - 1);
+    }, 1000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [quoteCountdown]);
+  const getConfirmBtnTitle = () =>
+    quoteCountdown >= 0
+      ? `${t('general.confirm')} (${quoteCountdown})`
+      : t('swap.refresh_quote');
+  const getConfirmBtnAction = () => (quoteCountdown >= 0 ? onConfirm : onQuote);
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
@@ -129,7 +143,7 @@ const SwapPage = ({ t }) => {
         parseFloat(inAmount),
       );
       setQuote(q);
-      startExpiration(10);
+      setQuoteCountdown(10);
       setProcessing(false);
       setStep(2);
     } catch (e) {
@@ -316,10 +330,10 @@ const SwapPage = ({ t }) => {
             <GlobalButton
               type="primary"
               flex
-              title={t('general.confirm')}
-              onPress={onConfirm}
+              title={getConfirmBtnTitle()}
+              onPress={getConfirmBtnAction()}
               disabled={processing}
-              style={[globalStyles.button, globalStyles.buttonLeft]}
+              style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
             />
           </GlobalLayout.Footer>
@@ -373,6 +387,8 @@ const SwapPage = ({ t }) => {
                   wide
                   title={t(`token.send.goto_explorer`)}
                   onPress={openTransaction}
+                  style={globalStyles.button}
+                  touchableStyles={globalStyles.buttonTouchable}
                 />
 
                 <GlobalPadding size="md" />
@@ -382,7 +398,7 @@ const SwapPage = ({ t }) => {
                   title={t(`general.close`)}
                   wide
                   onPress={goToBack}
-                  style={[globalStyles.button, globalStyles.buttonLeft]}
+                  style={globalStyles.button}
                   touchableStyles={globalStyles.buttonTouchable}
                 />
               </>

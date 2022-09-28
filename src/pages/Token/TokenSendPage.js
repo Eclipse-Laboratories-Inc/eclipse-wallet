@@ -82,10 +82,10 @@ const TokenSendPage = ({ params, t }) => {
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
   const goToBack = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    } else {
+    if (step === 4) {
       navigate(ROUTES_MAP.WALLET);
+    } else {
+      setStep(step - 1);
     }
   };
   const onNext = async () => {
@@ -438,9 +438,9 @@ const TokenSendPage = ({ params, t }) => {
                     type="primary"
                     wide
                     title={t(`token.send.goto_explorer`)}
-                    onPress={() =>
-                      Linking.openURL(`https://solscan.io/tx/${transactionId}`)
-                    }
+                    onPress={openTransaction}
+                    style={globalStyles.button}
+                    touchableStyles={globalStyles.buttonTouchable}
                   />
 
                   <GlobalPadding size="md" />
@@ -450,7 +450,7 @@ const TokenSendPage = ({ params, t }) => {
                     title={t(`general.close`)}
                     wide
                     onPress={goToBack}
-                    style={[globalStyles.button, globalStyles.buttonLeft]}
+                    style={globalStyles.button}
                     touchableStyles={globalStyles.buttonTouchable}
                   />
                 </>

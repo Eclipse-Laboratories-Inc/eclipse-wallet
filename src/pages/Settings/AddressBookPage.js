@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -10,11 +10,14 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import GlobalText from '../../component-library/Global/GlobalText';
+import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 
 const AddressBookPage = ({ t }) => {
   const navigate = useNavigation();
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
+  const [toRemove, setToRemove] = useState([]);
 
-  const [{ addressBook }] = useContext(AppContext);
+  const [{ addressBook }, { removeAddress }] = useContext(AppContext);
 
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
 
@@ -24,6 +27,14 @@ const AddressBookPage = ({ t }) => {
   const onEditAddressBook = ({ address }) =>
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK_EDIT, { address });
 
+  const toggleRemoveDialog = item => {
+    setToRemove(item);
+    setShowRemoveDialog(!showRemoveDialog);
+  };
+  const handleRemoveWallet = async item => {
+    await removeAddress(item);
+    setShowRemoveDialog(!showRemoveDialog);
+  };
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
@@ -36,19 +47,41 @@ const AddressBookPage = ({ t }) => {
         )}
 
         {addressBook.map(addressBookItem => (
-          <CardButtonWallet
-            key={addressBookItem.address}
-            title={addressBookItem.name}
-            subtitle={
-              addressBookItem.domain
-                ? `domain: ${addressBookItem.domain}`
-                : null
-            }
-            address={addressBookItem.address}
-            chain={addressBookItem.chain}
-            imageSize="md"
-            onPress={() => onEditAddressBook(addressBookItem)}
-          />
+          <>
+            <CardButtonWallet
+              key={addressBookItem.address}
+              title={addressBookItem.name}
+              subtitle={
+                addressBookItem.domain
+                  ? `domain: ${addressBookItem.domain}`
+                  : null
+              }
+              address={addressBookItem.address}
+              chain={addressBookItem.chain}
+              imageSize="md"
+              onPress={() => onEditAddressBook(addressBookItem)}
+              onTertiaryPress={() => toggleRemoveDialog(addressBookItem)}
+            />
+            <SimpleDialog
+              type="danger"
+              title={
+                <GlobalText center type="headline3" numberOfLines={1}>
+                  Are your sure?
+                </GlobalText>
+              }
+              btn1Title={`${t('actions.remove')} ${toRemove.name}`}
+              btn2Title={t('actions.cancel')}
+              onClose={toggleRemoveDialog}
+              isOpen={showRemoveDialog}
+              action={() => handleRemoveWallet(toRemove)}
+              text={
+                <GlobalText center type="body1">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt.
+                </GlobalText>
+              }
+            />
+          </>
         ))}
       </GlobalLayout.Header>
 

@@ -42,6 +42,24 @@ export const recoverAccount = (chain, mnemonic, endpoint) =>
 export const getDerivedAccounts = (chain, mnemonic, endpoint) =>
   restoreDerivedAccounts(chains[chain], mnemonic, { networkId: endpoint });
 
+export const recoverDerivedAccount = async (
+  chain,
+  mnemonic,
+  path,
+  endpoint,
+) => {
+  const derivedAccounts = await restoreDerivedAccounts(
+    chains[chain],
+    mnemonic,
+    {
+      networkId: endpoint,
+    },
+  );
+  return derivedAccounts.filter(
+    acc => acc.mnemonic === mnemonic && acc.path === path,
+  )[0];
+};
+
 //export const getChains = () => Object.keys(chains);
 export const getChains = () => ['SOLANA'];
 

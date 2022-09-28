@@ -5,7 +5,12 @@ import get from 'lodash/get';
 import omit from 'lodash/omit';
 
 import { lock, unlock } from '../utils/password';
-import { getChains, getDefaultEndpoint, recoverAccount } from '../utils/wallet';
+import {
+  getChains,
+  getDefaultEndpoint,
+  recoverAccount,
+  recoverDerivedAccount,
+} from '../utils/wallet';
 
 const STORAGE_KEYS = {
   WALLETS: 'wallets',
@@ -14,6 +19,8 @@ const STORAGE_KEYS = {
 };
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
+
+const DEFAULT_PATH = "m/44'/501'/0'/0'";
 
 const noIndex = idx => idx === -1;
 
@@ -28,6 +35,15 @@ const buildEndpoints = () =>
 
 const getWalletAccount = async (index, wallets, endpoints) => {
   const walletInfo = wallets[index];
+  const isDerived = walletInfo.path !== DEFAULT_PATH;
+  if (isDerived) {
+    return await recoverDerivedAccount(
+      walletInfo.chain,
+      walletInfo.mnemonic,
+      walletInfo.path,
+      endpoints[walletInfo.chain],
+    );
+  }
   return await recoverAccount(
     walletInfo.chain,
     walletInfo.mnemonic,

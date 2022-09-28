@@ -87,7 +87,11 @@ const NftsSendPage = ({ params, t }) => {
   }, [activeWallet, params.id]);
 
   const goToBack = () => {
-    navigate(ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    if (step === 3) {
+      navigate(ROUTES_MAP.WALLET);
+    } else {
+      navigate(ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    }
   };
 
   const onNext = async () => {
@@ -413,9 +417,9 @@ const NftsSendPage = ({ params, t }) => {
                     type="primary"
                     wide
                     title={t(`token.send.goto_explorer`)}
-                    onPress={() =>
-                      Linking.openURL(`https://solscan.io/tx/${transactionId}`)
-                    }
+                    onPress={openTransaction}
+                    style={globalStyles.button}
+                    touchableStyles={globalStyles.buttonTouchable}
                   />
 
                   <GlobalPadding size="md" />
@@ -425,7 +429,7 @@ const NftsSendPage = ({ params, t }) => {
                     title={t(`general.close`)}
                     wide
                     onPress={goToBack}
-                    style={[globalStyles.button, globalStyles.buttonLeft]}
+                    style={globalStyles.button}
                     touchableStyles={globalStyles.buttonTouchable}
                   />
                 </>

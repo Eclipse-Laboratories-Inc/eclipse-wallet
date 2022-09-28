@@ -223,6 +223,7 @@
     "enter_amount": "Ingresa un monto",
     "you_receive": "Recibes",
     "quote": "Cotizar",
+    "refresh_quote": "Refrescar Cotización",
     "total_fee": "Fee total",
     "go_to_explorer": "Go to Explorer"
   }
