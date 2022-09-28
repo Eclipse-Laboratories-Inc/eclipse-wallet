@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Linking, View, TouchableOpacity } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { useNavigation } from '../../routes/hooks';
@@ -17,6 +17,7 @@ import Logo from '../Onboarding/components/Logo';
 const WelcomePage = ({ t }) => {
   const navigate = useNavigation();
   const [step, setStep] = useState(0);
+  const goToTwitter = () => Linking.openURL(`https://twitter.com/salmonwallet`);
   const nextStep = () => {
     if (step < 2) {
       setStep(step + 1);
@@ -35,7 +36,11 @@ const WelcomePage = ({ t }) => {
     },
     {
       title: t('wallet.onboarding.title3'),
-      content: t('wallet.onboarding.content3'),
+      content: (
+        <TouchableOpacity onPress={goToTwitter}>
+          {t('wallet.onboarding.content3')}
+        </TouchableOpacity>
+      ),
     },
   ];
   const goToOnboarding = () => navigate(ROUTES_MAP.ONBOARDING);

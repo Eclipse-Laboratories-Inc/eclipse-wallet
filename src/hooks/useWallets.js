@@ -19,6 +19,7 @@ const STORAGE_KEYS = {
 };
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
+const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';
 
 const DEFAULT_PATH = "m/44'/501'/0'/0'";
 
@@ -203,6 +204,15 @@ const useWallets = () => {
       chain,
       mnemonic: activeWallet.mnemonic,
     }));
+    const derConfig = derivedAccounts.reduce(
+      (a, v) => ({
+        ...a,
+        [v.address]: {
+          name: WALLET_DERIVED_PLACEHOLDER.replace('NRO', v.path.charAt(11)),
+        },
+      }),
+      {},
+    );
     const storedWallets = [
       ...wallets.filter(
         w => !derivedAccounts.some(da => da.address === w.address),
@@ -214,14 +224,17 @@ const useWallets = () => {
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: true,
         wallets: encryptedWallets,
+        config: { ...config, ...derConfig },
       });
     } else {
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: false,
         wallets: storedWallets,
+        config: { ...config, ...derConfig },
       });
     }
     setWallets(storedWallets);
+    setConfig({ ...config, ...derConfig });
   };
 
   const changeActiveWallet = async walletIndex => {
@@ -256,6 +269,15 @@ const useWallets = () => {
   const removeWallet = async address => {
     const newWallArr = wallets.filter(w => w.address !== address);
     setWallets(newWallArr);
+    const _config = { ...config };
+    delete _config[address];
+    setConfig(_config);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      passwordRequired: false,
+      lastNumber: lastNumber,
+      config: _config,
+      wallets: newWallArr,
+    });
     if (newWallArr.length) {
       await changeActiveWallet(wallets.findIndex(w => w.address !== address));
     } else {
