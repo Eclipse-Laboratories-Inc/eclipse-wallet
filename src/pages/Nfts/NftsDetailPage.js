@@ -20,6 +20,9 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   renderItemStyle: {
     width: '49%',
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
 });
 
 const NftsDetailPage = ({ params, t }) => {
+  useAnalyticsEventTracker(SECTIONS_MAP.NFT_DETAIL);
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});

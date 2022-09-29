@@ -26,6 +26,9 @@ import { showPercentage, showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   viewTxLink: {
     fontFamily: theme.fonts.dmSansRegular,
@@ -83,6 +86,8 @@ const SwapPage = ({ t }) => {
   const [transaction, setTransaction] = useState('');
   const [status, setStatus] = useState();
   const [quoteCountdown, setQuoteCountdown] = useState(10);
+
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
 
   useEffect(() => {
     if (activeWallet) {
@@ -145,6 +150,7 @@ const SwapPage = ({ t }) => {
       setQuote(q);
       setQuoteCountdown(10);
       setProcessing(false);
+      trackEvent({ action: EVENTS_MAP.SWAP_QUOTE });
       setStep(2);
     } catch (e) {
       setError(true);
@@ -154,6 +160,7 @@ const SwapPage = ({ t }) => {
   const onConfirm = async () => {
     setError(false);
     setProcessing(true);
+    trackEvent({ action: EVENTS_MAP.SWAP_CONFIRMED });
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
@@ -166,9 +173,11 @@ const SwapPage = ({ t }) => {
         const result = await activeWallet.executeSwapTransaction(st);
         if (get(result, 'value.err')) {
           setError(true);
+          trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
           setStatus(TRANSACTION_STATUS.FAIL);
         } else {
           setError(false);
+          trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
           setStatus(TRANSACTION_STATUS.SUCCESS);
         }
       }
@@ -178,6 +187,7 @@ const SwapPage = ({ t }) => {
       console.log(e);
       setError(true);
       setStatus(TRANSACTION_STATUS.FAIL);
+      trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
       setProcessing(false);
     }
   };

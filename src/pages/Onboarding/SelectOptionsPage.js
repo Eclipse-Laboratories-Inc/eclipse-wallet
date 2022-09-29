@@ -23,6 +23,9 @@ import AppIcon from '../../assets/images/AppIcon.png';
 import AppTitle from '../../assets/images/AppTitle.png';
 import { AppContext } from '../../AppProvider';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   appIconImage: {
     marginBottom: 30,
@@ -48,45 +51,50 @@ const styles = StyleSheet.create({
   },
 });
 
-const SelectAction = ({ onNext, onBack, onboarded, t }) => (
-  <>
-    <GlobalLayout.Header>
-      <GlobalBackTitle
-        onBack={onBack}
-        secondaryTitle={
-          onboarded
-            ? t('wallet.onboarding.titleOnboarded')
-            : t('wallet.onboarding.titleWelcome')
-        }
-      />
-    </GlobalLayout.Header>
+const SelectAction = ({ onNext, onBack, onboarded, t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(
+    SECTIONS_MAP.SELECT_CREATE_RECOVER,
+  );
+  return (
+    <>
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={onBack}
+          secondaryTitle={
+            onboarded
+              ? t('wallet.onboarding.titleOnboarded')
+              : t('wallet.onboarding.titleWelcome')
+          }
+        />
+      </GlobalLayout.Header>
 
-    <GlobalLayout.Inner>
-      <GlobalImage source={AppIcon} style={styles.appIconImage} />
-      <GlobalImage source={AppTitle} style={styles.appTitleImage} />
-    </GlobalLayout.Inner>
+      <GlobalLayout.Inner>
+        <GlobalImage source={AppIcon} style={styles.appIconImage} />
+        <GlobalImage source={AppTitle} style={styles.appTitleImage} />
+      </GlobalLayout.Inner>
 
-    <GlobalLayout.Footer>
-      <GlobalButton
-        type="primary"
-        wide
-        title={t('wallet.create_wallet')}
-        onPress={() => onNext(ROUTES_MAP.ONBOARDING_CREATE)}
-        // disabled={!chainCode}
-      />
+      <GlobalLayout.Footer>
+        <GlobalButton
+          type="primary"
+          wide
+          title={t('wallet.create_wallet')}
+          onPress={() => onNext(ROUTES_MAP.ONBOARDING_CREATE)}
+          // disabled={!chainCode}
+        />
 
-      <GlobalPadding size="md" />
+        <GlobalPadding size="md" />
 
-      <GlobalButton
-        type="secondary"
-        wide
-        title={t('wallet.recover_wallet')}
-        onPress={() => onNext(ROUTES_MAP.ONBOARDING_RECOVER)}
-        // disabled={!chainCode}
-      />
-    </GlobalLayout.Footer>
-  </>
-);
+        <GlobalButton
+          type="secondary"
+          wide
+          title={t('wallet.recover_wallet')}
+          onPress={() => onNext(ROUTES_MAP.ONBOARDING_RECOVER)}
+          // disabled={!chainCode}
+        />
+      </GlobalLayout.Footer>
+    </>
+  );
+};
 
 const ComingSoon = ({ currentChain, comingSoon, setComingSoon, t }) => {
   const goToTwitter = () => Linking.openURL(`https://twitter.com/salmonwallet`);
@@ -169,6 +177,7 @@ const SelectChain = ({ onNext, blockChains, onBack, t, onComingSoon }) => (
 );
 
 const SelectOptionsPage = ({ t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SELECT_CHAIN);
   const navigate = useNavigation();
   const [{ wallets }] = useContext(AppContext);
   const [actionRoute, setActionRoute] = useState();
@@ -180,6 +189,7 @@ const SelectOptionsPage = ({ t }) => {
     setStep(1);
   };
   const onSelectChain = chain => {
+    trackEvent({ chainCode: chain });
     navigate(actionRoute, { chainCode: chain });
   };
   const onComingSoon = chain => {

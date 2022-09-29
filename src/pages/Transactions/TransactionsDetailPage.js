@@ -28,6 +28,9 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import IconCopy from '../../assets/images/IconCopy.png';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   centered: {
     justifyContent: 'center',
@@ -84,6 +87,8 @@ const TransactionsDetailPage = ({ t, params }) => {
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
+
+  useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
   const onBack = useCallback(
     () => navigate(ROUTES_MAP.TRANSACTIONS_LIST),

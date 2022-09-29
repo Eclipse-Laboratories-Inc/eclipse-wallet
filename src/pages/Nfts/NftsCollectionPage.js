@@ -12,8 +12,11 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalText from '../../component-library/Global/GlobalText';
 import Header from '../../component-library/Layout/Header';
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP } from '../../utils/tracking';
 
 const NftsCollectionPage = ({ params, t }) => {
+  useAnalyticsEventTracker(SECTIONS_MAP.NFT_COLLECTION);
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsCollection, setNftsCollection] = useState([]);

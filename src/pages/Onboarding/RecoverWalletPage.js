@@ -17,6 +17,8 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import Logo from './components/Logo';
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 import {
   getDefaultChain,
@@ -91,6 +93,7 @@ const Form = ({ onComplete, onBack, t }) => {
 };
 
 const RecoverWalletPage = ({ t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
     { selectedEndpoints, requiredLock, isAdapter },
@@ -106,16 +109,20 @@ const RecoverWalletPage = ({ t }) => {
       selectedEndpoints[getDefaultChain()],
     );
     setAccount(a);
+    trackEvent({ action: EVENTS_MAP.SECRET_RECOVERED });
     setStep(2);
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
     await addWallet(account, password, getDefaultChain());
     setWaiting(false);
+    trackEvent({ action: EVENTS_MAP.PASSWORD_COMPLETED });
     setStep(3);
   };
-  const goToWallet = () =>
+  const goToWallet = () => {
+    trackEvent({ action: EVENTS_MAP.RECOVER_COMPLETED });
     navigate(isAdapter ? ROUTES_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
+  };
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
   return (

@@ -4,6 +4,7 @@ import { Linking, View, TouchableOpacity } from 'react-native';
 import { withTranslation } from '../../hooks/useTranslations';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from '../../routes/app-routes';
+import { SECTIONS_MAP } from '../../utils/tracking';
 
 import theme from '../../component-library/Global/theme';
 import { globalStyles } from '../../component-library/Global/theme';
@@ -14,14 +15,18 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 import Logo from '../Onboarding/components/Logo';
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 
 const WelcomePage = ({ t }) => {
+  useAnalyticsEventTracker(SECTIONS_MAP.WELCOME);
+
   const navigate = useNavigation();
   const [step, setStep] = useState(0);
   const goToTwitter = () => Linking.openURL(`https://twitter.com/salmonwallet`);
   const nextStep = () => {
     if (step < 2) {
-      setStep(step + 1);
+      const currentStep = step + 1;
+      setStep(currentStep);
     } else {
       goToOnboarding();
     }

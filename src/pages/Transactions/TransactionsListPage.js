@@ -23,6 +23,9 @@ import Header from '../../component-library/Layout/Header';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   titleStyle: {
     marginTop: theme.gutters.paddingNormal,
@@ -50,6 +53,8 @@ const TransactionsListPage = ({ t }) => {
   const [lastTransaction, setLastTransaction] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
   useEffect(() => {
     if (activeWallet) {

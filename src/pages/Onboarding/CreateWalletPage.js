@@ -22,6 +22,8 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
 import GlobalDivider from '../../component-library/Global/GlobalDivider';
 import GlobalToast from '../../component-library/Global/GlobalToast';
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 import Password from './components/Password';
 import Success from './components/Success';
@@ -202,6 +204,7 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
 };
 
 const CreateWalletPage = ({ params, t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.CREATE_WALLET);
   const navigate = useNavigation();
   const [
     { selectedEndpoints, requiredLock, isAdapter },
@@ -225,18 +228,22 @@ const CreateWalletPage = ({ params, t }) => {
       setStep(2);
       setWaiting(false);
     }
+    trackEvent({ action: EVENTS_MAP.SECRET_CREATED });
   };
 
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
 
     await addWallet(account, password, params.chainCode);
+    trackEvent({ action: EVENTS_MAP.PASSWORD_COMPLETED });
     setStep(5);
   };
-  const goToWallet = () =>
+  const goToWallet = () => {
+    trackEvent({ action: EVENTS_MAP.CREATION_COMPLETED });
     navigate(
       isAdapter ? ADAPTER_ROUTES_MAP.ADAPTER_DETAIL : APP_ROUTES_MAP.WALLET,
     );
+  };
   const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
   return (

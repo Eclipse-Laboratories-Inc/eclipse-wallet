@@ -17,6 +17,9 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
@@ -25,8 +28,9 @@ const SettingsOptionsPage = ({ t }) => {
   ] = useContext(AppContext);
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
-
   const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
+
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SETTINGS);
 
   const toggleSingleDialog = () => {
     setShowSingleDialog(!showSingleDialog);
@@ -36,12 +40,14 @@ const SettingsOptionsPage = ({ t }) => {
   };
   const handleLogout = () => {
     logout();
+    trackEvent({ action: EVENTS_MAP.LOGOUT_ALL_WALLETS });
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
 
   const handleRemove = async () => {
     await removeWallet(activeWallet.getReceiveAddress());
     toggleSingleDialog();
+    trackEvent({ action: EVENTS_MAP.LOGOUT_WALLET });
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
   };
 

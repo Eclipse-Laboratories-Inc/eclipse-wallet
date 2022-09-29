@@ -13,12 +13,15 @@ import { isCollection } from '../../utils/nfts';
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
-import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalText from '../../component-library/Global/GlobalText';
 import Header from '../../component-library/Layout/Header';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP } from '../../utils/tracking';
+
 const NftsListPage = ({ t }) => {
+  useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsGroup, setNftsGroup] = useState([]);

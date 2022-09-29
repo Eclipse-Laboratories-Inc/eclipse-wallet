@@ -34,6 +34,9 @@ import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   buttonStyle: {
     paddingHorizontal: 0,
@@ -59,6 +62,7 @@ const styles = StyleSheet.create({
 });
 
 const TokenSendPage = ({ params, t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SEND_TOKEN);
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(1);
@@ -82,6 +86,7 @@ const TokenSendPage = ({ params, t }) => {
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
   const goToBack = () => {
+    trackEvent({ action: EVENTS_MAP.TOKEN_SEND_CANCELLED });
     if (step === 4) {
       navigate(ROUTES_MAP.WALLET);
     } else {
@@ -115,10 +120,12 @@ const TokenSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
+      trackEvent({ action: EVENTS_MAP.TOKEN_SEND_COMPLETED });
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
+      trackEvent({ action: EVENTS_MAP.TOKEN_SEND_FAILED });
       setStep(4);
       setSending(false);
     }

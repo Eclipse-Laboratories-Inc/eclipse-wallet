@@ -30,6 +30,9 @@ import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
 import clipboard from '../../utils/clipboard';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const styles = StyleSheet.create({
   mediumSizeImage: {
     width: 234,
@@ -69,6 +72,8 @@ const NftsSendPage = ({ params, t }) => {
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
+
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   useEffect(() => {
     if (activeWallet) {
@@ -124,10 +129,12 @@ const NftsSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
+      trackEvent({ action: EVENTS_MAP.NFT_SEND_COMPLETED });
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
+      trackEvent({ action: EVENTS_MAP.NFT_SEND_FAILED });
       setStep(3);
       setSending(false);
     }

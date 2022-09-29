@@ -17,9 +17,15 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 
+import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+
 const MAX_PAG = 20;
 
 const TokenSelectPage = ({ params, t }) => {
+  const { trackEvent } = useAnalyticsEventTracker(
+    SECTIONS_MAP.SEND_SELECT_TOKEN,
+  );
   const navigate = useNavigation();
   const [loaded, setloaded] = useState(false);
 
