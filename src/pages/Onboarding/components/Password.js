@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Linking } from 'react-native';
 
 import { isExtension } from '../../../utils/platform';
 import theme from '../../../component-library/Global/theme';
@@ -37,6 +37,10 @@ const Password = ({
     return (
       password && password.length >= minLength && password.length <= maxLength
     );
+  };
+
+  const onPressTerms = () => {
+    Linking.openURL(`https://salmonwallet.io/tc.html`);
   };
 
   const onContinue = async () => {
@@ -164,10 +168,9 @@ const Password = ({
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer>
-        <GlobalText type="body1" center>
+        <GlobalText onPress={onPressTerms} type="body1" center>
           {t('wallet.create.i_accept_terms_conditions')}
         </GlobalText>
-
         <GlobalPadding size="xl" />
 
         <GlobalButton
