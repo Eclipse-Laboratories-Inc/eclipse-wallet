@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Linking } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { AppContext } from '../../AppProvider';
@@ -72,7 +73,7 @@ const SettingsOptionsPage = ({ t }) => {
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_TRUSTEDAPPS);
 
   const goToHelpSupport = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_HELPSUPPORT);
+    Linking.openURL(`https://salmonwallet.io/support.html`);
 
   return (
     <GlobalLayout>
