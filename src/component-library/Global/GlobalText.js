@@ -96,6 +96,9 @@ const styles = StyleSheet.create({
   labelPrimary: {
     color: theme.colors.labelPrimary,
   },
+  accentPrimary: {
+    color: theme.colors.accentPrimary,
+  },
   positiveBright: {
     color: theme.colors.positiveBright,
   },
@@ -145,6 +148,7 @@ const GlobalText = ({
       type === 'caption' && styles.caption,
       type === 'overline' && styles.overline,
       color === 'primary' && styles.labelPrimary,
+      color === 'accentPrimary' && styles.accentPrimary,
       color === 'secondary' && styles.labelSecondary,
       color === 'tertiary' && styles.labelTertiary,
       color === 'positive' && styles.positiveBright,

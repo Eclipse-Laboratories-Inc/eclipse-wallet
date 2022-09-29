@@ -44,13 +44,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const DetailItem = ({ title, value, t }) => (
+const DetailItem = ({ title, value, color = 'primary', t }) => (
   <View style={globalStyles.inlineWell}>
-    <GlobalText type="caption" color="tertiary">
+    <GlobalText type="caption" color={color}>
       {title}
     </GlobalText>
 
-    <GlobalText type="body2">{value}</GlobalText>
+    <GlobalText type="body1">{value}</GlobalText>
   </View>
 );
 
@@ -131,6 +131,12 @@ const SwapPage = ({ t }) => {
       ? `${t('general.confirm')} (${quoteCountdown})`
       : t('swap.refresh_quote');
   const getConfirmBtnAction = () => (quoteCountdown >= 0 ? onConfirm : onQuote);
+
+  const routePath =
+    quote &&
+    quote.route &&
+    quote.route.marketInfos.map(m => m.label).join(' x ');
+
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
@@ -311,15 +317,12 @@ const SwapPage = ({ t }) => {
               )}`}
             />
             <GlobalPadding size="4xl" />
-            {quote &&
-              quote.route &&
-              quote.route.marketInfos.map(m => (
-                <DetailItem
-                  key={m.id}
-                  title={m.label}
-                  value={showPercentage(get(m, 'lpFee.pct'), 10)}
-                />
-              ))}
+            <DetailItem
+              key={`best_route`}
+              title={t('swap.best_route')}
+              color={'accentPrimary'}
+              value={routePath}
+            />
             {quote?.fee && (
               <DetailItem
                 key={quote?.fee}
