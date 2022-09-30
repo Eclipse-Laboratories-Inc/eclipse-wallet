@@ -23,6 +23,7 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import IconCopy from '../../assets/images/IconCopy.png';
@@ -105,6 +106,8 @@ const NftsSendPage = ({ params, t }) => {
 
   const onNext = async () => {
     if (!addressEmpty) {
+      setLoaded(false);
+      setStep(2);
       try {
         const feeSend = await activeWallet.estimateTransferFee(
           recipientAddress,
@@ -112,11 +115,11 @@ const NftsSendPage = ({ params, t }) => {
           1,
         );
         setFee(feeSend);
+        setLoaded(true);
       } catch (e) {
         console.log(e);
       }
     }
-    setStep(2);
   };
 
   const onSend = async () => {
@@ -162,311 +165,306 @@ const NftsSendPage = ({ params, t }) => {
     }
   };
 
-  return (
-    loaded && (
-      <GlobalLayout fullscreen>
-        {step === 1 && (
-          <>
-            <GlobalLayout.Header>
-              <GlobalBackTitle
-                onBack={goToBack}
-                inlineTitle={getWalletName(
-                  activeWallet.getReceiveAddress(),
-                  config,
-                )}
-                inlineAddress={activeWallet.getReceiveAddress()}
-              />
+  return loaded ? (
+    <GlobalLayout fullscreen>
+      {step === 1 && (
+        <>
+          <GlobalLayout.Header>
+            <GlobalBackTitle
+              onBack={goToBack}
+              inlineTitle={getWalletName(
+                activeWallet.getReceiveAddress(),
+                config,
+              )}
+              inlineAddress={activeWallet.getReceiveAddress()}
+            />
 
-              <GlobalText type="headline2" center>
-                {nftDetail.name || nftDetail.symbol}
-              </GlobalText>
+            <GlobalText type="headline2" center>
+              {nftDetail.name || nftDetail.symbol}
+            </GlobalText>
 
-              <View style={globalStyles.centered}>
-                <View
-                  style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
-                  <GlobalImage
-                    source={getMediaRemoteUrl(nftDetail.media)}
-                    style={globalStyles.bigImage}
-                    square
-                    squircle
-                  />
-                </View>
+            <View style={globalStyles.centered}>
+              <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
+                <GlobalImage
+                  source={getMediaRemoteUrl(nftDetail.media)}
+                  style={globalStyles.bigImage}
+                  square
+                  squircle
+                />
+              </View>
+            </View>
+
+            <GlobalPadding size="xl" />
+
+            <InputAddress
+              address={inputAddress}
+              publicKey={recipientAddress}
+              domain={recipientName}
+              validAddress={validAddress}
+              addressEmpty={addressEmpty}
+              onChange={setInputAddress}
+              setValidAddress={setValidAddress}
+              setDomain={setRecipientName}
+              setAddressEmpty={setAddressEmpty}
+              setPublicKey={setRecipientAddress}
+              onQR={toggleScan}
+            />
+
+            {wallets.length > 0 && (
+              <>
+                <GlobalPadding />
+
+                <GlobalCollapse
+                  title={t('settings.wallets.my_wallets')}
+                  titleStyle={styles.titleStyle}
+                  isOpen
+                  hideCollapse>
+                  {wallets.map(wallet => (
+                    <CardButtonWallet
+                      key={wallet.address}
+                      title={getWalletName(wallet.address, config)}
+                      address={wallet.address}
+                      chain={wallet.chain}
+                      imageSize="md"
+                      onPress={() => setInputAddress(wallet.address)}
+                      buttonStyle={globalStyles.addressBookItem}
+                      touchableStyles={globalStyles.addressBookTouchable}
+                      transparent
+                    />
+                  ))}
+                </GlobalCollapse>
+              </>
+            )}
+
+            {addressBook.length > 0 && (
+              <>
+                <GlobalPadding />
+
+                <GlobalCollapse
+                  title={t('settings.address_book')}
+                  titleStyle={styles.titleStyle}
+                  isOpen
+                  hideCollapse>
+                  {addressBook.map(addressBookItem => (
+                    <CardButtonWallet
+                      key={addressBookItem.address}
+                      title={addressBookItem.name}
+                      address={addressBookItem.address}
+                      chain={addressBookItem.chain}
+                      imageSize="md"
+                      onPress={() => setInputAddress(addressBookItem.address)}
+                      buttonStyle={globalStyles.addressBookItem}
+                      touchableStyles={globalStyles.addressBookTouchable}
+                      transparent
+                    />
+                  ))}
+                </GlobalCollapse>
+              </>
+            )}
+          </GlobalLayout.Header>
+
+          <GlobalLayout.Footer inlineFlex>
+            <GlobalButton
+              type="secondary"
+              flex
+              title="Cancel"
+              onPress={onCancel}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+
+            <GlobalButton
+              type="primary"
+              flex
+              disabled={!validAddress}
+              title={t('token.send.next')}
+              onPress={onNext}
+              style={[globalStyles.button, globalStyles.buttonRight]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+          </GlobalLayout.Footer>
+          {isNative() && (
+            <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
+          )}
+        </>
+      )}
+
+      {step === 2 && (
+        <>
+          <GlobalLayout.Header>
+            <GlobalBackTitle
+              onBack={goToBack}
+              inlineTitle={getWalletName(
+                activeWallet.getReceiveAddress(),
+                config,
+              )}
+              inlineAddress={activeWallet.getReceiveAddress()}
+            />
+
+            <GlobalText type="headline2" center>
+              {nftDetail.name || nftDetail.symbol}
+            </GlobalText>
+
+            <View style={globalStyles.centered}>
+              <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
+                <GlobalImage
+                  source={getMediaRemoteUrl(nftDetail.media)}
+                  style={globalStyles.bigImage}
+                  square
+                  squircle
+                />
               </View>
 
               <GlobalPadding size="xl" />
 
-              <InputAddress
-                address={inputAddress}
-                publicKey={recipientAddress}
-                domain={recipientName}
-                validAddress={validAddress}
-                addressEmpty={addressEmpty}
-                onChange={setInputAddress}
-                setValidAddress={setValidAddress}
-                setDomain={setRecipientName}
-                setAddressEmpty={setAddressEmpty}
-                setPublicKey={setRecipientAddress}
-                onQR={toggleScan}
-              />
-
-              {wallets.length > 0 && (
-                <>
-                  <GlobalPadding />
-
-                  <GlobalCollapse
-                    title={t('settings.wallets.my_wallets')}
-                    titleStyle={styles.titleStyle}
-                    isOpen
-                    hideCollapse>
-                    {wallets.map(wallet => (
-                      <CardButtonWallet
-                        key={wallet.address}
-                        title={getWalletName(wallet.address, config)}
-                        address={wallet.address}
-                        chain={wallet.chain}
-                        imageSize="md"
-                        onPress={() => setInputAddress(wallet.address)}
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
-                  </GlobalCollapse>
-                </>
-              )}
-
-              {addressBook.length > 0 && (
-                <>
-                  <GlobalPadding />
-
-                  <GlobalCollapse
-                    title={t('settings.address_book')}
-                    titleStyle={styles.titleStyle}
-                    isOpen
-                    hideCollapse>
-                    {addressBook.map(addressBookItem => (
-                      <CardButtonWallet
-                        key={addressBookItem.address}
-                        title={addressBookItem.name}
-                        address={addressBookItem.address}
-                        chain={addressBookItem.chain}
-                        imageSize="md"
-                        onPress={() => setInputAddress(addressBookItem.address)}
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
-                  </GlobalCollapse>
-                </>
-              )}
-            </GlobalLayout.Header>
-
-            <GlobalLayout.Footer inlineFlex>
-              <GlobalButton
-                type="secondary"
-                flex
-                title="Cancel"
-                onPress={onCancel}
-                style={[globalStyles.button, globalStyles.buttonLeft]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-
-              <GlobalButton
-                type="primary"
-                flex
-                disabled={!validAddress}
-                title={t('token.send.next')}
-                onPress={onNext}
-                style={[globalStyles.button, globalStyles.buttonRight]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-            </GlobalLayout.Footer>
-            {isNative() && (
-              <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
-            )}
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <GlobalLayout.Header>
-              <GlobalBackTitle
-                onBack={goToBack}
-                inlineTitle={getWalletName(
-                  activeWallet.getReceiveAddress(),
-                  config,
-                )}
-                inlineAddress={activeWallet.getReceiveAddress()}
-              />
-
-              <GlobalText type="headline2" center>
-                {nftDetail.name || nftDetail.symbol}
+              <GlobalText type="subtitle2" center>
+                {t('nft.send_to')}
               </GlobalText>
 
-              <View style={globalStyles.centered}>
-                <View
-                  style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
-                  <GlobalImage
-                    source={getMediaRemoteUrl(nftDetail.media)}
-                    style={globalStyles.bigImage}
-                    square
-                    squircle
-                  />
-                </View>
+              <GlobalPadding />
 
-                <GlobalPadding size="xl" />
+              <GlobalImage source={IconExpandMoreAccent1} size="md" />
 
-                <GlobalText type="subtitle2" center>
-                  {t('nft.send_to')}
-                </GlobalText>
+              <GlobalPadding />
 
-                <GlobalPadding />
+              <GlobalPadding size="md" />
 
-                <GlobalImage source={IconExpandMoreAccent1} size="md" />
+              <View style={globalStyles.inlineWell}>
+                <GlobalText type="caption">{recipientAddress}</GlobalText>
 
-                <GlobalPadding />
-
-                <GlobalPadding size="md" />
-
-                <View style={globalStyles.inlineWell}>
-                  <GlobalText type="caption">{recipientAddress}</GlobalText>
-
-                  <GlobalButton
-                    onPress={() => clipboard.copy(recipientAddress)}
-                    transparent>
-                    <GlobalImage source={IconCopy} size="xs" />
-                  </GlobalButton>
-                </View>
-                {fee && !addressEmpty && (
-                  <View style={globalStyles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      Network Fee
-                    </GlobalText>
-
-                    <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS.SOLANA} SOL
-                    </GlobalText>
-                  </View>
-                )}
-                {addressEmpty && (
-                  <GlobalText type="caption" center color={'warning'}>
-                    {t(`token.send.empty_account_fee`)}
-                  </GlobalText>
-                )}
+                <GlobalButton
+                  onPress={() => clipboard.copy(recipientAddress)}
+                  transparent>
+                  <GlobalImage source={IconCopy} size="xs" />
+                </GlobalButton>
               </View>
-            </GlobalLayout.Header>
-
-            <GlobalPadding />
-
-            <GlobalLayout.Footer inlineFlex>
-              <GlobalButton
-                type="secondary"
-                flex
-                title={t(`actions.cancel`)}
-                onPress={onCancel}
-                style={[globalStyles.button, globalStyles.buttonLeft]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-
-              <GlobalButton
-                disabled={sending}
-                type="primary"
-                flex
-                title={t(`actions.send`)}
-                onPress={onSend}
-                style={[globalStyles.button, globalStyles.buttonRight]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-            </GlobalLayout.Footer>
-          </>
-        )}
-        {step === 3 && (
-          <>
-            <GlobalLayout.Header>
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
-
-              {(status === 'creating' || status === 'sending') && (
-                <>
-                  <GlobalPadding size="4xl" />
-                  <GlobalPadding size="4xl" />
-                </>
-              )}
-
-              <View style={globalStyles.centeredSmall}>
-                <GlobalImage
-                  source={getTransactionImage(status)}
-                  size="3xl"
-                  circle
-                />
-                <GlobalPadding />
-                {status !== 'creating' && (
-                  <GlobalText
-                    type={status === 'sending' ? 'subtitle2' : 'headline2'}
-                    color={status === 'sending' && 'secondary'}
-                    center>
-                    {t(`token.send.transaction_${status}`)}
+              {fee && !addressEmpty && (
+                <View style={globalStyles.inlineWell}>
+                  <GlobalText type="caption" color="tertiary">
+                    Network Fee
                   </GlobalText>
-                )}
-                {/* {(status === 'success' || status === 'fail') && (
+                  <GlobalText type="body2">
+                    {fee / TOKEN_DECIMALS.SOLANA} SOL
+                  </GlobalText>
+                </View>
+              )}
+              {addressEmpty && (
+                <GlobalText type="caption" center color={'warning'}>
+                  {t(`token.send.empty_account_fee`)}
+                </GlobalText>
+              )}
+            </View>
+          </GlobalLayout.Header>
+
+          <GlobalPadding />
+
+          <GlobalLayout.Footer inlineFlex>
+            <GlobalButton
+              type="secondary"
+              flex
+              title={t(`actions.cancel`)}
+              onPress={onCancel}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+
+            <GlobalButton
+              disabled={sending}
+              type="primary"
+              flex
+              title={t(`actions.send`)}
+              onPress={onSend}
+              style={[globalStyles.button, globalStyles.buttonRight]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+          </GlobalLayout.Footer>
+        </>
+      )}
+      {step === 3 && (
+        <>
+          <GlobalLayout.Header>
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+
+            {(status === 'creating' || status === 'sending') && (
+              <>
+                <GlobalPadding size="4xl" />
+                <GlobalPadding size="4xl" />
+              </>
+            )}
+
+            <View style={globalStyles.centeredSmall}>
+              <GlobalImage
+                source={getTransactionImage(status)}
+                size="3xl"
+                circle
+              />
+              <GlobalPadding />
+              {status !== 'creating' && (
+                <GlobalText
+                  type={status === 'sending' ? 'subtitle2' : 'headline2'}
+                  color={status === 'sending' && 'secondary'}
+                  center>
+                  {t(`token.send.transaction_${status}`)}
+                </GlobalText>
+              )}
+              {/* {(status === 'success' || status === 'fail') && (
                   <GlobalText type="body1" center>
                     3 lines max Excepteur sint occaecat cupidatat non proident,
                     sunt ?
                   </GlobalText>
                 )} */}
 
-                <GlobalPadding size="4xl" />
-              </View>
-            </GlobalLayout.Header>
+              <GlobalPadding size="4xl" />
+            </View>
+          </GlobalLayout.Header>
 
-            <GlobalLayout.Footer>
-              {status === 'success' || status === 'fail' ? (
-                <>
-                  <GlobalButton
-                    type="primary"
-                    wide
-                    title={t(`token.send.goto_explorer`)}
-                    onPress={openTransaction}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
-
-                  <GlobalPadding size="md" />
-
-                  <GlobalButton
-                    type="secondary"
-                    title={t(`general.close`)}
-                    wide
-                    onPress={goToBack}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
-                </>
-              ) : (
+          <GlobalLayout.Footer>
+            {status === 'success' || status === 'fail' ? (
+              <>
                 <GlobalButton
-                  type="text"
+                  type="primary"
                   wide
-                  textStyle={
-                    status === 'creating'
-                      ? styles.creatingTx
-                      : styles.viewTxLink
-                  }
-                  title={
-                    status === 'creating'
-                      ? t(`token.send.transaction_creating`)
-                      : t(`token.send.view_transaction`)
-                  }
-                  readonly={status === 'creating'}
+                  title={t(`token.send.goto_explorer`)}
                   onPress={openTransaction}
+                  style={globalStyles.button}
+                  touchableStyles={globalStyles.buttonTouchable}
                 />
-              )}
-            </GlobalLayout.Footer>
-          </>
-        )}
-      </GlobalLayout>
-    )
+
+                <GlobalPadding size="md" />
+
+                <GlobalButton
+                  type="secondary"
+                  title={t(`general.close`)}
+                  wide
+                  onPress={goToBack}
+                  style={globalStyles.button}
+                  touchableStyles={globalStyles.buttonTouchable}
+                />
+              </>
+            ) : (
+              <GlobalButton
+                type="text"
+                wide
+                textStyle={
+                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
+                }
+                title={
+                  status === 'creating'
+                    ? t(`token.send.transaction_creating`)
+                    : t(`token.send.view_transaction`)
+                }
+                readonly={status === 'creating'}
+                onPress={openTransaction}
+              />
+            )}
+          </GlobalLayout.Footer>
+        </>
+      )}
+    </GlobalLayout>
+  ) : (
+    <GlobalSkeleton type="NftDetail" />
   );
 };
 

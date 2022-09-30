@@ -280,6 +280,7 @@ const CreateWalletPage = ({ params, t }) => {
       )}
       {step === 4 && (
         <Password
+          type="create"
           onComplete={handleOnPasswordComplete}
           onBack={() => setStep(3)}
           requiredLock={requiredLock}

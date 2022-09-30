@@ -142,6 +142,7 @@ const RecoverWalletPage = ({ t }) => {
       )}
       {step === 2 && (
         <Password
+          type="recover"
           onComplete={handleOnPasswordComplete}
           onBack={() => setStep(1)}
           requiredLock={requiredLock}
