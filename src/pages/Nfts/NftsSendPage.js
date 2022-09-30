@@ -3,7 +3,7 @@ import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP } from './routes';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
@@ -91,13 +91,7 @@ const NftsSendPage = ({ params, t }) => {
     }
   }, [activeWallet, params.id]);
 
-  const goToBack = () => {
-    if (step === 3) {
-      navigate(ROUTES_MAP.WALLET);
-    } else {
-      navigate(ROUTES_MAP.NFTS_DETAIL, { id: params.id });
-    }
-  };
+  const goToBack = () => navigate(APP_ROUTES_MAP.WALLET);
 
   const onNext = async () => {
     if (!addressEmpty) {
@@ -384,7 +378,7 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
 
-              {status !== 'success' && (
+              {(status === 'creating' || status === 'sending') && (
                 <>
                   <GlobalPadding size="4xl" />
                   <GlobalPadding size="4xl" />
@@ -406,12 +400,12 @@ const NftsSendPage = ({ params, t }) => {
                     {t(`token.send.transaction_${status}`)}
                   </GlobalText>
                 )}
-                {(status === 'success' || status === 'fail') && (
+                {/* {(status === 'success' || status === 'fail') && (
                   <GlobalText type="body1" center>
                     3 lines max Excepteur sint occaecat cupidatat non proident,
                     sunt ?
                   </GlobalText>
-                )}
+                )} */}
 
                 <GlobalPadding size="4xl" />
               </View>

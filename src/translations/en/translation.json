@@ -112,14 +112,15 @@
         "NO_FUNDS": "Destination address has no funds"
       },
       "amount": {
-        "invalid": "Insufficient funds"
+        "invalid": "The amount must be greater than 0",
+        "insufficient": "Insufficient funds"
       },
       "next": "Next",
       "validate": "Validate",
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
-      "transaction_success": "Transaction Completed",
+      "transaction_success": "Transaction\nCompleted",
       "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",
@@ -236,7 +237,8 @@
     "view_transaction": "View Transaction",
     "today": "Today",
     "yesterday": "Yesterday",
-    "empty": "No transactions found"
+    "empty": "No transactions found",
+    "detail_back": "Back to Wallet"
   },
   "nft": {
     "description": "Description",

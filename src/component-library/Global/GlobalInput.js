@@ -99,6 +99,7 @@ const GlobalInput = ({
   value,
   setValue,
   invalid,
+  number,
   complete,
   action,
   style,
@@ -111,7 +112,9 @@ const GlobalInput = ({
 }) => {
   const handleChange = event => {
     if (setValue) {
-      setValue(event.nativeEvent.text);
+      number
+        ? setValue(event.nativeEvent.text.replace(/[^\d.]/g, ''))
+        : setValue(event.nativeEvent.text);
     }
   };
   const [isFocused, setIsFocused] = useState(false);
