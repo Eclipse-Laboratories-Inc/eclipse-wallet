@@ -31,6 +31,8 @@ const Password = ({
     (!requiredLock && ((!!pass && pass === repass) || (!pass && !repass))) ||
     (requiredLock && pass);
 
+  const isEmpty = !pass;
+
   const validatePasswordStrength = password => {
     const minLength = 8;
     const maxLength = 20;
@@ -183,7 +185,7 @@ const Password = ({
               : t(`wallet.${type}_wallet`)
           }
           onPress={onContinue}
-          disabled={!isValid || checking || waiting || wrongpass}
+          disabled={!isValid || checking || waiting || wrongpass || isEmpty}
         />
       </GlobalLayout.Footer>
     </>
