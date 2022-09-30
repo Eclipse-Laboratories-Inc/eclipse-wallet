@@ -178,19 +178,16 @@ const SwapPage = ({ t }) => {
         setTransaction(st);
         const result = await activeWallet.executeSwapTransaction(st);
         if (get(result, 'value.err')) {
-          setError(true);
-          trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
-          setStatus(TRANSACTION_STATUS.FAIL);
-        } else {
-          setError(false);
-          trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
-          setStatus(TRANSACTION_STATUS.SUCCESS);
+          throw Error('swap_error');
         }
       }
+      setError(false);
+      trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
+      setStatus(TRANSACTION_STATUS.SUCCESS);
 
       setProcessing(false);
     } catch (e) {
-      console.log(e);
+      console.log(JSON.stringify(e));
       setError(true);
       setStatus(TRANSACTION_STATUS.FAIL);
       trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
@@ -357,14 +354,6 @@ const SwapPage = ({ t }) => {
           <GlobalLayout.Header>
             <GlobalPadding size="4xl" />
             <GlobalPadding size="4xl" />
-            <GlobalPadding size="4xl" />
-
-            {status !== 'success' && (
-              <>
-                <GlobalPadding size="4xl" />
-                <GlobalPadding size="4xl" />
-              </>
-            )}
             <View style={globalStyles.centeredSmall}>
               <GlobalImage
                 source={getTransactionImage(status)}
@@ -374,20 +363,12 @@ const SwapPage = ({ t }) => {
               <GlobalPadding />
               {status !== 'creating' && (
                 <GlobalText
-                  type={status === 'swapping' ? 'subtitle2' : 'headline2'}
+                  type={'body2'}
                   color={status === 'swapping' && 'secondary'}
                   center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === 'success' ||
-                (status === 'fail' && (
-                  <GlobalText type="body1" center>
-                    3 lines max Excepteur sint occaecat cupidatat non proident,
-                    sunt ?
-                  </GlobalText>
-                ))}
-
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
