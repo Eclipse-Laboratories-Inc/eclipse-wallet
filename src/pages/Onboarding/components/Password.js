@@ -14,6 +14,7 @@ import GlobalPageDot from '../../../component-library/Global/GlobalPageDot';
 import Logo from './Logo';
 
 const Password = ({
+  type,
   onComplete,
   onBack,
   requiredLock,
@@ -169,7 +170,7 @@ const Password = ({
 
       <GlobalLayout.Footer>
         <GlobalText onPress={onPressTerms} type="body1" center>
-          {t('wallet.create.i_accept_terms_conditions')}
+          {t(`wallet.${type}.i_accept_terms_conditions`)}
         </GlobalText>
         <GlobalPadding size="xl" />
 
@@ -179,7 +180,7 @@ const Password = ({
           title={
             checking
               ? t('wallet.create.passwordChecking')
-              : t('wallet.create_wallet')
+              : t(`wallet.${type}_wallet`)
           }
           onPress={onContinue}
           disabled={!isValid || checking || waiting || wrongpass}

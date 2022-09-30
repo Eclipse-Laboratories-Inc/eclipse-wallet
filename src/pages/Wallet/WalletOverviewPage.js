@@ -25,7 +25,7 @@ import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
-import { isCollection } from '../../utils/nfts';
+import { isMoreThanOne } from '../../utils/nfts';
 // import IconNotifications from '../../assets/images/IconNotifications.png';
 // import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 
@@ -90,10 +90,12 @@ const WalletOverviewPage = ({ t }) => {
 
   // const goToNotifications = () => setHasNotifications(!hasNotifications);
   const handleNftsClick = nft => {
-    if (isCollection(nft)) {
+    if (isMoreThanOne(nft)) {
       navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
     } else {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, {
+        id: nft.mint || nft.items[0].mint,
+      });
     }
   };
   const goToNFTs = tok =>

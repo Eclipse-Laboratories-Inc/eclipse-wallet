@@ -185,7 +185,8 @@
     "recover": {
       "messageTitle": "Recover Existing Wallet",
       "messageBody": "Recover your wallet using your 12/24 words secret phrase.",
-      "pasteSeed": "Paste your secret phrase"
+      "pasteSeed": "Paste your secret phrase",
+      "i_accept_terms_conditions": "By tapping the Recover Wallet button \nI accept the Terms & Conditions"
     },
     "onboarding": {
       "titleOnboarded": "Add New Wallet",

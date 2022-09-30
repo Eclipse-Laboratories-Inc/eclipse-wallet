@@ -14,6 +14,8 @@ const GlobalSkeleton = ({ type }) => {
       return <ActivityList />;
     case 'TokenDetail':
       return <TokenDetail />;
+    case 'NftDetail':
+      return <NftDetail />;
     case 'TransactionDetail':
       return <TransactionDetail />;
     case 'Swap':
@@ -83,6 +85,20 @@ const TokenDetail = () => (
     <rect x="50" y="44" rx="3" ry="3" width="49" height="14" />
     {/* chart skeleton viewBox="0 0 100 95"*/}
     {/* <rect x="0" y="63" rx="3" ry="3" width="100" height="20" /> */}
+  </ContentLoader>
+);
+
+const NftDetail = () => (
+  <ContentLoader
+    foregroundColor={theme.colors.cards}
+    backgroundColor={theme.colors.bgLight}
+    viewBox="0 0 100 200">
+    <rect x="25" y="18" rx="3" ry="3" width="50" height="10" />
+    <rect x="20" y="34" rx="6" ry="6" width="60" height="60" />
+    <rect x="1" y="140" rx="3" ry="3" width="98" height="16" />
+    <rect x="1" y="160" rx="3" ry="3" width="98" height="10" />
+    <rect x="1" y="180" rx="3" ry="3" width="48" height="14" />
+    <rect x="51" y="180" rx="3" ry="3" width="48" height="14" />
   </ContentLoader>
 );
 

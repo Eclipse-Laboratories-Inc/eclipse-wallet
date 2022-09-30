@@ -6,9 +6,9 @@ import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP as NTFS_ROUTES_MAP } from './routes';
+import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { getWalletName } from '../../utils/wallet';
-import { isCollection } from '../../utils/nfts';
+import { isMoreThanOne } from '../../utils/nfts';
 
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
@@ -43,10 +43,12 @@ const NftsListPage = ({ t }) => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
   const onClick = nft => {
-    if (isCollection(nft)) {
-      navigate(NTFS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
+    if (isMoreThanOne(nft)) {
+      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
     } else {
-      navigate(NTFS_ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, {
+        id: nft.mint || nft.items[0].mint,
+      });
     }
   };
 
