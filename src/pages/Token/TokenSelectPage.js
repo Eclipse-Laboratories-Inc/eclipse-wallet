@@ -16,6 +16,7 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -98,47 +99,42 @@ const TokenSelectPage = ({ params, t }) => {
     });
   };
 
-  return (
-    loaded && (
-      <GlobalLayout fullscreen>
-        <GlobalLayout.Header>
-          <GlobalBackTitle
-            onBack={goToBack}
-            secondaryTitle={t(`token.action.${params.action || 'select'}`)}
-          />
-          <GlobalInput
-            forSearch
-            placeholder={t('actions.search_placeholder')}
-            value={searchToken}
-            setValue={setSearchToken}
-          />
+  return loaded ? (
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={goToBack}
+          secondaryTitle={t(`token.action.${params.action || 'select'}`)}
+        />
+        <GlobalInput
+          forSearch
+          placeholder={t('actions.search_placeholder')}
+          value={searchToken}
+          setValue={setSearchToken}
+        />
 
-          <GlobalPadding />
-          {drawedList && drawedList.length > 0 && (
-            <GlobalCollapse
-              title={t('wallet.select_token')}
-              isOpen
-              hideCollapse>
-              {drawedList.map(token => (
-                <CardButton
-                  key={token.mint || token.address}
-                  onPress={() => onSelect(token)}
-                  icon={<GlobalImage url={token.logo} size="md" circle />}
-                  title={token.name}
-                  actions={[
-                    <GlobalText key={'amount-action'} type="body2">
-                      {hiddenBalance
-                        ? hiddenValue
-                        : showAmount(token.usdBalance)}
-                    </GlobalText>,
-                  ]}
-                />
-              ))}
-            </GlobalCollapse>
-          )}
-        </GlobalLayout.Header>
-      </GlobalLayout>
-    )
+        <GlobalPadding />
+        {drawedList && drawedList.length > 0 && (
+          <GlobalCollapse title={t('wallet.select_token')} isOpen hideCollapse>
+            {drawedList.map(token => (
+              <CardButton
+                key={token.mint || token.address}
+                onPress={() => onSelect(token)}
+                icon={<GlobalImage url={token.logo} size="md" circle />}
+                title={token.name}
+                actions={[
+                  <GlobalText key={'amount-action'} type="body2">
+                    {hiddenBalance ? hiddenValue : showAmount(token.usdBalance)}
+                  </GlobalText>,
+                ]}
+              />
+            ))}
+          </GlobalCollapse>
+        )}
+      </GlobalLayout.Header>
+    </GlobalLayout>
+  ) : (
+    <GlobalSkeleton type="TokenListSend" />
   );
 };
 

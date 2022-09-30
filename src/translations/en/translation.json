@@ -136,6 +136,8 @@
     "title": "Enter your password",
     "placeholder": "Enter your password",
     "error": "Invalid Password",
+    "forgot": "I've forgot my password",
+    "clear": "Clear data",
     "buttonChecking": "Checking...",
     "buttonUnlock": "Unlock"
   },
