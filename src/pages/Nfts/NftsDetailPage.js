@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  nftImage: {
+    width: '80%',
+    margin: 'auto',
+  },
 });
 
 const NftsDetailPage = ({ params, t }) => {
@@ -104,14 +108,12 @@ const NftsDetailPage = ({ params, t }) => {
 
           <View style={globalStyles.centered}>
             <GlobalPadding size="xs" />
-            <View style={globalStyles.squareRatio}>
-              <GlobalImage
-                source={getMediaRemoteUrl(nftDetail.media)}
-                style={globalStyles.bigImage}
-                square
-                squircle
-              />
-            </View>
+            <GlobalImage
+              source={getMediaRemoteUrl(nftDetail.media)}
+              style={styles.nftImage}
+              square
+              squircle
+            />
 
             <GlobalPadding size="xl" />
 
