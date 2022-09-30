@@ -118,8 +118,6 @@ const TokenSelectPage = ({ params, t }) => {
             <GlobalCollapse
               title={t('wallet.select_token')}
               isOpen
-              actionTitle={t('wallet.new_token')}
-              viewAllAction={goToAddToken}
               hideCollapse>
               {drawedList.map(token => (
                 <CardButton
