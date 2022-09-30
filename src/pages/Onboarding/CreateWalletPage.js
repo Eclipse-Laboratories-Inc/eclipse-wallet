@@ -182,8 +182,6 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
               placeholder={t(`wallet.create.enter_word_number`) + pos}
               setValue={value => setPhrasePos(value, index)}
               // value={phrases[index]}
-              value={account.mnemonic.split(' ')[pos - 1]}
-              invalid={false}
             />
             <GlobalPadding />
           </React.Fragment>
@@ -196,7 +194,7 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
           wide
           title={t('actions.next')}
           onPress={onComplete}
-          disabled={isValid}
+          disabled={!isValid}
         />
       </GlobalLayout.Footer>
     </>
