@@ -4,6 +4,7 @@ import { StyleSheet, View, Linking } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
@@ -91,7 +92,16 @@ const NftsSendPage = ({ params, t }) => {
     }
   }, [activeWallet, params.id]);
 
-  const goToBack = () => navigate(APP_ROUTES_MAP.WALLET);
+  const goToBack = () => {
+    if (step === 1) {
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    } else {
+      setStep(step - 1);
+    }
+  };
+
+  const onCancel = () =>
+    navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
 
   const onNext = async () => {
     if (!addressEmpty) {
@@ -257,7 +267,7 @@ const NftsSendPage = ({ params, t }) => {
                 type="secondary"
                 flex
                 title="Cancel"
-                onPress={goToBack}
+                onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
               />
@@ -354,7 +364,7 @@ const NftsSendPage = ({ params, t }) => {
                 type="secondary"
                 flex
                 title={t(`actions.cancel`)}
-                onPress={goToBack}
+                onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
               />

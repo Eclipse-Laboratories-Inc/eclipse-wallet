@@ -4,6 +4,7 @@ import { StyleSheet, View, Linking } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import {
   LOGOS,
@@ -86,10 +87,21 @@ const TokenSendPage = ({ params, t }) => {
   const validAmount =
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
-  const goToBack = () => {
+
+  const onCancel = () => {
     trackEvent({ action: EVENTS_MAP.TOKEN_SEND_CANCELLED });
     navigate(APP_ROUTES_MAP.WALLET);
   };
+
+  const goToBack = () => {
+    if (step === 4) {
+      navigate(APP_ROUTES_MAP.WALLET);
+    } else if (step === 1) {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: 'send' });
+    }
+    setStep(step - 1);
+  };
+
   const onNext = async () => {
     if (step === 2) {
       if (!addressEmpty) {
@@ -243,7 +255,7 @@ const TokenSendPage = ({ params, t }) => {
                 type="secondary"
                 flex
                 title="Cancel"
-                onPress={goToBack}
+                onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
               />
@@ -315,7 +327,7 @@ const TokenSendPage = ({ params, t }) => {
                 type="secondary"
                 flex
                 title="Cancel"
-                onPress={goToBack}
+                onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
               />
@@ -395,7 +407,7 @@ const TokenSendPage = ({ params, t }) => {
                 type="secondary"
                 flex
                 title="Cancel"
-                onPress={goToBack}
+                onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
               />
