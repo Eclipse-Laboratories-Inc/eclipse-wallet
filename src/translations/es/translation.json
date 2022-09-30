@@ -94,7 +94,8 @@
         "NO_FUNDS": "La direccion destino no tiene fondos"
       },
       "amount": {
-        "invalid": "El monto debe ser un numero menor a {{max}}"
+        "insufficient": "El monto debe ser un numero menor a {{max}}",
+        "invalid": "The amount must be greater than 0"
       },
       "next": "Next",
       "validate": "Validate",
@@ -224,6 +225,7 @@
     "you_receive": "Recibes",
     "best_route": "Mejor Ruta",
     "quote": "Cotizar",
+    "best_route": "Mejor Ruta",
     "refresh_quote": "Refrescar Cotización",
     "total_fee": "Fee total",
     "go_to_explorer": "Go to Explorer"

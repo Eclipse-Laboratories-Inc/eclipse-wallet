@@ -7,6 +7,8 @@ import { AppContext } from '../../AppProvider';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { TRANSACTION_TYPE, TOKEN_DECIMALS } from './constants';
 import { ROUTES_MAP } from './routes';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
+
 import { withTranslation } from '../../hooks/useTranslations';
 
 import {
@@ -94,6 +96,8 @@ const TransactionsDetailPage = ({ t, params }) => {
     () => navigate(ROUTES_MAP.TRANSACTIONS_LIST),
     [navigate],
   );
+
+  const goToWallet = () => navigate(APP_ROUTES_MAP.WALLET);
 
   const getTransactionTitle = type => {
     switch (type) {
@@ -295,7 +299,7 @@ const TransactionsDetailPage = ({ t, params }) => {
         <GlobalButton
           type="secondary"
           wideSmall
-          title="GO TO SOLSCAN"
+          title={t(`token.send.goto_explorer`)}
           onPress={() =>
             Linking.openURL(
               `https://solscan.io/tx/${transactionDetail.signature}`,
@@ -308,8 +312,8 @@ const TransactionsDetailPage = ({ t, params }) => {
         <GlobalButton
           type="primary"
           wideSmall
-          title="Back to Wallet"
-          onPress={onBack}
+          title={t(`transactions.detail_back`)}
+          onPress={goToWallet}
         />
 
         <GlobalPadding size="xl" />
@@ -455,7 +459,7 @@ const TransactionsDetailPage = ({ t, params }) => {
       <GlobalButton
         type="secondary"
         wideSmall
-        title="GO TO SOLSCAN"
+        title={t(`token.send.goto_explorer`)}
         onPress={() =>
           Linking.openURL(
             `https://solscan.io/tx/${transactionDetail.signature}`,
@@ -468,8 +472,8 @@ const TransactionsDetailPage = ({ t, params }) => {
       <GlobalButton
         type="primary"
         wideSmall
-        title="Back to Wallet"
-        onPress={onBack}
+        title={t(`transactions.detail_back`)}
+        onPress={goToWallet}
       />
 
       <GlobalPadding size="xl" />

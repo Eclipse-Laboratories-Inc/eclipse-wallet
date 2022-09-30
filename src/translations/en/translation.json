@@ -112,17 +112,18 @@
         "NO_FUNDS": "Destination address has no funds"
       },
       "amount": {
-        "invalid": "Insufficient funds"
+        "invalid": "The amount must be greater than 0",
+        "insufficient": "Insufficient funds"
       },
       "next": "Next",
       "validate": "Validate",
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
-      "transaction_success": "Transaction Completed",
+      "transaction_success": "Transaction\nCompleted",
       "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
-      "transaction_fail": "Fail",
+      "transaction_fail": "Transaction\nhas failed",
       "goto_explorer": "Go to Explorer",
       "view_transaction": "View Transaction",
       "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
@@ -236,7 +237,8 @@
     "view_transaction": "View Transaction",
     "today": "Today",
     "yesterday": "Yesterday",
-    "empty": "No transactions found"
+    "empty": "No transactions found",
+    "detail_back": "Back to Wallet"
   },
   "nft": {
     "description": "Description",
@@ -253,6 +255,7 @@
     "you_receive": "You Receive",
     "best_route": "Best Route",
     "quote": "Quote",
+    "best_route": "Best Route",
     "refresh_quote": "Refresh Quote",
     "total_fee": "Total fee",
     "go_to_explorer": "Go to Explorer"

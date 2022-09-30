@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     color: theme.colors.negativeBright,
   },
   negativeLight: {
-    color: theme.colors.negativeLight,
+    color: theme.colors.accentPrimary,
   },
   warningBright: {
     color: theme.colors.warning,

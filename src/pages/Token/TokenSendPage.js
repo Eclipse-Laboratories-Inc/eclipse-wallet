@@ -3,7 +3,7 @@ import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP } from '../../routes/app-routes';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import {
   LOGOS,
@@ -82,16 +82,13 @@ const TokenSendPage = ({ params, t }) => {
   );
   const [recipientAmount, setRecipientAmount] = useState('');
 
+  const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
     parseFloat(recipientAmount) <= token.uiAmount &&
     parseFloat(recipientAmount) > 0;
   const goToBack = () => {
     trackEvent({ action: EVENTS_MAP.TOKEN_SEND_CANCELLED });
-    if (step === 4) {
-      navigate(ROUTES_MAP.WALLET);
-    } else {
-      setStep(step - 1);
-    }
+    navigate(APP_ROUTES_MAP.WALLET);
   };
   const onNext = async () => {
     if (step === 2) {
@@ -287,11 +284,22 @@ const TokenSendPage = ({ params, t }) => {
                 buttonLabel={t('general.max')}
                 buttonOnPress={() => setRecipientAmount(`${token.uiAmount}`)}
                 invalid={!validAmount && !!recipientAmount}
+                number
               />
-              {!validAmount && !!recipientAmount && (
+
+              {zeroAmount ? (
                 <GlobalText type="body1" center color="negative">
-                  {t(`token.send.amount.invalid`, { max: token.uiAmount })}
+                  {t(`token.send.amount.invalid`)}
                 </GlobalText>
+              ) : (
+                !validAmount &&
+                !!recipientAmount && (
+                  <GlobalText type="body1" center color="negative">
+                    {t(`token.send.amount.insufficient`, {
+                      max: token.uiAmount,
+                    })}
+                  </GlobalText>
+                )
               )}
 
               <GlobalPadding />
@@ -411,7 +419,7 @@ const TokenSendPage = ({ params, t }) => {
               <GlobalPadding size="4xl" />
               <GlobalPadding size="4xl" />
 
-              {status !== 'success' && (
+              {(status === 'creating' || status === 'sending') && (
                 <>
                   <GlobalPadding size="4xl" />
                   <GlobalPadding size="4xl" />

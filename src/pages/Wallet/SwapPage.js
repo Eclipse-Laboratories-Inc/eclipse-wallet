@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
 import get from 'lodash/get';
+import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -22,7 +23,7 @@ import {
 } from '../../utils/wallet';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { showPercentage, showValue } from '../../utils/amount';
+import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
@@ -54,6 +55,20 @@ const DetailItem = ({ title, value, color = 'primary', t }) => (
   </View>
 );
 
+const RouteDetailItem = ({ names, symbols, t }) => (
+  <View style={globalStyles.inlineWell}>
+    <GlobalText type="caption" color="negativeLight">
+      {t('swap.best_route')}
+    </GlobalText>
+    <View>
+      <GlobalText type="body2">{names}</GlobalText>
+      <GlobalText type="caption" color="tertiary">
+        {`(${symbols})`}
+      </GlobalText>
+    </View>
+  </View>
+);
+
 const BigDetailItem = ({ title, value, t }) => (
   <View
     style={[
@@ -70,6 +85,40 @@ const BigDetailItem = ({ title, value, t }) => (
   </View>
 );
 
+const GlobalButtonTimer = React.memo(function ({
+  onConfirm,
+  onQuote,
+  t,
+  ...props
+}) {
+  const [countdown, setCountdown] = useState(10);
+  const getConfirmBtnTitle = () =>
+    countdown > 0
+      ? `${t('general.confirm')} (${countdown})`
+      : t('swap.refresh_quote');
+  const getConfirmBtnAction = () => {
+    if (countdown > 0) {
+      return onConfirm();
+    } else {
+      setCountdown(10);
+      return onQuote();
+    }
+  };
+  useEffect(() => setCountdown(10), []);
+  useEffect(() => {
+    const timer =
+      countdown > 0 && setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
+  return (
+    <GlobalButton
+      title={getConfirmBtnTitle()}
+      onPress={getConfirmBtnAction}
+      {...props}
+    />
+  );
+});
+
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
@@ -85,7 +134,8 @@ const SwapPage = ({ t }) => {
   const [quote, setQuote] = useState({});
   const [transaction, setTransaction] = useState('');
   const [status, setStatus] = useState();
-  const [quoteCountdown, setQuoteCountdown] = useState(10);
+  const [routesNames, setRoutesNames] = useState('');
+  const [tokenSymbols, setTokenSymbols] = useState('');
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
 
@@ -118,25 +168,7 @@ const SwapPage = ({ t }) => {
   useEffect(() => {
     setError(false);
   }, [inAmount, inToken, outToken]);
-  useEffect(() => {
-    const timer = setTimeout(function () {
-      setQuoteCountdown(quoteCountdown - 1);
-    }, 1000);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [quoteCountdown]);
-  const getConfirmBtnTitle = () =>
-    quoteCountdown >= 0
-      ? `${t('general.confirm')} (${quoteCountdown})`
-      : t('swap.refresh_quote');
-  const getConfirmBtnAction = () => (quoteCountdown >= 0 ? onConfirm : onQuote);
-
-  const routePath =
-    quote &&
-    quote.route &&
-    quote.route.marketInfos.map(m => m.label).join(' x ');
-
+  const zeroAmount = inToken && parseFloat(inAmount) <= 0;
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
@@ -144,6 +176,22 @@ const SwapPage = ({ t }) => {
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
+  const getRoutesSymbols = async routes => {
+    const inputs = routes.map(
+      async r =>
+        await getTokenByAddress(r.inputMint).then(info => info[0].symbol),
+    );
+    const outputs = routes.map(
+      async r =>
+        await getTokenByAddress(r.outputMint).then(info => info[0].symbol),
+    );
+    const tokSymb = [...new Set([...inputs, ...outputs])];
+    Promise.all(tokSymb).then(data => {
+      setTokenSymbols([...new Set(data)].join(' → '));
+    });
+  };
+  const getRoutesNames = routes =>
+    setRoutesNames(routes.map(r => r.label).join(' x '));
   const onQuote = async () => {
     setError(false);
     setProcessing(true);
@@ -154,7 +202,8 @@ const SwapPage = ({ t }) => {
         parseFloat(inAmount),
       );
       setQuote(q);
-      setQuoteCountdown(10);
+      getRoutesNames(q?.route?.marketInfos);
+      await getRoutesSymbols(q?.route?.marketInfos);
       setProcessing(false);
       trackEvent({ action: EVENTS_MAP.SWAP_QUOTE });
       setStep(2);
@@ -236,11 +285,21 @@ const SwapPage = ({ t }) => {
                   image={getMediaRemoteUrl(inToken.logo)}
                   onChange={setInToken}
                   invalid={!validAmount && !!inAmount}
+                  number
                 />
-                {!validAmount && !!inAmount && (
+                {zeroAmount ? (
                   <GlobalText type="body1" center color="negative">
-                    {t(`token.send.amount.invalid`, { max: inToken.uiAmount })}
+                    {t(`token.send.amount.invalid`)}
                   </GlobalText>
+                ) : (
+                  !validAmount &&
+                  !!inAmount && (
+                    <GlobalText type="body1" center color="negative">
+                      {t(`token.send.amount.insufficient`, {
+                        max: inToken.uiAmount,
+                      })}
+                    </GlobalText>
+                  )
                 )}
                 <GlobalPadding size="xs" />
 
@@ -317,12 +376,13 @@ const SwapPage = ({ t }) => {
               )}`}
             />
             <GlobalPadding size="4xl" />
-            <DetailItem
-              key={`best_route`}
-              title={t('swap.best_route')}
-              color={'accentPrimary'}
-              value={routePath}
-            />
+            {quote?.route?.marketInfos && (
+              <RouteDetailItem
+                names={routesNames}
+                symbols={tokenSymbols}
+                t={t}
+              />
+            )}
             {quote?.fee && (
               <DetailItem
                 key={quote?.fee}
@@ -340,14 +400,15 @@ const SwapPage = ({ t }) => {
               style={[globalStyles.button, globalStyles.buttonLeft]}
               touchableStyles={globalStyles.buttonTouchable}
             />
-            <GlobalButton
+            <GlobalButtonTimer
               type="primary"
               flex
-              title={getConfirmBtnTitle()}
-              onPress={getConfirmBtnAction()}
               disabled={processing}
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
+              onConfirm={onConfirm}
+              onQuote={onQuote}
+              t={t}
             />
           </GlobalLayout.Footer>
         </>
@@ -359,12 +420,13 @@ const SwapPage = ({ t }) => {
             <GlobalPadding size="4xl" />
             <GlobalPadding size="4xl" />
 
-            {status !== 'success' && (
+            {(status === 'creating' || status === 'swapping') && (
               <>
                 <GlobalPadding size="4xl" />
                 <GlobalPadding size="4xl" />
               </>
             )}
+
             <View style={globalStyles.centeredSmall}>
               <GlobalImage
                 source={getTransactionImage(status)}
@@ -380,13 +442,13 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === 'success' ||
+              {/* {status === 'success' ||
                 (status === 'fail' && (
                   <GlobalText type="body1" center>
                     3 lines max Excepteur sint occaecat cupidatat non proident,
                     sunt ?
                   </GlobalText>
-                ))}
+                ))} */}
 
               <GlobalPadding size="4xl" />
             </View>
