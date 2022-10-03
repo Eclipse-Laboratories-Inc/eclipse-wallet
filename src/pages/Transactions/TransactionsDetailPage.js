@@ -118,8 +118,15 @@ const TransactionsDetailPage = ({ t, params }) => {
     }
   };
 
-  const onCopyAddress = () => {
+  const onCopyID = () => {
     clipboard.copy(transactionDetail.signature);
+    setShowToast(true);
+  };
+
+  const onCopyAddress = isReceive => {
+    clipboard.copy(
+      isReceive ? transactionDetail.source : transactionDetail.destination,
+    );
     setShowToast(true);
   };
 
@@ -180,7 +187,7 @@ const TransactionsDetailPage = ({ t, params }) => {
           />
         </View>
 
-        {transactionDetail.nftAmount ? (
+        {transactionDetail.nftAmount && transactionDetail.type !== 'create' ? (
           <GlobalText type="headline2" center>
             {!transactionDetail.error &&
               `${isReceive ? '+ 1 ' : '- 1 '} ${
@@ -248,7 +255,7 @@ const TransactionsDetailPage = ({ t, params }) => {
           <GlobalText type="caption" color="tertiary">
             Transaction ID
           </GlobalText>
-          <TouchableOpacity onPress={onCopyAddress}>
+          <TouchableOpacity onPress={onCopyID}>
             <GlobalText type="body2">
               {getShortAddress(transactionDetail.signature)}
               <GlobalImage
@@ -275,12 +282,24 @@ const TransactionsDetailPage = ({ t, params }) => {
         {!isUnknown && (
           <View style={styles.inlineWell}>
             <GlobalText type="caption" color="tertiary">
-              To
+              {isReceive ? 'From' : 'To'}
             </GlobalText>
+            <TouchableOpacity onPress={() => onCopyAddress(isReceive)}>
+              <GlobalText type="body2">
+                {isReceive
+                  ? getShortAddress(transactionDetail.source)
+                  : getShortAddress(transactionDetail.destination)}
+                <GlobalImage
+                  source={IconCopy}
+                  style={styles.addressCopyIcon}
+                  size="xxs"
+                />
+              </GlobalText>
+            </TouchableOpacity>
 
-            <GlobalText type="body2" numberOfLines={1}>
+            {/* <GlobalText type="body2" numberOfLines={1}>
               {getShortAddress(transactionDetail.destination)}
-            </GlobalText>
+            </GlobalText> */}
           </View>
         )}
 
@@ -410,7 +429,7 @@ const TransactionsDetailPage = ({ t, params }) => {
         <GlobalText type="caption" color="tertiary">
           Transaction ID
         </GlobalText>
-        <TouchableOpacity onPress={onCopyAddress}>
+        <TouchableOpacity onPress={onCopyID}>
           <GlobalText type="body2">
             {getShortAddress(transactionDetail.signature)}
             <GlobalImage

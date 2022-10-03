@@ -57,7 +57,13 @@ const CardButtonTransaction = ({
       tokenImg2={tokenImg2}
       imageSize="normal"
       title={title || getTransactionTitle(transaction)}
-      description={address ? `To: ${getShortAddress(address)}` : tokenNames}
+      description={
+        address
+          ? `${transaction === 'sent' ? 'To:' : 'From:'} ${getShortAddress(
+              address,
+            )}`
+          : tokenNames
+      }
       active={active}
       complete={complete}
       actionIcon={actionIcon}

@@ -116,6 +116,8 @@
     "error": "La constraseña es incorrecta",
     "forgot": "Olvidé mi contraseña",
     "clear": "Limpiar wallets",
+    "clear_confirm": "I UNDERSTAND, DISCONNECT ALL",
+    "forgot_content": "Salmon no almacena ningún tipo de información sobre tu cuenta. Esto incluye tu contraseña. Si la olvidaste, tendrás que desconectar todas tus billeteras. Ten en cuenta que para volver a conectarlas necesitarás tu seedphrase o private key. Estás seguro que deseas proceder?",
     "buttonChecking": "Validando...",
     "buttonUnlock": "Desbloquear"
   },

@@ -84,7 +84,9 @@ const TransactionsListComponent = ({ t }) => {
                       : 'sent'
                   }
                   title={isCreate && TYPES_MAP[transaction.type]}
-                  address={transaction.destination}
+                  address={
+                    isReceive ? transaction.source : transaction.destination
+                  }
                   // percentage="+0000%"
                   actions={
                     transaction.error
@@ -105,19 +107,23 @@ const TransactionsListComponent = ({ t }) => {
                         ]
                       : transaction.nftAmount
                       ? [
-                          <View style={styles.inline}>
-                            <GlobalText
-                              key={'amount-action'}
-                              type="body2"
-                              color={isReceive ? 'positive' : 'negativeLight'}>
-                              {isReceive ? '+ 1 ' : '- 1 '}
-                              {`${transaction.nftAmount?.collection?.name} `}
-                            </GlobalText>
-                            <AvatarImage
-                              url={transaction.nftAmount?.media}
-                              size={18}
-                            />
-                          </View>,
+                          transaction.type !== 'create' && (
+                            <View style={styles.inline}>
+                              <GlobalText
+                                key={'amount-action'}
+                                type="body2"
+                                color={
+                                  isReceive ? 'positive' : 'negativeLight'
+                                }>
+                                {isReceive ? '+ 1 ' : '- 1 '}
+                                {`${transaction.nftAmount?.collection?.name} `}
+                              </GlobalText>
+                              <AvatarImage
+                                url={transaction.nftAmount?.media}
+                                size={18}
+                              />
+                            </View>
+                          ),
                         ]
                       : (transaction.transferNameIn?.length ||
                           transaction.transferNameOut?.length) &&
@@ -146,7 +152,8 @@ const TransactionsListComponent = ({ t }) => {
                         ]
                       : [
                           <View style={styles.inline}>
-                            {transaction.amount && (
+                            {(transaction.amount ||
+                              transaction.transferAmount) && (
                               <GlobalText
                                 key={'amount-action'}
                                 type="body2"
@@ -154,12 +161,8 @@ const TransactionsListComponent = ({ t }) => {
                                   isReceive ? 'positive' : 'negativeLight'
                                 }>
                                 {isReceive ? '+' : '-'}
-                                {isReceive
-                                  ? transaction.amount
-                                  : parseFloat(
-                                      transaction.amount +
-                                        transaction.fee / TOKEN_DECIMALS.SOLANA,
-                                    ).toFixed(8)}
+                                {transaction.amount ||
+                                  transaction.transferAmount}
                                 {` SOL  `}
                               </GlobalText>
                             )}
@@ -174,7 +177,14 @@ const TransactionsListComponent = ({ t }) => {
               return (
                 <CardButtonTransaction
                   transaction="swap"
-                  address={activeWallet.getReceiveAddress()}
+                  tokenImg1={transaction.tokenLogoIn}
+                  tokenImg2={transaction.tokenLogoOut}
+                  tokenNames={
+                    transaction.tokenNameIn && transaction.tokenNameOut
+                      ? `${transaction.tokenNameIn} → ${transaction.tokenNameOut}
+                      `
+                      : 'Unknown'
+                  }
                   // percentage="+0000%"
                   actions={
                     transaction.error
@@ -196,7 +206,7 @@ const TransactionsListComponent = ({ t }) => {
                           <View style={styles.inline}>
                             <GlobalText
                               key={'amount-action'}
-                              type="body2"
+                              type="body1"
                               color="positive">
                               {`+${
                                 transaction.swapAmountIn /
@@ -206,17 +216,13 @@ const TransactionsListComponent = ({ t }) => {
                                   : TOKEN_DECIMALS.COINS)
                               } ${transaction.tokenNameIn || 'SOL'} `}
                             </GlobalText>
-                            <AvatarImage
-                              url={transaction.tokenLogoIn || LOGOS.SOLANA}
-                              size={18}
-                            />
                           </View>,
                           <View style={styles.inline}>
                             {transaction.swapAmountOut && (
                               <>
                                 <GlobalText
                                   key={'amount-action'}
-                                  type="body2"
+                                  type="body1"
                                   color="negativeLight">
                                   {`-${
                                     transaction.swapAmountOut /
@@ -226,23 +232,8 @@ const TransactionsListComponent = ({ t }) => {
                                       : TOKEN_DECIMALS.COINS)
                                   } ${transaction.tokenNameOut || 'SOL'} `}
                                 </GlobalText>
-                                <AvatarImage
-                                  url={transaction.tokenLogoOut || LOGOS.SOLANA}
-                                  size={18}
-                                />
                               </>
                             )}
-                          </View>,
-                          <View style={styles.inline}>
-                            <GlobalText
-                              key={'amount-action'}
-                              type="body2"
-                              color="negativeLight">
-                              {`${'-'}${
-                                transaction.fee / TOKEN_DECIMALS.SOLANA
-                              } SOL `}
-                            </GlobalText>
-                            <AvatarImage url={LOGOS.SOLANA} size={18} />
                           </View>,
                         ].filter(Boolean)
                   }

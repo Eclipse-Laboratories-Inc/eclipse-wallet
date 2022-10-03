@@ -230,7 +230,7 @@ const SwapPage = ({ t }) => {
         setProcessing(false);
       })
       .catch(ex => {
-        setErrorMessage(ex);
+        setErrorMessage(ex.message);
         setError(true);
         trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
         setStatus(TRANSACTION_STATUS.FAIL);
@@ -240,18 +240,6 @@ const SwapPage = ({ t }) => {
     setStatus(TRANSACTION_STATUS.SWAPPING);
   };
 
-  const openTransaction = async () => {
-    for (const tx of transactions) {
-      const url = `https://solscan.io/tx/${tx}`;
-      console.log(`${url}`);
-      const supported = await Linking.canOpenURL(url);
-      if (supported) {
-        await Linking.openURL(url);
-      } else {
-        console.log(`UNSUPPORTED LINK ${url}`);
-      }
-    }
-  };
   return (
     <GlobalLayout>
       {step === 1 && (
@@ -430,12 +418,11 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === 'success' ||
-                (status === 'fail' && (
-                  <GlobalText type="body1" center>
-                    {errorMessage}
-                  </GlobalText>
-                ))}
+              {/* {status === 'fail' && errorMessage && (
+                <GlobalText type="body1" center>
+                  {errorMessage}
+                </GlobalText>
+              )} */}
 
               <GlobalPadding size="4xl" />
             </View>
@@ -452,20 +439,15 @@ const SwapPage = ({ t }) => {
                 touchableStyles={globalStyles.buttonTouchable}
               />
             ) : (
-              <GlobalButton
-                type="text"
-                wide
-                textStyle={
-                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
-                }
-                title={
-                  status === 'creating'
-                    ? t(`token.send.transaction_creating`)
-                    : t(`token.send.view_transaction`)
-                }
-                readonly={status === 'creating'}
-                onPress={openTransaction}
-              />
+              status === 'creating' && (
+                <GlobalButton
+                  type="text"
+                  wide
+                  textStyle={styles.creatingTx}
+                  title={t(`token.send.transaction_creating`)}
+                  readonly
+                />
+              )
             )}
           </GlobalLayout.Footer>
         </>
