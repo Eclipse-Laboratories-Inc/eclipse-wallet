@@ -26,6 +26,7 @@
     }
   },
   "actions": {
+    "approve": "approve",
     "skip": "Skip",
     "next": "Next",
     "start": "Start",
@@ -210,8 +211,9 @@
     },
     "detail": {
       "connection": {
-        "title": "Allow this site to access your Solana account?",
-        "advice": "Only connect with sites you trust",
+        "title": "Allow this site to connect?",
+        "advice": "Only connect with sites you trust.",
+        "advice2": "Nevertheless, your approval will be requested to complete any transaction.",
         "auto_approve": "Automatically approve transactions",
         "disclaimer": "Use at your own risk",
         "warning": "This setting allows sending some transactions on your behalf without requesting your permission for the remainder of this session",
@@ -229,7 +231,8 @@
         "program": "Program",
         "account": "Account {{number}}",
         "data": "Data",
-        "simulation": "Simulation"
+        "simulation": "Simulation",
+        "advice": "Make sure you trust the application that is requesting this and you understand what it means."
       }
     }
   },

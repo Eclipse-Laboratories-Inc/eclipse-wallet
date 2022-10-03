@@ -13,6 +13,7 @@ import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import { globalStyles } from '../../../component-library/Global/theme';
+import { getWalletName, getShortAddress } from '../../../utils/wallet';
 
 import { withTranslation } from '../../../hooks/useTranslations';
 
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   card: {
-    minWidth: '90vw',
+    width: '100%',
   },
   content: {
     paddingBottom: 0,
@@ -46,6 +47,7 @@ const SignMessageForm = ({ t, display, message }) => {
       <GlobalText type="body1" color="secondary">
         {`${t('Message')}:`}
       </GlobalText>
+      <GlobalPadding size="sm" />
       <Card sx={styles.card}>
         <CardContent>
           <GlobalText type="body1" color="primary" italic>
@@ -117,16 +119,49 @@ const SignTransactionForm = ({ t, activeWallet, message }) => {
   return (
     <Card sx={styles.card}>
       <CardContent style={styles.content}>
-        <GlobalText type="caption" style={styles.label} uppercase bold>
-          {`${t('adapter.detail.signature.fee')}:`}
+        <GlobalText type="subtitle3" style={styles.label} bold>
+          {`${t('adapter.detail.signature.simulation')}:`}
         </GlobalText>
-        {fee === null && <CircularProgress size={12} />}
-        {fee !== null && (
-          <GlobalText type="caption" color="secondary">
-            {isNaN(fee) ? '?' : `${fee} lamports`}
-          </GlobalText>
+        <GlobalPadding size="sm" />
+        {simulation === null && <CircularProgress size={24} />}
+        {simulation === false && (
+          <GlobalImage source={IconTransactionResultFail} size="md" />
         )}
+        {simulation &&
+          message
+            .nonProgramIds()
+            .map(key => key.toBase58())
+            .map((key, j) => {
+              const value = differences?.[j];
+              let color;
+              if (value < 0) {
+                color = 'negative';
+              } else if (value > 0) {
+                color = 'positive';
+              } else {
+                color = 'secondary';
+              }
+
+              return (
+                <View key={`simulation-${key}`}>
+                  {j > 0 && <GlobalPadding size="md" />}
+                  <GlobalText
+                    type="overline"
+                    style={styles.label}
+                    uppercase
+                    bold>
+                    {key + ':'}
+                  </GlobalText>
+                  {differences && (
+                    <GlobalText type="body1" color={color}>
+                      {`${value > 0 ? '+' : ''}${value} lamports`}
+                    </GlobalText>
+                  )}
+                </View>
+              );
+            })}
       </CardContent>
+      {/*
       <CardContent style={styles.content}>
         <GlobalText type="caption" style={styles.label} uppercase bold>
           {`${t('adapter.detail.signature.instructions')}:`}
@@ -164,52 +199,19 @@ const SignTransactionForm = ({ t, activeWallet, message }) => {
           </Card>
         ))}
       </CardContent>
+      */}
       <CardContent style={styles.content}>
-        <GlobalText type="caption" style={styles.label} uppercase bold>
-          {`${t('adapter.detail.signature.simulation')}:`}
+        <GlobalText type="subtitle3" style={styles.label} bold>
+          {`${t('adapter.detail.signature.fee')}:`}
         </GlobalText>
-        <Card>
-          <CardContent style={styles.subcard}>
-            {simulation === null && <CircularProgress size={24} />}
-            {simulation === false && (
-              <GlobalImage source={IconTransactionResultFail} size="md" />
-            )}
-            {simulation &&
-              message
-                .nonProgramIds()
-                .map(key => key.toBase58())
-                .map((key, j) => {
-                  const value = differences?.[j];
-                  let color;
-                  if (value < 0) {
-                    color = 'negative';
-                  } else if (value > 0) {
-                    color = 'positive';
-                  } else {
-                    color = 'secondary';
-                  }
-
-                  return (
-                    <View key={`simulation-${key}`}>
-                      {j > 0 && <GlobalPadding size="md" />}
-                      <GlobalText
-                        type="overline"
-                        style={styles.label}
-                        uppercase
-                        bold>
-                        {key + ':'}
-                      </GlobalText>
-                      {differences && (
-                        <GlobalText type="body1" color={color}>
-                          {`${value > 0 ? '+' : ''}${value} lamports`}
-                        </GlobalText>
-                      )}
-                    </View>
-                  );
-                })}
-          </CardContent>
-        </Card>
+        {fee === null && <CircularProgress size={12} />}
+        {fee !== null && (
+          <GlobalText type="caption" color="secondary">
+            {isNaN(fee) ? '?' : `${fee} lamports`}
+          </GlobalText>
+        )}
       </CardContent>
+      <GlobalPadding size="md" />
     </Card>
   );
 };
@@ -241,19 +243,27 @@ const ApproveSignatureForm = ({
   icon,
   request,
   messages,
+  config,
   onApprove,
   onReject,
 }) => {
   return (
     <GlobalLayout fullscreen>
       <GlobalLayout.Header>
+        <GlobalText color="primary">
+          {getWalletName(activeWallet.getReceiveAddress(), config)}
+        </GlobalText>
+        <GlobalText type="caption">
+          {getShortAddress(activeWallet.publicKey.toBase58())}
+        </GlobalText>
+        <GlobalPadding size="xl" />
         <GlobalBackTitle
           title={t(`adapter.detail.signature.${request.method}`)}
           nospace
         />
+        <GlobalPadding size="xl" />
         <DAppCard name={name} icon={icon} origin={origin} />
-      </GlobalLayout.Header>
-      <GlobalLayout.Inner>
+        <GlobalPadding size="xl" />
         {messages.map((message, i) => (
           <MessageForm
             key={`message-${i}`}
@@ -263,7 +273,11 @@ const ApproveSignatureForm = ({
             message={message}
           />
         ))}
-      </GlobalLayout.Inner>
+        <GlobalPadding size="md" />
+        <GlobalText type="subtitle" color="warning" center>
+          {t('adapter.detail.signature.advice')}
+        </GlobalText>
+      </GlobalLayout.Header>
       <GlobalLayout.Footer>
         <View style={globalStyles.inlineFlexButtons}>
           <GlobalButton
@@ -275,9 +289,9 @@ const ApproveSignatureForm = ({
             touchableStyles={globalStyles.buttonTouchable}
           />
           <GlobalButton
-            type="accent"
+            type="primary"
             flex
-            title={t('actions.accept')}
+            title={t('actions.approve')}
             onPress={() => onApprove()}
             style={[globalStyles.button, globalStyles.buttonRight]}
             touchableStyles={globalStyles.buttonTouchable}

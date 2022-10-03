@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, CardContent, FormControlLabel, Switch } from '@mui/material';
-import { getWalletName } from '../../../utils/wallet';
-
+import { getWalletName, getShortAddress } from '../../../utils/wallet';
 import { withTranslation } from '../../../hooks/useTranslations';
 
 import { ButtonText } from '../../../component-library/Button/Button';
@@ -20,6 +19,7 @@ import { DAppCard } from './DAppCard';
 const styles = StyleSheet.create({
   connectIcon: {
     alignSelf: 'center',
+    display: 'block',
   },
   warningIcon: {
     marginRight: theme.gutters.margin,
@@ -50,22 +50,29 @@ const ApproveConnectionForm = ({
   return (
     <GlobalLayout fullscreen>
       <GlobalLayout.Header>
+        <GlobalText color="primary">
+          {getWalletName(wallet.getReceiveAddress(), config)}
+        </GlobalText>
+        <GlobalText type="caption">
+          {getShortAddress(wallet.publicKey.toBase58())}
+        </GlobalText>
+      </GlobalLayout.Header>
+      <GlobalLayout.Inner>
         <GlobalText type="headline2" center>
           {t('adapter.detail.connection.title')}
         </GlobalText>
+        <GlobalPadding size="xl" />
         <DAppCard name={name} icon={icon} origin={origin} />
-        <GlobalImage source={IconSwap} size="sm" style={styles.connectIcon} />
-        <GlobalText color="primary" center>
-          {getWalletName(wallet.getReceiveAddress(), config)}
-        </GlobalText>
-        <GlobalText type="caption" center>
-          ({wallet.publicKey.toBase58()})
-        </GlobalText>
-        <GlobalPadding size="md" />
-        <GlobalText type="body1" color="tertiary" center>
+        <GlobalPadding size="xl" />
+        <GlobalText type="subtitle" color="warning" center>
           {t('adapter.detail.connection.advice')}
         </GlobalText>
         <GlobalPadding size="md" />
+        <GlobalText type="subtitle" color="warning" center>
+          {t('adapter.detail.connection.advice2')}
+        </GlobalText>
+        <GlobalPadding size="md" />
+        {/* disabling auto approve for secutiry reasons 
         <View style={globalStyles.inlineFlexAround}>
           <FormControlLabel
             control={
@@ -79,8 +86,7 @@ const ApproveConnectionForm = ({
             label={t('adapter.detail.connection.auto_approve')}
           />
         </View>
-      </GlobalLayout.Header>
-      <GlobalLayout.Inner>
+        */}
         {!dismissed && autoApprove && (
           <Card>
             <CardContent style={styles.card}>
