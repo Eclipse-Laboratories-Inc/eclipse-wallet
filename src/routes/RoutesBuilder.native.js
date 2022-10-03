@@ -47,15 +47,17 @@ const RoutesBuilder = ({
         headerShown: false,
         contentStyle: styles.sceneStyles,
         overlayColor: theme.colors.cards,
-        animation: 'none',
+        animation: 'slide_from_right',
       }}
       tabBar={() => {}}
       initialRouteName={
         entry ? getRouteName(routes, entry) : getDefaultRoute(routes)
       }>
-      {routes.map(({ key, name, Component }) => (
-        <Nav.Screen key={`route-${key}`} name={name} component={Component} />
-      ))}
+      {routes
+        .filter(({ parent }) => !parent)
+        .map(({ key, name, Component }) => (
+          <Nav.Screen key={`route-${key}`} name={name} component={Component} />
+        ))}
     </Nav.Navigator>
   ) : null;
 };
