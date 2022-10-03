@@ -7,7 +7,11 @@ import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { useNavigation } from '../../routes/hooks';
-import { getWalletChain, getWalletName } from '../../utils/wallet';
+import {
+  getWalletChain,
+  getWalletName,
+  getWalletAvatar,
+} from '../../utils/wallet';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -85,6 +89,7 @@ const SettingsOptionsPage = ({ t }) => {
             title={getWalletName(activeWallet.getReceiveAddress(), config)}
             address={activeWallet.getReceiveAddress()}
             chain={getWalletChain(activeWallet)}
+            image={getWalletAvatar(activeWallet.getReceiveAddress(), config)}
             onPress={goToAccounts}
             actionIcon="right"
             selected

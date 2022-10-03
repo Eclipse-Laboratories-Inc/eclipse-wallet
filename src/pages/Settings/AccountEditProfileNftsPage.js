@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -7,23 +7,28 @@ import { withTranslation } from '../../hooks/useTranslations';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
+import { cache, CACHE_TYPES } from '../../utils/cache';
+
+import { AppContext } from '../../AppProvider';
 
 const AccountEditProfileNftsPage = ({ params, t }) => {
+  const [{ activeWallet }] = useContext(AppContext);
+  const [nfts, setNfts] = useState(null);
+
   const navigate = useNavigation();
-  const nftsGroup = [
-    {
-      mint: 'dW212',
-      media:
-        'https://cryptohasbullanft.com/wp-content/uploads/2022/05/logan-768x768.jpeg',
-      name: 'Mock 1',
-    },
-    {
-      mint: 'dW211',
-      media:
-        'https://cryptohasbullanft.com/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-09-at-5.45.23-AM-768x763.jpeg',
-      name: 'Mock 2',
-    },
-  ];
+  useEffect(() => {
+    console.log(activeWallet.getReceiveAddress());
+    if (activeWallet) {
+      cache(
+        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        CACHE_TYPES.NFTS_ALL,
+        () => activeWallet.getAllNfts(),
+      ).then(result => {
+        console.log(result);
+        setNfts(result);
+      });
+    }
+  }, [activeWallet]);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
@@ -31,7 +36,7 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
     });
   const onClick = nft =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL, {
-      address: params.address,
+      address: nft.mint,
       id: nft.mint,
     });
   return (
@@ -41,7 +46,7 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
           onBack={onBack}
           title={t(`settings.wallets.set_profile_picture`)}
         />
-        <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
+        <GlobalNftList nonFungibleTokens={nfts} onClick={onClick} />
       </GlobalLayout.Header>
     </GlobalLayout>
   );

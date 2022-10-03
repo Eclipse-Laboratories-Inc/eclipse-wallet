@@ -146,6 +146,15 @@ const useWallets = () => {
     });
   }, []);
 
+  const getRandomAvatar = () => {
+    const rnd = Math.floor(Math.random() * 20) + 1;
+    const index = rnd.toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false,
+    });
+    return `https://d2hubo5yvbi15f.cloudfront.net/avatar/${index}.png`;
+  };
+
   const addWallet = async (account, password, chain) => {
     setActiveWallet(account);
     const address = await account.getReceiveAddress();
@@ -156,6 +165,7 @@ const useWallets = () => {
       ...config,
       [address]: {
         name: WALLET_PLACEHOLDER.replace('NRO', _lastNumber),
+        avatar: getRandomAvatar(),
       },
     };
     const storedWallets = [
@@ -209,6 +219,7 @@ const useWallets = () => {
         ...a,
         [v.address]: {
           name: WALLET_DERIVED_PLACEHOLDER.replace('NRO', v.path.charAt(11)),
+          avatar: getRandomAvatar(),
         },
       }),
       {},
