@@ -114,6 +114,8 @@
     "title": "Ingrese su contraseña",
     "placeholder": "Ingrese su contraseña",
     "error": "La constraseña es incorrecta",
+    "forgot": "Olvidé mi contraseña",
+    "clear": "Limpiar wallets",
     "buttonChecking": "Validando...",
     "buttonUnlock": "Desbloquear"
   },

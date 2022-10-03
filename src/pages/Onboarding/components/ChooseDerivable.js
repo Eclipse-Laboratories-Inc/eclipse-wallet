@@ -22,17 +22,7 @@ const styles = StyleSheet.create({
     marginRight: theme.gutters.paddingSM,
   },
   accountsView: {
-    minHeight: 800,
-  },
-  recoverBtnContainer: {
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: '80%',
+    height: 600,
   },
 });
 
@@ -69,6 +59,7 @@ const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
         <GlobalBackTitle
           title={t('wallet.create.derivable_accounts')}
           tertiaryTitle="m/44'/501'/0'"
+          nospace
         />
       </View>
       <GlobalLayout style={styles.accountsView}>
@@ -92,22 +83,22 @@ const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
             />
           ))}
         </GlobalLayout.Header>
+        <View>
+          <GlobalButton
+            type="accent"
+            wide
+            title={t('wallet.create.recover')}
+            onPress={() => onComplete(selected)}
+          />
+          <GlobalPadding size="xs" />
+          <GlobalButton
+            type="primary"
+            wide
+            title={t('wallet.create.skip')}
+            onPress={goToWallet}
+          />
+        </View>
       </GlobalLayout>
-      <View style={styles.recoverBtnContainer}>
-        <GlobalButton
-          type="accent"
-          wide
-          title={t('wallet.create.recover')}
-          onPress={() => onComplete(selected)}
-        />
-        <GlobalPadding size="sm" />
-        <GlobalButton
-          type="primary"
-          wide
-          title={t('wallet.create.skip')}
-          onPress={goToWallet}
-        />
-      </View>
     </GlobalBackgroundImage>
   );
 };

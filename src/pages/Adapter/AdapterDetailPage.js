@@ -271,6 +271,7 @@ const AdapterDetailPage = () => {
       icon={icon}
       request={request}
       messages={messages}
+      config={config}
       onApprove={onApprove}
       onReject={onReject}
     />

@@ -9,6 +9,8 @@ const GlobalSkeleton = ({ type }) => {
   switch (type) {
     case 'TokenList':
       return <TokenList />;
+    case 'TokenListSend':
+      return <TokenListSend />;
     case 'NftList':
       return <NftList />;
     case 'NftListScreen':
@@ -37,6 +39,21 @@ const TokenList = () => (
     <Rect x="0" y="95" rx="5" ry="5" width={window.width - 35} height="70" />
     <Rect x="0" y="185" rx="5" ry="5" width={window.width - 35} height="70" />
     <Rect x="0" y="275" rx="5" ry="5" width={window.width - 35} height="70" />
+  </ContentLoader>
+);
+
+const TokenListSend = () => (
+  <ContentLoader
+    foregroundColor={theme.colors.cards}
+    backgroundColor={theme.colors.bgLight}
+    viewBox="0 0 100 200">
+    <Rect x="0" y="23" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="54" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="70" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="86" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="102" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="118" rx="3" ry="3" width="100" height="14" />
+    <Rect x="0" y="134" rx="3" ry="3" width="100" height="14" />
   </ContentLoader>
 );
 

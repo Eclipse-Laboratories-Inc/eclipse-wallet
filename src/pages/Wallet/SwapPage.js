@@ -126,13 +126,14 @@ const SwapPage = ({ t }) => {
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [processing, setProcessing] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
   const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
   const [quote, setQuote] = useState({});
-  const [transaction, setTransaction] = useState('');
+  const [transactions, setTransactions] = useState([]);
   const [status, setStatus] = useState();
   const [routesNames, setRoutesNames] = useState('');
   const [tokenSymbols, setTokenSymbols] = useState('');
@@ -216,40 +217,39 @@ const SwapPage = ({ t }) => {
     setError(false);
     setProcessing(true);
     trackEvent({ action: EVENTS_MAP.SWAP_CONFIRMED });
-    try {
-      setStatus(TRANSACTION_STATUS.CREATING);
-      setStep(3);
-      const sts = await activeWallet.createSwapTransaction(quote.route.id);
-      setTransaction(sts[0]);
-      setStatus(TRANSACTION_STATUS.SWAPPING);
 
-      for (let st of sts) {
-        setTransaction(st);
-        const result = await activeWallet.executeSwapTransaction(st);
-        if (get(result, 'value.err')) {
-          throw Error('swap_error');
-        }
-      }
-      setError(false);
-      trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
-      setStatus(TRANSACTION_STATUS.SUCCESS);
+    setStatus(TRANSACTION_STATUS.CREATING);
+    setStep(3);
+    activeWallet
+      .createSwapTransaction(quote.route.id)
+      .then(ids => {
+        setTransactions(ids);
+        setError(false);
+        trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
+        setStatus(TRANSACTION_STATUS.SUCCESS);
+        setProcessing(false);
+      })
+      .catch(ex => {
+        setErrorMessage(ex);
+        setError(true);
+        trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
+        setStatus(TRANSACTION_STATUS.FAIL);
+        setProcessing(false);
+      });
 
-      setProcessing(false);
-    } catch (e) {
-      console.log(JSON.stringify(e));
-      setError(true);
-      setStatus(TRANSACTION_STATUS.FAIL);
-      trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
-      setProcessing(false);
-    }
+    setStatus(TRANSACTION_STATUS.SWAPPING);
   };
+
   const openTransaction = async () => {
-    const url = `https://solscan.io/tx/${transaction}`;
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.log(`UNSUPPORTED LINK ${url}`);
+    for (const tx of transactions) {
+      const url = `https://solscan.io/tx/${tx}`;
+      console.log(`${url}`);
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        console.log(`UNSUPPORTED LINK ${url}`);
+      }
     }
   };
   return (
@@ -430,33 +430,27 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
+              {status === 'success' ||
+                (status === 'fail' && (
+                  <GlobalText type="body1" center>
+                    {errorMessage}
+                  </GlobalText>
+                ))}
+
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
             {status === 'success' || status === 'fail' ? (
-              <>
-                <GlobalButton
-                  type="primary"
-                  wide
-                  title={t(`token.send.goto_explorer`)}
-                  onPress={openTransaction}
-                  style={globalStyles.button}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
-
-                <GlobalPadding size="md" />
-
-                <GlobalButton
-                  type="secondary"
-                  title={t(`general.close`)}
-                  wide
-                  onPress={goToBack}
-                  style={globalStyles.button}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
-              </>
+              <GlobalButton
+                type="secondary"
+                title={t(`general.close`)}
+                wide
+                onPress={goToBack}
+                style={globalStyles.button}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
             ) : (
               <GlobalButton
                 type="text"

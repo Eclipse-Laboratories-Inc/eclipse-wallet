@@ -2,4 +2,5 @@
 aws s3 cp build s3://salmon-wallet-v2-dev/ --recursive
 
 ## prod
-aws s3 sync build s3://salmon-wallet-v2/ --recursive
+aws s3 sync build s3://salmon-wallet-v2/
+
