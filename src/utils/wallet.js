@@ -79,7 +79,7 @@ export const getWalletAvatar = (address, config) =>
   get(
     config,
     `${address}.avatar`,
-    'https://cryptohasbullanft.com/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-09-at-5.45.22-AM-1-768x768.jpeg',
+    'https://d2hubo5yvbi15f.cloudfront.net/avatar/00.png',
   );
 
 export const getWalletChain = wallet => {

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import groupBy from 'lodash/groupBy';
 
 import { AppContext } from '../../AppProvider';
-import { getWalletName, LOGOS } from '../../utils/wallet';
+import { getWalletName, getWalletAvatar, LOGOS } from '../../utils/wallet';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
@@ -93,6 +93,7 @@ const AccountSelectPage = ({ t }) => {
                       title={getWalletName(wallet.address, config)}
                       address={wallet.address}
                       chain={wallet.chain}
+                      image={getWalletAvatar(wallet.address, config)}
                       selected={
                         activeWallet.getReceiveAddress() === wallet.address
                       }
