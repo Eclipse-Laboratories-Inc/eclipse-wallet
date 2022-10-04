@@ -132,8 +132,6 @@ const TransactionsListPage = ({ t }) => {
     </GlobalText>
   );
 
-  console.log('re', recentTransactions);
-
   return (
     <>
       <View style={styles.titleStyle}>
@@ -152,10 +150,6 @@ const TransactionsListPage = ({ t }) => {
                 switch (transaction.type) {
                   case TRANSACTION_TYPE.TRANSFER:
                   case TRANSACTION_TYPE.TRANSFER_CHECKED:
-                  case TRANSACTION_TYPE.GET_ACC_DATA:
-                  case TRANSACTION_TYPE.CREATE_ACCOUNT:
-                  case TRANSACTION_TYPE.CREATE:
-                  case TRANSACTION_TYPE.CLOSE_ACCOUNT:
                     const isReceive = transaction.transferType === 'received';
                     const isUnknown = !transaction.destination;
                     const isCreate = isUnknown && !transaction.amount;
@@ -171,9 +165,7 @@ const TransactionsListPage = ({ t }) => {
                         </GlobalText>
                         <CardButtonTransaction
                           transaction={
-                            isCreate
-                              ? 'interaction'
-                              : isUnknown
+                            isUnknown
                               ? 'unknown'
                               : isReceive
                               ? 'received'
@@ -241,7 +233,9 @@ const TransactionsListPage = ({ t }) => {
                                         isReceive ? 'positive' : 'negativeLight'
                                       }>
                                       {isReceive ? '+' : '-'}
-                                      {`${transaction.transferAmount} `}
+                                      {`${parseFloat(
+                                        transaction.transferAmount.toFixed(4),
+                                      )} `}
                                       {`${
                                         transaction.transferNameIn ||
                                         transaction.transferNameOut
@@ -360,6 +354,46 @@ const TransactionsListPage = ({ t }) => {
                                         </GlobalText>
                                       </>
                                     )}
+                                  </View>,
+                                ].filter(Boolean)
+                          }
+                          onPress={() => onDetail(i)}
+                        />
+                      </>
+                    );
+                  case TRANSACTION_TYPE.GET_ACC_DATA:
+                  case TRANSACTION_TYPE.CREATE_ACCOUNT:
+                  case TRANSACTION_TYPE.CREATE:
+                  case TRANSACTION_TYPE.CLOSE_ACCOUNT:
+                    return (
+                      <>
+                        <GlobalText
+                          type="body2"
+                          color="secondary"
+                          style={
+                            i === 0 ? styles.dateStyleFirst : styles.dateStyle
+                          }>
+                          {showDate(recentTransactions, i)}
+                        </GlobalText>
+                        <CardButtonTransaction
+                          transaction="interaction"
+                          title={TYPES_MAP[transaction.type]}
+                          actions={
+                            transaction.error
+                              ? [
+                                  <View style={styles.inline}>
+                                    <GlobalImage
+                                      source={IconFailed}
+                                      size="xxs"
+                                    />
+                                  </View>,
+                                ]
+                              : [
+                                  <View style={styles.inline}>
+                                    <GlobalImage
+                                      source={IconSuccess}
+                                      size="xxs"
+                                    />
                                   </View>,
                                 ].filter(Boolean)
                           }
