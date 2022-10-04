@@ -68,6 +68,7 @@ const LockedPage = ({ t }) => {
           secureTextEntry
           autocomplete={false}
           invalid={error}
+          autoFocus={true}
         />
         {error && (
           <GlobalText type="body1" color="negative">

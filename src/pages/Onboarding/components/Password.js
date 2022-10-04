@@ -140,6 +140,7 @@ const Password = ({
               onActionPress={() => setShowValue(!showValue)}
               invalid={wrongpass}
               autoComplete="password-new"
+              autoFocus={true}
               secureTextEntry={!showValue}
             />
 

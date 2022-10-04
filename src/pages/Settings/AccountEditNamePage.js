@@ -49,6 +49,7 @@ const AddressBookEditPage = ({ params, t }) => {
           setValue={setAccountName}
           invalid={!accountName}
           autoComplete="off"
+          autoFocus={true}
         />
         <GlobalPadding siz="sm" />
         <GlobalText type="caption" center>

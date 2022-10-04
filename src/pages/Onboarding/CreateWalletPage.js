@@ -95,6 +95,7 @@ const Form = ({ account, onComplete, onBack, t }) => {
           seedphrase
           multiline
           numberOfLines={4}
+          autoFocus={true}
           invalid={false}
         />
       </GlobalLayout.Header>
@@ -181,6 +182,7 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
               startLabel={pos}
               placeholder={t(`wallet.create.enter_word_number`) + pos}
               setValue={value => setPhrasePos(value, index)}
+              autoFocus={index === 0}
               // value={phrases[index]}
             />
             <GlobalPadding />

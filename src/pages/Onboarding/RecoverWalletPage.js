@@ -67,6 +67,7 @@ const Form = ({ onComplete, onBack, t }) => {
           seedphrase
           multiline
           numberOfLines={4}
+          autoFocus={true}
           invalid={false}
         />
       </GlobalLayout.Header>
