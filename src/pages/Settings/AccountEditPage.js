@@ -70,7 +70,7 @@ const AccountEditPage = ({ params, t }) => {
               source={getMediaRemoteUrl(
                 getWalletAvatar(params.address, config),
               )}
-              size="4xl"
+              size="3xl"
               style={globalStyles.bigImage}
               circle
             />

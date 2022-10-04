@@ -36,15 +36,15 @@ const AccountEditProfilePage = ({ params, t }) => {
           title={t(`settings.wallets.set_profile_picture`)}
         />
 
+        <GlobalPadding size="4xl" />
         <View style={globalStyles.centered}>
           <GlobalImage
             source={getMediaRemoteUrl(getWalletAvatar(params.address, config))}
-            size="4xl"
+            size="3xl"
             style={globalStyles.bigImage}
             circle
           />
-
-          <GlobalPadding />
+          <GlobalPadding size="xl" />
 
           <GlobalButton
             type="primary"
@@ -52,15 +52,16 @@ const AccountEditProfilePage = ({ params, t }) => {
             title={t('settings.wallets.select_nft')}
             onPress={onSelectNft}
           />
-
+          {/*
           <GlobalPadding />
-
+           
           <GlobalButton
             type="primary"
             wideSmall
             title={t('settings.wallets.upload_photo')}
             onPress={() => {}}
           />
+          */}
         </View>
       </GlobalLayout.Header>
     </GlobalLayout>

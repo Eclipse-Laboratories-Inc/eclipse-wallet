@@ -275,6 +275,7 @@ const useWallets = () => {
     setLastNumber(0);
     setWallets([]);
     setActiveWallet(null);
+    setLocked(false);
     setRequiredLock(false);
   };
   const removeWallet = async address => {

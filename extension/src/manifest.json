@@ -1,7 +1,7 @@
 {
   "name": "Salmon Wallet",
-  "description": "Salmon is an open source Solana wallet. Send and receive tokens. Check your NFTs",
-  "version": "0.0.2",
+  "description": "Your all-in-one & open-source wallet for the crypto space.",
+  "version": "0.2.0",
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup"
@@ -12,7 +12,7 @@
     "192": "logo192.png",
     "512": "logo512.png"
   },
-  "background": {    
+  "background": {
     "service_worker": "background.js"
   },
   "permissions": [

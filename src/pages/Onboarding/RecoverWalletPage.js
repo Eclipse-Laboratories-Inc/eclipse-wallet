@@ -109,18 +109,18 @@ const RecoverWalletPage = ({ t }) => {
       selectedEndpoints[getDefaultChain()],
     );
     setAccount(a);
-    trackEvent({ action: EVENTS_MAP.SECRET_RECOVERED });
+    trackEvent(EVENTS_MAP.SECRET_RECOVERED);
     setStep(2);
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
     await addWallet(account, password, getDefaultChain());
     setWaiting(false);
-    trackEvent({ action: EVENTS_MAP.PASSWORD_COMPLETED });
+    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
   };
   const goToWallet = () => {
-    trackEvent({ action: EVENTS_MAP.RECOVER_COMPLETED });
+    trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
     navigate(isAdapter ? ROUTES_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
   };
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);

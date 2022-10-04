@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "short_name": "Salmon Wallet",
   "name": "Salmon Token Wallet",
-  "icons": { 
+  "icons": {
     "192": "logo192.png",
     "512": "logo512.png"
   },

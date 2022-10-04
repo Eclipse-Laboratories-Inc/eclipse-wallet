@@ -89,7 +89,7 @@ const TokenSendPage = ({ params, t }) => {
     parseFloat(recipientAmount) > 0;
 
   const onCancel = () => {
-    trackEvent({ action: EVENTS_MAP.TOKEN_SEND_CANCELLED });
+    trackEvent(EVENTS_MAP.TOKEN_SEND_CANCELLED);
     navigate(APP_ROUTES_MAP.WALLET);
   };
 
@@ -129,12 +129,12 @@ const TokenSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      trackEvent({ action: EVENTS_MAP.TOKEN_SEND_COMPLETED });
+      trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
-      trackEvent({ action: EVENTS_MAP.TOKEN_SEND_FAILED });
+      trackEvent(EVENTS_MAP.TOKEN_SEND_FAILED);
       setStep(4);
       setSending(false);
     }

@@ -94,6 +94,7 @@ const AccountSelectPage = ({ t }) => {
                       address={wallet.address}
                       chain={wallet.chain}
                       image={getWalletAvatar(wallet.address, config)}
+                      imageSize="md"
                       selected={
                         activeWallet.getReceiveAddress() === wallet.address
                       }

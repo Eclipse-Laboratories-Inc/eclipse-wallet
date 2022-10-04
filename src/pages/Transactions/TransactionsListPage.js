@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import { AppContext } from '../../AppProvider';
 import { withTranslation } from '../../hooks/useTranslations';
-import theme from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import { LOGOS } from '../../utils/wallet';
@@ -34,6 +34,9 @@ const styles = StyleSheet.create({
   },
   dateStyle: {
     lineHeight: theme.gutters.padding3XL,
+  },
+  dateStyleFirst: {
+    marginBottom: theme.gutters.paddingSM,
   },
   inline: {
     flexDirection: 'row',
@@ -129,11 +132,17 @@ const TransactionsListPage = ({ t }) => {
     </GlobalText>
   );
 
+  console.log('re', recentTransactions);
+
   return (
     <>
       <View style={styles.titleStyle}>
         <Header activeWallet={activeWallet} config={config} t={t} />
-        <GlobalBackTitle title={t('transactions.your_transactions')} nospace />
+        <View style={globalStyles.centered}>
+          <GlobalText type="headline2">
+            {t('transactions.your_transactions')}
+          </GlobalText>
+        </View>
       </View>
       <GlobalLayout>
         <GlobalLayout.Header>
@@ -155,7 +164,9 @@ const TransactionsListPage = ({ t }) => {
                         <GlobalText
                           type="body2"
                           color="secondary"
-                          style={styles.dateStyle}>
+                          style={
+                            i === 0 ? styles.dateStyleFirst : styles.dateStyle
+                          }>
                           {showDate(recentTransactions, i)}
                         </GlobalText>
                         <CardButtonTransaction
@@ -169,7 +180,11 @@ const TransactionsListPage = ({ t }) => {
                               : 'sent'
                           }
                           title={isCreate && TYPES_MAP[transaction.type]}
-                          address={transaction.destination}
+                          address={
+                            isReceive
+                              ? transaction.source
+                              : transaction.destination
+                          }
                           // percentage="+0000%"
                           actions={
                             transaction.error
@@ -194,21 +209,25 @@ const TransactionsListPage = ({ t }) => {
                                 ]
                               : transaction.nftAmount
                               ? [
-                                  <View style={styles.inline}>
-                                    <GlobalText
-                                      key={'amount-action'}
-                                      type="body2"
-                                      color={
-                                        isReceive ? 'positive' : 'negativeLight'
-                                      }>
-                                      {isReceive ? '+ 1 ' : '- 1 '}
-                                      {`${transaction.nftAmount?.collection?.name} `}
-                                    </GlobalText>
-                                    <AvatarImage
-                                      url={transaction.nftAmount?.media}
-                                      size={18}
-                                    />
-                                  </View>,
+                                  transaction.type !== 'create' && (
+                                    <View style={styles.inline}>
+                                      <GlobalText
+                                        key={'amount-action'}
+                                        type="body2"
+                                        color={
+                                          isReceive
+                                            ? 'positive'
+                                            : 'negativeLight'
+                                        }>
+                                        {isReceive ? '+ 1 ' : '- 1 '}
+                                        {`${transaction.nftAmount?.collection?.name} `}
+                                      </GlobalText>
+                                      <AvatarImage
+                                        url={transaction.nftAmount?.media}
+                                        size={18}
+                                      />
+                                    </View>
+                                  ),
                                 ]
                               : (transaction.transferNameIn?.length ||
                                   transaction.transferNameOut?.length) &&
@@ -239,7 +258,8 @@ const TransactionsListPage = ({ t }) => {
                                 ]
                               : [
                                   <View style={styles.inline}>
-                                    {transaction.amount && (
+                                    {(transaction.amount ||
+                                      transaction.transferAmount) && (
                                       <GlobalText
                                         key={'amount-action'}
                                         type="body2"
@@ -249,7 +269,8 @@ const TransactionsListPage = ({ t }) => {
                                             : 'negativeLight'
                                         }>
                                         {isReceive ? '+' : '-'}
-                                        {transaction.amount}
+                                        {transaction.amount ||
+                                          transaction.transferAmount}
                                         {` SOL  `}
                                       </GlobalText>
                                     )}
@@ -270,7 +291,9 @@ const TransactionsListPage = ({ t }) => {
                         <GlobalText
                           type="body2"
                           color="secondary"
-                          style={styles.dateStyle}>
+                          style={
+                            i === 0 ? styles.dateStyleFirst : styles.dateStyle
+                          }>
                           {showDate(recentTransactions, i)}
                         </GlobalText>
                         <CardButtonTransaction
@@ -317,12 +340,6 @@ const TransactionsListPage = ({ t }) => {
                                           : TOKEN_DECIMALS.COINS)
                                       } ${transaction.tokenNameIn || 'SOL'} `}
                                     </GlobalText>
-                                    {/* <AvatarImage
-                                      url={
-                                        transaction.tokenLogoIn || LOGOS.SOLANA
-                                      }
-                                      size={18}
-                                    /> */}
                                   </View>,
                                   <View style={styles.inline}>
                                     {transaction.swapAmountOut && (
@@ -341,13 +358,6 @@ const TransactionsListPage = ({ t }) => {
                                             transaction.tokenNameOut || 'SOL'
                                           } `}
                                         </GlobalText>
-                                        {/* <AvatarImage
-                                          url={
-                                            transaction.tokenLogoOut ||
-                                            LOGOS.SOLANA
-                                          }
-                                          size={18}
-                                        /> */}
                                       </>
                                     )}
                                   </View>,

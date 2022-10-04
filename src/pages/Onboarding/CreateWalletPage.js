@@ -226,18 +226,18 @@ const CreateWalletPage = ({ params, t }) => {
       setStep(2);
       setWaiting(false);
     }
-    trackEvent({ action: EVENTS_MAP.SECRET_CREATED });
+    trackEvent(EVENTS_MAP.SECRET_CREATED);
   };
 
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
 
     await addWallet(account, password, params.chainCode);
-    trackEvent({ action: EVENTS_MAP.PASSWORD_COMPLETED });
+    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(5);
   };
   const goToWallet = () => {
-    trackEvent({ action: EVENTS_MAP.CREATION_COMPLETED });
+    trackEvent(EVENTS_MAP.CREATION_COMPLETED);
     navigate(
       isAdapter ? ADAPTER_ROUTES_MAP.ADAPTER_DETAIL : APP_ROUTES_MAP.WALLET,
     );
