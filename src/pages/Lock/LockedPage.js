@@ -88,25 +88,20 @@ const LockedPage = ({ t }) => {
         />
 
         <GlobalPadding size="lg" />
-
-        <GlobalText type="body1" color="secondary">
-          {t('lock.forgot')}
-        </GlobalText>
         <GlobalButton
           type="text"
           textStyle={{
             fontFamily: theme.fonts.dmSansMedium,
-            color: theme.colors.accentPrimary,
             textTransform: 'none',
           }}
           size="medium"
-          title={t('lock.clear')}
+          title={t('lock.forgot')}
           onPress={() => setShowDialog(true)}
         />
         <SimpleDialog
           title={
             <GlobalText center type="headline3" numberOfLines={1}>
-              {t('lock.forgot')}
+              {t('lock.forgotten')}
             </GlobalText>
           }
           type="danger"

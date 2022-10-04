@@ -138,9 +138,10 @@
     "placeholder": "Enter your password",
     "error": "Invalid Password",
     "forgot": "I've forgot my password",
+    "forgotten": "Forgotten password",
     "clear": "Clear data",
     "clear_confirm": "I UNDERSTAND, DISCONNECT ALL",
-    "forgot_content": "Salmon does not store any information of your account. That includes your password. If you forgot it, you will need to disconnect all your wallets. Keep in mind that to re-import them you will need your seedphrase or private key. Are you sure you want to proceed?",
+    "forgot_content": "Salmon does not store any information of your account. That includes your password.If you forgot it, you will need to disconnect all your wallets. Keep in mind that to re-import them you will need your seedphrase or private key.\n\nAre you sure you want to proceed?",
     "buttonChecking": "Checking...",
     "buttonUnlock": "Unlock"
   },
