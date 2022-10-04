@@ -189,7 +189,7 @@ const SelectOptionsPage = ({ t }) => {
     setStep(1);
   };
   const onSelectChain = chain => {
-    trackEvent({ chainCode: chain });
+    trackEvent(EVENTS_MAP.SELECT_CHAIN, chain);
     navigate(actionRoute, { chainCode: chain });
   };
   const onComingSoon = chain => {

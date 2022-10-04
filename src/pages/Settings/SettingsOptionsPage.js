@@ -45,14 +45,14 @@ const SettingsOptionsPage = ({ t }) => {
   };
   const handleLogout = () => {
     logout();
-    trackEvent({ action: EVENTS_MAP.LOGOUT_ALL_WALLETS });
+    trackEvent(EVENTS_MAP.LOGOUT_ALL_WALLETS);
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
 
   const handleRemove = async () => {
     await removeWallet(activeWallet.getReceiveAddress());
     toggleSingleDialog();
-    trackEvent({ action: EVENTS_MAP.LOGOUT_WALLET });
+    trackEvent(EVENTS_MAP.LOGOUT_WALLET);
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
   };
 

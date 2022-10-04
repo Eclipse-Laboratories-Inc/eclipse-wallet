@@ -1,17 +1,20 @@
 import React from 'react';
 import { useEffect } from 'react';
+import ReactGA from 'react-ga4';
 
 const useAnalyticsEventTracker = section => {
   useEffect(() => {
-    // eslint-disable-next-line no-undef
-    gtag('event', section);
+    ReactGA.send({ hitType: 'pageview', page: section });
   }, [section]);
 
-  const trackEvent = params => {
-    // eslint-disable-next-line no-undef
-    gtag('event', section, params);
+  const trackEvent = (action, label) => {
+    console.log('track event');
+    ReactGA.event({
+      category: section,
+      action: action,
+      label: label,
+    });
   };
-
   return { trackEvent };
 };
 export default useAnalyticsEventTracker;

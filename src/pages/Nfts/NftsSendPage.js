@@ -136,12 +136,12 @@ const NftsSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      trackEvent({ action: EVENTS_MAP.NFT_SEND_COMPLETED });
+      trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
-      trackEvent({ action: EVENTS_MAP.NFT_SEND_FAILED });
+      trackEvent(EVENTS_MAP.NFT_SEND_FAILED);
       setStep(3);
       setSending(false);
     }

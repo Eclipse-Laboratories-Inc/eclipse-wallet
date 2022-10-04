@@ -206,7 +206,7 @@ const SwapPage = ({ t }) => {
       getRoutesNames(q?.route?.marketInfos);
       await getRoutesSymbols(q?.route?.marketInfos);
       setProcessing(false);
-      trackEvent({ action: EVENTS_MAP.SWAP_QUOTE });
+      trackEvent(EVENTS_MAP.SWAP_QUOTE);
       setStep(2);
     } catch (e) {
       setError(true);
@@ -216,7 +216,7 @@ const SwapPage = ({ t }) => {
   const onConfirm = async () => {
     setError(false);
     setProcessing(true);
-    trackEvent({ action: EVENTS_MAP.SWAP_CONFIRMED });
+    trackEvent(EVENTS_MAP.SWAP_CONFIRMED);
 
     setStatus(TRANSACTION_STATUS.CREATING);
     setStep(3);
@@ -225,14 +225,14 @@ const SwapPage = ({ t }) => {
       .then(ids => {
         setTransactions(ids);
         setError(false);
-        trackEvent({ action: EVENTS_MAP.SWAP_COMPLETED });
+        trackEvent(EVENTS_MAP.SWAP_COMPLETED);
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
       })
       .catch(ex => {
         setErrorMessage(ex.message);
         setError(true);
-        trackEvent({ action: EVENTS_MAP.SWAP_FAILED });
+        trackEvent(EVENTS_MAP.SWAP_FAILED);
         setStatus(TRANSACTION_STATUS.FAIL);
         setProcessing(false);
       });

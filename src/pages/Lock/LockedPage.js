@@ -43,7 +43,7 @@ const LockedPage = ({ t }) => {
   };
   const handleLogout = () => {
     logout();
-    trackEvent({ action: EVENTS_MAP.PASSWORD_FORGOT });
+    trackEvent(EVENTS_MAP.PASSWORD_FORGOT);
     navigate(ONBOARDING_ROUTE);
   };
   return (
