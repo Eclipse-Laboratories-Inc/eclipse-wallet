@@ -63,6 +63,7 @@ const AddressBookAddPage = ({ t }) => {
           setValue={setAddressLabel}
           invalid={false}
           autoComplete="off"
+          autoFocus={true}
         />
 
         <GlobalPadding size="md" />

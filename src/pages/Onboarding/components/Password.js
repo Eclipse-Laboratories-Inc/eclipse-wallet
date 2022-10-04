@@ -142,6 +142,7 @@ const Password = ({
               onActionPress={() => setShowValue(!showValue)}
               invalid={wrongpass}
               autoComplete="password-new"
+              autoFocus={true}
               secureTextEntry={!showValue}
             />
 
@@ -154,6 +155,7 @@ const Password = ({
               invalid={pass === repass}
               autoComplete="password-new"
               secureTextEntry={!showValue}
+              onEnter={() => isValid && onContinue()}
             />
 
             {(wrongpass || !isValid) && (
