@@ -97,6 +97,7 @@ const Form = ({ account, onComplete, onBack, t }) => {
           numberOfLines={4}
           autoFocus={true}
           invalid={false}
+          onEnter={onComplete}
         />
       </GlobalLayout.Header>
 
@@ -183,6 +184,7 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
               placeholder={t(`wallet.create.enter_word_number`) + pos}
               setValue={value => setPhrasePos(value, index)}
               autoFocus={index === 0}
+              onEnter={() => isValid && onComplete()}
               // value={phrases[index]}
             />
             <GlobalPadding />

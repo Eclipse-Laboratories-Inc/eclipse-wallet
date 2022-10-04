@@ -69,6 +69,7 @@ const Form = ({ onComplete, onBack, t }) => {
           numberOfLines={4}
           autoFocus={true}
           invalid={false}
+          onEnter={() => isValid && onComplete(seedPhrase)}
         />
       </GlobalLayout.Header>
 

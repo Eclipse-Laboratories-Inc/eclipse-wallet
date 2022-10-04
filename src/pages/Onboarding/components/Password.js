@@ -153,6 +153,7 @@ const Password = ({
               invalid={pass === repass}
               autoComplete="password-new"
               secureTextEntry={!showValue}
+              onEnter={() => isValid && onContinue()}
             />
 
             {(wrongpass || !isValid) && (
