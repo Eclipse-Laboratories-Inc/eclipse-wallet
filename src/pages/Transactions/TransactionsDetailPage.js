@@ -340,6 +340,182 @@ const TransactionsDetailPage = ({ t, params }) => {
     );
   };
 
+  const InteractionDetail = () => {
+    const isReceive = transactionDetail.transferType === 'received';
+    const isUnknown = !transactionDetail.destination;
+    const isCreate = isUnknown && !transactionDetail.transferAmount;
+
+    return (
+      <View style={styles.centered}>
+        <View style={styles.floatingTransactionBox}>
+          <GlobalImage
+            source={getMediaRemoteUrl(
+              isCreate
+                ? getTransactionImage('interaction')
+                : isUnknown
+                ? getTransactionImage('unknown')
+                : transactionDetail.nftAmount?.media ||
+                  transactionDetail.transferLogoIn ||
+                  transactionDetail.transferLogoOut ||
+                  LOGOS.SOLANA,
+            )}
+            size="xxl"
+            style={styles.bigImage}
+            circle
+          />
+          <GlobalImage
+            source={
+              transactionDetail.error
+                ? getTransactionImage('fail')
+                : isReceive
+                ? getTransactionImage('received')
+                : getTransactionImage('sent')
+            }
+            size="md"
+            circle
+            style={styles.floatingTransaction}
+          />
+        </View>
+
+        {transactionDetail.nftAmount && transactionDetail.type !== 'create' ? (
+          <GlobalText type="headline2" center>
+            {!transactionDetail.error &&
+              `${isReceive ? '+ 1 ' : '- 1 '} ${
+                transactionDetail.nftAmount?.collection?.name
+              }`}
+          </GlobalText>
+        ) : (transactionDetail.transferNameIn?.length ||
+            transactionDetail.transferNameOut?.length) &&
+          transactionDetail.transferAmount ? (
+          <GlobalText type="headline2" center>
+            {!transactionDetail.error &&
+              `${isReceive ? '+' : '-'}${transactionDetail.transferAmount} ${
+                transactionDetail.transferNameIn ||
+                transactionDetail.transferNameOut
+              }
+            `}
+          </GlobalText>
+        ) : (
+          transactionDetail.amount && (
+            <GlobalText type="headline2" center>
+              {!transactionDetail.error &&
+                `${isReceive ? '+' : '-'}${
+                  isReceive
+                    ? transactionDetail.amount
+                    : parseFloat(
+                        transactionDetail.amount +
+                          transactionDetail.fee / TOKEN_DECIMALS.SOLANA,
+                      ).toFixed(8)
+                } SOL`}
+            </GlobalText>
+          )
+        )}
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Date
+          </GlobalText>
+
+          <GlobalText type="body2">
+            {moment
+              .unix(transactionDetail.timestamp)
+              .format('MMM D, YYYY - h.mm A')}
+          </GlobalText>
+        </View>
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Type
+          </GlobalText>
+
+          <GlobalText type="body2">
+            {getTransactionTitle('interaction')}
+          </GlobalText>
+        </View>
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Transaction ID
+          </GlobalText>
+          <TouchableOpacity onPress={onCopyID}>
+            <GlobalText type="body2">
+              {getShortAddress(transactionDetail.signature)}
+              <GlobalImage
+                source={IconCopy}
+                style={styles.addressCopyIcon}
+                size="xxs"
+              />
+            </GlobalText>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Status
+          </GlobalText>
+
+          <GlobalText
+            type="body2"
+            color={transactionDetail.error ? 'negative' : 'positive'}>
+            {transactionDetail.error ? 'Failed' : 'Confirmed'}
+          </GlobalText>
+        </View>
+
+        {transactionDetail.destination && (
+          <View style={styles.inlineWell}>
+            <GlobalText type="caption" color="tertiary">
+              To
+            </GlobalText>
+            <TouchableOpacity onPress={() => onCopyAddress(isReceive)}>
+              <GlobalText type="body2">
+                {getShortAddress(transactionDetail.destination)}
+                <GlobalImage
+                  source={IconCopy}
+                  style={styles.addressCopyIcon}
+                  size="xxs"
+                />
+              </GlobalText>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.inlineWell}>
+          <GlobalText type="caption" color="tertiary">
+            Fee
+          </GlobalText>
+
+          <GlobalText type="body2">
+            {`${transactionDetail.fee / TOKEN_DECIMALS.SOLANA} SOL  `}
+          </GlobalText>
+        </View>
+
+        <GlobalPadding size="2xl" />
+
+        <GlobalButton
+          type="secondary"
+          wideSmall
+          title={t(`token.send.goto_explorer`)}
+          onPress={() =>
+            Linking.openURL(
+              `https://solscan.io/tx/${transactionDetail.signature}`,
+            )
+          }
+        />
+
+        <GlobalPadding />
+
+        <GlobalButton
+          type="primary"
+          wideSmall
+          title={t(`transactions.detail_back`)}
+          onPress={goToWallet}
+        />
+
+        <GlobalPadding size="xl" />
+      </View>
+    );
+  };
+
   const SwapDetail = () => (
     <View style={styles.centered}>
       <View style={styles.floatingTransactionBoxSwap}>
@@ -383,22 +559,24 @@ const TransactionsDetailPage = ({ t, params }) => {
       {!transactionDetail.error && (
         <>
           <GlobalText type="headline3" center>
-            {`+${
-              transactionDetail.swapAmountIn /
-              (transactionDetail.tokenNameIn === 'SOL' ||
-              !transactionDetail.tokenNameIn
-                ? TOKEN_DECIMALS.SOLANA
-                : TOKEN_DECIMALS.COINS)
-            } ${transactionDetail.tokenNameIn || 'SOL'} `}
+            {transactionDetail.swapAmountIn &&
+              `+${
+                transactionDetail.swapAmountIn /
+                (transactionDetail.tokenNameIn === 'SOL' ||
+                !transactionDetail.tokenNameIn
+                  ? TOKEN_DECIMALS.SOLANA
+                  : TOKEN_DECIMALS.COINS)
+              } ${transactionDetail.tokenNameIn || 'SOL'} `}
           </GlobalText>
           <GlobalText type="headline3" center>
-            {`-${
-              transactionDetail.swapAmountOut /
-              (transactionDetail.tokenNameOut === 'SOL' ||
-              !transactionDetail.tokenNameOut
-                ? TOKEN_DECIMALS.SOLANA
-                : TOKEN_DECIMALS.COINS)
-            }${transactionDetail.tokenNameOut || 'SOL'} `}
+            {transactionDetail.swapAmountOut &&
+              `-${
+                transactionDetail.swapAmountOut /
+                (transactionDetail.tokenNameOut === 'SOL' ||
+                !transactionDetail.tokenNameOut
+                  ? TOKEN_DECIMALS.SOLANA
+                  : TOKEN_DECIMALS.COINS)
+              }${transactionDetail.tokenNameOut || 'SOL'} `}
           </GlobalText>
         </>
       )}
@@ -455,16 +633,6 @@ const TransactionsDetailPage = ({ t, params }) => {
 
       <View style={styles.inlineWell}>
         <GlobalText type="caption" color="tertiary">
-          To
-        </GlobalText>
-
-        <GlobalText type="body2" numberOfLines={1}>
-          {getShortAddress(activeWallet.getReceiveAddress())}
-        </GlobalText>
-      </View>
-
-      <View style={styles.inlineWell}>
-        <GlobalText type="caption" color="tertiary">
           Fee
         </GlobalText>
 
@@ -512,8 +680,14 @@ const TransactionsDetailPage = ({ t, params }) => {
             switch (transactionDetail.type) {
               case TRANSACTION_TYPE.SWAP:
                 return <SwapDetail />;
-              default:
+              case TRANSACTION_TYPE.TRANSFER:
+              case TRANSACTION_TYPE.TRANSFER_CHECKED:
                 return <TransferDetail />;
+              case TRANSACTION_TYPE.GET_ACC_DATA:
+              case TRANSACTION_TYPE.CREATE_ACCOUNT:
+              case TRANSACTION_TYPE.CREATE:
+              case TRANSACTION_TYPE.CLOSE_ACCOUNT:
+                return <InteractionDetail />;
             }
           })()
         ) : (

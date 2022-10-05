@@ -11,6 +11,7 @@ const TRANSACTION_TYPE = {
 const TYPES_MAP = {
   closeAccount: 'Close account',
   create: 'Create account',
+  createAccount: 'Create account',
 };
 
 const TOKEN_DECIMALS = {
