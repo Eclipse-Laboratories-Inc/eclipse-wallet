@@ -119,6 +119,28 @@ const GlobalButtonTimer = React.memo(function ({
   );
 });
 
+const linkForTransaction = (title, id) => (
+  <GlobalButton
+    type="text"
+    wide
+    textStyle={styles.viewTxLink}
+    title={title}
+    readonly={false}
+    onPress={() => openTransaction(id)}
+  />
+);
+
+const openTransaction = async tx => {
+  const url = `https://solscan.io/tx/${tx}`;
+  const supported = await Linking.canOpenURL(url);
+
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    console.log(`UNSUPPORTED LINK ${url}`);
+  }
+};
+
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
@@ -126,19 +148,51 @@ const SwapPage = ({ t }) => {
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const [processing, setProcessing] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
   const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
   const [quote, setQuote] = useState({});
-  const [transactions, setTransactions] = useState([]);
   const [status, setStatus] = useState();
   const [routesNames, setRoutesNames] = useState('');
   const [tokenSymbols, setTokenSymbols] = useState('');
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
+
+  const [totalSwapTransactions, setTotalSwapTransactions] = useState(0);
+  const [setupTransaction, setSetupTransaction] = useState('');
+  const [swapTransaction, setSwapTransaction] = useState('');
+  const [cleanupTransaction, setCleanupTransaction] = useState('');
+
+  useEffect(() => {
+    document.addEventListener('total_swapping_tx', e =>
+      setTotalSwapTransactions(e.detail),
+    );
+
+    document.addEventListener('send_swap_tx', e => {
+      switch (e.detail.name) {
+        case 'setupTransaction':
+          setSetupTransaction(e.detail.id);
+          break;
+        case 'swapTransaction':
+          setSwapTransaction(e.detail.id);
+          break;
+        case 'cleanupTransaction':
+          setCleanupTransaction(e.detail.id);
+          break;
+      }
+      console.log(
+        `Transaction ${e.detail.name} with id ${e.detail.id} was submitted.`,
+      );
+    });
+
+    document.addEventListener('confirmed_swap_tx', e => {
+      console.log(
+        `Confirm transaction with id: ${e.detail.id} and status ${e.detail.status}`,
+      );
+    });
+  }, []);
 
   useEffect(() => {
     if (activeWallet) {
@@ -164,6 +218,7 @@ const SwapPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
+
   const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
   useEffect(() => {
@@ -223,14 +278,13 @@ const SwapPage = ({ t }) => {
     activeWallet
       .createSwapTransaction(quote.route.id)
       .then(ids => {
-        setTransactions(ids);
         setError(false);
         trackEvent(EVENTS_MAP.SWAP_COMPLETED);
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
       })
       .catch(ex => {
-        setErrorMessage(ex.message);
+        console.error(ex.message);
         setError(true);
         trackEvent(EVENTS_MAP.SWAP_FAILED);
         setStatus(TRANSACTION_STATUS.FAIL);
@@ -418,12 +472,14 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {/* {status === 'fail' && errorMessage && (
-                <GlobalText type="body1" center>
-                  {errorMessage}
-                </GlobalText>
-              )} */}
-
+              <GlobalPadding size="4xl" />
+              <GlobalPadding size="4xl" />
+              {setupTransaction &&
+                linkForTransaction('Setup Transaction', setupTransaction)}
+              {swapTransaction &&
+                linkForTransaction('Swap Transaction', swapTransaction)}
+              {cleanupTransaction &&
+                linkForTransaction('Cleanup Transaction', cleanupTransaction)}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
