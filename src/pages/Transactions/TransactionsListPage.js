@@ -136,11 +136,7 @@ const TransactionsListPage = ({ t }) => {
     <>
       <View style={styles.titleStyle}>
         <Header activeWallet={activeWallet} config={config} t={t} />
-        <View style={globalStyles.centered}>
-          <GlobalText type="headline2">
-            {t('transactions.your_transactions')}
-          </GlobalText>
-        </View>
+        <GlobalBackTitle title={t('transactions.your_transactions')} />
       </View>
       <GlobalLayout>
         <GlobalLayout.Header>

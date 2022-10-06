@@ -6,7 +6,7 @@ import GlobalImage from './GlobalImage';
 import GlobalFloatingBadge from './GlobalFloatingBadge';
 
 import { getMediaRemoteUrl } from '../../utils/media';
-import { isCollection } from '../../utils/nfts';
+import { isCollection, isBlacklisted } from '../../utils/nfts';
 
 const styles = StyleSheet.create({
   image: {
@@ -25,7 +25,11 @@ const GlobalNft = ({ nft, onClick = () => {} }) => (
   <TouchableOpacity onPress={() => onClick(nft)} style={styles.touchable}>
     <View key={nft.url} style={styles.image}>
       <GlobalImage
-        source={getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)}
+        source={
+          isBlacklisted(nft)
+            ? 'https://payabl.com/storage/app/media/feature-blacklisted.png'
+            : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
+        }
         size="block"
       />
       <GlobalFloatingBadge
