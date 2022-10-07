@@ -38,7 +38,6 @@ const ChangeNetworkPage = ({ t }) => {
             active={label === selectedEndpoints[getWalletChain(activeWallet)]}
             complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
             title={label}
-            description={description}
             onPress={() => onSelect(label)}
           />
         ))}
