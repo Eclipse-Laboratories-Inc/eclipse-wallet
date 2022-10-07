@@ -113,7 +113,14 @@ const GlobalInput = ({
   const handleChange = event => {
     if (setValue) {
       number
-        ? setValue(event.nativeEvent.text.replace(/[^\d.]/g, ''))
+        ? setValue(
+            event.nativeEvent.text
+              .replace(',', '.')
+              .replace(/[^\d\.]/g, '')
+              .replace(/\./, 'x')
+              .replace(/\./g, '')
+              .replace(/x/, '.'),
+          )
         : setValue(event.nativeEvent.text);
     }
   };

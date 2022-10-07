@@ -19,4 +19,7 @@ const TOKEN_DECIMALS = {
   COINS: 1000000,
 };
 
-export { TYPES_MAP, TRANSACTION_TYPE, TOKEN_DECIMALS };
+const SOL_ICON =
+  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
+
+export { TYPES_MAP, TRANSACTION_TYPE, TOKEN_DECIMALS, SOL_ICON };

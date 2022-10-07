@@ -3,7 +3,12 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import theme from '../../component-library/Global/theme';
-import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
+import {
+  TRANSACTION_TYPE,
+  TYPES_MAP,
+  TOKEN_DECIMALS,
+  SOL_ICON,
+} from './constants';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { LOGOS } from '../../utils/wallet';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
@@ -73,6 +78,12 @@ const TransactionsListComponent = ({ t }) => {
                   transaction={
                     isUnknown ? 'unknown' : isReceive ? 'received' : 'sent'
                   }
+                  tokenImg1={
+                    transaction.transferLogoIn ||
+                    transaction.transferLogoOut ||
+                    transaction.nftAmount ||
+                    (!transaction.error && SOL_ICON)
+                  }
                   title={isCreate && TYPES_MAP[transaction.type]}
                   address={
                     isReceive ? transaction.source : transaction.destination
@@ -85,7 +96,7 @@ const TransactionsListComponent = ({ t }) => {
                             {!isReceive && (
                               <GlobalText
                                 key={'amount-action'}
-                                type="body2"
+                                type="body1"
                                 color="negativeLight">
                                 {`${'-'}${
                                   transaction.fee / TOKEN_DECIMALS.SOLANA
@@ -101,17 +112,13 @@ const TransactionsListComponent = ({ t }) => {
                             <View style={styles.inline}>
                               <GlobalText
                                 key={'amount-action'}
-                                type="body2"
+                                type="body1"
                                 color={
                                   isReceive ? 'positive' : 'negativeLight'
                                 }>
                                 {isReceive ? '+ 1 ' : '- 1 '}
                                 {`${transaction.nftAmount?.collection?.name} `}
                               </GlobalText>
-                              <AvatarImage
-                                url={transaction.nftAmount?.media}
-                                size={18}
-                              />
                             </View>
                           ),
                         ]
@@ -122,7 +129,7 @@ const TransactionsListComponent = ({ t }) => {
                           <View style={styles.inline}>
                             <GlobalText
                               key={'amount-action'}
-                              type="body2"
+                              type="body1"
                               color={isReceive ? 'positive' : 'negativeLight'}>
                               {isReceive ? '+' : '-'}
                               {`${parseFloat(
@@ -148,7 +155,7 @@ const TransactionsListComponent = ({ t }) => {
                               transaction.transferAmount) && (
                               <GlobalText
                                 key={'amount-action'}
-                                type="body2"
+                                type="body1"
                                 color={
                                   isReceive ? 'positive' : 'negativeLight'
                                 }>
@@ -158,7 +165,6 @@ const TransactionsListComponent = ({ t }) => {
                                 {` SOL  `}
                               </GlobalText>
                             )}
-                            <GlobalImage source={IconSuccess} size="xxs" />
                           </View>,
                         ].filter(Boolean)
                   }
@@ -184,7 +190,7 @@ const TransactionsListComponent = ({ t }) => {
                           <View style={styles.inline}>
                             <GlobalText
                               key={'amount-action'}
-                              type="body2"
+                              type="body1"
                               color="negativeLight">
                               {`${'-'}${
                                 transaction.fee / TOKEN_DECIMALS.SOLANA

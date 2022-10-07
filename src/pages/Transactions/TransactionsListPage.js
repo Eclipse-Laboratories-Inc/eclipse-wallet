@@ -5,7 +5,12 @@ import moment from 'moment';
 import { AppContext } from '../../AppProvider';
 import { withTranslation } from '../../hooks/useTranslations';
 import theme, { globalStyles } from '../../component-library/Global/theme';
-import { TRANSACTION_TYPE, TYPES_MAP, TOKEN_DECIMALS } from './constants';
+import {
+  TRANSACTION_TYPE,
+  TYPES_MAP,
+  TOKEN_DECIMALS,
+  SOL_ICON,
+} from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import { LOGOS } from '../../utils/wallet';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -167,6 +172,12 @@ const TransactionsListPage = ({ t }) => {
                               ? 'received'
                               : 'sent'
                           }
+                          tokenImg1={
+                            transaction.transferLogoIn ||
+                            transaction.transferLogoOut ||
+                            transaction.nftAmount ||
+                            (!transaction.error && SOL_ICON)
+                          }
                           title={isCreate && TYPES_MAP[transaction.type]}
                           address={
                             isReceive
@@ -201,7 +212,7 @@ const TransactionsListPage = ({ t }) => {
                                     <View style={styles.inline}>
                                       <GlobalText
                                         key={'amount-action'}
-                                        type="body2"
+                                        type="body1"
                                         color={
                                           isReceive
                                             ? 'positive'
@@ -210,10 +221,6 @@ const TransactionsListPage = ({ t }) => {
                                         {isReceive ? '+ 1 ' : '- 1 '}
                                         {`${transaction.nftAmount?.collection?.name} `}
                                       </GlobalText>
-                                      <AvatarImage
-                                        url={transaction.nftAmount?.media}
-                                        size={18}
-                                      />
                                     </View>
                                   ),
                                 ]
@@ -224,7 +231,7 @@ const TransactionsListPage = ({ t }) => {
                                   <View style={styles.inline}>
                                     <GlobalText
                                       key={'amount-action'}
-                                      type="body2"
+                                      type="body1"
                                       color={
                                         isReceive ? 'positive' : 'negativeLight'
                                       }>
@@ -237,13 +244,6 @@ const TransactionsListPage = ({ t }) => {
                                         transaction.transferNameOut
                                       } `}
                                     </GlobalText>
-                                    <AvatarImage
-                                      url={
-                                        transaction.transferLogoIn ||
-                                        transaction.transferLogoOut
-                                      }
-                                      size={18}
-                                    />
                                   </View>,
                                 ]
                               : [
@@ -252,7 +252,7 @@ const TransactionsListPage = ({ t }) => {
                                       transaction.transferAmount) && (
                                       <GlobalText
                                         key={'amount-action'}
-                                        type="body2"
+                                        type="body1"
                                         color={
                                           isReceive
                                             ? 'positive'
@@ -264,10 +264,6 @@ const TransactionsListPage = ({ t }) => {
                                         {` SOL  `}
                                       </GlobalText>
                                     )}
-                                    <GlobalImage
-                                      source={IconSuccess}
-                                      size="xxs"
-                                    />
                                   </View>,
                                 ].filter(Boolean)
                           }
@@ -303,7 +299,7 @@ const TransactionsListPage = ({ t }) => {
                                   <View style={styles.inline}>
                                     <GlobalText
                                       key={'amount-action'}
-                                      type="body2"
+                                      type="body1"
                                       color="negativeLight">
                                       {`${'-'}${
                                         transaction.fee / TOKEN_DECIMALS.SOLANA

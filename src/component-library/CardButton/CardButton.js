@@ -52,6 +52,11 @@ const styles = StyleSheet.create({
     marginLeft: -theme.gutters.paddingXS,
     marginTop: theme.gutters.paddingNormal,
   },
+  tokenTransfer: {
+    marginRight: theme.gutters.paddingXS,
+    marginLeft: -theme.gutters.paddingLG,
+    marginTop: theme.gutters.paddingLG,
+  },
   main: {
     flex: 1,
     justifyContent: 'center',
@@ -138,6 +143,17 @@ const CardButton = ({
             source={image}
             size={imageSize || 'md'}
             style={[styles.image, styles.spaceRight, imageStyle]}
+            // mask={mask}
+            maskColor={selected && 'accentPrimary'}
+            circle
+          />
+        )}
+
+        {tokenImg1 && !tokenImg2 && image && (
+          <GlobalImage
+            source={tokenImg1}
+            size="xxs"
+            style={[styles.image, styles.tokenTransfer, imageStyle]}
             // mask={mask}
             maskColor={selected && 'accentPrimary'}
             circle
