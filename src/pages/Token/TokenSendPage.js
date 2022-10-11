@@ -406,7 +406,7 @@ const TokenSendPage = ({ params, t }) => {
               <GlobalButton
                 type="secondary"
                 flex
-                title="Cancel"
+                title={t('actions.cancel')}
                 onPress={onCancel}
                 style={[globalStyles.button, globalStyles.buttonLeft]}
                 touchableStyles={globalStyles.buttonTouchable}
@@ -416,7 +416,7 @@ const TokenSendPage = ({ params, t }) => {
                 disabled={sending}
                 type="primary"
                 flex
-                title="Next"
+                title={t('general.confirm')}
                 onPress={onSend}
                 style={[globalStyles.button, globalStyles.buttonRight]}
                 touchableStyles={globalStyles.buttonTouchable}

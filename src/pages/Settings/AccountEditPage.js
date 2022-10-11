@@ -103,11 +103,11 @@ const AccountEditPage = ({ params, t }) => {
           </GlobalText>
         </CardButton>
 
-        <CardButton
+        {/* <CardButton
           title={t(`settings.notifications`)}
           actionIcon="right"
           onPress={goToWalletNotifications}
-        />
+        /> */}
 
         <CardButton
           title={t(`general.seed_phrase`)}

@@ -7,6 +7,7 @@ import GlobalFloatingBadge from './GlobalFloatingBadge';
 
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isCollection, isBlacklisted } from '../../utils/nfts';
+import Blacklisted from '../../assets/images/Blacklisted.jpeg';
 
 const styles = StyleSheet.create({
   image: {
@@ -27,7 +28,7 @@ const GlobalNft = ({ nft, onClick = () => {} }) => (
       <GlobalImage
         source={
           isBlacklisted(nft)
-            ? 'https://payabl.com/storage/app/media/feature-blacklisted.png'
+            ? Blacklisted
             : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
         }
         size="block"
