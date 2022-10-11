@@ -192,6 +192,12 @@ const SwapPage = ({ t }) => {
         `Confirm transaction with id: ${e.detail.id} and status ${e.detail.status}`,
       );
     });
+
+    document.addEventListener('failed_swap_tx', e => {
+      console.log(
+        `Transaction ${e.detail.name} with id: ${e.detail.id} failed`,
+      );
+    });
   }, []);
 
   useEffect(() => {
