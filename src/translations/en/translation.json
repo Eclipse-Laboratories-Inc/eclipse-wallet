@@ -121,7 +121,7 @@
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
-      "transaction_success": "Transaction\nCompleted",
+      "transaction_success": "Transaction Completed",
       "transaction_swapping": "Swapping...",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",

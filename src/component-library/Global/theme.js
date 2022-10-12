@@ -247,6 +247,11 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+  inlineCentered: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+  },
   inlineFlexButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',

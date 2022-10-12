@@ -32,6 +32,7 @@ import IconCopy from '../../assets/images/IconCopy.png';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
+import SwapAmounts from './SwapAmounts';
 
 const styles = StyleSheet.create({
   centered: {
@@ -558,26 +559,12 @@ const TransactionsDetailPage = ({ t, params }) => {
 
       {!transactionDetail.error && (
         <>
-          <GlobalText type="headline3" center>
-            {transactionDetail.swapAmountIn &&
-              `+${
-                transactionDetail.swapAmountIn /
-                (transactionDetail.tokenNameIn === 'SOL' ||
-                !transactionDetail.tokenNameIn
-                  ? TOKEN_DECIMALS.SOLANA
-                  : TOKEN_DECIMALS.COINS)
-              } ${transactionDetail.tokenNameIn || 'SOL'} `}
-          </GlobalText>
-          <GlobalText type="headline3" center>
-            {transactionDetail.swapAmountOut &&
-              `-${
-                transactionDetail.swapAmountOut /
-                (transactionDetail.tokenNameOut === 'SOL' ||
-                !transactionDetail.tokenNameOut
-                  ? TOKEN_DECIMALS.SOLANA
-                  : TOKEN_DECIMALS.COINS)
-              }${transactionDetail.tokenNameOut || 'SOL'} `}
-          </GlobalText>
+          <SwapAmounts
+            inAmount={transactionDetail.swapAmountIn}
+            outAmount={transactionDetail.swapAmountOut}
+            inToken={transactionDetail.tokenNameIn}
+            outToken={transactionDetail.tokenNameOut}
+          />
         </>
       )}
 

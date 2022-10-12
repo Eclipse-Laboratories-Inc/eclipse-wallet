@@ -29,11 +29,11 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import SwapAmounts from '../Transactions/SwapAmounts';
 
 const styles = StyleSheet.create({
   viewTxLink: {
     fontFamily: theme.fonts.dmSansRegular,
-    color: theme.colors.accentPrimary,
     fontWeight: 'normal',
     textTransform: 'none',
   },
@@ -42,6 +42,18 @@ const styles = StyleSheet.create({
     color: theme.colors.labelSecondary,
     fontWeight: 'normal',
     textTransform: 'none',
+  },
+  symbolContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  floatingSwap: {
+    position: 'absolute',
+    zIndex: 1,
+    right: 55,
+    bottom: -5,
   },
 });
 
@@ -119,15 +131,41 @@ const GlobalButtonTimer = React.memo(function ({
   );
 });
 
-const linkForTransaction = (title, id) => (
-  <GlobalButton
-    type="text"
-    wide
-    textStyle={styles.viewTxLink}
-    title={title}
-    readonly={false}
-    onPress={() => openTransaction(id)}
-  />
+const linkForTransaction = (title, id, status) => (
+  <View style={globalStyles.inlineCentered}>
+    <GlobalButton
+      type="text"
+      wide
+      textStyle={styles.viewTxLink}
+      title={title}
+      readonly={false}
+      onPress={() => openTransaction(id)}
+    />
+    {status === 0 && (
+      <GlobalImage
+        style={globalStyles.centeredSmall}
+        source={getTransactionImage('swapping')}
+        size="xs"
+        circle
+      />
+    )}
+    {status === 1 && (
+      <GlobalImage
+        style={globalStyles.centeredSmall}
+        source={getTransactionImage('success')}
+        size="xs"
+        circle
+      />
+    )}
+    {status === 2 && (
+      <GlobalImage
+        style={globalStyles.centeredSmall}
+        source={getTransactionImage('fail')}
+        size="xs"
+        circle
+      />
+    )}
+  </View>
 );
 
 const openTransaction = async tx => {
@@ -160,45 +198,73 @@ const SwapPage = ({ t }) => {
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
 
-  const [totalSwapTransactions, setTotalSwapTransactions] = useState(0);
   const [setupTransaction, setSetupTransaction] = useState('');
   const [swapTransaction, setSwapTransaction] = useState('');
   const [cleanupTransaction, setCleanupTransaction] = useState('');
+  const [setupStatus, setSetupStatus] = useState(null);
+  const [swapStatus, setSwapStatus] = useState(null);
+  const [cleanUpStatus, setCleanUpStatus] = useState(null);
+  const [totalTransactions, setTotalTransactions] = useState(0);
+  const [currentTransaction, setCurrentTransaction] = useState(1);
 
   useEffect(() => {
-    document.addEventListener('total_swapping_tx', e =>
-      setTotalSwapTransactions(e.detail),
-    );
-
     document.addEventListener('send_swap_tx', e => {
       switch (e.detail.name) {
         case 'setupTransaction':
           setSetupTransaction(e.detail.id);
+          setSetupStatus(0);
           break;
         case 'swapTransaction':
           setSwapTransaction(e.detail.id);
+          setSwapStatus(0);
           break;
         case 'cleanupTransaction':
           setCleanupTransaction(e.detail.id);
+          setCleanUpStatus(0);
           break;
       }
+      setTotalTransactions(totalTransactions + 1);
       console.log(
         `Transaction ${e.detail.name} with id ${e.detail.id} was submitted.`,
       );
     });
 
     document.addEventListener('confirmed_swap_tx', e => {
+      switch (e.detail.name) {
+        case 'setupTransaction':
+          setSetupStatus(1);
+          break;
+        case 'swapTransaction':
+          setSwapStatus(1);
+          break;
+        case 'cleanupTransaction':
+          setCleanUpStatus(1);
+          break;
+      }
+      if (currentTransaction < totalTransactions)
+        setCurrentTransaction(currentTransaction + 1);
       console.log(
         `Confirm transaction with id: ${e.detail.id} and status ${e.detail.status}`,
       );
     });
 
     document.addEventListener('failed_swap_tx', e => {
+      switch (e.detail.name) {
+        case 'setupTransaction':
+          setSetupStatus(2);
+          break;
+        case 'swapTransaction':
+          setSwapStatus(2);
+          break;
+        case 'cleanupTransaction':
+          setCleanUpStatus(2);
+          break;
+      }
       console.log(
         `Transaction ${e.detail.name} with id: ${e.detail.id} failed`,
       );
     });
-  }, []);
+  });
 
   useEffect(() => {
     if (activeWallet) {
@@ -298,6 +364,17 @@ const SwapPage = ({ t }) => {
       });
 
     setStatus(TRANSACTION_STATUS.SWAPPING);
+  };
+
+  const getStatusColor = status => {
+    switch (status) {
+      case 'success':
+        return 'positive';
+      case 'fail':
+        return 'negative';
+      default:
+        return 'primary';
+    }
   };
 
   return (
@@ -462,30 +539,54 @@ const SwapPage = ({ t }) => {
         <>
           <GlobalLayout.Header>
             <GlobalPadding size="4xl" />
-            <GlobalPadding size="4xl" />
             <View style={globalStyles.centeredSmall}>
-              <GlobalImage
-                source={getTransactionImage(status)}
-                size="3xl"
-                circle
-              />
-              <GlobalPadding />
+              <View style={styles.symbolContainer}>
+                <GlobalImage source={inToken.logo} size="xl" circle />
+                <GlobalImage
+                  source={getTransactionImage('swap')}
+                  style={styles.floatingSwap}
+                  size="sm"
+                  circle
+                />
+                <GlobalImage source={outToken.logo} size="xl" circle />
+              </View>
+              <GlobalPadding size="lg" />
+              <View>
+                <SwapAmounts
+                  inAmount={quote.route.inAmount}
+                  outAmount={quote.route.outAmount}
+                  inToken={inToken.symbol}
+                  outToken={outToken.symbol}
+                />
+              </View>
+              <GlobalPadding size="xl" />
               {status !== 'creating' && (
                 <GlobalText
                   type={'body2'}
-                  color={status === 'swapping' && 'secondary'}
+                  color={getStatusColor(status)}
                   center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
+              <GlobalPadding size="sm" />
               {setupTransaction &&
-                linkForTransaction('Setup Transaction', setupTransaction)}
+                linkForTransaction(
+                  `Transaction ${currentTransaction} of ${totalTransactions}: Setup`,
+                  setupTransaction,
+                  setupStatus,
+                )}
               {swapTransaction &&
-                linkForTransaction('Swap Transaction', swapTransaction)}
+                linkForTransaction(
+                  `Transaction ${currentTransaction} of ${totalTransactions}: Swap`,
+                  swapTransaction,
+                  swapStatus,
+                )}
               {cleanupTransaction &&
-                linkForTransaction('Cleanup Transaction', cleanupTransaction)}
+                linkForTransaction(
+                  `Transaction ${currentTransaction} of ${totalTransactions}: Cleanup`,
+                  cleanupTransaction,
+                  cleanUpStatus,
+                )}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
