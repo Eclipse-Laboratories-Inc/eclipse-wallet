@@ -79,7 +79,7 @@ export const getWalletAvatar = (address, config) =>
   get(
     config,
     `${address}.avatar`,
-    'https://d2hubo5yvbi15f.cloudfront.net/avatar/00.png',
+    'http://static.salmonwallet.io/avatar/00.png',
   );
 
 export const getWalletChain = wallet => {

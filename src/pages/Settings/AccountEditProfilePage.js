@@ -28,6 +28,11 @@ const AccountEditProfilePage = ({ params, t }) => {
       address: params.address,
     });
 
+  const onSelectAvatar = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS, {
+      address: params.address,
+    });
+
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
@@ -52,6 +57,16 @@ const AccountEditProfilePage = ({ params, t }) => {
             title={t('settings.wallets.select_nft')}
             onPress={onSelectNft}
           />
+
+          <GlobalPadding size="md" />
+
+          <GlobalButton
+            type="primary"
+            wideSmall
+            title={t('settings.wallets.select_avatar')}
+            onPress={onSelectAvatar}
+          />
+
           {/*
           <GlobalPadding />
            
