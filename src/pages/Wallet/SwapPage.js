@@ -198,6 +198,7 @@ const SwapPage = ({ t }) => {
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
 
+  const [transactions, setTransactions] = useState([]);
   const [setupTransaction, setSetupTransaction] = useState('');
   const [swapTransaction, setSwapTransaction] = useState('');
   const [cleanupTransaction, setCleanupTransaction] = useState('');
@@ -568,22 +569,33 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
+              {status === 'swapping' && totalTransactions > 0 && (
+                <GlobalText
+                  type={'body1'}
+                  color={getStatusColor(status)}
+                  center>
+                  {t(`token.send.swap_step`, {
+                    current: currentTransaction,
+                    total: totalTransactions,
+                  })}
+                </GlobalText>
+              )}
               <GlobalPadding size="sm" />
               {setupTransaction &&
                 linkForTransaction(
-                  `Transaction ${currentTransaction} of ${totalTransactions}: Setup`,
+                  `Transaction Setup`,
                   setupTransaction,
                   setupStatus,
                 )}
               {swapTransaction &&
                 linkForTransaction(
-                  `Transaction ${currentTransaction} of ${totalTransactions}: Swap`,
+                  `Transaction Swap`,
                   swapTransaction,
                   swapStatus,
                 )}
               {cleanupTransaction &&
                 linkForTransaction(
-                  `Transaction ${currentTransaction} of ${totalTransactions}: Cleanup`,
+                  `Transaction Cleanup`,
                   cleanupTransaction,
                   cleanUpStatus,
                 )}

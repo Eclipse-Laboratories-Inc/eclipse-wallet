@@ -122,9 +122,10 @@
       "transaction_creating": "Creating Transaction...",
       "transaction_sending": "Sending...",
       "transaction_success": "Transaction Completed",
-      "transaction_swapping": "Swapping...",
+      "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",
+      "swap_step": "step {{current}} of {{total}}",
       "goto_explorer": "Go to Explorer",
       "view_transaction": "View Transaction",
       "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
