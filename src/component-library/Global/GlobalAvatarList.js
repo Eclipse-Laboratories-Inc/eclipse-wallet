@@ -29,8 +29,8 @@ const GlobalAvatarList = ({ onClick }) => {
     <>
       {!loaded && <GlobalSkeleton type="NftList" />}
       <Grid
-        spacing={1}
-        columns={2}
+        spacing={2}
+        columns={3}
         items={[...Array(25).keys()].map(index => {
           const id = String(index).padStart(2, '0');
           return (
