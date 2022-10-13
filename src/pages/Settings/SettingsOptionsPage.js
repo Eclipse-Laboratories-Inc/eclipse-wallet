@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Linking } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { AppContext } from '../../AppProvider';
@@ -12,6 +12,7 @@ import {
   getWalletName,
   getWalletAvatar,
 } from '../../utils/wallet';
+import packageInfo from '../../../package.json';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -25,6 +26,16 @@ import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
+const styles = StyleSheet.create({
+  appVersion: {
+    position: 'absolute',
+    bottom: 8,
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+  },
+});
+
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
@@ -34,7 +45,7 @@ const SettingsOptionsPage = ({ t }) => {
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
   const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
-
+  const { version } = packageInfo;
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SETTINGS);
 
   const toggleSingleDialog = () => {
@@ -205,6 +216,16 @@ const SettingsOptionsPage = ({ t }) => {
           </GlobalText>
         }
       />
+
+      <GlobalText
+        style={styles.appVersion}
+        type="caption"
+        italic
+        color="secondary">
+        {t('settings.app_version', {
+          version,
+        })}
+      </GlobalText>
     </GlobalLayout>
   );
 };

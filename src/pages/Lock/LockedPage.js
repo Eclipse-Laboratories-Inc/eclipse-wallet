@@ -115,7 +115,7 @@ const LockedPage = ({ t }) => {
               center
               onPress={handleLogout}
               type="subtitle1"
-              numberOfLines={10}>
+              numberOfLines={12}>
               {t('lock.forgot_content')}
             </GlobalText>
           }

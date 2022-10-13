@@ -58,6 +58,7 @@
     "notifications": "Notifications",
     "trusted_apps": "Trusted Apps",
     "help_support": "Help & Support",
+    "app_version": "Version v{{version}}",
     "wallets": {
       "your_wallets": "Your Wallets",
       "my_wallets": "My Wallets",
@@ -73,6 +74,8 @@
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
       "select_nft": "Select NFT",
+      "select_avatar": "Select Avatar",
+      "no_avatars_found": "No Avatars found",
       "upload_photo": "Upload Photo",
       "select_nft_to_profile": "Select NFT to Profile",
       "full_nft_description": "Full NFT Description",
@@ -142,7 +145,7 @@
     "forgotten": "Forgotten password",
     "clear": "Clear data",
     "clear_confirm": "I UNDERSTAND, DISCONNECT ALL",
-    "forgot_content": "Salmon does not store any information of your account. That includes your password.If you forgot it, you will need to disconnect all your wallets. Keep in mind that to re-import them you will need your seedphrase or private key.\n\nAre you sure you want to proceed?",
+    "forgot_content": "Salmon does not store any information of your account. That includes your password. If you forgot it, you will need to disconnect all your wallets. Keep in mind that to re-import them you will need your seedphrase or private key.\n\nAre you sure you want to proceed?",
     "buttonChecking": "Checking...",
     "buttonUnlock": "Unlock"
   },

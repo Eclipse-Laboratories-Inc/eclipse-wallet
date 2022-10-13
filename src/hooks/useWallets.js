@@ -147,12 +147,12 @@ const useWallets = () => {
   }, []);
 
   const getRandomAvatar = () => {
-    const rnd = Math.floor(Math.random() * 20) + 1;
+    const rnd = Math.floor(Math.random() * 24) + 1;
     const index = rnd.toLocaleString('en-US', {
       minimumIntegerDigits: 2,
       useGrouping: false,
     });
-    return `https://d2hubo5yvbi15f.cloudfront.net/avatar/${index}.png`;
+    return `http://static.salmonwallet.io/avatar/${index}.png`;
   };
 
   const addWallet = async (account, password, chain) => {

@@ -20,6 +20,7 @@ import TrustedAppsPage from './TrustedAppsPage';
 import HelpSupportPage from './HelpSupportPage';
 import AccountEditProfileNftsPage from './AccountEditProfileNftsPage';
 import AccountEditProfileNftsDetailPage from './AccountEditProfileNftsDetailPage';
+import AccountEditProfileAvatarsPage from './AccountEditProfileAvatarsPage';
 import AccountEditPrivateKeyPage from './AccountEditPrivateKeyPage';
 
 export const ROUTES_MAP = {
@@ -30,6 +31,8 @@ export const ROUTES_MAP = {
   SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS: 'SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS',
   SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL:
     'SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL',
+  SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS:
+    'SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS',
   SETTINGS_ACCOUNT_EDIT_NAME: 'SETTINGS_ACCOUNT_EDIT_NAME',
   SETTINGS_ACCOUNT_EDIT_ADDRESS: 'SETTINGS_ACCOUNT_EDIT_ADDRESS',
   SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS: 'SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS',
@@ -93,6 +96,14 @@ const routes = [
     path: 'accounts/:address/profile/nfts/:id',
     route: '/wallet/settings/accounts/:address/profile/nfts/:id',
     Component: AccountEditProfileNftsDetailPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS,
+    name: 'settingsEditAccountProfileAvatars',
+    path: 'accounts/:address/profile/avatars',
+    route: '/wallet/settings/accounts/:address/profile/avatars',
+    Component: AccountEditProfileAvatarsPage,
     default: false,
   },
   {
