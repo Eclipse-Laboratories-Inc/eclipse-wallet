@@ -152,6 +152,7 @@ const themes = {
 
     positiveBright: 'hsla(105, 100%, 66%, 1)',
     negativeBright: 'hsla(0, 100%, 55%, 1)',
+    warningBright: 'hsla(64, 100%, 50%, 1)',
 
     success: '#07b114',
     info: '#006EC5',
@@ -213,6 +214,7 @@ const themes = {
 
     positiveBright: 'hsla(105, 100%, 66%, 1)',
     negativeBright: 'hsla(0, 100%, 55%, 1)',
+    warningBright: 'hsla(64, 100%, 50%, 1)',
 
     success: '#07b114',
     info: '#006EC5',

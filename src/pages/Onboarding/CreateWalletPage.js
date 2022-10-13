@@ -7,7 +7,6 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
-import { ROUTES_MAP as ADAPTER_ROUTES_MAP } from '../Adapter/routes';
 import clipboard from '../../utils/clipboard';
 import { createAccount } from '../../utils/wallet';
 import { isExtension } from '../../utils/platform';
@@ -242,9 +241,7 @@ const CreateWalletPage = ({ params, t }) => {
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.CREATION_COMPLETED);
-    navigate(
-      isAdapter ? ADAPTER_ROUTES_MAP.ADAPTER_DETAIL : APP_ROUTES_MAP.WALLET,
-    );
+    navigate(isAdapter ? APP_ROUTES_MAP.ADAPTER : APP_ROUTES_MAP.WALLET);
   };
   const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 

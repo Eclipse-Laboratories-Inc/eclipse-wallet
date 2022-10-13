@@ -6,7 +6,6 @@ import ChooseDerivable from './components/ChooseDerivable';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP as ROUTES_MAP_ADAPTER } from '../Adapter/routes';
 import { getSolanaBalance } from '4m-wallet-adapter/services/solana/solana-balance-service';
 
 const getSolBalances = async (activeWallet, derivAccounts) => {
@@ -53,10 +52,10 @@ const DerivedAccountsPage = ({ t }) => {
       null,
       getDefaultChain(),
     );
-    navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
+    navigate(isAdapter ? ROUTES_MAP.ADAPTER : ROUTES_MAP.WALLET);
   };
   const goToWallet = () =>
-    navigate(isAdapter ? ROUTES_MAP_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
+    navigate(isAdapter ? ROUTES_MAP.ADAPTER : ROUTES_MAP.WALLET);
 
   return (
     <ChooseDerivable

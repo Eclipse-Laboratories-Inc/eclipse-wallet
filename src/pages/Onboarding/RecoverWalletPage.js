@@ -6,7 +6,6 @@ import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
-import { ROUTES_MAP as ROUTES_ADAPTER } from '../Adapter/routes';
 import { globalStyles } from '../../component-library/Global/theme';
 import { isExtension } from '../../utils/platform';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -123,7 +122,7 @@ const RecoverWalletPage = ({ t }) => {
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
-    navigate(isAdapter ? ROUTES_ADAPTER.ADAPTER_DETAIL : ROUTES_MAP.WALLET);
+    navigate(isAdapter ? ROUTES_MAP.ADAPTER : ROUTES_MAP.WALLET);
   };
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 

@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-shadow */
 import React, {
   useCallback,
   useContext,
@@ -9,16 +7,18 @@ import React, {
 } from 'react';
 
 import get from 'lodash/get';
-import bs58 from 'bs58';
-import nacl from 'tweetnacl';
-import { AppContext } from '../../AppProvider';
 
-import ApproveConnectionForm from './components/ApproveConnectionForm';
-import ApproveSignatureForm from './components/ApproveSignatureForm';
-import KeepOpenBanner from './components/KeepOpenBanner';
-import { getMetadata } from '../../utils/dapp';
-import { isExtension } from '../../utils/platform';
-import { getOpener } from '../../utils/runtime';
+import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
+
+import { AppContext } from '../../../AppProvider';
+import ApproveConnectionForm from './ApproveConnectionForm';
+import KeepOpenBanner from './KeepOpenBanner';
+import SignMessagesForm from './SignMessagesForm';
+import SignTransactionsForm from './SignTransactionsForm';
+import SignTransactionForm from './SignTransactionForm';
+import { getMetadata } from '../../../utils/dapp';
+import { isExtension } from '../../../utils/platform';
+import { getDefaultEndpoint } from '../../../utils/wallet';
 
 const AUTHORIZED_METHODS = ['signTransaction', 'signAllTransactions', 'sign'];
 
@@ -62,11 +62,20 @@ function focusParent() {
   }
 }
 
-const AdapterDetailPage = () => {
-  const [{ activeWallet, config, context }, { addTrustedApp }] =
+const AdapterDetail = () => {
+  const [{ activeWallet, config, context, opener }, { addTrustedApp }] =
     useContext(AppContext);
   const origin = useMemo(() => context.get('origin'), [context]);
-  const opener = useMemo(() => getOpener(), []);
+  const endpoint = useMemo(
+    () => context.get('network') || getDefaultEndpoint('SOLANA'),
+    [context],
+  );
+
+  useEffect(() => {
+    if (activeWallet.networkId !== endpoint) {
+      activeWallet.setNetwork(endpoint);
+    }
+  }, [activeWallet, endpoint]);
 
   const address = activeWallet.getReceiveAddress();
   const trustedApp = get(config, `${address}.trustedApps.${origin}`);
@@ -75,7 +84,6 @@ const AdapterDetailPage = () => {
   const [loading, setLoading] = useState(!connected);
   const [name, setName] = useState(trustedApp?.name);
   const [icon, setIcon] = useState(trustedApp?.icon);
-  const [autoApprove, setAutoApprove] = useState(!!trustedApp?.autoApprove);
   const [requests, setRequests] = useState(() =>
     getInitialRequests({ context }),
   );
@@ -95,6 +103,7 @@ const AdapterDetailPage = () => {
   const postMessage = useCallback(
     message => {
       if (isExtension()) {
+        // eslint-disable-next-line no-undef
         chrome.runtime.sendMessage({
           channel: 'salmon_extension_background_channel',
           data: message,
@@ -128,7 +137,7 @@ const AdapterDetailPage = () => {
           postMessage({ error: 'Unsupported method', id: e.data.id });
         }
 
-        setRequests(requests => [...requests, e.data]);
+        setRequests(reqs => [...reqs, e.data]);
       }
     }
     window.addEventListener('message', messageHandler);
@@ -136,29 +145,10 @@ const AdapterDetailPage = () => {
   }, [origin, opener, postMessage]);
 
   const request = requests[0];
-  const popRequest = () => setRequests(requests => requests.slice(1));
-
-  const messages = useMemo(() => {
-    if (!request || request.method === 'connect') {
-      return [];
-    }
-    switch (request.method) {
-      case 'signTransaction':
-        return [bs58.decode(request.params.message)];
-      case 'signAllTransactions':
-        return request.params.messages.map(m => bs58.decode(m));
-      case 'sign':
-        if (!(request.params.data instanceof Uint8Array)) {
-          throw new Error('Data must be an instance of Uint8Array');
-        }
-        return [request.params.data];
-      default:
-        throw new Error('Unexpected method: ' + request.method);
-    }
-  }, [request]);
+  const popRequest = () => setRequests(reqs => reqs.slice(1));
 
   if (loading) {
-    return null;
+    return <GlobalSkeleton type="Generic" />;
   }
 
   if (connected && requests.length === 0) {
@@ -176,14 +166,13 @@ const AdapterDetailPage = () => {
     (!isExtension() && !connected)
   ) {
     // Approve the parent page to connect to this wallet.
-    function connect(autoApprove) {
+    const connect = () => {
       setConnected(true);
-      setAutoApprove(autoApprove);
-      addTrustedApp(address, origin, { name, icon, autoApprove });
+      addTrustedApp(address, origin, { name, icon });
 
       postMessage({
         method: 'connected',
-        params: { publicKey: activeWallet.publicKey.toBase58(), autoApprove },
+        params: { publicKey: activeWallet.getReceiveAddress() },
         id: isExtension() ? request.id : undefined,
       });
       if (isExtension()) {
@@ -191,91 +180,72 @@ const AdapterDetailPage = () => {
       } else {
         focusParent();
       }
-    }
+    };
 
     return (
       <ApproveConnectionForm
         origin={origin}
         name={name}
         icon={icon}
-        wallet={activeWallet}
-        config={config}
         onApprove={connect}
+        onReject={() => window?.close()}
       />
     );
   }
 
-  function createSignature(message) {
-    const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
-    return bs58.encode(nacl.sign.detached(message, secretKey));
-  }
-
-  function sendSignature(message) {
-    postMessage({
-      result: {
-        signature: createSignature(message),
-        publicKey: activeWallet.publicKey.toBase58(),
-      },
-      id: request.id,
-    });
-  }
-
-  function sendAllSignatures(messages) {
-    postMessage({
-      result: {
-        signatures: messages.map(m => createSignature(m)),
-        publicKey: activeWallet.publicKey.toBase58(),
-      },
-      id: request.id,
-    });
-  }
-
-  function onApprove() {
+  const onApprove = message => {
     popRequest();
-    switch (request.method) {
-      case 'signTransaction':
-      case 'sign':
-        sendSignature(messages[0]);
-        break;
-      case 'signAllTransactions':
-        sendAllSignatures(messages);
-        break;
-      default:
-        throw new Error('Unexpected method: ' + request.method);
-    }
-  }
+    postMessage(message);
+  };
 
-  function onReject() {
+  const onReject = () => {
     popRequest();
     postMessage({
       error: 'Transaction cancelled',
       id: request.id,
     });
+  };
+
+  if (request?.method === 'sign') {
+    return (
+      <SignMessagesForm
+        origin={origin}
+        name={name}
+        icon={icon}
+        request={request}
+        onApprove={onApprove}
+        onReject={onReject}
+      />
+    );
   }
 
-  if (autoApprove) {
-    onApprove();
-    return null;
+  if (request?.method === 'signTransaction') {
+    return (
+      <SignTransactionForm
+        origin={origin}
+        name={name}
+        icon={icon}
+        request={request}
+        onApprove={onApprove}
+        onReject={onReject}
+      />
+    );
   }
 
-  if (!request) {
-    return null;
+  if (request?.method === 'signAllTransactions') {
+    return (
+      <SignTransactionsForm
+        origin={origin}
+        name={name}
+        icon={icon}
+        request={request}
+        onApprove={onApprove}
+        onReject={onReject}
+      />
+    );
   }
 
-  return (
-    <ApproveSignatureForm
-      key={request.id}
-      activeWallet={activeWallet}
-      origin={origin}
-      name={name}
-      icon={icon}
-      request={request}
-      messages={messages}
-      config={config}
-      onApprove={onApprove}
-      onReject={onReject}
-    />
-  );
+  return <GlobalSkeleton type="Generic" />;
 };
 
-export default AdapterDetailPage;
+export default AdapterDetail;

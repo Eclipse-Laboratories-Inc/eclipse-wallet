@@ -1,8 +1,8 @@
 import OnboardingSection from '../pages/Onboarding';
 import WalletPage from '../pages/Wallet/WalletPage';
 import WelcomePage from '../pages/Welcome/WelcomePage';
+import AdapterPage from '../pages/Adapter/AdapterPage';
 import TokenSection from '../pages/Token';
-import AdapterSection from '../pages/Adapter';
 import { getRoutesWithParent } from './utils';
 
 export const ROUTES_MAP = {
@@ -46,9 +46,9 @@ const routes = [
   {
     key: ROUTES_MAP.ADAPTER,
     name: 'adapter',
-    path: 'adapter/*',
+    path: 'adapter',
     route: '/adapter',
-    Component: AdapterSection,
+    Component: AdapterPage,
   },
 ];
 
@@ -61,10 +61,6 @@ export const globalRoutes = [
   ...getRoutesWithParent(
     require('../pages/Token/routes').default,
     ROUTES_MAP.TOKEN,
-  ),
-  ...getRoutesWithParent(
-    require('../pages/Adapter/routes').default,
-    ROUTES_MAP.ADAPTER,
   ),
   ...require('../pages/Wallet/routes').default,
   ...require('../pages/Transactions/routes').default,

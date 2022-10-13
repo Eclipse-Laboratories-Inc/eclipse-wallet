@@ -7,17 +7,21 @@ const BasicCard = ({
   headerTitle,
   headerSubtitle,
   children,
+  contentStyle,
   actions,
+  ...props
 }) => (
-  <Card>
-    <Card.Title
-      title={headerTitle}
-      subtitle={headerSubtitle}
-      {...(headerIcon ? { left: () => headerIcon } : {})}
-      {...(headerAction ? { right: () => headerAction } : {})}
-    />
-    <Card.Content>{children}</Card.Content>
-    <Card.Actions>{actions && actions.map(action => action)}</Card.Actions>
+  <Card {...props}>
+    {(headerIcon || headerAction || headerTitle || headerSubtitle) && (
+      <Card.Title
+        title={headerTitle}
+        subtitle={headerSubtitle}
+        {...(headerIcon ? { left: () => headerIcon } : {})}
+        {...(headerAction ? { right: () => headerAction } : {})}
+      />
+    )}
+    <Card.Content style={contentStyle}>{children}</Card.Content>
+    {actions && <Card.Actions>{actions.map(action => action)}</Card.Actions>}
   </Card>
 );
 

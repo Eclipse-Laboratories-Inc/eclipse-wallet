@@ -1,16 +1,16 @@
-import React, { createContext, useEffect, useMemo, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
 import isNil from 'lodash/isNil';
 import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
-import { isExtension } from './utils/platform';
-import { getContext, getOpener } from './utils/runtime';
 import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
+import GlobalSkeleton from './component-library/Global/GlobalSkeleton';
 import GlobalError from './features/ErrorHandler/GlobalError';
 import useTranslations from './hooks/useTranslations';
 import useAddressbook from './hooks/useAddressbook';
+import useRuntime from './hooks/useRuntime';
 
 export const AppContext = createContext([]);
 
@@ -58,9 +58,16 @@ const AppProvider = ({ children }) => {
     languages,
     changeLanguage,
   } = useTranslations();
+  const { ready: runtimeReady, ...runtimeState } = useRuntime();
   const [appState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
-    if (walletReady && !appState.ready && translationsLoaded && addressReady) {
+    if (
+      walletReady &&
+      !appState.ready &&
+      translationsLoaded &&
+      addressReady &&
+      runtimeReady
+    ) {
       splash.hide();
       dispatch({
         type: ACTIONS.INITIATE_DONE,
@@ -73,6 +80,7 @@ const AppProvider = ({ children }) => {
     appState.ready,
     translationsLoaded,
     addressReady,
+    runtimeReady,
   ]);
   const logout = async () => {
     await walletActions.removeAllWallets();
@@ -99,8 +107,6 @@ const AppProvider = ({ children }) => {
       walletActions.lockWallets();
     }
   };
-  const context = useMemo(() => getContext(), []);
-  const isAdapter = context.has('origin') && (isExtension() || !!getOpener());
 
   return (
     <AppContext.Provider
@@ -109,14 +115,18 @@ const AppProvider = ({ children }) => {
           ...appState,
           ...walletState,
           ...addressBookState,
+          ...runtimeState,
           languages,
           selectedLanguage,
-          isAdapter,
-          context,
         },
         appActions,
       ]}>
       <GlobalError>
+        {!appState.ready && !walletState.locked && (
+          <ThemeProvider>
+            <GlobalSkeleton type="Generic" />
+          </ThemeProvider>
+        )}
         {appState.ready && !walletState.locked && (
           <RoutesProvider>
             <ThemeProvider>

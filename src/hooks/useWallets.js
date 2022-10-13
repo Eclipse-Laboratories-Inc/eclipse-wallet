@@ -311,18 +311,14 @@ const useWallets = () => {
     });
     setConfig(_config);
   };
-  const addTrustedApp = async (
-    address,
-    domain,
-    { name, icon, autoApprove = false } = {},
-  ) => {
+  const addTrustedApp = async (address, domain, { name, icon } = {}) => {
     const _config = {
       ...config,
       [address]: {
         ...get(config, address, {}),
         trustedApps: {
           ...get(config, `${address}.trustedApps`, {}),
-          [domain]: { name, icon, autoApprove },
+          [domain]: { name, icon },
         },
       },
     };

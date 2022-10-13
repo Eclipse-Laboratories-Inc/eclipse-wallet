@@ -13,10 +13,10 @@ const STORAGE_KEYS = {
 export const withTranslation = withTranslationHOC;
 
 const useTranslations = () => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(i18n.isInitialized);
   const [selected, setSelected] = useState();
   useEffect(() => {
-    if (!i18n.isInitialized) {
+    if (!loaded) {
       storage.getItem(STORAGE_KEYS.LANGUAGE).then(language => {
         i18n
           .init({
@@ -34,7 +34,7 @@ const useTranslations = () => {
           });
       });
     }
-  }, []);
+  }, [loaded]);
   const changeLanguage = async lng => {
     await storage.setItem(STORAGE_KEYS.LANGUAGE, lng);
     setSelected(lng);

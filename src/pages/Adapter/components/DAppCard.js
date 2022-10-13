@@ -7,7 +7,7 @@ import GlobalText from '../../../component-library/Global/GlobalText';
 import theme from '../../../component-library/Global/theme';
 
 const styles = StyleSheet.create({
-  row: {
+  container: {
     flexDirection: 'column',
     alignItems: 'center',
     alignSelf: 'center',
@@ -19,14 +19,12 @@ const styles = StyleSheet.create({
 });
 
 export const DAppCard = ({ name, icon, origin }) => (
-  <>
-    <View style={styles.row}>
-      <GlobalImage source={icon} size="md" style={styles.icon} />
-      <GlobalText type="headline3" color="secondary">
-        {name}
-      </GlobalText>
-      <GlobalPadding sm="sm" />
-      <GlobalText color="secondary">{origin}</GlobalText>
-    </View>
-  </>
+  <View style={styles.container}>
+    <GlobalImage source={icon} size="md" style={styles.icon} />
+    <GlobalText type="headline3" color="secondary">
+      {name}
+    </GlobalText>
+    <GlobalPadding sm="sm" />
+    <GlobalText color="secondary">{origin}</GlobalText>
+  </View>
 );

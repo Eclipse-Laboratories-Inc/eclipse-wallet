@@ -37,6 +37,8 @@
     "save": "Save",
     "remove": "Yes, remove",
     "remove_all": "Yes, remove all",
+    "confirm": "Confirm",
+    "confirm_anyway": "Confirm Anyway",
     "accept": "Accept",
     "cancel": "Cancel",
     "done": "Done",
@@ -220,26 +222,24 @@
       "connection": {
         "title": "Allow this site to connect?",
         "advice": "Only connect with sites you trust.",
-        "advice2": "Nevertheless, your approval will be requested to complete any transaction.",
-        "auto_approve": "Automatically approve transactions",
-        "disclaimer": "Use at your own risk",
-        "warning": "This setting allows sending some transactions on your behalf without requesting your permission for the remainder of this session",
-        "agree": "I understand"
+        "advice2": "Nevertheless, your approval will be requested to complete any transaction."
       },
       "banner": {
         "message": "Please keep this window open in the background"
       },
-      "signature": {
-        "sign": "Sign message",
-        "signTransaction": "Sign transaction",
-        "signAllTransactions": "Sign all transactions",
-        "fee": "Fee",
-        "instructions": "Instructions",
-        "program": "Program",
-        "account": "Account {{number}}",
-        "data": "Data",
-        "simulation": "Simulation",
-        "advice": "Make sure you trust the application that is requesting this and you understand what it means."
+      "message": {
+        "title": "Sign message"
+      },
+      "transaction": {
+        "title": "Transaction Simulation",
+        "retry": "Retry Simulation",
+        "verified_by": "Verified by",
+        "unsafe": "Unsafe transaction",
+        "warning": "Transaction could not be verified. You can try again or proceed without verification.",
+        "caution": "Salmon believes this transaction is malicious and unsafe to sign. We recommend not to proceed with it as it may result in fund loss.",
+        "detail": "Detail",
+        "fee": "Network Fee",
+        "proceed_anyway": "I understand the risk, proceed anyway"
       }
     }
   },

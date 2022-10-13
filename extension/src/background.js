@@ -39,8 +39,7 @@ const getConnection = (origin, { wallets, active }) => {
   if (!trustedApp) {
     return null;
   }
-  const { autoApprove } = trustedApp;
-  return { address, autoApprove };
+  return { address };
 };
 
 const handleConnect = (message, sender, sendResponse) => {
@@ -51,7 +50,6 @@ const handleConnect = (message, sender, sendResponse) => {
         method: 'connected',
         params: {
           publicKey: connection.address,
-          autoApprove: connection.autoApprove,
         },
         id: message.data.id,
       });

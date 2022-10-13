@@ -11,17 +11,20 @@ const BasicCard = ({
   headerSubtitle,
   children,
   actions,
+  contentStyle,
   ...props
 }) => (
   <MUICard {...props}>
-    <CardHeader
-      {...(headerIcon ? { avatar: headerIcon } : {})}
-      {...(headerAction ? { action: headerAction } : {})}
-      title={headerTitle}
-      subheader={headerSubtitle}
-    />
-    <CardContent>{children}</CardContent>
-    <CardActions>{actions && actions.map(action => action)}</CardActions>
+    {(headerIcon || headerAction || headerTitle || headerSubtitle) && (
+      <CardHeader
+        {...(headerIcon ? { avatar: headerIcon } : {})}
+        {...(headerAction ? { action: headerAction } : {})}
+        title={headerTitle}
+        subheader={headerSubtitle}
+      />
+    )}
+    <CardContent style={contentStyle}>{children}</CardContent>
+    {actions && <CardActions>{actions.map(action => action)}</CardActions>}
   </MUICard>
 );
 
