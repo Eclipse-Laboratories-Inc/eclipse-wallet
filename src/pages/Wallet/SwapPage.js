@@ -265,7 +265,7 @@ const SwapPage = ({ t }) => {
         `Transaction ${e.detail.name} with id: ${e.detail.id} failed`,
       );
     });
-  });
+  }, [currentTransaction, totalTransactions]);
 
   useEffect(() => {
     if (activeWallet) {
