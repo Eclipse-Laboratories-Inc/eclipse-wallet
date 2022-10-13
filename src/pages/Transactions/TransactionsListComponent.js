@@ -175,12 +175,14 @@ const TransactionsListComponent = ({ t }) => {
               return (
                 <CardButtonTransaction
                   transaction="swap"
-                  tokenImg1={transaction.tokenLogoIn}
-                  tokenImg2={transaction.tokenLogoOut}
+                  tokenImg1={!transaction.error && transaction.tokenLogoIn}
+                  tokenImg2={!transaction.error && transaction.tokenLogoOut}
                   tokenNames={
-                    transaction.tokenNameIn && transaction.tokenNameOut
+                    !transaction.error &&
+                    transaction.tokenNameIn &&
+                    transaction.tokenNameOut
                       ? `${transaction.tokenNameIn} → ${transaction.tokenNameOut}
-                      `
+                        `
                       : 'Unknown'
                   }
                   // percentage="+0000%"
