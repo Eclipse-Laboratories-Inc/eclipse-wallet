@@ -430,16 +430,8 @@ const SwapPage = ({ t }) => {
                   {showValue(inAmount * inToken.usdPrice, 6)} {t('general.usd')}
                 </GlobalText>
 
-                <GlobalPadding size="xs" />
-
-                <View style={globalStyles.centered}>
-                  <GlobalImage source={IconSwapAccent1} size="md" />
-                </View>
-
-                <GlobalPadding size="xs" />
-
+                <GlobalPadding size="md" />
                 <GlobalText type="body2">{t('swap.you_receive')}</GlobalText>
-
                 <GlobalPadding size="xs" />
 
                 <InputWithTokenSelector
@@ -481,9 +473,8 @@ const SwapPage = ({ t }) => {
       {step === 2 && (
         <>
           <GlobalLayout.Header>
-            <GlobalBackTitle title={t('swap.swap_tokens')} />
+            <GlobalBackTitle title={t('swap.swap_preview')} />
             <GlobalPadding />
-            <GlobalPadding size="xl" />
             <BigDetailItem
               title={t('swap.you_send')}
               value={`${get(quote, 'uiInfo.in.uiAmount')} ${get(
@@ -498,7 +489,7 @@ const SwapPage = ({ t }) => {
                 'uiInfo.out.symbol',
               )}`}
             />
-            <GlobalPadding size="4xl" />
+            <GlobalPadding size="2xl" />
             {quote?.route?.marketInfos && (
               <RouteDetailItem
                 names={routesNames}

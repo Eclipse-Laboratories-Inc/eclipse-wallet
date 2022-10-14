@@ -231,10 +231,10 @@
   "swap": {
     "swap": "Swap",
     "swap_tokens": "Swap Tokens",
+    "swap_preview": "Confirmar Swap",
     "you_send": "Pagas",
     "enter_amount": "Ingresa un monto",
     "you_receive": "Recibes",
-    "best_route": "Mejor Ruta",
     "quote": "Cotizar",
     "best_route": "Mejor Ruta",
     "refresh_quote": "Refrescar Cotización",

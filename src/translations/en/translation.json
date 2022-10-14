@@ -263,6 +263,7 @@
   "swap": {
     "swap": "Swap",
     "swap_tokens": "Swap Tokens",
+    "swap_preview": "Swap Preview",
     "you_send": "You Send",
     "enter_amount": "Enter an amount",
     "you_receive": "You Receive",

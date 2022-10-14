@@ -352,7 +352,7 @@ const TokenSendPage = ({ params, t }) => {
                 title={`${t('token.action.send')} ${token.symbol}`}
                 nospace
               />
-              <GlobalPadding size="4xl" />
+              <GlobalPadding size="2xl" />
 
               <View style={globalStyles.centered}>
                 <GlobalImage
