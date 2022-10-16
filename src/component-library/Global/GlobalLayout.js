@@ -100,12 +100,7 @@ const GlobalLayout = ({
     </>
   );
 
-  return (
-    <>
-      {fullscreen && <GlobalBackgroundImage>{inner}</GlobalBackgroundImage>}
-      {!fullscreen && inner}
-    </>
-  );
+  return <GlobalBackgroundImage>{inner}</GlobalBackgroundImage>;
 };
 
 const Header = ({ centered, children }) => (
