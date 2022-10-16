@@ -44,9 +44,13 @@ const WelcomePage = ({ t }) => {
       title: t('wallet.onboarding.title3'),
       content: (
         <TouchableOpacity style={globalStyles.inline} onPress={goToTwitter}>
-          {t('wallet.onboarding.content3')}
+          <GlobalText type="body1">
+            {t('wallet.onboarding.content3')}
+          </GlobalText>
           <View style={{ color: theme.colors.labelSecondary }}>
-            {t('wallet.onboarding.content3b')}
+            <GlobalText type="body1">
+              {t('wallet.onboarding.content3b')}
+            </GlobalText>
           </View>
         </TouchableOpacity>
       ),
