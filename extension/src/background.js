@@ -30,6 +30,9 @@ const getConnection = (origin, { wallets, active }) => {
   if (!json.wallets || active < 0 || active >= json.wallets.length) {
     return null;
   }
+  if (json.passwordRequired) {
+    return null;
+  }
   const wallet = json.wallets[active];
   if (wallet.chain !== 'SOLANA') {
     return null;
