@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 export const DAppCard = ({ name, icon, origin }) => (
   <View style={styles.container}>
     <GlobalImage source={icon} size="md" style={styles.icon} />
-    <GlobalText type="headline3" color="secondary">
+    <GlobalText type="headline3" color="secondary" center>
       {name}
     </GlobalText>
     <GlobalPadding sm="sm" />
