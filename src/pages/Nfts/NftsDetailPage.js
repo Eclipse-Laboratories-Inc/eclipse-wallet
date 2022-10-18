@@ -73,6 +73,10 @@ const NftsDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_SEND, { id: params.id });
   };
 
+  const goToSell = () => {
+    navigate(ROUTES_MAP.NFTS_SELL, { id: params.id });
+  };
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.renderItemStyle}>
@@ -122,6 +126,15 @@ const NftsDetailPage = ({ params, t }) => {
               wideSmall
               title={t('nft.send_nft')}
               onPress={goToSend}
+            />
+
+            <GlobalPadding size="md" />
+
+            <GlobalButton
+              type="secondary"
+              wideSmall
+              title={t('nft.sell_nft')}
+              onPress={goToSell}
             />
 
             {/*

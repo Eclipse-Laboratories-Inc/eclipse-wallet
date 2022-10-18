@@ -99,6 +99,7 @@ export const TRANSACTION_STATUS = {
   WARNING: 'warning',
   CREATING: 'creating',
   SENDING: 'sending',
+  LISTING: 'listing',
   SWAPPING: 'swapping',
 };
 
@@ -128,6 +129,8 @@ export const getTransactionImage = transaction => {
     case 'sending':
       return IconTransactionSending;
     case 'swapping':
+      return IconTransactionSending;
+    case 'listing':
       return IconTransactionSending;
     default:
       return IconTransactionSent;

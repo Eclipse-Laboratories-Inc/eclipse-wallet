@@ -32,6 +32,8 @@ export const EVENTS_MAP = {
   NFT_SEND_COMPLETED: 'nft-send-completed',
   NFT_SEND_FAILED: 'nft-send-failed',
   NFT_SEND_CANCELLED: 'nft-send-cancelled',
+  NFT_LIST_COMPLETED: 'nft-list-completed',
+  NFT_LIST_FAILED: 'nft-list-failed',
   SWAP_QUOTE: 'swap-quote',
   SWAP_CONFIRMED: 'swap-confirmed',
   SWAP_COMPLETED: 'swap-compleeted',

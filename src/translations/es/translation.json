@@ -227,7 +227,13 @@
     "description": "Descripción",
     "properties": "Propiedades",
     "send_nft": "Enviar",
-    "send_to": "Enviar a:"
+    "sell_nft": "Vender",
+    "sell_price": "Precio de venta:",
+    "send_to": "Enviar a:",
+    "no_nft_found": "No se encontraron NFTs",
+    "marketplace_fee": "Marketplace Fee",
+    "marketplace_fee_perc": "1%",
+    "marketplace_name": "Hyperspace"
   },
   "swap": {
     "swap": "Swap",
