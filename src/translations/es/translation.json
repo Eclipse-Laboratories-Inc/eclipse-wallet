@@ -7,7 +7,7 @@
     "to": "Para",
     "name_or_address": "Nombre o Dirección \"{{token}}\"",
     "recipient_s_address": "Dirección \"{{token}}\" Destinatario",
-    "seed_phrase": "Secret Phrase",
+    "seed_phrase": "Seed-phrase",
     "balance": "Balance",
     "sending": "Enviando...",
     "sent": "¡Enviado!"
@@ -27,15 +27,15 @@
     "confirm_anyway": "Confirmar de todos modos",
     "accept": "Acepter",
     "cancel": "Cancelar",
-    "done": "Done",
+    "done": "Listo",
     "send": "Enviar",
     "receive": "Recibir",
     "view_all": "Ver Todo",
     "search_placeholder": "Buscar...",
-    "logout": "Cerrar Sesión",
+    "logout": "Cerrar sesión",
     "view_more": "Ver más",
     "continue": "Cotinuar",
-    "follow_us": "Siguenos"
+    "follow_us": "¡Síguenos!"
   },
   "settings": {
     "title": "Configuración",
@@ -52,28 +52,28 @@
       "my_wallets": "Mis Wallets",
       "add_new_wallet": "Agregar Wallet",
       "remove_wallet": "Remover Wallet",
-      "remove_all_wallets": "Remover Todas las Wallets",
-      "edit_wallet": "Edit Wallet",
-      "edit_name": "Edit Name",
+      "remove_all_wallets": "Remover todas las Wallets",
+      "edit_wallet": "Editar Wallet",
+      "edit_name": "Editar nombre",
       "edit_name_disclaimer": "Ten en cuenta que el nombre funciona únicamente para identificar tu wallet localmente. Esta información no se guarda en el blockchain.",
-      "edit_address": "Edit Wallet",
-      "tap_to_reveal": "Tap to Reveal",
-      "set_profile_picture": "Set Profile Picture",
-      "select_nft": "Select NFT",
-      "select_avatar": "Select Avatar",
-      "no_avatars_found": "No Avatars found",
-      "upload_photo": "Upload Photo",
-      "select_nft_to_profile": "Select NFT to Profile",
-      "select_avatar_to_profile": "Select Avatar to Profile",
-      "full_nft_description": "Full NFT Description",
-      "wallet_address": "Wallet info"
+      "edit_address": "Editar Wallet",
+      "tap_to_reveal": "Toca para ver",
+      "set_profile_picture": "Utilizar como imagen de perfil",
+      "select_nft": "Seleccionar NFT",
+      "select_avatar": "Seleccionar Avatar",
+      "no_avatars_found": "No se encontraron Avatars",
+      "upload_photo": "Selccionar foto",
+      "select_nft_to_profile": "Seleccionar NFT como imagen de perfil",
+      "select_avatar_to_profile": "Seleccionar Avatar como imagen de perfil",
+      "full_nft_description": "Descripción completa",
+      "wallet_address": "Información de la Wallet"
     },
     "addressbook": {
-      "add": "Add Address",
-      "addnew": "Add New Address",
-      "edit": "Edit Address",
-      "save": "Save Address",
-      "label": "Label"
+      "add": "Agregar dirección",
+      "addnew": "Agregar nueva dirección",
+      "edit": "Editar dirección",
+      "save": "Guardar dirección",
+      "label": "Etiqueta"
     },
     "languages": {
       "title": "Idioma",
@@ -95,37 +95,37 @@
     },
     "send": {
       "address": {
-        "INVALID_ADDRESS": "La direccion destino no es valida",
-        "EMPTY_ACCOUNT": "La direccion destino esta vacia",
-        "NO_FUNDS": "La direccion destino no tiene fondos"
+        "INVALID_ADDRESS": "La dirección destino no es valida",
+        "EMPTY_ACCOUNT": "La dirección destino esta vacia",
+        "NO_FUNDS": "La dirección destino no tiene fondos"
       },
       "amount": {
         "insufficient": "El monto debe ser un numero menor a {{max}}",
-        "invalid": "The amount must be greater than 0"
+        "invalid": "El monto debe ser un mayor a 0"
       },
-      "next": "Next",
-      "validate": "Validate",
+      "next": "Siguiente",
+      "validate": "Validar",
       "from": "De: {{name}}",
-      "transaction_creating": "Creando Transacción...",
+      "transaction_creating": "Creando transacción...",
       "transaction_sending": "Enviando...",
-      "transaction_success": "Transacción Exitosa",
+      "transaction_success": "Transacción exitosa",
       "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
       "swap_step": "paso {{current}} de {{total}}",
       "transaction_fail": "Error",
       "goto_explorer": "Ir al Explorer",
-      "view_transaction": "Ver Transacción"
+      "view_transaction": "Ver transacción"
     }
   },
   "lock": {
     "title": "Ingrese su contraseña",
     "placeholder": "Ingrese su contraseña",
     "error": "La constraseña es incorrecta",
-    "forgot": "Olvide mi contraseña",
+    "forgot": "Olvidé mi contraseña",
     "forgotten": "Contraseña olvidada",
     "clear": "Limpiar wallets",
     "clear_confirm": "ENTENDIDO, DESCONECTAR TODO",
-    "forgot_content": "Salmon no almacena ningún tipo de información sobre tu cuenta. Esto incluye tu contraseña. Si la olvidaste, tendrás que desconectar todas tus billeteras. Ten en cuenta que para volver a conectarlas necesitarás tu seedphrase o private key.\n\nEstás seguro que deseas proceder?",
+    "forgot_content": "Salmon no almacena ningún tipo de información sobre tu cuenta. Esto incluye tu contraseña. Si la olvidaste, tendrás que desconectar todas tus Wallets. Ten en cuenta que para volver a conectarlas necesitarás tu seedphrase o private key.\n\nEstás seguro que deseas proceder?",
     "buttonChecking": "Validando...",
     "buttonUnlock": "Desbloquear"
   },
@@ -138,87 +138,87 @@
     "recover_wallet": "Recuperar Wallet",
     "select_token": "Seleccionar Token",
     "new_token": "Agregar token",
-    "is_coming_soon": "proximamente",
+    "is_coming_soon": "próximamente",
     "create": {
-      "messageTitle": "Keep your secret safe!",
-      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your secret phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
-      "your_seed_phrase": "Your Secret Phrase",
-      "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
-      "copy_key": "Copy Key",
-      "ive_backed_up_seed_phrase": "I´ve backed up secret phrase",
-      "confirm_seed_phrase": "Confirm Secret Phrase",
-      "confirm_seed_phrase_body": "Please re-enter the following words of the secret phrase to confirm that you have saved it.",
-      "enter_word_number": "Enter Word #",
-      "buttonPreparing": "Preparing...",
-      "enter_your_password": "Enter your password",
-      "passwords_dont_match": "Los passwords no coinciden",
-      "invalid_password": "Invalid Password",
-      "wrong_password": "Password must be between 8 and 20 characters",
-      "choose_a_password": "Choose a Password",
-      "choose_a_password_body": "You will need it to unlock your wallet",
-      "passwordNew": "New password",
-      "passwordRepeat": "Repeat password",
-      "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
-      "passwordChecking": "Checking...",
-      "success_message": "Felicitaciones!",
-      "success_message_body": "Tu billetera ya está lista.",
-      "go_to_my_wallet": "Ir a mi billetera!",
-      "select_derivable": "Select Derivable",
-      "derivable_accounts": "Derivable Accounts",
+      "messageTitle": "¡Guarda tu seed-phrase!",
+      "messageBody": "Necesitarás estas palabras para restaurar tu Wallet si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Wallet. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",
+      "your_seed_phrase": "Tu seed-phrase",
+      "your_seed_phrase_body": "Asegurate de guardar estas palabras en un lugar seguro. Ten en cuenta que el orden en el que aparecen es importante.",
+      "copy_key": "Copiar seed-phrase",
+      "ive_backed_up_seed_phrase": "He backupeado la seed-phrase",
+      "confirm_seed_phrase": "Confirmar seed-phrase",
+      "confirm_seed_phrase_body": "Por favor, re-ingresa las siguientes palabras para confirmar que las has guardado.",
+      "enter_word_number": "Palabra #",
+      "buttonPreparing": "Preparando...",
+      "enter_your_password": "Ingresa tu contraseña",
+      "passwords_dont_match": "Las contraseñas no coinciden",
+      "invalid_password": "Contraseña inválida",
+      "wrong_password": "La contraseña debe tener entre 8 y 20 caracteres",
+      "choose_a_password": "Elije una contraseña",
+      "choose_a_password_body": "La necesitarás para desbloquear tu Wallet",
+      "passwordNew": "Nueva contraseña",
+      "passwordRepeat": "Repetir contraseña",
+      "i_accept_terms_conditions": "Haciendo click en el botón de Crear Wallet \nI aceptas los Términos & Condiciones",
+      "passwordChecking": "Chequeando...",
+      "success_message": "¡Felicitaciones!",
+      "success_message_body": "Tu Wallet ya está lista.",
+      "go_to_my_wallet": "Ir a mi Wallet!",
+      "select_derivable": "Seleccionar derivables",
+      "derivable_accounts": "Cuentas derivables",
       "derivable_info_icon": "ⓘ  Qué es una cuenta derivable?",
       "derivable_info": "Qué es una cuenta derivable?",
-      "derivable_description": "Las Derivables son \"sub cuentas\" que nacen del mismo secret phrase. Usando criptografía, se combina la secret phrase con un patrón de derivación que genera estas diferentes cuentas. Permite así la generación de tantas cuentas como se quieran crear bajo la misma secret phrase.",
+      "derivable_description": "Las Derivables son \"sub cuentas\" que nacen del mismo seed-phrase. Usando criptografía, se combina la seed-phrase con un patrón de derivación que genera estas diferentes cuentas. Permite así la generación de tantas cuentas como se quieran crear bajo la misma seed-phrase.",
       "info_icon": "ⓘ",
-      "recover": "Recover",
+      "recover": "Recuperar",
       "skip": "Omitir"
     },
     "recover": {
-      "messageTitle": "Recover Existing Wallet",
-      "messageBody": "Recover your wallet using your 24 words secret phrase.",
-      "pasteSeed": "Paster your secret phrase",
-      "i_accept_terms_conditions": "By tapping the Recover Wallet button \nI accept the Terms & Conditions"
+      "messageTitle": "Recuperar Wallet existente",
+      "messageBody": "Recuperar tu Wallet usando tu seed-phrase de 12 o 24 palabras",
+      "pasteSeed": "Pegar seed-phrase",
+      "i_accept_terms_conditions": "Haciendo click en el botón de Recuperar Wallet \nI aceptas los Términos & Condiciones"
     },
     "onboarding": {
       "titleOnboarded": "Nueva Wallet",
-      "titleWelcome": "Welcome",
-      "select_blockchain": "Elegir Blockchain",
-      "select_blockchain_text": "Ten en cuenta que la billetera que estás por crear funcionara únicamente en esta blockchain.\nPodrás agregar wallets de otras blockchains más tarde."
+      "titleWelcome": "Bienvenidx",
+      "select_blockchain": "Seleccionar Blockchain",
+      "select_blockchain_text": "Ten en cuenta que la Wallet que estás por crear funcionará únicamente en este blockchain.\nPodrás agregar Wallets de otros blockchains más tarde."
     }
   },
   "adapter": {
     "select": {
-      "title": "Seleccione Billetera"
+      "title": "Selecciona Wallet"
     },
     "detail": {
       "connection": {
-        "title": "¿Permitir que este sitio acceda a su cuenta de Solana?",
-        "advice": "Conéctese sólo con sitios de confianza",
+        "title": "¿Permitir que este sitio acceda a tu cuenta?",
+        "advice": "Conéctate sólo con sitios de confianza",
         "advice2": "Sin embargo, se solicitará su aprobación para completar cualquier transacción."
       },
       "banner": {
-        "message": "Mantenga esta ventana abierta en segundo plano"
+        "message": "Mantén esta ventana abierta en segundo plano"
       },
       "message": {
         "title": "Firmar mensaje"
       },
       "transaction": {
         "title": "Simulación de transacción",
-        "retry": "Reintentar Simulación",
+        "retry": "Reintentar simulación",
         "verified_by": "Verificado por",
         "unsafe": "Transacción no segura",
-        "warning": "No se pudo verificar la transacción. Puede volver a intentarlo o continuar sin verificación.",
-        "caution": "Salmon cree que esta transacción es maliciosa e insegura para firmar. Recomendamos no continuar con él, ya que puede resultar en la pérdida de fondos.",
+        "warning": "No se pudo verificar la transacción. Puedes volver a intentarlo o continuar sin verificación.",
+        "caution": "Salmon cree que esta transacción es maliciosa e insegura de firmar. Recomendamos no continuar con la misma, ya que puede resultar en la pérdida de tus fondos.",
         "detail": "Detalle",
         "fee": "Tarifa de Red",
-        "proceed_anyway": "Comprendo el riesgo, proceda de todos modos"
+        "proceed_anyway": "Entiendo el riesgo, proceder de todos modos"
       }
     }
   },
   "transactions": {
     "your_transactions": "Transacciones",
-    "recent_activity": "Actividad Reciente",
-    "transaction_detail": "Detalle de la Transacción",
-    "view_transaction": "Ver Transacción",
+    "recent_activity": "Actividad reciente",
+    "transaction_detail": "Detalle de la transacción",
+    "view_transaction": "Ver transacción",
     "today": "Hoy",
     "yesterday": "Ayer",
     "empty": "No se encontraron transacciones"
@@ -233,12 +233,12 @@
     "swap": "Swap",
     "swap_tokens": "Swap Tokens",
     "swap_preview": "Confirmar Swap",
-    "you_send": "Pagas",
+    "you_send": "Envías",
     "enter_amount": "Ingresa un monto",
     "you_receive": "Recibes",
     "quote": "Cotizar",
-    "refresh_quote": "Refrescar Cotización",
-    "total_fee": "Fee total",
-    "go_to_explorer": "Go to Explorer"
+    "refresh_quote": "Refrescar cotización",
+    "total_fee": "Tarifa total",
+    "go_to_explorer": "Ir al Explorer"
   }
 }
