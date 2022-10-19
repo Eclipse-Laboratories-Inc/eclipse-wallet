@@ -7,7 +7,7 @@
     "to": "To",
     "name_or_address": "Name or \"{{token}}\" Address",
     "recipient_s_address": "Recipient´s \"{{token}}\" Address",
-    "seed_phrase": "Secret Phrase",
+    "seed_phrase": "Seed Phrase",
     "private_key": "Private Key",
     "balance": "Balance",
     "sending": "Sending...",
@@ -26,7 +26,7 @@
     }
   },
   "actions": {
-    "approve": "approve",
+    "approve": "Approve",
     "skip": "Skip",
     "next": "Next",
     "start": "Start",
@@ -38,13 +38,13 @@
     "remove": "Yes, remove",
     "remove_all": "Yes, remove all",
     "confirm": "Confirm",
-    "confirm_anyway": "Confirm Anyway",
+    "confirm_anyway": "Confirm anyway",
     "accept": "Accept",
     "cancel": "Cancel",
     "done": "Done",
     "send": "Send",
     "receive": "Receive",
-    "view_all": "View All",
+    "view_all": "View all",
     "search_placeholder": "Search...",
     "logout": "Logout",
     "view_more": "View more",
@@ -67,8 +67,8 @@
       "add_new_wallet": "Add New Wallet",
       "remove_wallet": "Remove Wallet",
       "remove_all_wallets": "Remove All Wallets",
-      "remove_all_wallets_description": "You're about to disconnect all your wallets. Keep in mind that you will need your secret phrases or private keys to connect them again.",
-      "remove_wallet_description": "You're about to remove this wallet. Keep in mind that, to use it again, you will need to re-select it from derivables, or use your secret phrase.",
+      "remove_all_wallets_description": "You're about to disconnect all your wallets. Keep in mind that you will need your seed phrases or private keys to connect them again.",
+      "remove_wallet_description": "You're about to remove this wallet. Keep in mind that, to use it again, you will need to re-select it from derivables, or use your seed phrase.",
       "edit_wallet": "Edit Wallet",
       "edit_name": "Edit Name",
       "edit_name_disclaimer": "Keep in mind that this name works locally for you to easily identify your wallet. None of this data is reflected on the blockchain.",
@@ -162,14 +162,14 @@
     "new_token": "Add custom token",
     "is_coming_soon": "is coming soon",
     "create": {
-      "messageTitle": "Keep your secret phrase safe!",
-      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your secret phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
-      "your_seed_phrase": "Your Secret Phrase",
+      "messageTitle": "Keep your seed phrase safe!",
+      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
+      "your_seed_phrase": "Your Seed Phrase",
       "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
-      "copy_key": "Copy Secret Phrase",
+      "copy_key": "Copy Seed Phrase",
       "ive_backed_up_seed_phrase": "I´ve backed up my phrase",
-      "confirm_seed_phrase": "Confirm Secret Phrase",
-      "confirm_seed_phrase_body": "Please re-enter the following words of the secret phrase to confirm that you have saved it.",
+      "confirm_seed_phrase": "Confirm Seed Phrase",
+      "confirm_seed_phrase_body": "Please re-enter the following words of the seed phrase to confirm that you have saved it.",
       "enter_word_number": "Enter Word #",
       "buttonPreparing": "Preparing...",
       "enter_your_password": "Enter your password",
@@ -189,15 +189,15 @@
       "derivable_accounts": "Derivable Accounts",
       "derivable_info_icon": "ⓘ  What is a derivable?",
       "derivable_info": "What is a derivable?",
-      "derivable_description": "Derivables are \"sub accounts\" that are born from the same secret phrase. Using cryptography, the secret phrase it combined with a derivation path to create these different accounts. It allows the generation of as many accounts as you wish to have under the same secret phrase.",
+      "derivable_description": "Derivables are \"sub accounts\" that are born from the same seed phrase. Using cryptography, the seed phrase it combined with a derivation path to create these different accounts. It allows the generation of as many accounts as you wish to have under the same seed phrase.",
       "info_icon": "ⓘ",
       "recover": "Recover",
       "skip": "Skip"
     },
     "recover": {
       "messageTitle": "Recover Existing Wallet",
-      "messageBody": "Recover your wallet using your 12/24 words secret phrase.",
-      "pasteSeed": "Paste your secret phrase",
+      "messageBody": "Recover your wallet using your 12/24 words seed phrase.",
+      "pasteSeed": "Paste your seed phrase",
       "i_accept_terms_conditions": "By tapping the Recover Wallet button \nI accept the Terms & Conditions"
     },
     "onboarding": {
@@ -225,7 +225,7 @@
         "advice2": "Nevertheless, your approval will be requested to complete any transaction."
       },
       "banner": {
-        "message": "Please keep this window open in the background"
+        "message": "Please, keep this window open in the background"
       },
       "message": {
         "title": "Sign message"
