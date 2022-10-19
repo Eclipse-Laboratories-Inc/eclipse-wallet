@@ -41,11 +41,18 @@ const styles = StyleSheet.create({
 const NftsDetailPage = ({ params, t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_DETAIL);
   const navigate = useNavigation();
-  const [loaded, setLoaded] = useState(false);
-  const [nftDetail, setNftDetail] = useState({});
   const [{ activeWallet, config }] = useContext(AppContext);
+  const [loaded, setLoaded] = useState(false);
+  const [listedLoaded, setListedLoaded] = useState(false);
+  const [nftDetail, setNftDetail] = useState({});
+  const [listedInfo, setListedInfo] = useState([]);
 
   useEffect(() => {
+    async function getListed() {
+      const listed = await activeWallet.getListedNfts();
+      setListedInfo(listed.find(l => l.token_address === params.id));
+      setListedLoaded(true);
+    }
     if (activeWallet) {
       cache(
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
@@ -56,10 +63,18 @@ const NftsDetailPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
+        getListed();
         setLoaded(true);
       });
     }
   }, [activeWallet, params.id]);
+
+  const getListBtnTitle = () =>
+    !listedLoaded
+      ? '...'
+      : listedInfo
+      ? t('nft.delist_nft')
+      : t('nft.sell_nft');
 
   const hasProperties = () => {
     return get(nftDetail, 'extras.attributes', []).length > 0;
@@ -73,8 +88,11 @@ const NftsDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_SEND, { id: params.id });
   };
 
-  const goToSell = () => {
-    navigate(ROUTES_MAP.NFTS_SELL, { id: params.id });
+  const goToListing = () => {
+    navigate(ROUTES_MAP.NFTS_LISTING, {
+      id: params.id,
+      type: listedInfo ? 'unlist' : 'list',
+    });
   };
 
   const renderItem = ({ item }) => {
@@ -133,8 +151,9 @@ const NftsDetailPage = ({ params, t }) => {
             <GlobalButton
               type="secondary"
               wideSmall
-              title={t('nft.sell_nft')}
-              onPress={goToSell}
+              title={getListBtnTitle()}
+              onPress={goToListing}
+              disabled={!listedLoaded}
             />
 
             {/*

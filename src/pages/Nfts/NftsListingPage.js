@@ -19,22 +19,17 @@ import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
 import CardButton from '../../component-library/CardButton/CardButton';
-import InputWithTokenSelector from '../../features/InputTokenSelector';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
-import IconCopy from '../../assets/images/IconCopy.png';
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
 import QRScan from '../../features/QRScan/QRScan';
-import clipboard from '../../utils/clipboard';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -61,32 +56,34 @@ const styles = StyleSheet.create({
   },
 });
 
-const NftsSellPage = ({ params, t }) => {
+const NftsListingPage = ({ params, t }) => {
   const navigate = useNavigation();
+  const isListed = params.type === 'unlist';
+
   const [loaded, setLoaded] = useState(false);
+  const [listedLoaded, setListedLoaded] = useState(false);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(isListed ? 2 : 1);
   const [nftDetail, setNftDetail] = useState({});
-  const [tokens, setTokens] = useState([]);
   const [transactionId, setTransactionId] = useState();
-  const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
   const [solBalance, setSolBalance] = useState(null);
   const [price, setPrice] = useState(null);
-  const [fee, setFee] = useState(null);
-  const [{ activeWallet, hiddenValue, config, addressBook }] =
-    useContext(AppContext);
-  const [validAddress, setValidAddress] = useState(false);
-  const [recipientAddress, setRecipientAddress] = useState('');
-  const [recipientName, setRecipientName] = useState('');
-  const [addressEmpty, setAddressEmpty] = useState(false);
-  const [showScan, setShowScan] = useState(false);
-  const [inputAddress, setInputAddress] = useState('');
+  const [fee, setFee] = useState(5000);
+  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   useEffect(() => {
+    async function getListed() {
+      const listed = await activeWallet.getListedNfts();
+      setPrice(
+        listed.find(l => l.token_address === params.id)?.market_place_state
+          ?.price || null,
+      );
+      setListedLoaded(true);
+    }
     if (activeWallet) {
       Promise.all([
         cache(
@@ -106,7 +103,7 @@ const NftsSellPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
-        setReady(true);
+        getListed();
         setLoaded(true);
       });
     }
@@ -117,15 +114,18 @@ const NftsSellPage = ({ params, t }) => {
     parseFloat(price) * 0.01 <= solBalance?.uiAmount && parseFloat(price) > 0;
 
   const goToBack = () => {
-    if (step === 1) {
+    if (step === 3) {
+      navigate(APP_ROUTES_MAP.WALLET);
+    } else if (step === 1) {
       navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
-    } else {
-      setStep(step - 1);
     }
+    setStep(step - 1);
   };
 
-  const onCancel = () =>
-    navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+  const onCancel = () => {
+    trackEvent(EVENTS_MAP.cancelled);
+    navigate(APP_ROUTES_MAP.WALLET);
+  };
 
   const onPreview = async () => {
     if (price) {
@@ -150,9 +150,14 @@ const NftsSellPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      const txId = await activeWallet.listUnlistNft(nftDetail.mint, price);
+      let txId;
+      isListed
+        ? (txId = await activeWallet.listUnlistNft(nftDetail.mint))
+        : (txId = await activeWallet.listUnlistNft(nftDetail.mint, price));
       setTransactionId(txId);
-      setStatus(TRANSACTION_STATUS.SENDING);
+      setStatus(
+        isListed ? TRANSACTION_STATUS.UNLISTING : TRANSACTION_STATUS.LISTING,
+      );
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_LIST_COMPLETED);
@@ -164,14 +169,6 @@ const NftsSellPage = ({ params, t }) => {
       setStep(3);
       setSending(false);
     }
-  };
-  const toggleScan = () => {
-    setShowScan(!showScan);
-  };
-  const onRead = qr => {
-    const data = qr;
-    setRecipientAddress(data.data);
-    setShowScan(false);
   };
 
   const openTransaction = async () => {
@@ -333,9 +330,6 @@ const NftsSellPage = ({ params, t }) => {
               touchableStyles={globalStyles.buttonTouchable}
             />
           </GlobalLayout.Footer>
-          {isNative() && (
-            <QRScan active={showScan} onClose={toggleScan} onRead={onRead} />
-          )}
         </>
       )}
 
@@ -404,7 +398,7 @@ const NftsSellPage = ({ params, t }) => {
 
               <View style={globalStyles.inlineWell}>
                 <GlobalText type="caption" color="tertiary">
-                  {t('nft.marketplace_fee')}
+                  {isListed ? t('nft.marketplace') : t('nft.marketplace_fee')}
                 </GlobalText>
                 <View>
                   <View
@@ -425,23 +419,25 @@ const NftsSellPage = ({ params, t }) => {
                       {t('nft.marketplace_name')}
                     </GlobalText>
                   </View>
-                  <GlobalText
-                    type="caption"
-                    color="tertiary"
-                    style={[
-                      globalStyles.alignEnd,
-                      {
-                        marginBottom: theme.gutters.paddingSM,
-                        // paddingVertical: theme.gutters.paddingXS,
-                        paddingHorizontal: theme.gutters.paddingSM,
-                      },
-                    ]}>
-                    {t('nft.marketplace_fee_perc')}
-                  </GlobalText>
+                  {!isListed && (
+                    <GlobalText
+                      type="caption"
+                      color="tertiary"
+                      style={[
+                        globalStyles.alignEnd,
+                        {
+                          marginBottom: theme.gutters.paddingSM,
+                          // paddingVertical: theme.gutters.paddingXS,
+                          paddingHorizontal: theme.gutters.paddingSM,
+                        },
+                      ]}>
+                      {t('nft.marketplace_fee_perc')}
+                    </GlobalText>
+                  )}
                 </View>
               </View>
 
-              {!fee && !addressEmpty && (
+              {fee && (
                 <View style={globalStyles.inlineWell}>
                   <GlobalText type="caption" color="tertiary">
                     {t('adapter.detail.transaction.fee')}
@@ -470,7 +466,7 @@ const NftsSellPage = ({ params, t }) => {
             />
 
             <GlobalButton
-              disabled={sending}
+              disabled={sending || !listedLoaded}
               type="primary"
               flex
               title={t(`general.confirm`)}
@@ -569,4 +565,4 @@ const NftsSellPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(NftsSellPage));
+export default withParams(withTranslation()(NftsListingPage));

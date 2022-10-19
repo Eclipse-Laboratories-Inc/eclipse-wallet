@@ -2,14 +2,14 @@ import NftsCollectionPage from './NftsCollectionPage';
 import NftsDetailPage from './NftsDetailPage';
 import NftsListPage from './NftsListPage';
 import NftsSendPage from './NftsSendPage';
-import NftsSellPage from './NftsSellPage';
+import NftsListingPage from './NftsListingPage';
 
 export const ROUTES_MAP = {
   NFTS_LIST: 'NFTS_LIST',
   NFTS_COLLECTION: 'NFTS_COLLECTION',
   NFTS_DETAIL: 'NFTS_DETAIL',
   NFTS_SEND: 'NFTS_SEND',
-  NFTS_SELL: 'NFTS_SELL',
+  NFTS_LISTING: 'NFTS_LISTING',
 };
 
 const routes = [
@@ -33,7 +33,7 @@ const routes = [
     key: ROUTES_MAP.NFTS_DETAIL,
     name: 'nftsDetail',
     path: ':id',
-    route: '/wallet/nfts/:id',
+    route: '/wallet/nfts/:id/',
     Component: NftsDetailPage,
     default: false,
   },
@@ -46,11 +46,11 @@ const routes = [
     default: false,
   },
   {
-    key: ROUTES_MAP.NFTS_SELL,
-    name: 'nftsSell',
-    path: ':id/sell',
-    route: '/wallet/nfts/:id/sell',
-    Component: NftsSellPage,
+    key: ROUTES_MAP.NFTS_LISTING,
+    name: 'nftsListing',
+    path: ':id/listing/:type',
+    route: '/wallet/nfts/:id/listing/:type',
+    Component: NftsListingPage,
     default: false,
   },
 ];
