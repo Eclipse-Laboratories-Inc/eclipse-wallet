@@ -19,6 +19,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
+import IconHyperspaceWhite from '../../assets/images/IconHyperspaceWhite.png';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -70,11 +71,29 @@ const NftsDetailPage = ({ params, t }) => {
   }, [activeWallet, params.id]);
 
   const getListBtnTitle = () =>
-    !listedLoaded
-      ? '...'
-      : listedInfo
-      ? t('nft.delist_nft')
-      : t('nft.sell_nft');
+    !listedLoaded ? (
+      '...'
+    ) : listedInfo ? (
+      <>
+        {t('nft.delist_nft')}
+        {'  '}
+        <GlobalImage
+          source={IconHyperspaceWhite}
+          size="xxs"
+          style={{ marginBottom: -2 }}
+        />
+      </>
+    ) : (
+      <>
+        {t('nft.list_nft')}
+        {'  '}
+        <GlobalImage
+          source={IconHyperspaceWhite}
+          size="xxs"
+          style={{ marginBottom: -2 }}
+        />
+      </>
+    );
 
   const hasProperties = () => {
     return get(nftDetail, 'extras.attributes', []).length > 0;
@@ -137,25 +156,28 @@ const NftsDetailPage = ({ params, t }) => {
               squircle
             />
 
-            <GlobalPadding size="xl" />
+            <GlobalPadding size="lg" />
 
-            <GlobalButton
-              type="primary"
-              wideSmall
-              title={t('nft.send_nft')}
-              onPress={goToSend}
-            />
+            <View style={globalStyles.inlineFlexButtons}>
+              <GlobalButton
+                type="primary"
+                flex
+                title={t('nft.send_nft')}
+                onPress={goToSend}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
 
-            <GlobalPadding size="md" />
-
-            <GlobalButton
-              type="secondary"
-              wideSmall
-              title={getListBtnTitle()}
-              onPress={goToListing}
-              disabled={!listedLoaded}
-            />
-
+              <GlobalButton
+                type="secondary"
+                flex
+                title={getListBtnTitle()}
+                onPress={goToListing}
+                disabled={!listedLoaded}
+                style={[globalStyles.button, globalStyles.buttonRight]}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
+            </View>
             {/*
             <View style={globalStyles.inlineFlexAround}>
               <GlobalText type="overline" color="tertiary">
@@ -174,7 +196,7 @@ const NftsDetailPage = ({ params, t }) => {
             */}
           </View>
 
-          <GlobalPadding size="2xl" />
+          <GlobalPadding size="lg" />
 
           <GlobalText type="body2">{t('nft.description')}</GlobalText>
 
