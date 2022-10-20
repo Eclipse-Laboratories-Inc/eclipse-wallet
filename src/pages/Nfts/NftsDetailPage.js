@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -17,9 +17,12 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
+import GlobalFloatingBadge from '../../component-library/Global/GlobalFloatingBadge';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
+import IconSolana from '../../assets/images/IconSolana.png';
 import IconHyperspaceWhite from '../../assets/images/IconHyperspaceWhite.png';
+import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -37,6 +40,20 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 'auto',
   },
+  imageContainer: {
+    flexGrow: 1,
+    width: '100%',
+  },
+  hyperspaceIcon: {
+    marginBottom: -3,
+    marginLeft: 4,
+  },
+  topPriceIcon: {
+    marginBottom: -3,
+    marginLeft: 2,
+    position: 'absolute',
+    right: 8,
+  },
 });
 
 const NftsDetailPage = ({ params, t }) => {
@@ -49,22 +66,19 @@ const NftsDetailPage = ({ params, t }) => {
   const [listedInfo, setListedInfo] = useState([]);
 
   useEffect(() => {
-    async function getListed() {
-      const listed = await activeWallet.getListedNfts();
-      setListedInfo(listed.find(l => l.token_address === params.id));
-      setListedLoaded(true);
-    }
     if (activeWallet) {
       cache(
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS_ALL,
         () => activeWallet.getAllNfts(),
-      ).then(nfts => {
+      ).then(async nfts => {
         const nft = nfts.find(n => n.mint === params.id);
         if (nft) {
           setNftDetail(nft);
         }
-        getListed();
+        const listed = await activeWallet.getListedNfts();
+        setListedInfo(listed.find(l => l.token_address === params.id));
+        setListedLoaded(true);
         setLoaded(true);
       });
     }
@@ -149,12 +163,43 @@ const NftsDetailPage = ({ params, t }) => {
 
           <View style={globalStyles.centered}>
             <GlobalPadding size="xs" />
-            <GlobalImage
-              source={getMediaRemoteUrl(nftDetail.media)}
-              style={styles.nftImage}
-              square
-              squircle
-            />
+
+            <View style={styles.imageContainer}>
+              <GlobalImage
+                source={getMediaRemoteUrl(nftDetail.media)}
+                style={styles.nftImage}
+                square
+                squircle
+              />
+              {listedInfo?.market_place_state?.price && (
+                <GlobalFloatingBadge
+                  {...{
+                    titleTopDetail: (
+                      <>
+                        <Text>{t('nft.listed_nft')}</Text>
+                        <GlobalImage
+                          source={IconHyperspace}
+                          circle
+                          size="xxs"
+                          style={styles.hyperspaceIcon}
+                        />
+                      </>
+                    ),
+                    titleTopPrice: (
+                      <>
+                        <Text>{listedInfo?.market_place_state?.price}</Text>
+                        <GlobalImage
+                          source={IconSolana}
+                          circle
+                          size="xxs"
+                          style={styles.topPriceIcon}
+                        />
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            </View>
 
             <GlobalPadding size="lg" />
 

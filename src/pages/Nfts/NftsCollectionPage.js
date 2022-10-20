@@ -20,6 +20,7 @@ const NftsCollectionPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsCollection, setNftsCollection] = useState([]);
+  const [listedInfo, setListedInfo] = useState([]);
   const [{ activeWallet, config }] = useContext(AppContext);
   useEffect(() => {
     if (activeWallet) {
@@ -27,11 +28,13 @@ const NftsCollectionPage = ({ params, t }) => {
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
-      ).then(nfts => {
+      ).then(async nfts => {
         const collection = nfts.find(n => n.collection === params.id);
         if (collection) {
           setNftsCollection(collection.items);
         }
+        const listed = await activeWallet.getListedNfts();
+        setListedInfo(listed);
         setLoaded(true);
       });
     }
@@ -55,7 +58,11 @@ const NftsCollectionPage = ({ params, t }) => {
               </GlobalText>
             }
           />
-          <GlobalNftList nonFungibleTokens={nftsCollection} onClick={onClick} />
+          <GlobalNftList
+            nonFungibleTokens={nftsCollection}
+            listedInfo={listedInfo}
+            onClick={onClick}
+          />
         </GlobalLayout.Header>
       </GlobalLayout>
     )) ||

@@ -1,13 +1,17 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 
+import { withTranslation } from '../../hooks/useTranslations';
 import theme from './theme';
 import GlobalImage from './GlobalImage';
+import GlobalText from './GlobalText';
 import GlobalFloatingBadge from './GlobalFloatingBadge';
 
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isCollection, isBlacklisted } from '../../utils/nfts';
 import Blacklisted from '../../assets/images/Blacklisted.jpeg';
+import IconSolana from '../../assets/images/IconSolana.png';
+import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 const styles = StyleSheet.create({
   image: {
@@ -15,30 +19,80 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgLight,
     borderRadius: theme.borderRadius.borderRadiusXL,
     overflow: 'hidden',
+    zIndex: 1,
   },
   touchable: {
     width: '100%',
     flexGrow: 1,
   },
+  nameContainer: {
+    backgroundColor: theme.colors.bgDarken,
+    borderRadius: theme.borderRadius.borderRadiusXL,
+    marginBottom: theme.gutters.paddingXXS,
+    marginTop: -36,
+    height: '70px',
+    zIndex: -1,
+  },
+  nftName: {
+    paddingTop: theme.gutters.padding2XL + 6,
+  },
 });
 
-const GlobalNft = ({ nft, onClick = () => {} }) => (
-  <TouchableOpacity onPress={() => onClick(nft)} style={styles.touchable}>
-    <View key={nft.url} style={styles.image}>
-      <GlobalImage
-        source={
-          isBlacklisted(nft)
-            ? Blacklisted
-            : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
-        }
-        size="block"
-      />
-      <GlobalFloatingBadge
-        {...(isCollection(nft)
-          ? { title: nft.collection, number: nft.length }
-          : { title: nft.name })}
-      />
+const GlobalNft = ({ nft, onClick = () => {}, t }) => (
+  <>
+    <TouchableOpacity onPress={() => onClick(nft)} style={styles.touchable}>
+      <View key={nft.url} style={styles.image}>
+        <GlobalFloatingBadge
+          {...{
+            titleTop: nft.marketInfo?.price && (
+              <>
+                <Text>{t('nft.listed_nft')}</Text>
+                <GlobalImage
+                  source={IconHyperspace}
+                  circle
+                  size="xxs"
+                  style={{ marginBottom: -3, marginLeft: 4 }}
+                />
+              </>
+            ),
+          }}
+        />
+        <GlobalImage
+          source={
+            isBlacklisted(nft)
+              ? Blacklisted
+              : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
+          }
+          size="block"
+        />
+        <GlobalFloatingBadge
+          {...(isCollection(nft)
+            ? { number: nft.length }
+            : {
+                title: nft.marketInfo?.price && (
+                  <>
+                    <Text>{nft.marketInfo?.price}</Text>
+                    <GlobalImage
+                      source={IconSolana}
+                      circle
+                      size="xxs"
+                      style={{ marginBottom: -3, marginLeft: 6 }}
+                    />
+                  </>
+                ),
+              })}
+        />
+      </View>
+    </TouchableOpacity>
+    <View style={styles.nameContainer}>
+      <GlobalText
+        style={styles.nftName}
+        center
+        type="caption"
+        numberOfLines={1}>
+        {isCollection(nft) ? nft.collection : nft.name || nft.symbol}
+      </GlobalText>
     </View>
-  </TouchableOpacity>
+  </>
 );
-export default GlobalNft;
+export default withTranslation()(GlobalNft);

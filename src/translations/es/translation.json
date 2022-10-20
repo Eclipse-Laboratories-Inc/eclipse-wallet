@@ -229,6 +229,7 @@
     "description": "Descripción",
     "properties": "Propiedades",
     "send_nft": "Enviar",
+    "listed_nft": "Listado",
     "list_nft": "Listar en",
     "delist_nft": "Deslistar de",
     "sell_price": "Precio de venta:",

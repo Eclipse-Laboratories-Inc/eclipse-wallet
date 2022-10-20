@@ -260,6 +260,7 @@
     "properties": "Properties",
     "send_nft": "Send",
     "preview_sell": "Preview",
+    "listed_nft": "Listed",
     "list_nft": "List on",
     "delist_nft": "Delist from",
     "sell_price": "Listing price:",

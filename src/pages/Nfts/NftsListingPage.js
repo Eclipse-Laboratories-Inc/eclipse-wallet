@@ -76,14 +76,6 @@ const NftsListingPage = ({ params, t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   useEffect(() => {
-    async function getListed() {
-      const listed = await activeWallet.getListedNfts();
-      setPrice(
-        listed.find(l => l.token_address === params.id)?.market_place_state
-          ?.price || null,
-      );
-      setListedLoaded(true);
-    }
     if (activeWallet) {
       Promise.all([
         cache(
@@ -96,14 +88,19 @@ const NftsListingPage = ({ params, t }) => {
           CACHE_TYPES.NFTS_ALL,
           () => activeWallet.getAllNfts(),
         ),
-      ]).then(([balance, nfts]) => {
+      ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.find(n => n.mint === params.id);
         setSolBalance(tks.length ? tks[0] : null);
         if (nft) {
           setNftDetail(nft);
         }
-        getListed();
+        const listed = await activeWallet.getListedNfts();
+        setPrice(
+          listed.find(l => l.token_address === params.id)?.market_place_state
+            ?.price || null,
+        );
+        setListedLoaded(true);
         setLoaded(true);
       });
     }
