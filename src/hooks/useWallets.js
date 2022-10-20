@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import stash from '../utils/stash';
 import storage from '../utils/storage';
 import isNil from 'lodash/isNil';
 import get from 'lodash/get';
@@ -61,7 +62,7 @@ const useWallets = () => {
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState({});
-  const waitUntilUnlock = async w => {
+  const waitUntilUnlock = w => {
     setRequiredLock(true);
     setLocked(true);
     setWallets(w);
@@ -75,7 +76,8 @@ const useWallets = () => {
       return false;
     }
   };
-  const unlockWallets = async password => {
+
+  const unlockWalletsAt = useCallback(async (password, endpoints) => {
     try {
       const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
       const unlockedWallets = await unlock(storedWallets.wallets, password);
@@ -88,7 +90,7 @@ const useWallets = () => {
           const account = await getWalletAccount(
             activeIndex,
             unlockedWallets,
-            selectedEndpoints,
+            endpoints,
           );
           setActiveWallet(account);
         } catch (error) {
@@ -102,7 +104,19 @@ const useWallets = () => {
       console.log(error);
       return false;
     }
-  };
+  }, []);
+
+  const unlockWallets = useCallback(
+    async password => {
+      const result = await unlockWalletsAt(password, selectedEndpoints);
+      if (result === true) {
+        await stash.setItem('password', password);
+      }
+      return result;
+    },
+    [unlockWalletsAt, selectedEndpoints],
+  );
+
   const lockWallets = async () => {
     setLocked(true);
   };
@@ -136,7 +150,14 @@ const useWallets = () => {
             }
           }
         } else {
-          waitUntilUnlock(storedWallets.wallets);
+          let result = false;
+          const password = await stash.getItem('password');
+          if (password) {
+            result = await unlockWalletsAt(password, activeEndpoints);
+          }
+          if (!result) {
+            waitUntilUnlock(storedWallets.wallets);
+          }
         }
         setReady(true);
       } else {
@@ -144,7 +165,7 @@ const useWallets = () => {
         setReady(true);
       }
     });
-  }, []);
+  }, [unlockWalletsAt]);
 
   const getRandomAvatar = () => {
     const rnd = Math.floor(Math.random() * 24) + 1;
@@ -190,6 +211,7 @@ const useWallets = () => {
         wallets: encryptedWallets,
       });
       setRequiredLock(true);
+      await stash.setItem('password', password);
     } else {
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: false,

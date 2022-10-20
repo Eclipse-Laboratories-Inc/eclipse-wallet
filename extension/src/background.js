@@ -1,5 +1,6 @@
 /* global chrome */
 const responseHandlers = new Map();
+const stashedValues = new Map();
 
 const launchPopup = (message, sender, sendResponse) => {
   const searchParams = new URLSearchParams();
@@ -66,7 +67,24 @@ const handleDisconnect = (message, sender, sendResponse) => {
   sendResponse({ method: 'disconnected', id: message.data.id });
 };
 
+const handleStashOperation = (message, sender, sendResponse) => {
+  if (message.data.method === 'get') {
+    sendResponse(stashedValues.get(message.data.key));
+    return true;
+  } else if (message.data.method === 'set') {
+    stashedValues.set(message.data.key, message.data.value);
+  } else if (message.data.method === 'delete') {
+    stashedValues.delete(message.data.key);
+  } else if (message.data.method === 'clear') {
+    stashedValues.clear();
+  }
+};
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (sender.id !== chrome.runtime.id) {
+    return;
+  }
+
   if (message.channel === 'salmon_contentscript_background_channel') {
     if (message.data.method === 'connect') {
       handleConnect(message, sender, sendResponse);
@@ -81,5 +99,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const responseHandler = responseHandlers.get(message.data.id);
     responseHandlers.delete(message.data.id);
     responseHandler(message.data);
+  } else if (message.channel === 'sollet_extension_stash_channel') {
+    handleStashOperation(message, sender, sendResponse);
   }
 });
