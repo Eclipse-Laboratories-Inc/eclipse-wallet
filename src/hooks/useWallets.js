@@ -119,6 +119,7 @@ const useWallets = () => {
 
   const lockWallets = async () => {
     setLocked(true);
+    await stash.removeItem('password');
   };
 
   useEffect(() => {
