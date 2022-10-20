@@ -13,6 +13,7 @@ import { ActiveWalletCard } from './ActiveWalletCard';
 import { DAppCard } from './DAppCard';
 import VerifiedByBlowfish from './VerifiedByBlowfish';
 import { withTranslation } from '../../../hooks/useTranslations';
+import GlobalAlert from '../../../component-library/Global/GlobalAlert';
 
 const styles = StyleSheet.create({
   detail: {
@@ -32,12 +33,10 @@ const styles = StyleSheet.create({
 
 const Warning = ({ severity, kind, message }) => (
   <>
-    <GlobalText
-      {...(severity === 'CRITICAL' ? { color: 'negativeLight' } : {})}
-      {...(severity === 'WARNING' ? { color: 'warningBright' } : {})}
-      center>
-      {message}
-    </GlobalText>
+    <GlobalAlert
+      text={message}
+      type={severity === 'CRITICAL' ? 'error' : 'warning'}
+    />
     <GlobalPadding size="sm" />
   </>
 );
@@ -84,19 +83,14 @@ const StateChange = ({
     <BasicCard style={styles.cardContainer} contentStyle={styles.cardContent}>
       <View>
         <GlobalText
-          type="caption"
-          nospace
-          color="secondary"
-          {...(suggestedColor === 'CREDIT' ? { color: 'positive' } : {})}
-          {...(suggestedColor === 'DEBIT' ? { color: 'negative' } : {})}>
-          {humanReadableDiff}
-        </GlobalText>
-        <GlobalText
-          type="headline3"
+          type="subtitle1"
           nospace
           {...(data?.diff?.sign === 'PLUS' ? { color: 'positive' } : {})}
-          {...(data?.diff?.sign === 'MINUS' ? { color: 'negative' } : {})}>
+          {...(data?.diff?.sign === 'MINUS' ? { color: 'negativeLight' } : {})}>
           {value}
+        </GlobalText>
+        <GlobalText type="caption" nospace color="primary">
+          {humanReadableDiff}
         </GlobalText>
       </View>
     </BasicCard>
@@ -122,9 +116,11 @@ const SimulatedTransactions = ({
     </GlobalLayout.Header>
     <GlobalLayout.Inner>
       <ScrollView style={styles.detail}>
+        <GlobalPadding size="sm" />
         {simulation.warnings?.map((warning, i) => (
           <Warning key={`warn-${i}`} {...warning} />
         ))}
+        <GlobalPadding size="sm" />
         <GlobalText type="caption" uppercase>
           {t('adapter.detail.transaction.detail')}:
         </GlobalText>
@@ -144,9 +140,10 @@ const SimulatedTransactions = ({
           </View>
         </BasicCard>
       </ScrollView>
+      <GlobalPadding size="lg" />
+      <VerifiedByBlowfish />
     </GlobalLayout.Inner>
     <GlobalLayout.Footer>
-      <VerifiedByBlowfish />
       <View style={globalStyles.inlineFlexButtons}>
         <GlobalButton
           type="secondary"

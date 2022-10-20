@@ -24,7 +24,6 @@ export const DAppCard = ({ name, icon, origin }) => (
     <GlobalText type="headline3" color="secondary" center>
       {name}
     </GlobalText>
-    <GlobalPadding sm="sm" />
     <GlobalText color="secondary">{origin}</GlobalText>
   </View>
 );

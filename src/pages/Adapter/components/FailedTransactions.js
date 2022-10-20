@@ -5,7 +5,7 @@ import GlobalBackTitle from '../../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
-import GlobalText from '../../../component-library/Global/GlobalText';
+import GlobalAlert from '../../../component-library/Global/GlobalAlert';
 import { globalStyles } from '../../../component-library/Global/theme';
 
 import { ActiveWalletCard } from './ActiveWalletCard';
@@ -30,9 +30,7 @@ const FailedTransactions = ({
     <GlobalLayout.Inner>
       <DAppCard name={name} icon={icon} origin={origin} />
       <GlobalPadding size="xl" />
-      <GlobalText color="negativeLight" center>
-        {error.humanReadableError}
-      </GlobalText>
+      <GlobalAlert type="error" text={error.humanReadableError} />
       <GlobalPadding size="2xl" />
       <VerifiedByBlowfish />
     </GlobalLayout.Inner>

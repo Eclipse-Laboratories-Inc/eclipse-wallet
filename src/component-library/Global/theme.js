@@ -1,3 +1,4 @@
+import { rgbToHex } from '@mui/material';
 import { Platform, Dimensions, Appearance, StyleSheet } from 'react-native';
 
 const calculateResponsivePadding = () => {
@@ -150,9 +151,9 @@ const themes = {
     btnBrandDark: 'hsla(224, 19%, 27%, 1)',
     btnBrandLight: 'hsla(224, 18%, 49%, 1)',
 
-    positiveBright: 'hsla(105, 100%, 66%, 1)',
-    negativeBright: 'hsla(0, 100%, 55%, 1)',
-    warningBright: 'hsla(64, 100%, 50%, 1)',
+    positiveBright: 'rgba(124, 255, 81, 1)',
+    negativeBright: 'rgba(255, 25, 25, 1)',
+    warningBright: 'rgba(238, 255, 0, 1)',
 
     success: '#07b114',
     info: '#006EC5',
@@ -220,6 +221,18 @@ const themes = {
     info: '#006EC5',
     warning: '#ea772b',
     danger: '#dc3545',
+
+    alertSuccessBg: 'rgba(128, 255, 84, 0.2)',
+    alertSuccessBorder: 'rgba(128, 255, 84, 0.4)',
+    alertSuccessFont: 'rgba(128, 255, 84, 1)',
+
+    alertErrorBg: 'rgba(255,27,27, 0.2)',
+    alertErrorBorder: 'rgba(255,27,27, 0.4)',
+    alertErrorFont: 'rgba(252,252,252, 1)',
+
+    alertWarningBg: 'rgba(255,168,0, 0.2)',
+    alertWarningBorder: 'rgba(255,168,0, 0.4)',
+    alertWarningFont: 'rgba(255,168,0, 1)',
 
     niceSuccess: '#d1e7dd',
     niceSuccessText: '#0f5132',

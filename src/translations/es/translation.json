@@ -202,9 +202,9 @@
         "title": "Firmar mensaje"
       },
       "transaction": {
-        "title": "Simulación de transacción",
+        "title": "Revisión de transacción",
         "retry": "Reintentar Simulación",
-        "verified_by": "Verificado por",
+        "verified_by": "Transacción verificada por",
         "unsafe": "Transacción no segura",
         "warning": "No se pudo verificar la transacción. Puede volver a intentarlo o continuar sin verificación.",
         "caution": "Salmon cree que esta transacción es maliciosa e insegura para firmar. Recomendamos no continuar con él, ya que puede resultar en la pérdida de fondos.",

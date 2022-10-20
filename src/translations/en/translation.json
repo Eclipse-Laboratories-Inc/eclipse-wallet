@@ -231,9 +231,9 @@
         "title": "Sign message"
       },
       "transaction": {
-        "title": "Transaction Simulation",
+        "title": "Transaction Review",
         "retry": "Retry Simulation",
-        "verified_by": "Verified by",
+        "verified_by": "Transaction verified by",
         "unsafe": "Unsafe transaction",
         "warning": "Transaction could not be verified. You can try again or proceed without verification.",
         "caution": "Salmon believes this transaction is malicious and unsafe to sign. We recommend not to proceed with it as it may result in fund loss.",
