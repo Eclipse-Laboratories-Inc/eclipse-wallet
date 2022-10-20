@@ -123,6 +123,10 @@ const useWallets = () => {
   };
 
   useEffect(() => {
+    stash.setItem('active_at', new Date());
+  }, []);
+
+  useEffect(() => {
     Promise.all([
       storage.getItem(STORAGE_KEYS.WALLETS),
       storage.getItem(STORAGE_KEYS.ACTIVE),

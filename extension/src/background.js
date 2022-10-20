@@ -73,6 +73,9 @@ const handleStashOperation = (message, sender, sendResponse) => {
     return true;
   } else if (message.data.method === 'set') {
     stashedValues.set(message.data.key, message.data.value);
+    if (['password', 'active_at'].includes(message.data.key)) {
+      chrome.alarms.create('salmon_lock_alarm', { delayInMinutes: 5 });
+    }
   } else if (message.data.method === 'delete') {
     stashedValues.delete(message.data.key);
   } else if (message.data.method === 'clear') {
@@ -101,5 +104,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     responseHandler(message.data);
   } else if (message.channel === 'sollet_extension_stash_channel') {
     handleStashOperation(message, sender, sendResponse);
+  }
+});
+
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === 'salmon_lock_alarm') {
+    stashedValues.delete('password');
   }
 });
