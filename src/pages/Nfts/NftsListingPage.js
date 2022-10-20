@@ -500,8 +500,15 @@ const NftsListingPage = ({ params, t }) => {
               <GlobalPadding />
               {status !== 'creating' && (
                 <GlobalText
-                  type={status === 'sending' ? 'subtitle2' : 'headline2'}
-                  color={status === 'sending' && 'secondary'}
+                  type={
+                    status === 'listing' || status === 'unlisting'
+                      ? 'subtitle2'
+                      : 'headline2'
+                  }
+                  color={
+                    (status === 'listing' || status === 'unlisting') &&
+                    'secondary'
+                  }
                   center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
