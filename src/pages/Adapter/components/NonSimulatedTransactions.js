@@ -7,6 +7,7 @@ import GlobalImage from '../../../component-library/Global/GlobalImage';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import GlobalText from '../../../component-library/Global/GlobalText';
+import GlobalAlert from '../../../component-library/Global/GlobalAlert';
 import { globalStyles } from '../../../component-library/Global/theme';
 
 import { ActiveWalletCard } from './ActiveWalletCard';
@@ -39,9 +40,10 @@ const NonSimulatedTransactions = ({
     <GlobalLayout.Inner>
       <DAppCard name={name} icon={icon} origin={origin} />
       <GlobalPadding size="xl" />
-      <GlobalText color="negativeLight" center>
-        {t('adapter.detail.transaction.warning')}
-      </GlobalText>
+      <GlobalAlert
+        text={t('adapter.detail.transaction.warning')}
+        type="warning"
+      />
       <GlobalPadding size="2xl" />
       <View style={styles.retry}>
         <GlobalButton type="text" onPress={onRetry}>
