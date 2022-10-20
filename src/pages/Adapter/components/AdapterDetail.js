@@ -77,8 +77,14 @@ const AdapterDetail = () => {
     }
   }, [activeWallet, endpoint]);
 
-  const address = activeWallet.getReceiveAddress();
-  const trustedApp = get(config, `${address}.trustedApps.${origin}`);
+  const address = useMemo(
+    () => activeWallet.getReceiveAddress(),
+    [activeWallet],
+  );
+  const trustedApp = useMemo(
+    () => get(config, `${address}.trustedApps.${origin}`),
+    [config, address, origin],
+  );
 
   const [connected, setConnected] = useState(isExtension() && !!trustedApp);
   const [loading, setLoading] = useState(!connected);
@@ -144,7 +150,7 @@ const AdapterDetail = () => {
     return () => window.removeEventListener('message', messageHandler);
   }, [origin, opener, postMessage]);
 
-  const request = requests[0];
+  const request = useMemo(() => requests[0], [requests]);
   const popRequest = () => setRequests(reqs => reqs.slice(1));
 
   if (loading) {
@@ -166,9 +172,9 @@ const AdapterDetail = () => {
     (!isExtension() && !connected)
   ) {
     // Approve the parent page to connect to this wallet.
-    const connect = () => {
+    const connect = async () => {
       setConnected(true);
-      addTrustedApp(address, origin, { name, icon });
+      await addTrustedApp(address, origin, { name, icon });
 
       postMessage({
         method: 'connected',
