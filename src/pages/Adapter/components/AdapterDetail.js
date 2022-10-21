@@ -251,6 +251,10 @@ const AdapterDetail = () => {
     );
   }
 
+  if (isExtension() && requests.length === 0) {
+    window.close();
+  }
+
   return <GlobalSkeleton type="Generic" />;
 };
 
