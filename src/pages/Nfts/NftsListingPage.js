@@ -129,10 +129,11 @@ const NftsListingPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
+      console.log(activeWallet);
       let txId;
       isListed
-        ? (txId = await activeWallet.listUnlistNft(nftDetail.mint))
-        : (txId = await activeWallet.listUnlistNft(nftDetail.mint, price));
+        ? (txId = await activeWallet.unlistNft(nftDetail.mint))
+        : (txId = await activeWallet.listNft(nftDetail.mint, price));
       setTransactionId(txId);
       setStatus(
         isListed ? TRANSACTION_STATUS.UNLISTING : TRANSACTION_STATUS.LISTING,
@@ -506,7 +507,7 @@ const NftsListingPage = ({ params, t }) => {
                 <>
                   <GlobalPadding size="xs" />
                   <GlobalText type="body1" center>
-                    {t(`nft.success_message`)}
+                    {isListed ? t(`nft.success_unlist`) : t(`nft.success_list`)}
                   </GlobalText>
                   <GlobalPadding size="xxs" />
                   <View style={globalStyles.inlineCentered}>
