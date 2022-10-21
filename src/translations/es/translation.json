@@ -238,7 +238,9 @@
     "marketplace": "Marketplace",
     "marketplace_fee": "Marketplace Fee",
     "marketplace_fee_perc": "1%",
-    "marketplace_name": "Hyperspace"
+    "marketplace_name": "Hyperspace",
+    "success_message": "Su NFT ha sido listado en",
+    "goto_marketplace": "Ir al Marketplace"
   },
   "swap": {
     "swap": "Swap",

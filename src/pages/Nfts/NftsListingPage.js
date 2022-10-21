@@ -112,7 +112,7 @@ const NftsListingPage = ({ params, t }) => {
 
   const goToBack = () => {
     if (step === 3) {
-      navigate(APP_ROUTES_MAP.WALLET);
+      navigate(NFTS_ROUTES_MAP.NFTS_LIST);
     } else if (step === 1) {
       navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
     }
@@ -121,25 +121,7 @@ const NftsListingPage = ({ params, t }) => {
 
   const onCancel = () => {
     trackEvent(EVENTS_MAP.cancelled);
-    navigate(APP_ROUTES_MAP.WALLET);
-  };
-
-  const onPreview = async () => {
-    if (price) {
-      // setLoaded(false);
-      setStep(2);
-      // try {
-      //   const feeSend = await activeWallet.estimateTransferFee(
-      //     recipientAddress,
-      //     nftDetail.mint,
-      //     1,
-      //   );
-      //   setFee(feeSend);
-      //   setLoaded(true);
-      // } catch (e) {
-      //   console.log(e);
-      // }
-    }
+    navigate(NFTS_ROUTES_MAP.NFTS_LIST);
   };
 
   const onConfirm = async () => {
@@ -170,6 +152,16 @@ const NftsListingPage = ({ params, t }) => {
 
   const openTransaction = async () => {
     const url = `https://solscan.io/tx/${transactionId}`;
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
+
+  const openMarketplace = async () => {
+    const url = `https://hyperspace.xyz/account/${activeWallet.getReceiveAddress()}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -322,7 +314,7 @@ const NftsListingPage = ({ params, t }) => {
               flex
               disabled={!price || zeroAmount}
               title={t('nft.preview_sell')}
-              onPress={onPreview}
+              onPress={() => setStep(2)}
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
             />
@@ -510,20 +502,49 @@ const NftsListingPage = ({ params, t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {/* {(status === 'success' || status === 'fail') && (
+              {status === 'success' && (
+                <>
+                  <GlobalPadding size="xs" />
                   <GlobalText type="body1" center>
-                    3 lines max Excepteur sint occaecat cupidatat non proident,
-                    sunt ?
+                    {t(`nft.success_message`)}
                   </GlobalText>
-                )} */}
-
-              <GlobalPadding size="4xl" />
+                  <GlobalPadding size="xxs" />
+                  <View style={globalStyles.inlineCentered}>
+                    <GlobalImage
+                      style={[
+                        globalStyles.centeredSmall,
+                        { marginRight: theme.gutters.paddingXXS },
+                      ]}
+                      source={IconHyperspace}
+                      size="xs"
+                      circle
+                    />
+                    <GlobalText type="body2" center>
+                      {t(`nft.marketplace_name`)}
+                    </GlobalText>
+                  </View>
+                </>
+              )}
             </View>
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
             {status === 'success' || status === 'fail' ? (
               <>
+                {status === 'success' && (
+                  <>
+                    <GlobalButton
+                      type="primary"
+                      wide
+                      title={t(`nft.goto_marketplace`)}
+                      onPress={openMarketplace}
+                      style={globalStyles.button}
+                      touchableStyles={globalStyles.buttonTouchable}
+                    />
+                    <GlobalPadding size="md" />
+                  </>
+                )}
+
                 <GlobalButton
                   type="primary"
                   wide
