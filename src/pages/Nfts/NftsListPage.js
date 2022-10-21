@@ -25,6 +25,7 @@ const NftsListPage = ({ t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsGroup, setNftsGroup] = useState([]);
+  const [listedInfo, setListedInfo] = useState([]);
 
   const [{ activeWallet, config }] = useContext(AppContext);
   useEffect(() => {
@@ -33,8 +34,10 @@ const NftsListPage = ({ t }) => {
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
-      ).then(nfts => {
+      ).then(async nfts => {
         setNftsGroup(nfts);
+        const listed = await activeWallet.getListedNfts();
+        setListedInfo(listed);
         setLoaded(true);
       });
     }
@@ -61,7 +64,11 @@ const NftsListPage = ({ t }) => {
             <View style={globalStyles.centered}>
               <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
-            <GlobalNftList nonFungibleTokens={nftsGroup} onClick={onClick} />
+            <GlobalNftList
+              nonFungibleTokens={nftsGroup}
+              listedInfo={listedInfo}
+              onClick={onClick}
+            />
           </GlobalLayout.Header>
         )}
         {!loaded && <GlobalSkeleton type="NftListScreen" />}

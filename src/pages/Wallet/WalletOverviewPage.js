@@ -41,6 +41,7 @@ const WalletOverviewPage = ({ t }) => {
   const [tokenList, setTokenList] = useState(null);
   const [nftsList, setNftsList] = useState(null);
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
+  const [listedInfo, setListedInfo] = useState([]);
 
   //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
@@ -57,12 +58,14 @@ const WalletOverviewPage = ({ t }) => {
           CACHE_TYPES.NFTS,
           () => activeWallet.getAllNftsGrouped(),
         ),
-      ]).then(([balance, nfts]) => {
+      ]).then(async ([balance, nfts]) => {
         setTotalBalance(balance);
         setTokenList(getListedTokens(balance));
         setNonListedTokenList(getNonListedTokens(balance, nfts));
         setNftsList(nfts);
         setLoading(false);
+        const listed = await activeWallet.getListedNfts();
+        setListedInfo(listed);
       });
     }
   }, [activeWallet, selectedEndpoints, reload]);
@@ -158,6 +161,7 @@ const WalletOverviewPage = ({ t }) => {
             isOpen>
             <GlobalNftList
               nonFungibleTokens={nftsList}
+              listedInfo={listedInfo}
               onClick={handleNftsClick}
               t={t}
             />
