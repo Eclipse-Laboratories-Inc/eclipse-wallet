@@ -17,7 +17,6 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
 
   const navigate = useNavigation();
   useEffect(() => {
-    console.log(activeWallet.getReceiveAddress());
     if (activeWallet) {
       cache(
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,

@@ -129,7 +129,6 @@ const NftsListingPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      console.log(activeWallet);
       let txId;
       isListed
         ? (txId = await activeWallet.unlistNft(nftDetail.mint))
