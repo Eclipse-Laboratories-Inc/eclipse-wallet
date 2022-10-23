@@ -7,6 +7,7 @@ export const CACHE_TYPES = {
   BALANCE: 'BALANCE',
   NFTS: 'NFTS',
   NFTS_ALL: 'NFTS_ALL',
+  SINGLE_NFT: 'SINGLE_NFT',
   TRANSACTIONS: 'TRANSACTIONS',
   TOKENS: 'TOKENS',
   AVAILABLE_TOKENS: 'AVAILABLE_TOKENS',
@@ -25,6 +26,11 @@ var CACHE = {
     value: [],
   },
   [CACHE_TYPES.NFTS_ALL]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.SINGLE_NFT]: {
     expires: null,
     key: '',
     value: [],

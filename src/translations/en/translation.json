@@ -264,6 +264,8 @@
     "list_nft": "List on",
     "delist_nft": "Delist from",
     "sell_price": "Listing price:",
+    "burn_nft": "Burn",
+    "burning": "Burning",
     "send_to": "Send to:",
     "no_nft_found": "No NFTs found",
     "marketplace": "Marketplace",

@@ -135,6 +135,8 @@ export const getTransactionImage = transaction => {
       return IconTransactionSending;
     case 'unlisting':
       return IconTransactionSending;
+    case 'burning':
+      return IconTransactionSending;
     default:
       return IconTransactionSent;
   }

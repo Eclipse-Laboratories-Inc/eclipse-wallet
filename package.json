@@ -3,7 +3,7 @@
   "version": "0.2.4",
   "private": true,
   "dependencies": {
-    "4m-wallet-adapter": "^0.0.76",
+    "4m-wallet-adapter": "^0.0.77",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.4",
@@ -84,7 +84,7 @@
     "url": "^0.11.0"
   },
   "scripts": {
-    "start:web": "PORT=3001 react-scripts start",
+    "start:web": "react-scripts start",
     "build": "react-scripts build",
     "build:extension:clean": "rm -rf build-extension && rm -rf build-extension-mozilla",
     "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && npm run build:extension-scripts && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
