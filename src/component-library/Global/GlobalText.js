@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     lineHeight: theme.lineHeight.lineHeightSM,
     color: theme.colors.labelPrimary,
     letterSpacing: 0.004,
+    fontFamily: theme.fonts.dmSansRegular,
   },
   overline: {
     fontSize: theme.fontSize.fontSizeXS,
