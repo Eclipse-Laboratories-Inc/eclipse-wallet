@@ -83,6 +83,13 @@
     "stream-http": "^3.2.0",
     "url": "^0.11.0"
   },
+  "overrides": {
+    "node-fetch": "^2.6.7",
+    "nth-check": "^2.0.1",
+    "minimatch": "^3.0.5",
+    "jpeg-js": "^0.4.4",
+    "cross-fetch": "^3.1.5"
+  },
   "scripts": {
     "start:web": "react-scripts start",
     "build": "react-scripts build",
