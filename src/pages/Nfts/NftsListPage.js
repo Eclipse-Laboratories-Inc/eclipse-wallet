@@ -15,6 +15,7 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalSlider from '../../component-library/Global/GlobalSlider';
 import Header from '../../component-library/Layout/Header';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -64,6 +65,7 @@ const NftsListPage = ({ t }) => {
             <View style={globalStyles.centered}>
               <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
+            <GlobalSlider />
             <GlobalNftList
               nonFungibleTokens={nftsGroup}
               listedInfo={listedInfo}
