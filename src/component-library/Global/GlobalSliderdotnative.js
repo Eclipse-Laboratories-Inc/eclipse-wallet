@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Dimensions, TouchableOpacity } from 'react-native';
-import { useKeenSliderNative } from 'keen-slider/react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View, Text, SafeAreaView, Dimensions } from 'react-native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+
 import theme, { globalStyles } from './theme';
 import GlobalText from './GlobalText';
+import GlobalCollapse from './GlobalCollapse';
 import GlobalImage from './GlobalImage';
 import GlobalButton from './GlobalButton';
 import GlobalPadding from './GlobalPadding';
@@ -14,9 +16,6 @@ const { width: windowWidth } = Dimensions.get('window');
 import AppIcon from '../../assets/images/AppIcon.png';
 
 const styles = StyleSheet.create({
-  sliderContainer: {
-    paddingBottom: 50,
-  },
   image: {
     marginRight: theme.gutters.paddingSM,
   },
@@ -33,48 +32,38 @@ const styles = StyleSheet.create({
     bottom: -20,
     backgroundColor: theme.colors.bgPrimary,
   },
-  dotsContainer: {
+  containerDots: {
+    position: 'absolute',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: theme.gutters.paddingSM,
-    flexDirection: 'row',
+    bottom: -50,
+  },
+  dot: {
+    width: 5,
+    height: 5,
+    backgroundColor: theme.colors.accentPrimary,
+    marginHorizontal: -10,
   },
   inactiveDot: {
-    border: 'none',
-    width: 10,
-    height: 10,
     backgroundColor: '#6e7d86',
-    borderRadius: '50%',
-    marginLeft: 5,
-    marginRight: 5,
-    cursor: 'pointer',
-  },
-  activeDot: {
-    border: 'none',
-    width: 10,
-    height: 10,
-    backgroundColor: theme.colors.accentPrimary,
-    borderRadius: '50%',
-    marginLeft: 5,
-    marginRight: 5,
-    cursor: 'pointer',
+    width: 5,
+    height: 5,
+    marginHorizontal: -10,
   },
 });
 
 const GlobalSlider = ({
-  // items,
-  // renderItem,
-  dots = true,
+  title,
+  titleTop,
+  titleTopDetail,
+  titleTopPrice,
+  number,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
   const [sliderHeight, setSliderHeight] = useState(294);
   const [isCollapseOpen, setIsCollapseOpen] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = 3;
-  const slider = useKeenSliderNative({ slides });
 
-  const sliderWidth = windowWidth - 28;
-
-  const [items] = useState([
+  const [sliderItems] = useState([
     {
       title: 'Item 1',
       text: 'Text 1',
@@ -89,6 +78,9 @@ const GlobalSlider = ({
     },
   ]);
 
+  const sliderRef = React.useRef(null);
+  const sliderWidth = windowWidth;
+
   const renderItem = ({ item, index }) => {
     return (
       <View
@@ -96,7 +88,6 @@ const GlobalSlider = ({
           backgroundColor: theme.colors.bgPrimary,
           borderRadius: theme.borderRadius.borderRadiusMD,
           height: sliderHeight,
-          width: sliderWidth,
           padding: theme.gutters.paddingSM,
         }}>
         <View style={globalStyles.inlineFlexButtons}>
@@ -144,37 +135,51 @@ const GlobalSlider = ({
     );
   };
 
+  const firstItemRef = useRef(null);
+  const lastItemRef = useRef(null);
+
+  const onRef = useCallback(
+    (ref, i) => {
+      if (ref) {
+        if (i === 0) {
+          firstItemRef.current = ref;
+        }
+        if (i === sliderItems.length - 1) {
+          lastItemRef.current = ref;
+        }
+      }
+    },
+    [sliderItems, firstItemRef, lastItemRef],
+  );
+
   const toggleCollapse = t => {
     setSliderHeight(isCollapseOpen ? 294 : 740);
     setIsCollapseOpen(!isCollapseOpen);
   };
 
   return (
-    <View style={styles.sliderContainer}>
-      <View style={{ height: sliderHeight }} {...slider.containerProps}>
-        {items?.map((item, index) => (
-          <View key={index} {...slider.slidesProps[index]}>
-            {renderItem(item, index)}
-          </View>
-        ))}
+    <SafeAreaView style={{ flex: 1, paddingBottom: 50 }}>
+      <View>
+        <Carousel
+          pagingEnabled
+          layout={'default'}
+          ref={onRef}
+          data={sliderItems}
+          sliderWidth={sliderWidth - 24}
+          itemWidth={sliderWidth - 24}
+          renderItem={renderItem}
+          onSnapToItem={index => setActiveIndex(index)}
+        />
+        <Pagination
+          dotsLength={sliderItems.length}
+          activeDotIndex={activeIndex}
+          containerStyle={styles.containerDots}
+          dotStyle={styles.dot}
+          inactiveDotStyle={styles.inactiveDot}
+          inactiveDotScale={1}
+        />
       </View>
-      {dots && (
-        <View style={styles.dotsContainer}>
-          {items?.map(idx => (
-            <TouchableOpacity
-              onPress={() => {
-                console.log('idx', idx);
-                slider.moveToSlideRelative(idx);
-              }}
-              style={
-                currentSlide === idx ? styles.activeDot : styles.inactiveDot
-              }
-            />
-          ))}
-        </View>
-      )}
-    </View>
+    </SafeAreaView>
   );
 };
-
 export default GlobalSlider;
