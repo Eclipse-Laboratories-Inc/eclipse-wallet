@@ -26,8 +26,9 @@ import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-
+import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import SwapAmounts from '../Transactions/SwapAmounts';
 
@@ -131,52 +132,54 @@ const GlobalButtonTimer = React.memo(function ({
   );
 });
 
-const linkForTransaction = (title, id, status) => (
-  <View style={globalStyles.inlineCentered}>
-    <GlobalButton
-      type="text"
-      wide
-      textStyle={styles.viewTxLink}
-      title={title}
-      readonly={false}
-      onPress={() => openTransaction(id)}
-    />
-    {status === 0 && (
-      <GlobalImage
-        style={globalStyles.centeredSmall}
-        source={getTransactionImage('swapping')}
-        size="xs"
-        circle
-      />
-    )}
-    {status === 1 && (
-      <GlobalImage
-        style={globalStyles.centeredSmall}
-        source={getTransactionImage('success')}
-        size="xs"
-        circle
-      />
-    )}
-    {status === 2 && (
-      <GlobalImage
-        style={globalStyles.centeredSmall}
-        source={getTransactionImage('fail')}
-        size="xs"
-        circle
-      />
-    )}
-  </View>
-);
+const linkForTransaction = (title, id, status, explorer) => {
+  const openTransaction = async tx => {
+    const url = `${explorer.url}/tx/${tx}`;
+    const supported = await Linking.canOpenURL(url);
 
-const openTransaction = async tx => {
-  const url = `https://solscan.io/tx/${tx}`;
-  const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
 
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    console.log(`UNSUPPORTED LINK ${url}`);
-  }
+  return (
+    <View style={globalStyles.inlineCentered}>
+      <GlobalButton
+        type="text"
+        wide
+        textStyle={styles.viewTxLink}
+        title={title}
+        readonly={false}
+        onPress={() => openTransaction(id)}
+      />
+      {status === 0 && (
+        <GlobalImage
+          style={globalStyles.centeredSmall}
+          source={getTransactionImage('swapping')}
+          size="xs"
+          circle
+        />
+      )}
+      {status === 1 && (
+        <GlobalImage
+          style={globalStyles.centeredSmall}
+          source={getTransactionImage('success')}
+          size="xs"
+          circle
+        />
+      )}
+      {status === 2 && (
+        <GlobalImage
+          style={globalStyles.centeredSmall}
+          source={getTransactionImage('fail')}
+          size="xs"
+          circle
+        />
+      )}
+    </View>
+  );
 };
 
 const SwapPage = ({ t }) => {
@@ -207,6 +210,7 @@ const SwapPage = ({ t }) => {
   const [cleanUpStatus, setCleanUpStatus] = useState(null);
   const [totalTransactions, setTotalTransactions] = useState(0);
   const [currentTransaction, setCurrentTransaction] = useState(1);
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
   useEffect(() => {
     document.addEventListener('send_swap_tx', e => {
@@ -577,18 +581,21 @@ const SwapPage = ({ t }) => {
                   `Transaction Setup`,
                   setupTransaction,
                   setupStatus,
+                  explorer,
                 )}
               {swapTransaction &&
                 linkForTransaction(
                   `Transaction Swap`,
                   swapTransaction,
                   swapStatus,
+                  explorer,
                 )}
               {cleanupTransaction &&
                 linkForTransaction(
                   `Transaction Cleanup`,
                   cleanupTransaction,
                   cleanUpStatus,
+                  explorer,
                 )}
               <GlobalPadding size="4xl" />
             </View>

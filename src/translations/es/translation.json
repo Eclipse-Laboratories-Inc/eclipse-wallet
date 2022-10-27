@@ -10,7 +10,8 @@
     "seed_phrase": "Seed-phrase",
     "balance": "Balance",
     "sending": "Enviando...",
-    "sent": "¡Enviado!"
+    "sent": "¡Enviado!",
+    "open_explorer": "Abrir en explorer"
   },
   "actions": {
     "skip": "Omitir",
@@ -42,6 +43,7 @@
     "address_book": "Contactos",
     "display_language": "Idioma",
     "change_network": "Cambiar Network",
+    "select_explorer": "Seleccionar Explorador",
     "security": "Seguridad",
     "notifications": "Notificaciones",
     "trusted_apps": "Apps Autorizadas",

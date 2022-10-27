@@ -20,7 +20,9 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
+import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
@@ -45,16 +47,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const openTransaction = async transactionId => {
-  const url = `https://solscan.io/tx/${transactionId}`;
-  const supported = await Linking.canOpenURL(url);
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    console.log(`UNSUPPORTED LINK ${url}`);
-  }
-};
-
 const NftsBurnPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
@@ -65,8 +57,18 @@ const NftsBurnPage = ({ params, t }) => {
   const [transactionId, setTransactionId] = useState(null);
   const [burnFee, setBurnFee] = useState(null);
   const [{ activeWallet, config }] = useContext(AppContext);
-
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
+
+  const openTransaction = async () => {
+    const url = `${explorer.url}/tx/${transactionId}`;
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
 
   useEffect(() => {
     if (activeWallet) {
@@ -259,7 +261,7 @@ const NftsBurnPage = ({ params, t }) => {
                   type="text"
                   wide
                   textStyle={styles.viewTxLink}
-                  title="Open in Solscan"
+                  title={t(`general.open_explorer`)}
                   readonly={false}
                   onPress={() => openTransaction(transactionId)}
                 />

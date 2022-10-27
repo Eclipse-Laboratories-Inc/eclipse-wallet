@@ -23,7 +23,8 @@
       "INVALID_ADDRESS": "Address is not valid",
       "EMPTY_ACCOUNT": "This address has no funds. Please check if this address is correct.",
       "NO_FUNDS": "Address has no funds"
-    }
+    },
+    "open_explorer": "Open in explorer"
   },
   "actions": {
     "approve": "Approve",
@@ -56,6 +57,7 @@
     "address_book": "Address Book",
     "display_language": "Display Language",
     "change_network": "Change Network",
+    "select_explorer": "Select Explorer",
     "security": "Security",
     "notifications": "Notifications",
     "trusted_apps": "Trusted Apps",
