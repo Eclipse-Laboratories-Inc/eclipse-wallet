@@ -1,7 +1,7 @@
 {
   "name": "Salmon Token Wallet",
   "description": "Your all-in-one & open-source wallet for the crypto space.",
-  "version": "0.2.0",
+  "version": "0.2.4",
   "manifest_version": 2,
   "icons": {
     "192": "logo192.png",
