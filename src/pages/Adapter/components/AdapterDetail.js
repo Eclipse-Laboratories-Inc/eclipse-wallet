@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 import get from 'lodash/get';
+import { getMetadata } from '4m-wallet-adapter/services/dapp-service';
 
 import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 
@@ -17,11 +18,15 @@ import SignAndSendTransactionsForm from './SignAndSendTransactionsForm';
 import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignTransactionForm from './SignTransactionForm';
-import { getMetadata } from '../../../utils/dapp';
 import { isExtension } from '../../../utils/platform';
 import { getDefaultEndpoint } from '../../../utils/wallet';
 
-const AUTHORIZED_METHODS = ['signTransaction', 'signAllTransactions', 'sign'];
+const AUTHORIZED_METHODS = [
+  'signTransaction',
+  'signAllTransactions',
+  'signAndSendTransaction',
+  'sign',
+];
 
 function getInitialRequests({ context }) {
   if (!isExtension()) {

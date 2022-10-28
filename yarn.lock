@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"4m-wallet-adapter@^0.0.78":
-  version "0.0.78"
-  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.78.tgz#4420c9eddb4ed6969e78efc79db0055adbf0cc68"
-  integrity sha512-taykHZtNXblNH4sjgRM3HIuNHyX/atQi60lj9fXHRjJapqUmMqXqXQiFLcZd8FDW2rgVdUYS0g44yqFktLCB/Q==
+"4m-wallet-adapter@^0.0.79":
+  version "0.0.79"
+  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.79.tgz#27f77d5b2a65eb54c7e412f433a6c023736c4368"
+  integrity sha512-03BORs8elVloZ3rHTgdvQiHI1Rw+8Hd/8ZtQY/nWj0rOK2lKfPeaQc70nd0jV5F0EsKDyO26gxAgUy/khDYnpA==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@solana/spl-token" "^0.2.0"
@@ -7121,14 +7121,6 @@ fbjs@^3.0.4:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.30"
-
-fetch-opengraph@^1.0.35:
-  version "1.0.35"
-  resolved "https://registry.yarnpkg.com/fetch-opengraph/-/fetch-opengraph-1.0.35.tgz#71c00caf6a37578a8ff28e9bc9888f359839d16b"
-  integrity sha512-6rOVRaL61WGkIs/mGDLgw/2+zKtEj2iGQzocDBbMxrzxSFZHCAkyETdWaMpo3F//HzgmMnFCYn5k4yeMsjyJzw==
-  dependencies:
-    axios "^0.21.1"
-    html-entities "^2.3.2"
 
 file-entry-cache@^6.0.1:
   version "6.0.1"
