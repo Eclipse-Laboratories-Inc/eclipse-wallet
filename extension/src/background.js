@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const responseHandler = responseHandlers.get(message.data.id);
     responseHandlers.delete(message.data.id);
     responseHandler(message.data);
-  } else if (message.channel === 'sollet_extension_stash_channel') {
+  } else if (message.channel === 'salmon_extension_stash_channel') {
     handleStashOperation(message, sender, sendResponse);
   }
 });
