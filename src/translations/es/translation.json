@@ -191,7 +191,7 @@
   },
   "adapter": {
     "select": {
-      "title": "Selecciona Wallet"
+      "title": "Bienvenido"
     },
     "detail": {
       "connection": {

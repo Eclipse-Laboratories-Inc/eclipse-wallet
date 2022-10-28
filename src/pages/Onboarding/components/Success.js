@@ -6,7 +6,6 @@ import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
-import GlobalImage from '../../../component-library/Global/GlobalImage';
 import SimpleDialog from '../../../component-library/Dialog/SimpleDialog';
 
 import Logo from '../components/Logo';
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Success = ({ goToWallet, goToDerived, t }) => {
+const Success = ({ goToWallet, goToAdapter, goToDerived, t }) => {
   const [showDialog, setShowDialog] = useState(false);
   const toggleDialog = () => {
     setShowDialog(!showDialog);
@@ -54,12 +53,23 @@ const Success = ({ goToWallet, goToDerived, t }) => {
       </GlobalLayout.Inner>
 
       <GlobalLayout.Footer>
-        <GlobalButton
-          type="primary"
-          wide
-          title={t('wallet.create.go_to_my_wallet')}
-          onPress={goToWallet}
-        />
+        {goToWallet && (
+          <GlobalButton
+            type="primary"
+            wide
+            title={t('wallet.create.go_to_my_wallet')}
+            onPress={goToWallet}
+          />
+        )}
+
+        {goToAdapter && (
+          <GlobalButton
+            type="primary"
+            wide
+            title={t('actions.continue')}
+            onPress={goToAdapter}
+          />
+        )}
 
         <GlobalPadding size="md" />
 

@@ -220,7 +220,7 @@
   },
   "adapter": {
     "select": {
-      "title": "Select Wallet"
+      "title": "Welcome"
     },
     "detail": {
       "connection": {

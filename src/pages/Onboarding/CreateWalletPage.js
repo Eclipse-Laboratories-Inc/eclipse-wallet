@@ -241,7 +241,11 @@ const CreateWalletPage = ({ params, t }) => {
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.CREATION_COMPLETED);
-    navigate(isAdapter ? APP_ROUTES_MAP.ADAPTER : APP_ROUTES_MAP.WALLET);
+    navigate(APP_ROUTES_MAP.WALLET);
+  };
+  const goToAdapter = () => {
+    trackEvent(EVENTS_MAP.CREATION_COMPLETED);
+    navigate(APP_ROUTES_MAP.ADAPTER);
   };
   const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
@@ -290,7 +294,8 @@ const CreateWalletPage = ({ params, t }) => {
       )}
       {step === 5 && (
         <Success
-          goToWallet={goToWallet}
+          goToWallet={!isAdapter ? goToWallet : undefined}
+          goToAdapter={isAdapter ? goToAdapter : undefined}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
