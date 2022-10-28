@@ -56,6 +56,7 @@
     "react-native-web-hover": "^0.2.9",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
+    "salmon-wallet-standard": "^0.0.3",
     "stream-browserify": "^3.0.0",
     "tweetnacl": "^1.0.3",
     "util": "^0.12.4",
@@ -68,6 +69,7 @@
     "@types/chrome": "^0.0.193",
     "babel-jest": "^26.6.3",
     "buffer": "^6.0.3",
+    "esbuild": "^0.15.12",
     "eslint": "^7.32.0",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
@@ -93,9 +95,9 @@
   "scripts": {
     "start:web": "react-scripts start",
     "build": "react-scripts build",
-    "build:extension:clean": "rm -rf build-extension && rm -rf build-extension-mozilla",
-    "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && npm run build:extension-scripts && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
-    "build:extension-scripts": "cp -a ./extension/src/. ./build-extension/.",
+    "build:extension:chrome": "rm -rf build-extension && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --target=chrome58 --outdir=./build-extension && cp -a ./extension/src/manifest.json ./build-extension/manifest.json",
+    "build:extension:mozilla": "rm -rf build-extension-mozilla && BUILD_PATH=./build-extension-mozilla REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --minify --target=firefox57 --outdir=./build-extension-mozilla && cp -a ./extension/src/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
+    "build:extension": "npm run build:extension:chrome && npm run build:extension:mozilla",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:packager": "react-native start",
@@ -113,6 +115,10 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "browser": {
+    "stream": "stream-browserify",
+    "crypto": "crypto-browserify"
   },
   "browserslist": {
     "production": [

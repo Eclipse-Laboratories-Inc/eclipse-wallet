@@ -9,6 +9,7 @@ import ApproveConnectionForm from './ApproveConnectionForm';
 import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignAndSendTransactionsForm from './SignAndSendTransactionsForm';
+import { getDefaultEndpoint } from '../../../utils/wallet';
 
 const AdapterDetail = () => {
   const [{ activeWallet }, { addTrustedApp }] = useContext(AppContext);
@@ -34,8 +35,10 @@ const AdapterDetail = () => {
   }, []);
 
   useEffect(() => {
-    if (cluster && activeWallet.networkId !== cluster) {
+    if (cluster) {
       activeWallet.setNetwork(cluster);
+    } else if (!activeWallet.networkId) {
+      activeWallet.setNetwork(getDefaultEndpoint('SOLANA'));
     }
   }, [activeWallet, cluster]);
 

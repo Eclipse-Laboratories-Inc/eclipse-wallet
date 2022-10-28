@@ -13,6 +13,7 @@ import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 import { AppContext } from '../../../AppProvider';
 import ApproveConnectionForm from './ApproveConnectionForm';
 import KeepOpenBanner from './KeepOpenBanner';
+import SignAndSendTransactionsForm from './SignAndSendTransactionsForm';
 import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignTransactionForm from './SignTransactionForm';
@@ -66,14 +67,13 @@ const AdapterDetail = () => {
   const [{ activeWallet, config, context, opener }, { addTrustedApp }] =
     useContext(AppContext);
   const origin = useMemo(() => context.get('origin'), [context]);
-  const endpoint = useMemo(
-    () => context.get('network') || getDefaultEndpoint('SOLANA'),
-    [context],
-  );
+  const endpoint = useMemo(() => context.get('network'), [context]);
 
   useEffect(() => {
-    if (activeWallet.networkId !== endpoint) {
+    if (endpoint) {
       activeWallet.setNetwork(endpoint);
+    } else if (!activeWallet.networkId) {
+      activeWallet.setNetwork(getDefaultEndpoint('SOLANA'));
     }
   }, [activeWallet, endpoint]);
 
@@ -188,13 +188,23 @@ const AdapterDetail = () => {
       }
     };
 
+    const onReject = () => {
+      popRequest();
+      postMessage({
+        error: 'Connection cancelled',
+        id: request.id,
+      });
+
+      window?.close();
+    };
+
     return (
       <ApproveConnectionForm
         origin={origin}
         name={name}
         icon={icon}
         onApprove={connect}
-        onReject={() => window?.close()}
+        onReject={onReject}
       />
     );
   }
@@ -241,6 +251,19 @@ const AdapterDetail = () => {
   if (request?.method === 'signAllTransactions') {
     return (
       <SignTransactionsForm
+        origin={origin}
+        name={name}
+        icon={icon}
+        request={request}
+        onApprove={onApprove}
+        onReject={onReject}
+      />
+    );
+  }
+
+  if (request?.method === 'signAndSendTransaction') {
+    return (
+      <SignAndSendTransactionsForm
         origin={origin}
         name={name}
         icon={icon}

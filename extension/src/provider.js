@@ -1,0 +1,134 @@
+import EventEmitter from 'eventemitter3';
+import bs58 from 'bs58';
+import { PublicKey } from '@solana/web3.js';
+
+export class SolanaProvider extends EventEmitter {
+  #publicKey = null;
+  #nextRequestId = 1;
+
+  constructor() {
+    super();
+    this.#publicKey = null;
+    this.#nextRequestId = 1;
+  }
+
+  get publicKey() {
+    return this.#publicKey;
+  }
+
+  get isConnected() {
+    return this.#publicKey !== null;
+  }
+
+  sendMessage = async message => {
+    return new Promise((resolve, reject) => {
+      const listener = event => {
+        if (event.detail.id === message.id) {
+          window.removeEventListener('salmon_contentscript_message', listener);
+
+          if (event.detail.error) {
+            reject(event.detail);
+          } else {
+            resolve(event.detail);
+          }
+        }
+      };
+      window.addEventListener('salmon_contentscript_message', listener);
+
+      window.dispatchEvent(
+        // eslint-disable-next-line no-undef
+        new CustomEvent('salmon_injected_script_message', { detail: message }),
+      );
+    });
+  };
+
+  sendRequest = async (method, params) => {
+    try {
+      return await this.sendMessage({
+        jsonrpc: '2.0',
+        id: this.#nextRequestId++,
+        method,
+        params,
+      });
+    } catch ({ error }) {
+      throw new Error(error);
+    }
+  };
+
+  connect = async options => {
+    const { method, params } = await this.sendRequest('connect', { options });
+    if (method === 'connected') {
+      const newPublicKey = new PublicKey(params.publicKey);
+      if (!this.#publicKey || !this.#publicKey.equals(newPublicKey)) {
+        if (this.#publicKey && !this.#publicKey.equals(newPublicKey)) {
+          // TODO disconnect previuos
+        }
+        this.#publicKey = newPublicKey;
+      }
+      return { publicKey: newPublicKey };
+    } else {
+      throw new Error('Not connected');
+    }
+  };
+
+  disconnect = async () => {
+    const { method } = await this.sendRequest('disconnect', {});
+    if (method === 'disconnected') {
+      if (this.#publicKey) {
+        this.#publicKey = null;
+      }
+      // TODO reject all pending promises?
+    } else {
+      throw new Error('Not disconnected');
+    }
+  };
+
+  signAndSendTransaction = async (transaction, options) => {
+    const { result } = await this.sendRequest('signAndSendTransaction', {
+      message: bs58.encode(transaction.message.serialize()),
+      options,
+    });
+    return result;
+  };
+
+  signTransaction = async transaction => {
+    const { result } = await this.sendRequest('signTransaction', {
+      message: bs58.encode(transaction.message.serialize()),
+    });
+    const signature = bs58.decode(result.signature);
+    const publicKey = new PublicKey(result.publicKey);
+    transaction.addSignature(publicKey, signature);
+    return transaction;
+  };
+
+  signAllTransactions = async transactions => {
+    const { result } = await this.sendRequest('signAllTransactions', {
+      messages: transactions.map(tx => bs58.encode(tx.message.serialize())),
+    });
+    const signatures = result.signatures.map(s => bs58.decode(s));
+    const publicKey = new PublicKey(result.publicKey);
+    transactions = transactions.map((tx, idx) => {
+      tx.addSignature(publicKey, signatures[idx]);
+      return tx;
+    });
+    return transactions;
+  };
+
+  signMessage = async message => {
+    if (!(message instanceof Uint8Array)) {
+      throw new Error('Data must be an instance of Uint8Array');
+    }
+    const { result } = await this.sendRequest('sign', { data: message });
+    const signature = bs58.decode(result.signature);
+    return { signature };
+  };
+
+  postMessage = async message => {
+    try {
+      const detail = await this.sendMessage(message);
+      window.postMessage(detail);
+    } catch (error) {
+      window.postMessage(error);
+    }
+  };
+}

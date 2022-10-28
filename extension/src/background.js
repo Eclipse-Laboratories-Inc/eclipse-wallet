@@ -5,10 +5,12 @@ const stashedValues = new Map();
 const launchPopup = (message, sender, sendResponse) => {
   const searchParams = new URLSearchParams();
   searchParams.set('origin', sender.origin);
-  searchParams.set('network', message.data.params.network);
   searchParams.set('request', JSON.stringify(message.data));
+  if (message.data.params.network) {
+    searchParams.set('network', message.data.params.network);
+  }
 
-  chrome.windows.getLastFocused(focusedWindow => {
+  chrome.windows.getLastFocused(async focusedWindow => {
     chrome.windows.create({
       url: 'index.html#' + searchParams.toString(),
       type: 'popup',
@@ -23,7 +25,7 @@ const launchPopup = (message, sender, sendResponse) => {
   responseHandlers.set(message.data.id, sendResponse);
 };
 
-const getConnection = (origin, { wallets, active }) => {
+const getConnection = async (origin, { wallets, active }) => {
   if (!wallets || isNaN(active)) {
     return null;
   }
@@ -31,10 +33,12 @@ const getConnection = (origin, { wallets, active }) => {
   if (!json.wallets || active < 0 || active >= json.wallets.length) {
     return null;
   }
+  let wallet;
   if (json.passwordRequired) {
     return null;
+  } else {
+    wallet = json.wallets[active];
   }
-  const wallet = json.wallets[active];
   if (wallet.chain !== 'SOLANA') {
     return null;
   }
@@ -47,8 +51,8 @@ const getConnection = (origin, { wallets, active }) => {
 };
 
 const handleConnect = (message, sender, sendResponse) => {
-  chrome.storage.local.get(['wallets', 'active'], result => {
-    const connection = getConnection(sender.origin, result);
+  chrome.storage.local.get(['wallets', 'active'], async result => {
+    const connection = await getConnection(sender.origin, result);
     if (connection) {
       sendResponse({
         method: 'connected',
