@@ -11,7 +11,7 @@ const launchPopup = (message, sender, sendResponse) => {
   }
 
   chrome.windows.getLastFocused(async focusedWindow => {
-    chrome.windows.create({
+    const popup = await chrome.windows.create({
       url: 'index.html#' + searchParams.toString(),
       type: 'popup',
       width: 460,
@@ -20,6 +20,23 @@ const launchPopup = (message, sender, sendResponse) => {
       left: focusedWindow.left + (focusedWindow.width - 460),
       focused: true,
     });
+
+    const listener = windowId => {
+      if (windowId === popup.id) {
+        const responseHandler = responseHandlers.get(message.data.id);
+        if (responseHandler) {
+          responseHandlers.delete(message.data.id);
+          responseHandler({
+            error: 'Operation cancelled',
+            id: message.data.id,
+          });
+        }
+
+        chrome.windows.onRemoved.removeListener(listener);
+      }
+    };
+
+    chrome.windows.onRemoved.addListener(listener);
   });
 
   responseHandlers.set(message.data.id, sendResponse);
