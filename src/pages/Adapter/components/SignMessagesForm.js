@@ -29,7 +29,7 @@ const SignMessagesForm = ({
     return request.params.data;
   }, [request]);
 
-  const display = useMemo(() => request.params.display, [request]);
+  const display = useMemo(() => request.params.display || 'utf8', [request]);
 
   const message = useMemo(
     () =>
