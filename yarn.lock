@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"4m-wallet-adapter@^0.0.79":
-  version "0.0.79"
-  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.79.tgz#27f77d5b2a65eb54c7e412f433a6c023736c4368"
-  integrity sha512-03BORs8elVloZ3rHTgdvQiHI1Rw+8Hd/8ZtQY/nWj0rOK2lKfPeaQc70nd0jV5F0EsKDyO26gxAgUy/khDYnpA==
+"4m-wallet-adapter@^0.0.80":
+  version "0.0.80"
+  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.80.tgz#fe7c4e5ab55e5d51efdba3f2b89b185511d7628f"
+  integrity sha512-TIMNBumN8v8aKCAbrpx76VSHRg69jw4k5Qvz/RfD+cvvFYEwtCY8TlLSbheQWkSYqDa7P/QiZze2oR60S3dHkA==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@solana/spl-token" "^0.2.0"
