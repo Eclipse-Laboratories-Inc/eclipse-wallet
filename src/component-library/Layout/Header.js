@@ -17,7 +17,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { isNative } from '../../utils/platform';
+import { isExtension, isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
@@ -59,12 +59,17 @@ const styles = StyleSheet.create({
     marginTop: 1,
     position: 'absolute',
   },
-  appConnectedStatus: {
+  appStatus: {
     marginRight: theme.gutters.paddingNormal,
-    backgroundColor: theme.colors.negativeBright,
     borderRadius: 50,
     height: 14,
     width: 14,
+  },
+  appConnectedStatus: {
+    backgroundColor: theme.colors.positiveBright,
+  },
+  appDisconnectedStatus: {
+    backgroundColor: theme.colors.negativeBright,
   },
 });
 
@@ -149,7 +154,16 @@ const Header = ({ activeWallet, config, t }) => {
               onPress={toggleScan}
             />
           )}
-          <View style={styles.appConnectedStatus} />
+          {false && isExtension() && (
+            <View
+              style={[
+                styles.appStatus,
+                window.salmon?.isConnected
+                  ? styles.appConnectedStatus
+                  : styles.appDisconnectedStatus,
+              ]}
+            />
+          )}
         </View>
       </View>
       <GlobalToast
