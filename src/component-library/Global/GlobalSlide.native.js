@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
+import { useKeenSliderNative } from 'keen-slider/react-native';
 import GlobalButton from './GlobalButton';
 import IconExpandMore from '../../assets/images/IconExpandMore.png';
 import IconExpandLess from '../../assets/images/IconExpandLess.png';
@@ -11,7 +10,6 @@ const styles = StyleSheet.create({
   sliderContainer: {
     paddingBottom: theme.gutters.paddingNormal,
     overflow: 'hidden',
-    position: 'relative',
   },
   dotsContainer: {
     alignItems: 'center',
@@ -60,11 +58,8 @@ const GlobalSlider = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [sliderRef, slider] = useKeenSlider({
-    slides: { number: slides, initial: 0, spacing: 20 },
-    slideChanged(s) {
-      setCurrentSlide(s.track.details.rel);
-    },
+  const slider = useKeenSliderNative({
+    slides: { number: slides, perView: 1, spacing: 20 },
   });
 
   const toggleCollapse = t => {
@@ -74,16 +69,13 @@ const GlobalSlider = ({
 
   return (
     <View style={styles.sliderContainer}>
-      <div
-        ref={sliderRef}
-        className="keen-slider"
-        style={{ height: currentHeight }}>
+      <View style={{ height: currentHeight }} {...slider.containerProps}>
         {items?.map((item, index) => (
-          <div key={index} className="keen-slider__slide">
+          <View key={index} {...slider.slidesProps[index]}>
             {renderItem(item, isExpanded)}
-          </div>
+          </View>
         ))}
-      </div>
+      </View>
       <GlobalButton
         type="icon"
         transparent
@@ -97,7 +89,8 @@ const GlobalSlider = ({
           {items?.map((item, idx) => (
             <TouchableOpacity
               onPress={() => {
-                slider.current?.moveToIdx(idx);
+                setCurrentSlide(idx);
+                slider.moveToIdx(idx);
               }}
               style={
                 currentSlide === idx ? styles.activeDot : styles.inactiveDot
