@@ -55,7 +55,7 @@
     "react-native-web-hover": "^0.2.9",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
-    "salmon-wallet-standard": "^0.0.3",
+    "salmon-wallet-standard": "^0.0.4",
     "stream-browserify": "^3.0.0",
     "tweetnacl": "^1.0.3",
     "util": "^0.12.4",
