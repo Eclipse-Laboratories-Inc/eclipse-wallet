@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
 const NftsDetailPage = ({ params, t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_DETAIL);
   const navigate = useNavigation();
-  const [{ activeWallet, config }] = useContext(AppContext);
   const [loaded, setLoaded] = useState(false);
   const [listedLoaded, setListedLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
   const [listedInfo, setListedInfo] = useState([]);
+  const [{ activeWallet, config }] = useContext(AppContext);
 
   useEffect(() => {
     if (activeWallet) {
@@ -119,6 +119,10 @@ const NftsDetailPage = ({ params, t }) => {
 
   const goToSend = () => {
     navigate(ROUTES_MAP.NFTS_SEND, { id: params.id });
+  };
+
+  const goToBurn = () => {
+    navigate(ROUTES_MAP.NFTS_BURN, { id: params.id });
   };
 
   const goToListing = () => {
@@ -200,45 +204,38 @@ const NftsDetailPage = ({ params, t }) => {
                 />
               )}
             </View>
+          </View>
 
-            <GlobalPadding size="lg" />
+          <GlobalPadding size="lg" />
 
-            <View style={globalStyles.inlineFlexButtons}>
-              <GlobalButton
-                type="primary"
-                flex
-                title={t('nft.send_nft')}
-                onPress={goToSend}
-                style={[globalStyles.button, globalStyles.buttonLeft]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
+          <View style={globalStyles.inlineFlexButtons}>
+            <GlobalButton
+              type="primary"
+              flex
+              title={t('nft.send_nft')}
+              onPress={goToSend}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
 
-              <GlobalButton
-                type="secondary"
-                flex
-                title={getListBtnTitle()}
-                onPress={goToListing}
-                disabled={!listedLoaded}
-                style={[globalStyles.button, globalStyles.buttonRight]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-            </View>
-            {/*
-            <View style={globalStyles.inlineFlexAround}>
-              <GlobalText type="overline" color="tertiary">
-                Lorem ipsum
-              </GlobalText>
-              <GlobalText type="overline" color="tertiary">
-                Lorem ipsum
-              </GlobalText>
-              <GlobalText type="overline" color="tertiary">
-                Lorem ipsum
-              </GlobalText>
-              <GlobalText type="overline" color="tertiary">
-                Lorem ipsum
-              </GlobalText>
-            </View>
-            */}
+            <GlobalButton
+              type="secondary"
+              flex
+              title={getListBtnTitle()}
+              onPress={goToListing}
+              disabled={!listedLoaded}
+              style={[globalStyles.button, globalStyles.buttonRight]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+
+            <GlobalButton
+              type="secondary"
+              flex
+              title={t('nft.burn_nft')}
+              onPress={goToBurn}
+              style={[globalStyles.button, globalStyles.buttonRight]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
           </View>
 
           <GlobalPadding size="lg" />

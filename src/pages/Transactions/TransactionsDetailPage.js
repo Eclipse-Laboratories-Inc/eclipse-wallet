@@ -8,7 +8,7 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { TRANSACTION_TYPE, TOKEN_DECIMALS } from './constants';
 import { ROUTES_MAP } from './routes';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-
+import { getWalletChain } from '../../utils/wallet';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import {
@@ -31,6 +31,8 @@ import GlobalToast from '../../component-library/Global/GlobalToast';
 import IconCopy from '../../assets/images/IconCopy.png';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
+
 import { SECTIONS_MAP } from '../../utils/tracking';
 import SwapAmounts from './SwapAmounts';
 
@@ -85,11 +87,14 @@ const styles = StyleSheet.create({
 
 const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets }, { changeActiveWallet }] =
-    useContext(AppContext);
+  const [
+    { activeWallet, wallets },
+    { changeActiveWallet, resolveExplorerUrl },
+  ] = useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
   useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
@@ -99,6 +104,17 @@ const TransactionsDetailPage = ({ t, params }) => {
   );
 
   const goToWallet = () => navigate(APP_ROUTES_MAP.WALLET);
+
+  useEffect(() => {
+    const resolve = async () => {
+      const path = await resolveExplorerUrl(
+        [getWalletChain(activeWallet)],
+        '123123123131',
+      );
+      console.log(path);
+    };
+    resolve();
+  }, [activeWallet, resolveExplorerUrl]);
 
   const getTransactionTitle = type => {
     switch (type) {
@@ -321,9 +337,7 @@ const TransactionsDetailPage = ({ t, params }) => {
           wideSmall
           title={t(`token.send.goto_explorer`)}
           onPress={() =>
-            Linking.openURL(
-              `https://solscan.io/tx/${transactionDetail.signature}`,
-            )
+            Linking.openURL(`${explorer.url}/tx/${transactionDetail.signature}`)
           }
         />
 
@@ -497,9 +511,7 @@ const TransactionsDetailPage = ({ t, params }) => {
           wideSmall
           title={t(`token.send.goto_explorer`)}
           onPress={() =>
-            Linking.openURL(
-              `https://solscan.io/tx/${transactionDetail.signature}`,
-            )
+            Linking.openURL(`${explorer.url}/tx/${transactionDetail.signature}`)
           }
         />
 
@@ -635,9 +647,7 @@ const TransactionsDetailPage = ({ t, params }) => {
         wideSmall
         title={t(`token.send.goto_explorer`)}
         onPress={() =>
-          Linking.openURL(
-            `https://solscan.io/tx/${transactionDetail.signature}`,
-          )
+          Linking.openURL(`${explorer.url}/tx/${transactionDetail.signature}`)
         }
       />
 

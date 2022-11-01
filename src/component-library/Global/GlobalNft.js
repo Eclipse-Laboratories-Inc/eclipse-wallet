@@ -35,6 +35,16 @@ const styles = StyleSheet.create({
   },
   nftName: {
     paddingTop: theme.gutters.padding2XL + 6,
+    paddingRight: 15,
+    paddingLeft: 15,
+  },
+  hsIcon: {
+    marginBottom: -3,
+    marginLeft: 4,
+  },
+  solanaIcon: {
+    marginBottom: -3,
+    marginLeft: 6,
   },
 });
 
@@ -51,7 +61,7 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
                   source={IconHyperspace}
                   circle
                   size="xxs"
-                  style={{ marginBottom: -3, marginLeft: 4 }}
+                  style={styles.hsIcon}
                 />
               </>
             ),
@@ -66,7 +76,7 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           size="block"
         />
         <GlobalFloatingBadge
-          {...(isCollection(nft)
+          {...(isCollection(nft) && nft.length > 1
             ? { number: nft.length }
             : {
                 title: nft.marketInfo?.price && (

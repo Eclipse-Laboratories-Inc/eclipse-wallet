@@ -5,11 +5,13 @@ const stashedValues = new Map();
 const launchPopup = (message, sender, sendResponse) => {
   const searchParams = new URLSearchParams();
   searchParams.set('origin', sender.origin);
-  searchParams.set('network', message.data.params.network);
   searchParams.set('request', JSON.stringify(message.data));
+  if (message.data.params.network) {
+    searchParams.set('network', message.data.params.network);
+  }
 
-  chrome.windows.getLastFocused(focusedWindow => {
-    chrome.windows.create({
+  chrome.windows.getLastFocused(async focusedWindow => {
+    const popup = await chrome.windows.create({
       url: 'index.html#' + searchParams.toString(),
       type: 'popup',
       width: 460,
@@ -18,12 +20,29 @@ const launchPopup = (message, sender, sendResponse) => {
       left: focusedWindow.left + (focusedWindow.width - 460),
       focused: true,
     });
+
+    const listener = windowId => {
+      if (windowId === popup.id) {
+        const responseHandler = responseHandlers.get(message.data.id);
+        if (responseHandler) {
+          responseHandlers.delete(message.data.id);
+          responseHandler({
+            error: 'Operation cancelled',
+            id: message.data.id,
+          });
+        }
+
+        chrome.windows.onRemoved.removeListener(listener);
+      }
+    };
+
+    chrome.windows.onRemoved.addListener(listener);
   });
 
   responseHandlers.set(message.data.id, sendResponse);
 };
 
-const getConnection = (origin, { wallets, active }) => {
+const getConnection = async (origin, { wallets, active }) => {
   if (!wallets || isNaN(active)) {
     return null;
   }
@@ -31,10 +50,12 @@ const getConnection = (origin, { wallets, active }) => {
   if (!json.wallets || active < 0 || active >= json.wallets.length) {
     return null;
   }
+  let wallet;
   if (json.passwordRequired) {
     return null;
+  } else {
+    wallet = json.wallets[active];
   }
-  const wallet = json.wallets[active];
   if (wallet.chain !== 'SOLANA') {
     return null;
   }
@@ -47,8 +68,8 @@ const getConnection = (origin, { wallets, active }) => {
 };
 
 const handleConnect = (message, sender, sendResponse) => {
-  chrome.storage.local.get(['wallets', 'active'], result => {
-    const connection = getConnection(sender.origin, result);
+  chrome.storage.local.get(['wallets', 'active'], async result => {
+    const connection = await getConnection(sender.origin, result);
     if (connection) {
       sendResponse({
         method: 'connected',
@@ -102,7 +123,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const responseHandler = responseHandlers.get(message.data.id);
     responseHandlers.delete(message.data.id);
     responseHandler(message.data);
-  } else if (message.channel === 'sollet_extension_stash_channel') {
+  } else if (message.channel === 'salmon_extension_stash_channel') {
     handleStashOperation(message, sender, sendResponse);
   }
 });

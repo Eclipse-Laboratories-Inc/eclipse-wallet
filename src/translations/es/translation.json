@@ -10,7 +10,8 @@
     "seed_phrase": "Seed-phrase",
     "balance": "Balance",
     "sending": "Enviando...",
-    "sent": "¡Enviado!"
+    "sent": "¡Enviado!",
+    "open_explorer": "Abrir en explorer"
   },
   "actions": {
     "skip": "Omitir",
@@ -42,6 +43,7 @@
     "address_book": "Contactos",
     "display_language": "Idioma",
     "change_network": "Cambiar Network",
+    "select_explorer": "Seleccionar Explorador",
     "security": "Seguridad",
     "notifications": "Notificaciones",
     "trusted_apps": "Apps Autorizadas",
@@ -190,7 +192,7 @@
   },
   "adapter": {
     "select": {
-      "title": "Selecciona Wallet"
+      "title": "Bienvenido"
     },
     "detail": {
       "connection": {
@@ -244,7 +246,9 @@
     "success_unlist": "Su NFT ha sido delistado de",
     "goto_marketplace": "Ir al Marketplace",
     "trending_collections": "Colleciones destacadas",
-    "new_collections": "Nuevas colleciones"
+    "new_collections": "Nuevas colleciones",
+    "burn_nft": "Quemar",
+    "burning": "Quemando"
   },
   "swap": {
     "swap": "Swap",

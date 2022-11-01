@@ -23,7 +23,8 @@
       "INVALID_ADDRESS": "Address is not valid",
       "EMPTY_ACCOUNT": "This address has no funds. Please check if this address is correct.",
       "NO_FUNDS": "Address has no funds"
-    }
+    },
+    "open_explorer": "Open in explorer"
   },
   "actions": {
     "approve": "Approve",
@@ -56,6 +57,7 @@
     "address_book": "Address Book",
     "display_language": "Display Language",
     "change_network": "Change Network",
+    "select_explorer": "Select Explorer",
     "security": "Security",
     "notifications": "Notifications",
     "trusted_apps": "Trusted Apps",
@@ -219,7 +221,7 @@
   },
   "adapter": {
     "select": {
-      "title": "Select Wallet"
+      "title": "Welcome"
     },
     "detail": {
       "connection": {
@@ -265,6 +267,8 @@
     "list_nft": "List on",
     "delist_nft": "Delist from",
     "sell_price": "Listing price:",
+    "burn_nft": "Burn",
+    "burning": "Burning",
     "send_to": "Send to:",
     "no_nft_found": "No NFTs found",
     "marketplace": "Marketplace",
