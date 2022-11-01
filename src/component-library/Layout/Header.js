@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '../../routes/hooks';
@@ -19,8 +19,10 @@ import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isExtension, isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard';
+import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
+import Tooltip from '../Tooltip/Tooltip';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -76,8 +78,31 @@ const styles = StyleSheet.create({
 const Header = ({ activeWallet, config, t }) => {
   const [showToast, setShowToast] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [isConnected, setIsConnected] = useState(null);
+  const [hostname, setHostname] = useState(null);
 
   const navigate = useNavigation();
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (isExtension()) {
+        // eslint-disable-next-line no-undef
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        try {
+          setHostname(new URL(tabs?.[0]?.url).hostname);
+        } catch (err) {
+          console.log(err);
+        }
+        const tabsIds = await storage.getItem('connectedTabsIds');
+        setIsConnected(tabsIds?.includes(tabs?.[0]?.id));
+      }
+    };
+
+    checkConnection();
+  }, []);
 
   const toggleScan = () => {
     setShowScan(!showScan);
@@ -154,15 +179,24 @@ const Header = ({ activeWallet, config, t }) => {
               onPress={toggleScan}
             />
           )}
-          {false && isExtension() && (
-            <View
-              style={[
-                styles.appStatus,
-                window.salmon?.isConnected
-                  ? styles.appConnectedStatus
-                  : styles.appDisconnectedStatus,
-              ]}
-            />
+          {isConnected !== null && (
+            <Tooltip
+              title={
+                <GlobalText>
+                  {t(isConnected ? 'header.connected' : 'header.disconnected', {
+                    hostname,
+                  })}
+                </GlobalText>
+              }>
+              <View
+                style={[
+                  styles.appStatus,
+                  isConnected
+                    ? styles.appConnectedStatus
+                    : styles.appDisconnectedStatus,
+                ]}
+              />
+            </Tooltip>
           )}
         </View>
       </View>
