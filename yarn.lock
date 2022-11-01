@@ -13032,10 +13032,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-salmon-wallet-standard@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/salmon-wallet-standard/-/salmon-wallet-standard-0.0.4.tgz#64203329c1f17354459f5912bdf1ca3ff79fafa1"
-  integrity sha512-SJOZvDZs7sn7EZ+Ms0YZo7BvBedr4iQ1VEgUYOS0GoSbK5YLNm8M1n1ABwdGbC7ZGc277UjTEwHDyb76LNx0TA==
+salmon-wallet-standard@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/salmon-wallet-standard/-/salmon-wallet-standard-0.0.5.tgz#daac40a95c734c868c47fde0efa7c5076b538b36"
+  integrity sha512-g7bhjDS91NJEgAm9rf0fy9cUGKkY0KJ68r8l/uRWWcfyZzBHB8820Q3YdwWhyedQai0X+ptYvUNGrtETjUUQlw==
   dependencies:
     "@solana/wallet-standard-features" "^1.0.0-rc.7"
     "@solana/web3.js" "^1.58.0"
