@@ -62,12 +62,14 @@ const NftsListPage = ({ t }) => {
         {loaded && (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
-            <View style={globalStyles.centered}>
-              <GlobalText type="headline2">{t(`wallet.nfts`)}</GlobalText>
+            <View>
+              <GlobalText center type="headline2">
+                {t(`wallet.nfts`)}
+              </GlobalText>
             </View>
             <NftCollections t />
-            <View style={globalStyles.centered}>
-              <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
+            <View>
+              <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
             <GlobalNftList
               nonFungibleTokens={nftsGroup}

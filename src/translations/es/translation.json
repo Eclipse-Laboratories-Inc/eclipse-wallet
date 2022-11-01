@@ -242,7 +242,9 @@
     "marketplace_name": "Hyperspace",
     "success_list": "Su NFT ha sido listado en",
     "success_unlist": "Su NFT ha sido delistado de",
-    "goto_marketplace": "Ir al Marketplace"
+    "goto_marketplace": "Ir al Marketplace",
+    "trending_collections": "Colleciones destacadas",
+    "new_collections": "Nuevas colleciones"
   },
   "swap": {
     "swap": "Swap",
