@@ -227,6 +227,14 @@ const AdapterDetail = () => {
     });
   };
 
+  const onError = error => {
+    popRequest();
+    postMessage({
+      error,
+      id: request.id,
+    });
+  };
+
   if (request?.method === 'sign') {
     return (
       <SignMessagesForm
@@ -236,6 +244,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
@@ -249,6 +258,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
@@ -262,6 +272,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
@@ -275,6 +286,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
