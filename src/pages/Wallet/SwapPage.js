@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
+import useTxSwapStatus from '../../hooks/useTxSwapStatus';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -201,75 +202,20 @@ const SwapPage = ({ t }) => {
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
 
-  const [transactions, setTransactions] = useState([]);
-  const [setupTransaction, setSetupTransaction] = useState('');
-  const [swapTransaction, setSwapTransaction] = useState('');
-  const [cleanupTransaction, setCleanupTransaction] = useState('');
-  const [setupStatus, setSetupStatus] = useState(null);
-  const [swapStatus, setSwapStatus] = useState(null);
-  const [cleanUpStatus, setCleanUpStatus] = useState(null);
-  const [totalTransactions, setTotalTransactions] = useState(0);
-  const [currentTransaction, setCurrentTransaction] = useState(1);
   const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
-  useEffect(() => {
-    document.addEventListener('send_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupTransaction(e.detail.id);
-          setSetupStatus(0);
-          break;
-        case 'swapTransaction':
-          setSwapTransaction(e.detail.id);
-          setSwapStatus(0);
-          break;
-        case 'cleanupTransaction':
-          setCleanupTransaction(e.detail.id);
-          setCleanUpStatus(0);
-          break;
-      }
-      setTotalTransactions(totalTransactions + 1);
-      console.log(
-        `Transaction ${e.detail.name} with id ${e.detail.id} was submitted.`,
-      );
-    });
+  const {
+    setupTransaction,
+    setupStatus,
+    swapTransaction,
+    swapStatus,
+    cleanupTransaction,
+    cleanUpStatus,
+    totalTransactions,
+    currentTransaction,
+  } = useTxSwapStatus();
 
-    document.addEventListener('confirmed_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupStatus(1);
-          break;
-        case 'swapTransaction':
-          setSwapStatus(1);
-          break;
-        case 'cleanupTransaction':
-          setCleanUpStatus(1);
-          break;
-      }
-      if (currentTransaction < totalTransactions)
-        setCurrentTransaction(currentTransaction + 1);
-      console.log(
-        `Confirm transaction with id: ${e.detail.id} and status ${e.detail.status}`,
-      );
-    });
-
-    document.addEventListener('failed_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupStatus(2);
-          break;
-        case 'swapTransaction':
-          setSwapStatus(2);
-          break;
-        case 'cleanupTransaction':
-          setCleanUpStatus(2);
-          break;
-      }
-      console.log(
-        `Transaction ${e.detail.name} with id: ${e.detail.id} failed`,
-      );
-    });
-  }, [currentTransaction, totalTransactions]);
+  useEffect(() => {}, [currentTransaction, totalTransactions]);
 
   useEffect(() => {
     if (activeWallet) {
