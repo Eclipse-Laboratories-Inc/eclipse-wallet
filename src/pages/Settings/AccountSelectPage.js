@@ -87,9 +87,8 @@ const AccountSelectPage = ({ t }) => {
               </View>
               <>
                 {groupedWallets[chain].map(wallet => (
-                  <>
+                  <View key={wallet.address}>
                     <CardButtonWallet
-                      key={wallet.address}
                       title={getWalletName(wallet.address, config)}
                       address={wallet.address}
                       chain={wallet.chain}
@@ -123,7 +122,7 @@ const AccountSelectPage = ({ t }) => {
                         </GlobalText>
                       }
                     />
-                  </>
+                  </View>
                 ))}
               </>
             </React.Fragment>
