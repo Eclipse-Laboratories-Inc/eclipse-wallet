@@ -19,6 +19,7 @@ const SignMessagesForm = ({
   origin,
   onApprove,
   onReject,
+  onError,
 }) => {
   const [{ activeWallet }] = useContext(AppContext);
 
@@ -29,7 +30,7 @@ const SignMessagesForm = ({
     return request.params.data;
   }, [request]);
 
-  const display = useMemo(() => request.params.display, [request]);
+  const display = useMemo(() => request.params.display || 'utf8', [request]);
 
   const message = useMemo(
     () =>
@@ -53,13 +54,21 @@ const SignMessagesForm = ({
     [request, activeWallet, data, createSignature],
   );
 
+  const onAccept = useCallback(() => {
+    try {
+      onApprove(getMessage());
+    } catch (err) {
+      onError(err.message);
+    }
+  }, [getMessage, onApprove, onError]);
+
   return (
     <ApproveMessagesForm
       messages={[message]}
       origin={origin}
       name={name}
       icon={icon}
-      onApprove={() => onApprove(getMessage())}
+      onApprove={onAccept}
       onReject={onReject}
     />
   );

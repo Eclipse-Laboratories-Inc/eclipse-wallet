@@ -1,9 +1,9 @@
 {
   "name": "salmon-app",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "dependencies": {
-    "4m-wallet-adapter": "^0.0.78",
+    "4m-wallet-adapter": "^0.0.80",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.4",
@@ -19,7 +19,6 @@
     "bs58": "^5.0.0",
     "crypto-browserify": "^3.12.0",
     "deprecated-react-native-prop-types": "^2.3.0",
-    "fetch-opengraph": "^1.0.35",
     "file": "^0.2.2",
     "i18next": "^21.9.1",
     "metro-config": "^0.72.2",
@@ -56,6 +55,7 @@
     "react-native-web-hover": "^0.2.9",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
+    "salmon-wallet-standard": "^0.0.5",
     "stream-browserify": "^3.0.0",
     "tweetnacl": "^1.0.3",
     "util": "^0.12.4",
@@ -68,6 +68,7 @@
     "@types/chrome": "^0.0.193",
     "babel-jest": "^26.6.3",
     "buffer": "^6.0.3",
+    "esbuild": "^0.15.12",
     "eslint": "^7.32.0",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
@@ -83,12 +84,19 @@
     "stream-http": "^3.2.0",
     "url": "^0.11.0"
   },
+  "overrides": {
+    "node-fetch": "^2.6.7",
+    "nth-check": "^2.0.1",
+    "minimatch": "^3.0.5",
+    "jpeg-js": "^0.4.4",
+    "cross-fetch": "^3.1.5"
+  },
   "scripts": {
-    "start:web": "PORT=3001 react-scripts start",
+    "start:web": "react-scripts start",
     "build": "react-scripts build",
-    "build:extension:clean": "rm -rf build-extension && rm -rf build-extension-mozilla",
-    "build:extension": "npm run build:extension:clean && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && npm run build:extension-scripts && cp -R ./build-extension ./build-extension-mozilla && mv ./build-extension-mozilla/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
-    "build:extension-scripts": "cp -a ./extension/src/. ./build-extension/.",
+    "build:extension:chrome": "rm -rf build-extension && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --minify --target=chrome58 --outdir=./build-extension && cp -a ./extension/src/manifest.json ./build-extension/manifest.json",
+    "build:extension:mozilla": "rm -rf build-extension-mozilla && BUILD_PATH=./build-extension-mozilla REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --minify --target=firefox57 --outdir=./build-extension-mozilla && cp -a ./extension/src/manifest.mozilla.json ./build-extension-mozilla/manifest.json",
+    "build:extension": "npm run build:extension:chrome && npm run build:extension:mozilla",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:packager": "react-native start",
@@ -106,6 +114,10 @@
       "react-app",
       "react-app/jest"
     ]
+  },
+  "browser": {
+    "stream": "stream-browserify",
+    "crypto": "crypto-browserify"
   },
   "browserslist": {
     "production": [

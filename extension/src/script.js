@@ -1,17 +1,12 @@
-/* eslint-disable no-undef */
+import { initialize } from 'salmon-wallet-standard';
+import { SolanaProvider } from './provider';
 
-window.salmon = {
-  postMessage: message => {
-    const listener = event => {
-      if (event.detail.id === message.id) {
-        window.removeEventListener('salmon_contentscript_message', listener);
-        window.postMessage(event.detail);
-      }
-    };
-    window.addEventListener('salmon_contentscript_message', listener);
+const salmon = new SolanaProvider();
 
-    window.dispatchEvent(
-      new CustomEvent('salmon_injected_script_message', { detail: message }),
-    );
-  },
-};
+initialize(salmon);
+
+try {
+  Object.defineProperty(window, 'salmon', { value: salmon });
+} catch (error) {
+  console.error(error);
+}

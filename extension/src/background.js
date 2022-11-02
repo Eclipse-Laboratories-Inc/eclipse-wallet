@@ -2,14 +2,58 @@
 const responseHandlers = new Map();
 const stashedValues = new Map();
 
+const getActiveTabId = async () => {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tabs?.[0]?.id;
+};
+
+const getConnectedTabsIds = async () =>
+  new Promise(resolve => {
+    chrome.storage.local.get('connectedTabsIds', result => {
+      resolve(JSON.parse(result.connectedTabsIds || null) || []);
+    });
+  });
+
+const addConnectedTabId = async tabId => {
+  if (tabId) {
+    const tabsIds = await getConnectedTabsIds();
+    if (!tabsIds.includes(tabId)) {
+      await chrome.storage.local.set({
+        connectedTabsIds: JSON.stringify([...tabsIds, tabId]),
+      });
+    }
+  }
+};
+
+const removeConnectedTabId = async tabId => {
+  const tabsIds = await getConnectedTabsIds();
+  if (tabsIds.includes(tabId)) {
+    await chrome.storage.local.set({
+      connectedTabsIds: JSON.stringify(tabsIds.filter(id => id !== tabId)),
+    });
+  }
+};
+
+const cleanConnectedTabs = async () => {
+  const allTabsIds = (await chrome.tabs.query({})).map(tab => tab?.id);
+  const connectedTabsIds = await getConnectedTabsIds();
+
+  const tabsIds = connectedTabsIds.filter(tabId => allTabsIds.includes(tabId));
+  await chrome.storage.local.set({
+    connectedTabsIds: JSON.stringify(tabsIds),
+  });
+};
+
 const launchPopup = (message, sender, sendResponse) => {
   const searchParams = new URLSearchParams();
   searchParams.set('origin', sender.origin);
-  searchParams.set('network', message.data.params.network);
   searchParams.set('request', JSON.stringify(message.data));
+  if (message.data.params?.network) {
+    searchParams.set('network', message.data.params.network);
+  }
 
-  chrome.windows.getLastFocused(focusedWindow => {
-    chrome.windows.create({
+  chrome.windows.getLastFocused(async focusedWindow => {
+    const popup = await chrome.windows.create({
       url: 'index.html#' + searchParams.toString(),
       type: 'popup',
       width: 460,
@@ -18,12 +62,29 @@ const launchPopup = (message, sender, sendResponse) => {
       left: focusedWindow.left + (focusedWindow.width - 460),
       focused: true,
     });
+
+    const listener = windowId => {
+      if (windowId === popup.id) {
+        const responseHandler = responseHandlers.get(message.data.id);
+        if (responseHandler) {
+          responseHandlers.delete(message.data.id);
+          responseHandler({
+            error: 'Operation cancelled',
+            id: message.data.id,
+          });
+        }
+
+        chrome.windows.onRemoved.removeListener(listener);
+      }
+    };
+
+    chrome.windows.onRemoved.addListener(listener);
   });
 
   responseHandlers.set(message.data.id, sendResponse);
 };
 
-const getConnection = (origin, { wallets, active }) => {
+const getConnection = async (origin, { wallets, active }) => {
   if (!wallets || isNaN(active)) {
     return null;
   }
@@ -31,10 +92,12 @@ const getConnection = (origin, { wallets, active }) => {
   if (!json.wallets || active < 0 || active >= json.wallets.length) {
     return null;
   }
+  let wallet;
   if (json.passwordRequired) {
     return null;
+  } else {
+    wallet = json.wallets[active];
   }
-  const wallet = json.wallets[active];
   if (wallet.chain !== 'SOLANA') {
     return null;
   }
@@ -46,11 +109,18 @@ const getConnection = (origin, { wallets, active }) => {
   return { address };
 };
 
-const handleConnect = (message, sender, sendResponse) => {
-  chrome.storage.local.get(['wallets', 'active'], result => {
-    const connection = getConnection(sender.origin, result);
+const handleConnect = async (message, sender, sendResponse) => {
+  chrome.storage.local.get(['wallets', 'active'], async result => {
+    const tabId = await getActiveTabId();
+
+    const callback = async (data, id) => {
+      await sendResponse(data, id);
+      await addConnectedTabId(tabId);
+    };
+
+    const connection = await getConnection(sender.origin, result);
     if (connection) {
-      sendResponse({
+      await callback({
         method: 'connected',
         params: {
           publicKey: connection.address,
@@ -58,13 +128,16 @@ const handleConnect = (message, sender, sendResponse) => {
         id: message.data.id,
       });
     } else {
-      launchPopup(message, sender, sendResponse);
+      launchPopup(message, sender, callback);
     }
   });
 };
 
-const handleDisconnect = (message, sender, sendResponse) => {
-  sendResponse({ method: 'disconnected', id: message.data.id });
+const handleDisconnect = async (message, sender, sendResponse) => {
+  await sendResponse({ method: 'disconnected', id: message.data.id });
+
+  const tabId = await getActiveTabId();
+  await removeConnectedTabId(tabId);
 };
 
 const handleStashOperation = (message, sender, sendResponse) => {
@@ -101,8 +174,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   } else if (message.channel === 'salmon_extension_background_channel') {
     const responseHandler = responseHandlers.get(message.data.id);
     responseHandlers.delete(message.data.id);
-    responseHandler(message.data);
-  } else if (message.channel === 'sollet_extension_stash_channel') {
+    responseHandler(message.data, message.data.id);
+  } else if (message.channel === 'salmon_extension_stash_channel') {
     handleStashOperation(message, sender, sendResponse);
   }
 });
@@ -112,3 +185,9 @@ chrome.alarms.onAlarm.addListener(alarm => {
     stashedValues.delete('password');
   }
 });
+
+chrome.tabs.onRemoved.addListener(tabId => {
+  removeConnectedTabId(tabId);
+});
+
+cleanConnectedTabs();

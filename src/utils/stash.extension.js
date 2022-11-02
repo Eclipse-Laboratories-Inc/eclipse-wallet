@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const channel = 'sollet_extension_stash_channel';
+const channel = 'salmon_extension_stash_channel';
 
 const stash = {
   getItem: async key =>

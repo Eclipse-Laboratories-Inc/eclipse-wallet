@@ -7,20 +7,26 @@ import React, {
 } from 'react';
 
 import get from 'lodash/get';
+import { getMetadata } from '4m-wallet-adapter/services/dapp-service';
 
 import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 
 import { AppContext } from '../../../AppProvider';
 import ApproveConnectionForm from './ApproveConnectionForm';
 import KeepOpenBanner from './KeepOpenBanner';
+import SignAndSendTransactionsForm from './SignAndSendTransactionsForm';
 import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignTransactionForm from './SignTransactionForm';
-import { getMetadata } from '../../../utils/dapp';
 import { isExtension } from '../../../utils/platform';
 import { getDefaultEndpoint } from '../../../utils/wallet';
 
-const AUTHORIZED_METHODS = ['signTransaction', 'signAllTransactions', 'sign'];
+const AUTHORIZED_METHODS = [
+  'signTransaction',
+  'signAllTransactions',
+  'signAndSendTransaction',
+  'sign',
+];
 
 function getInitialRequests({ context }) {
   if (!isExtension()) {
@@ -66,14 +72,13 @@ const AdapterDetail = () => {
   const [{ activeWallet, config, context, opener }, { addTrustedApp }] =
     useContext(AppContext);
   const origin = useMemo(() => context.get('origin'), [context]);
-  const endpoint = useMemo(
-    () => context.get('network') || getDefaultEndpoint('SOLANA'),
-    [context],
-  );
+  const endpoint = useMemo(() => context.get('network'), [context]);
 
   useEffect(() => {
-    if (activeWallet.networkId !== endpoint) {
+    if (endpoint) {
       activeWallet.setNetwork(endpoint);
+    } else if (!activeWallet.networkId) {
+      activeWallet.setNetwork(getDefaultEndpoint('SOLANA'));
     }
   }, [activeWallet, endpoint]);
 
@@ -188,13 +193,23 @@ const AdapterDetail = () => {
       }
     };
 
+    const onReject = () => {
+      popRequest();
+      postMessage({
+        error: 'Connection cancelled',
+        id: request.id,
+      });
+
+      window?.close();
+    };
+
     return (
       <ApproveConnectionForm
         origin={origin}
         name={name}
         icon={icon}
         onApprove={connect}
-        onReject={() => window?.close()}
+        onReject={onReject}
       />
     );
   }
@@ -212,6 +227,14 @@ const AdapterDetail = () => {
     });
   };
 
+  const onError = error => {
+    popRequest();
+    postMessage({
+      error,
+      id: request.id,
+    });
+  };
+
   if (request?.method === 'sign') {
     return (
       <SignMessagesForm
@@ -221,6 +244,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
@@ -234,6 +258,7 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
       />
     );
   }
@@ -247,6 +272,21 @@ const AdapterDetail = () => {
         request={request}
         onApprove={onApprove}
         onReject={onReject}
+        onError={onError}
+      />
+    );
+  }
+
+  if (request?.method === 'signAndSendTransaction') {
+    return (
+      <SignAndSendTransactionsForm
+        origin={origin}
+        name={name}
+        icon={icon}
+        request={request}
+        onApprove={onApprove}
+        onReject={onReject}
+        onError={onError}
       />
     );
   }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '../../routes/hooks';
@@ -17,10 +17,12 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { isNative } from '../../utils/platform';
+import { isExtension, isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard';
+import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
+import Tooltip from '../Tooltip/Tooltip';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -59,20 +61,48 @@ const styles = StyleSheet.create({
     marginTop: 1,
     position: 'absolute',
   },
-  appConnectedStatus: {
+  appStatus: {
     marginRight: theme.gutters.paddingNormal,
-    backgroundColor: theme.colors.negativeBright,
     borderRadius: 50,
     height: 14,
     width: 14,
+  },
+  appConnectedStatus: {
+    backgroundColor: theme.colors.positiveBright,
+  },
+  appDisconnectedStatus: {
+    backgroundColor: theme.colors.negativeBright,
   },
 });
 
 const Header = ({ activeWallet, config, t }) => {
   const [showToast, setShowToast] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [isConnected, setIsConnected] = useState(null);
+  const [hostname, setHostname] = useState(null);
 
   const navigate = useNavigation();
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (isExtension()) {
+        // eslint-disable-next-line no-undef
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        try {
+          setHostname(new URL(tabs?.[0]?.url).hostname);
+        } catch (err) {
+          console.log(err);
+        }
+        const tabsIds = await storage.getItem('connectedTabsIds');
+        setIsConnected(tabsIds?.includes(tabs?.[0]?.id));
+      }
+    };
+
+    checkConnection();
+  }, []);
 
   const toggleScan = () => {
     setShowScan(!showScan);
@@ -149,7 +179,25 @@ const Header = ({ activeWallet, config, t }) => {
               onPress={toggleScan}
             />
           )}
-          <View style={styles.appConnectedStatus} />
+          {isConnected !== null && (
+            <Tooltip
+              title={
+                <GlobalText>
+                  {t(isConnected ? 'header.connected' : 'header.disconnected', {
+                    hostname,
+                  })}
+                </GlobalText>
+              }>
+              <View
+                style={[
+                  styles.appStatus,
+                  isConnected
+                    ? styles.appConnectedStatus
+                    : styles.appDisconnectedStatus,
+                ]}
+              />
+            </Tooltip>
+          )}
         </View>
       </View>
       <GlobalToast

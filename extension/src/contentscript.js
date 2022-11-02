@@ -3,6 +3,7 @@
 
 const scriptTag = document.createElement('script');
 scriptTag.setAttribute('async', 'false');
+scriptTag.setAttribute('type', 'module');
 scriptTag.src = chrome.runtime.getURL('script.js');
 
 const container = document.head || document.documentElement;

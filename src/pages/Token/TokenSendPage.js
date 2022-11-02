@@ -34,8 +34,10 @@ import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard';
+import { getWalletChain } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
@@ -82,6 +84,7 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -151,7 +154,7 @@ const TokenSendPage = ({ params, t }) => {
   const recipient = recipientName ? recipientName : recipientAddress;
 
   const openTransaction = async () => {
-    const url = `https://solscan.io/tx/${transactionId}`;
+    const url = `${explorer.url}/tx/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
