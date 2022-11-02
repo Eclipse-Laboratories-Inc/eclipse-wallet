@@ -1,6 +1,6 @@
 {
   "name": "salmon-app",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "private": true,
   "dependencies": {
     "4m-wallet-adapter": "^0.0.80",
