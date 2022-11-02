@@ -109,7 +109,7 @@ const SimulatedTransactions = ({
 }) => (
   <GlobalLayout fullscreen>
     <GlobalLayout.Header>
-      <ActiveWalletCard />
+      <ActiveWalletCard showNetwork />
       <GlobalBackTitle title={t('adapter.detail.transaction.title')} nospace />
       <GlobalPadding size="xl" />
       <DAppCard name={name} icon={icon} origin={origin} />
