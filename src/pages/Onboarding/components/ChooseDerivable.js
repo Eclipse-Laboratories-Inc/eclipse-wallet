@@ -44,7 +44,14 @@ const formatTitle = (index, publicKey) => {
   )} ... ${publicKey.substring(publicKey.length - visiblePart)}`;
 };
 
-const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
+const ChooseDerivable = ({
+  accounts,
+  balances,
+  onComplete,
+  goToWallet,
+  goToAdapter,
+  t,
+}) => {
   const [selected, setSelected] = useState([]);
   const updateSelected = (index, status) => {
     if (status) {
@@ -91,12 +98,22 @@ const ChooseDerivable = ({ accounts, balances, onComplete, goToWallet, t }) => {
             onPress={() => onComplete(selected)}
           />
           <GlobalPadding size="xs" />
-          <GlobalButton
-            type="primary"
-            wide
-            title={t('wallet.create.skip')}
-            onPress={goToWallet}
-          />
+          {goToWallet && (
+            <GlobalButton
+              type="primary"
+              wide
+              title={t('wallet.create.skip')}
+              onPress={goToWallet}
+            />
+          )}
+          {goToAdapter && (
+            <GlobalButton
+              type="primary"
+              wide
+              title={t('wallet.create.skip')}
+              onPress={goToAdapter}
+            />
+          )}
         </View>
       </GlobalLayout>
     </GlobalBackgroundImage>

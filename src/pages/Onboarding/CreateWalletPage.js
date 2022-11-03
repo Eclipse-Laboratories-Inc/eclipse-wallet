@@ -19,7 +19,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
-import GlobalDivider from '../../component-library/Global/GlobalDivider';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -294,8 +293,8 @@ const CreateWalletPage = ({ params, t }) => {
       )}
       {step === 5 && (
         <Success
-          goToWallet={!isAdapter ? goToWallet : undefined}
-          goToAdapter={isAdapter ? goToAdapter : undefined}
+          goToWallet={!isAdapter && goToWallet}
+          goToAdapter={isAdapter && goToAdapter}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
