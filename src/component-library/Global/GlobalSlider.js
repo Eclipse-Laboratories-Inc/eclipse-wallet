@@ -56,7 +56,6 @@ const GlobalSlider = ({
   maxHeight,
   dots = true,
 }) => {
-  console.log(items);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
   const [isExpanded, setIsExpanded] = useState(false);

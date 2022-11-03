@@ -46,7 +46,7 @@ const NftCollections = ({ t }) => {
 
   return (
     <>
-      {sliderItems?.length && (
+      {sliderItems?.length ? (
         <GlobalSlider
           items={sliderItems.filter(({ value }) => value.length)}
           slides={sliderItems.length}
@@ -54,7 +54,7 @@ const NftCollections = ({ t }) => {
           minHeight={294}
           maxHeight={740}
         />
-      )}
+      ) : null}
     </>
   );
 };
