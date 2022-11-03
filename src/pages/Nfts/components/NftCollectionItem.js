@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '../../../routes/hooks';
+import { ROUTES_MAP } from '../routes';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import theme from '../../../component-library/Global/theme';
@@ -29,14 +31,12 @@ const styles = StyleSheet.create({
 });
 
 const NftCollectionItem = ({ item }) => {
+  const navigate = useNavigation();
+
   const openCollection = async project_id => {
-    const url = `https://hyperspace.xyz/collection//${project_id}`;
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.log(`UNSUPPORTED LINK ${url}`);
-    }
+    navigate(ROUTES_MAP.NFTS_COLLECTION_DETAIL, {
+      id: project_id,
+    });
   };
   console.log(item);
   return (

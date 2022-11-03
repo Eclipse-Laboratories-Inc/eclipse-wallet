@@ -7,6 +7,9 @@ export const CACHE_TYPES = {
   BALANCE: 'BALANCE',
   NFTS: 'NFTS',
   NFTS_ALL: 'NFTS_ALL',
+  NFTS_COLLECTION_DETAIL: 'NFTS_COLLECTION_DETAIL',
+  NFTS_COLLECTION_ITEMS: 'NFTS_COLLECTION_ITEMS',
+  NFTS_BUY_DETAIL: 'NFTS_BUY_DETAIL',
   TRANSACTIONS: 'TRANSACTIONS',
   TOKENS: 'TOKENS',
   AVAILABLE_TOKENS: 'AVAILABLE_TOKENS',
@@ -25,6 +28,21 @@ var CACHE = {
     value: [],
   },
   [CACHE_TYPES.NFTS_ALL]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.NFTS_COLLECTION_DETAIL]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.NFTS_COLLECTION_ITEMS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.NFTS_BUY_DETAIL]: {
     expires: null,
     key: '',
     value: [],

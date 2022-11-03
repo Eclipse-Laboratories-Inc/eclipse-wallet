@@ -1,5 +1,9 @@
 import NftsCollectionPage from './NftsCollectionPage';
+import NftsCollectionDetailPage from './NftsCollectionDetailPage';
 import NftsDetailPage from './NftsDetailPage';
+import NftsBuyDetailPage from './NftsBuyDetailPage';
+import NftsBuyingPage from './NftsBuyingPage';
+
 import NftsListPage from './NftsListPage';
 import NftsSendPage from './NftsSendPage';
 import NftsListingPage from './NftsListingPage';
@@ -7,7 +11,10 @@ import NftsListingPage from './NftsListingPage';
 export const ROUTES_MAP = {
   NFTS_LIST: 'NFTS_LIST',
   NFTS_COLLECTION: 'NFTS_COLLECTION',
+  NFTS_COLLECTION_DETAIL: 'NFTS_COLLECTION_DETAIL',
   NFTS_DETAIL: 'NFTS_DETAIL',
+  NFTS_BUY_DETAIL: 'NFTS_BUY_DETAIL',
+  NFTS_BUYING: 'NFTS_BUYING',
   NFTS_SEND: 'NFTS_SEND',
   NFTS_LISTING: 'NFTS_LISTING',
 };
@@ -27,6 +34,14 @@ const routes = [
     path: 'collection/:id',
     route: '/wallet/nfts/collection/:id',
     Component: NftsCollectionPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.NFTS_COLLECTION_DETAIL,
+    name: 'nftsCollectionDetail',
+    path: 'hyperspace/:id',
+    route: '/wallet/nfts/hyperspace/:id',
+    Component: NftsCollectionDetailPage,
     default: false,
   },
   {
@@ -51,6 +66,30 @@ const routes = [
     path: ':id/listing/:type',
     route: '/wallet/nfts/:id/listing/:type',
     Component: NftsListingPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.NFTS_BUY_DETAIL,
+    name: 'nftsBuyDetail',
+    path: 'hyperspace/:id/:nftId',
+    route: '/wallet/nfts/hyperspace/:id/:nftId',
+    Component: NftsBuyDetailPage,
+    default: false,
+  },
+  // {
+  //   key: ROUTES_MAP.NFTS_BUYING,
+  //   name: 'nftsBuying',
+  //   path: 'hyperspace/:id/:nftId/buy',
+  //   route: '/wallet/nfts/hyperspace/:id/:nftId/buy',
+  //   Component: NftsBuyingPage,
+  //   default: false,
+  // },
+  {
+    key: ROUTES_MAP.NFTS_BUYING,
+    name: 'nftsBuying',
+    path: 'hyperspace/:id/:nftId/:type',
+    route: '/wallet/nfts/hyperspace/:id/:nftId/:type',
+    Component: NftsBuyingPage,
     default: false,
   },
 ];

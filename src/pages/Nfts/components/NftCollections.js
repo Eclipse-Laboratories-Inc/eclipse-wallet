@@ -24,21 +24,29 @@ const NftCollections = ({ t }) => {
   const [{ activeWallet }] = useContext(AppContext);
 
   useEffect(() => {
+    const getTrandingCollections = activeWallet.getCollectionGroup('trending');
+    const getNewCollections = activeWallet.getCollectionGroup('new');
     if (activeWallet) {
-      activeWallet.getCollectionGroup('trending').then(trendColls => {
-        setSliderItems([
-          {
-            title: 'Trending collections',
-            value: trendColls?.project_stats?.splice(0, 6),
-          },
-        ]);
-      });
+      Promise.all([getTrandingCollections, getNewCollections]).then(
+        ([trendColls, newColls]) => {
+          setSliderItems([
+            {
+              title: 'Trending collections',
+              value: trendColls?.project_stats?.splice(0, 6),
+            },
+            {
+              title: 'New collections',
+              value: newColls?.project_stats?.splice(0, 6),
+            },
+          ]);
+        },
+      );
     }
   }, [activeWallet]);
 
   return (
     <>
-      {sliderItems?.length && (
+      {(sliderItems?.length && (
         <GlobalSlider
           items={sliderItems.filter(({ value }) => value.length)}
           slides={sliderItems.length}
@@ -46,7 +54,8 @@ const NftCollections = ({ t }) => {
           minHeight={294}
           maxHeight={740}
         />
-      )}
+      )) ||
+        null}
     </>
   );
 };

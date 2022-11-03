@@ -61,7 +61,11 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           source={
             isBlacklisted(nft)
               ? Blacklisted
-              : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
+              : getMediaRemoteUrl(
+                  isCollection(nft)
+                    ? nft.thumb
+                    : nft.media || nft.meta_data_img,
+                )
           }
           size="block"
         />
@@ -84,15 +88,17 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
         />
       </View>
     </TouchableOpacity>
-    <View style={styles.nameContainer}>
-      <GlobalText
-        style={styles.nftName}
-        center
-        type="caption"
-        numberOfLines={1}>
-        {isCollection(nft) ? nft.collection : nft.name || nft.symbol}
-      </GlobalText>
-    </View>
+    {!nft.meta_data_img && (
+      <View style={styles.nameContainer}>
+        <GlobalText
+          style={styles.nftName}
+          center
+          type="caption"
+          numberOfLines={2}>
+          {isCollection(nft) ? nft.collection : nft.name || nft.symbol}
+        </GlobalText>
+      </View>
+    )}
   </>
 );
 export default withTranslation()(GlobalNft);

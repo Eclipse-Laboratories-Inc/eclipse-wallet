@@ -56,15 +56,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const NftsListingPage = ({ params, t }) => {
+const NftsBuyingPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const isListed = params.type === 'unlist';
+  const isBidded = params.type === 'cancel-offer';
 
   const [loaded, setLoaded] = useState(false);
   const [listedLoaded, setListedLoaded] = useState(false);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState();
-  const [step, setStep] = useState(isListed ? 2 : 1);
+  const [step, setStep] = useState(isBidded ? 2 : 1);
   const [nftDetail, setNftDetail] = useState({});
   const [transactionId, setTransactionId] = useState();
   const [error, setError] = useState(false);
@@ -72,8 +72,10 @@ const NftsListingPage = ({ params, t }) => {
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
+  const [bidAmount, setBidAmount] = useState([]);
+  const [bidsLoaded, setBidsLoaded] = useState(false);
 
-  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_BUY_BID);
 
   useEffect(() => {
     if (activeWallet) {
@@ -85,26 +87,34 @@ const NftsListingPage = ({ params, t }) => {
         ),
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NFTS_ALL,
-          () => activeWallet.getAllNfts(),
+          CACHE_TYPES.NFTS_BUY_DETAIL,
+          () => activeWallet.getCollectionItems(params.id),
         ),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
-        const nft = nfts.find(n => n.mint === params.id);
+        const nft = nfts.market_place_snapshots.find(
+          n => n.token_address === params.nftId,
+        );
         setSolBalance(tks.length ? tks[0] : null);
         if (nft) {
           setNftDetail(nft);
         }
-        const listed = await activeWallet.getListedNfts();
+        // const listed = await activeWallet.getListedNfts();
+        // setPrice(
+        //   listed.find(l => l.token_address === params.id)?.market_place_state
+        //     ?.price || null,
+        // );
+        setLoaded(true);
+        const bids = await activeWallet.getNftsBids();
         setPrice(
-          listed.find(l => l.token_address === params.id)?.market_place_state
+          bids.find(b => b.token_address === params.nftId)?.market_place_state
             ?.price || null,
         );
-        setListedLoaded(true);
-        setLoaded(true);
+        setBidsLoaded(true);
+        // setListedLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeWallet, params.id, params.nftId]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
@@ -113,8 +123,11 @@ const NftsListingPage = ({ params, t }) => {
   const goToBack = () => {
     if (step === 3) {
       navigate(NFTS_ROUTES_MAP.NFTS_LIST);
-    } else if (step === 1 || isListed) {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    } else if (step === 1 || isBidded) {
+      navigate(NFTS_ROUTES_MAP.NFTS_BUY_DETAIL, {
+        id: nftDetail.project_id,
+        nftId: nftDetail.token_address,
+      });
     }
     setStep(step - 1);
   };
@@ -130,12 +143,14 @@ const NftsListingPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
       let txId;
-      isListed
-        ? (txId = await activeWallet.unlistNft(nftDetail.mint))
-        : (txId = await activeWallet.listNft(nftDetail.mint, price));
+      isBidded
+        ? (txId = await activeWallet.cancelBidNft(nftDetail.token_address))
+        : (txId = await activeWallet.bidNft(nftDetail.token_address, price));
       setTransactionId(txId);
       setStatus(
-        isListed ? TRANSACTION_STATUS.UNLISTING : TRANSACTION_STATUS.LISTING,
+        isBidded
+          ? TRANSACTION_STATUS.CANCELING_OFFER
+          : TRANSACTION_STATUS.CREATING_OFFER,
       );
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
@@ -185,13 +200,13 @@ const NftsListingPage = ({ params, t }) => {
             />
 
             <GlobalText type="headline2" center>
-              {nftDetail.name || nftDetail.symbol}
+              {nftDetail.name}
             </GlobalText>
 
             <View style={globalStyles.centered}>
               <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
                 <GlobalImage
-                  source={getMediaRemoteUrl(nftDetail.media)}
+                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
                   style={globalStyles.bigImage}
                   square
                   squircle
@@ -205,7 +220,7 @@ const NftsListingPage = ({ params, t }) => {
               <GlobalImage source={IconExpandMoreAccent1} size="md" />
             </View>
             <View style={globalStyles.inlineFlexButtons}>
-              <GlobalText type="body2">{t('nft.sell_price')}</GlobalText>
+              <GlobalText type="body2">{t('nft.offer_amount')}</GlobalText>
             </View>
 
             <GlobalPadding size="xs" />
@@ -335,13 +350,13 @@ const NftsListingPage = ({ params, t }) => {
             />
 
             <GlobalText type="headline2" center>
-              {nftDetail.name || nftDetail.symbol}
+              {nftDetail.name}
             </GlobalText>
 
             <View style={globalStyles.centered}>
               <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
                 <GlobalImage
-                  source={getMediaRemoteUrl(nftDetail.media)}
+                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
                   style={globalStyles.bigImage}
                   square
                   squircle
@@ -356,7 +371,7 @@ const NftsListingPage = ({ params, t }) => {
 
               <View style={globalStyles.inlineWell}>
                 <GlobalText type="caption" color="tertiary">
-                  {t('nft.sell_price')}
+                  {t('nft.offer_amount')}
                 </GlobalText>
                 <View>
                   <View
@@ -387,7 +402,7 @@ const NftsListingPage = ({ params, t }) => {
 
               <View style={globalStyles.inlineWell}>
                 <GlobalText type="caption" color="tertiary">
-                  {isListed ? t('nft.marketplace') : t('nft.marketplace_fee')}
+                  {isBidded ? t('nft.marketplace') : t('nft.marketplace_fee')}
                 </GlobalText>
                 <View>
                   <View
@@ -408,7 +423,7 @@ const NftsListingPage = ({ params, t }) => {
                       {t('nft.marketplace_name')}
                     </GlobalText>
                   </View>
-                  {!isListed && (
+                  {!isBidded && (
                     <GlobalText
                       type="caption"
                       color="tertiary"
@@ -455,7 +470,7 @@ const NftsListingPage = ({ params, t }) => {
             />
 
             <GlobalButton
-              disabled={sending || !listedLoaded}
+              disabled={sending || !bidsLoaded}
               type="primary"
               flex
               title={t(`general.confirm`)}
@@ -490,12 +505,13 @@ const NftsListingPage = ({ params, t }) => {
               {status !== 'creating' && (
                 <GlobalText
                   type={
-                    status === 'listing' || status === 'unlisting'
+                    status === 'creating-offer' || status === 'canceling-offer'
                       ? 'subtitle2'
                       : 'headline2'
                   }
                   color={
-                    (status === 'listing' || status === 'unlisting') &&
+                    (status === 'creating-offer' ||
+                      status === 'canceling-offer') &&
                     'secondary'
                   }
                   center>
@@ -506,23 +522,11 @@ const NftsListingPage = ({ params, t }) => {
                 <>
                   <GlobalPadding size="xs" />
                   <GlobalText type="body1" center>
-                    {isListed ? t(`nft.success_unlist`) : t(`nft.success_list`)}
+                    {isBidded
+                      ? t(`nft.success_cancel_offer`, { price })
+                      : t(`nft.success_offer`, { price })}
                   </GlobalText>
                   <GlobalPadding size="xxs" />
-                  <View style={globalStyles.inlineCentered}>
-                    <GlobalImage
-                      style={[
-                        globalStyles.centeredSmall,
-                        { marginRight: theme.gutters.paddingXXS },
-                      ]}
-                      source={IconHyperspace}
-                      size="xs"
-                      circle
-                    />
-                    <GlobalText type="body2" center>
-                      {t(`nft.marketplace_name`)}
-                    </GlobalText>
-                  </View>
                 </>
               )}
             </View>
@@ -590,4 +594,4 @@ const NftsListingPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(NftsListingPage));
+export default withParams(withTranslation()(NftsBuyingPage));
