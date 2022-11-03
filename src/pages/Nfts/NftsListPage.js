@@ -7,10 +7,9 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
-import { getWalletName } from '../../utils/wallet';
 import { isMoreThanOne } from '../../utils/nfts';
 
-import { globalStyles } from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
@@ -19,15 +18,16 @@ import Header from '../../component-library/Layout/Header';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
+import NftCollections from './components/NftCollections';
 
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
   const navigate = useNavigation();
-  const [loaded, setLoaded] = useState(false);
-  const [nftsGroup, setNftsGroup] = useState([]);
-  const [listedInfo, setListedInfo] = useState([]);
-
   const [{ activeWallet, config }] = useContext(AppContext);
+  const [loaded, setLoaded] = useState(false);
+  const [listedInfo, setListedInfo] = useState([]);
+  const [nftsGroup, setNftsGroup] = useState([]);
+
   useEffect(() => {
     if (activeWallet) {
       cache(
@@ -42,6 +42,7 @@ const NftsListPage = ({ t }) => {
       });
     }
   }, [activeWallet]);
+
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
@@ -61,8 +62,14 @@ const NftsListPage = ({ t }) => {
         {loaded && (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
-            <View style={globalStyles.centered}>
-              <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
+            <View>
+              <GlobalText center type="headline2">
+                {t(`wallet.nfts`)}
+              </GlobalText>
+            </View>
+            <NftCollections t />
+            <View>
+              <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
             <GlobalNftList
               nonFungibleTokens={nftsGroup}

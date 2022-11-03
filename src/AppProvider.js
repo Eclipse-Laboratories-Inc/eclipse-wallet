@@ -137,11 +137,14 @@ const AppProvider = ({ children }) => {
           </RoutesProvider>
         )}
         {walletState.locked && (
-          <RoutesProvider>
-            <ThemeProvider>
-              <LockedPage />
-            </ThemeProvider>
-          </RoutesProvider>
+          <ThemeProvider>
+            <LockedPage />
+          </ThemeProvider>
+          // <RoutesProvider>
+          //   <ThemeProvider>
+          //     <LockedPage />
+          //   </ThemeProvider>
+          // </RoutesProvider>
         )}
       </GlobalError>
     </AppContext.Provider>

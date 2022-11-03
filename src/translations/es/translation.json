@@ -137,6 +137,7 @@
     "my_tokens": "Mis Tokens",
     "non_listed_tokens": "Tokens no-listados",
     "my_nfts": "Mis NFTs",
+    "nfts": "NFTs",
     "copied": "Copiado al portapapeles!",
     "create_wallet": "Crear Wallet",
     "recover_wallet": "Recuperar Wallet",
@@ -244,6 +245,8 @@
     "success_list": "Su NFT ha sido listado en",
     "success_unlist": "Su NFT ha sido delistado de",
     "goto_marketplace": "Ir al Marketplace",
+    "trending_collections": "Colleciones destacadas",
+    "new_collections": "Nuevas colleciones",
     "burn_nft": "Quemar",
     "burning": "Quemando"
   },

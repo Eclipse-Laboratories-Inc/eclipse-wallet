@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.borderRadiusXL,
     marginBottom: theme.gutters.paddingXXS,
     marginTop: -36,
-    height: '70px',
+    height: 70,
     zIndex: -1,
   },
   nftName: {

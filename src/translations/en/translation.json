@@ -159,6 +159,7 @@
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
+    "nfts": "NFTs",
     "copied": "Copied to clipboard!",
     "create_wallet": "Create Wallet",
     "recover_wallet": "Recover Wallet",
@@ -276,7 +277,9 @@
     "marketplace_name": "Hyperspace",
     "success_list": "Your NFT has been listed in",
     "success_unlist": "Your NFT has been unlisted from",
-    "goto_marketplace": "Go to Marketplace"
+    "goto_marketplace": "Go to Marketplace",
+    "trending_collections": "Trending collections",
+    "new_collections": "New collections"
   },
   "swap": {
     "swap": "Swap",
