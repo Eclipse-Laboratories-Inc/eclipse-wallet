@@ -261,5 +261,9 @@
     "refresh_quote": "Refrescar cotización",
     "total_fee": "Tarifa total",
     "go_to_explorer": "Ir al Explorer"
+  },
+  "header": {
+    "connected": "Conectado a {{hostname}}",
+    "disconnected": "No conectado a {{hostname}}"
   }
 }

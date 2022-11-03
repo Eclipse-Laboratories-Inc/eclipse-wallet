@@ -13,6 +13,7 @@ const SignTransactionsForm = ({
   origin,
   onApprove,
   onReject,
+  onError,
 }) => {
   const [{ activeWallet }] = useContext(AppContext);
 
@@ -40,13 +41,21 @@ const SignTransactionsForm = ({
     [request, activeWallet, payloads, createSignature],
   );
 
+  const onAccept = useCallback(() => {
+    try {
+      onApprove(getMessage());
+    } catch (err) {
+      onError(err.message);
+    }
+  }, [getMessage, onApprove, onError]);
+
   return (
     <ApproveTransactionsForm
       payloads={payloads}
       origin={origin}
       name={name}
       icon={icon}
-      onApprove={() => onApprove(getMessage())}
+      onApprove={onAccept}
       onReject={onReject}
     />
   );

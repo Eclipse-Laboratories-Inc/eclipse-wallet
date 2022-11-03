@@ -24,7 +24,7 @@ const FailedTransactions = ({
 }) => (
   <GlobalLayout fullscreen>
     <GlobalLayout.Header>
-      <ActiveWalletCard />
+      <ActiveWalletCard showNetwork />
       <GlobalBackTitle title={t('adapter.detail.transaction.title')} nospace />
     </GlobalLayout.Header>
     <GlobalLayout.Inner>

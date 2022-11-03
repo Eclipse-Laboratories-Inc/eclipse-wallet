@@ -293,5 +293,9 @@
     "refresh_quote": "Refresh Quote",
     "total_fee": "Total fee",
     "go_to_explorer": "Go to Explorer"
+  },
+  "header": {
+    "connected": "Connected to {{hostname}}",
+    "disconnected": "Not connected to {{hostname}}"
   }
 }
