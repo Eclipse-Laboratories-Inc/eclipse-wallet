@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
+import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import { AppContext } from '../../AppProvider';
 import { getDefaultChain, getDerivedAccounts } from '../../utils/wallet';
 import ChooseDerivable from './components/ChooseDerivable';
@@ -30,6 +31,7 @@ const DerivedAccountsPage = ({ t }) => {
   ] = useContext(AppContext);
 
   const [step, setStep] = useState(1);
+  const [selected, setSelected] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [balances, setBalances] = useState([]);
   const [waiting, setWaiting] = useState(false);
@@ -50,41 +52,46 @@ const DerivedAccountsPage = ({ t }) => {
     });
   }, [activeWallet, accounts]);
 
-  const onPasswordComplete = async (selected, password) => {
+  const onPasswordComplete = async (selectedAccounts, password) => {
     setWaiting(true);
     await addDerivedAccounts(
-      accounts.filter(a => selected.includes(a.index)),
+      accounts.filter(a => selectedAccounts.includes(a.index)),
       password,
       getDefaultChain(),
     );
     navigate(isAdapter ? ROUTES_MAP.ADAPTER : ROUTES_MAP.WALLET);
   };
 
-  const onChooseComplete = async selected => {
+  const onChooseComplete = async selectedAccounts => {
     if (requiredLock) {
       const password = await stash.getItem('password');
       if (password) {
-        await onPasswordComplete(selected, password);
+        await onPasswordComplete(selectedAccounts, password);
       } else {
+        setSelected(selectedAccounts);
         setStep(2);
       }
     } else {
-      await onPasswordComplete(selected, null);
+      await onPasswordComplete(selectedAccounts, null);
     }
   };
   const goToWallet = () => navigate(ROUTES_MAP.WALLET);
   const goToAdapter = () => navigate(ROUTES_MAP.ADAPTER);
 
   if (step === 2) {
-    <Password
-      type="recover"
-      onComplete={onPasswordComplete}
-      onBack={() => setStep(1)}
-      requiredLock={requiredLock}
-      checkPassword={checkPassword}
-      waiting={waiting}
-      t={t}
-    />;
+    return (
+      <GlobalLayout fullscreen>
+        <Password
+          type="recover"
+          onComplete={password => onPasswordComplete(selected, password)}
+          onBack={() => setStep(1)}
+          requiredLock={requiredLock}
+          checkPassword={checkPassword}
+          waiting={waiting}
+          t={t}
+        />
+      </GlobalLayout>
+    );
   }
 
   return (
@@ -92,8 +99,8 @@ const DerivedAccountsPage = ({ t }) => {
       accounts={accounts}
       onComplete={onChooseComplete}
       balances={balances}
-      goToWallet={!isAdapter && goToWallet}
-      goToAdapter={isAdapter && goToAdapter}
+      goToWallet={!isAdapter ? goToWallet : undefined}
+      goToAdapter={isAdapter ? goToAdapter : undefined}
     />
   );
 };

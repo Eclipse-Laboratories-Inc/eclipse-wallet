@@ -293,8 +293,8 @@ const CreateWalletPage = ({ params, t }) => {
       )}
       {step === 5 && (
         <Success
-          goToWallet={!isAdapter && goToWallet}
-          goToAdapter={isAdapter && goToAdapter}
+          goToWallet={!isAdapter ? goToWallet : undefined}
+          goToAdapter={isAdapter ? goToAdapter : undefined}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
