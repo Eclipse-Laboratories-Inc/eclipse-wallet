@@ -63,11 +63,6 @@ const useWallets = () => {
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState({});
-  const waitUntilUnlock = w => {
-    setRequiredLock(true);
-    setLocked(true);
-    setWallets(w);
-  };
   const checkPassword = async password => {
     try {
       const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
@@ -161,13 +156,15 @@ const useWallets = () => {
             }
           }
         } else {
+          setRequiredLock(true);
+
           let result = false;
           const password = await stash.getItem('password');
           if (password) {
             result = await unlockWalletsAt(password, activeEndpoints);
           }
           if (!result) {
-            waitUntilUnlock(storedWallets.wallets);
+            setLocked(true);
           }
         }
         setReady(true);
