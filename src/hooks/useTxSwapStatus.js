@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { DeviceEventEmitter } from 'react-native';
 
 const useTxSwapStatus = () => {
   const [setupTransaction, setSetupTransaction] = useState('');
@@ -72,14 +73,17 @@ const useTxSwapStatus = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('send_swap_tx', sendTxListener);
-    document.addEventListener('confirmed_swap_tx', confirmSwapTxListener);
-    document.addEventListener('failed_swap_tx', failSwapTxListener);
+    DeviceEventEmitter.addListener('send_swap_tx', sendTxListener);
+    DeviceEventEmitter.addListener('confirmed_swap_tx', confirmSwapTxListener);
+    DeviceEventEmitter.addListener('failed_swap_tx', failSwapTxListener);
 
     return () => {
-      document.removeEventListener('send_swap_tx', sendTxListener);
-      document.removeEventListener('confirmed_swap_tx', confirmSwapTxListener);
-      document.removeEventListener('failed_swap_tx', failSwapTxListener);
+      DeviceEventEmitter.addListener('send_swap_tx', sendTxListener);
+      DeviceEventEmitter.addListener(
+        'confirmed_swap_tx',
+        confirmSwapTxListener,
+      );
+      DeviceEventEmitter.addListener('failed_swap_tx', failSwapTxListener);
     };
   });
 
