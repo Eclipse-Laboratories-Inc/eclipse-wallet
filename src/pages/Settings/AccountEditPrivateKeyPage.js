@@ -13,7 +13,7 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import { AppContext } from '../../AppProvider';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import { recoverAccount } from '../../utils/wallet';
 
 const styles = StyleSheet.create({

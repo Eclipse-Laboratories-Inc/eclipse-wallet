@@ -26,7 +26,7 @@ import {
 } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');

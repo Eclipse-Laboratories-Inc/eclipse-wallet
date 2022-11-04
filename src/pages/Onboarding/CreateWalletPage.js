@@ -7,7 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import { createAccount } from '../../utils/wallet';
 import { isExtension } from '../../utils/platform';
 
@@ -60,7 +60,7 @@ const Form = ({ account, onComplete, onBack, t }) => {
   const [showToast, setShowToast] = useState(false);
   const onCopySeed = () => {
     clipboard.copy(account.mnemonic);
-    setShowToast(true);
+    // setShowToast(true);
   };
   return (
     <>

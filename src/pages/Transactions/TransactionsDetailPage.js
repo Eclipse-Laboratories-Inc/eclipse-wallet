@@ -17,7 +17,7 @@ import {
   getTransactionImage,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';

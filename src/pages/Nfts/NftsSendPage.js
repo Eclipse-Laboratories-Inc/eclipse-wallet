@@ -30,7 +30,7 @@ import IconCopy from '../../assets/images/IconCopy.png';
 import InputAddress from '../../features/InputAddress/InputAddress';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';

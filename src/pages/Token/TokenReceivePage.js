@@ -8,7 +8,7 @@ import useDomain from '../../hooks/useDomain';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';

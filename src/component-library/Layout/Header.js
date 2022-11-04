@@ -18,7 +18,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isExtension, isNative } from '../../utils/platform';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
@@ -122,8 +122,9 @@ const Header = ({ activeWallet, config, t }) => {
   };
 
   const onCopyAddress = () => {
-    clipboard.copy(activeWallet.getReceiveAddress());
-    setShowToast(true);
+    // clipboard.copy(activeWallet.getReceiveAddress());
+    console.log('copied');
+    setShowToast(false);
   };
 
   return (
