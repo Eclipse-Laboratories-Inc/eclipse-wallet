@@ -5,7 +5,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -61,24 +60,16 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NFTS_COLLECTION_DETAIL,
-          () => activeWallet.getCollection(params.id),
-        ),
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NFTS_COLLECTION_ITEMS,
-          () => activeWallet.getCollectionItems(params.id),
-        ),
+        activeWallet.getCollection(params.id),
+        activeWallet.getCollectionItems(params.id),
       ]).then(async ([collDetail, collItems]) => {
         if (collDetail) {
           setCollectionDetail(collDetail?.project_stats[0]);
+          setLoaded(true);
         }
         if (collItems) {
           setCollectionItems(collItems?.market_place_snapshots);
         }
-        setLoaded(true);
       });
     }
   }, [activeWallet, params.id]);
@@ -119,11 +110,11 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   const getPropertiesData = () => [
     {
       caption: t('nft.floor_price'),
-      title: `${collectionDetail.floor_price} SOL`,
+      title: `${collectionDetail.floor_price.toFixed(2)} SOL`,
     },
     {
       caption: t('nft.unique_owners'),
-      title: collectionDetail.num_of_token_holders,
+      title: `${collectionDetail.num_of_token_holders}`,
     },
     {
       caption: t('nft.listed_nft'),

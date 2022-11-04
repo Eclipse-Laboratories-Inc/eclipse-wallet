@@ -9,6 +9,7 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getShortAddress } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
+import { showValue } from '../../utils/amount';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -67,20 +68,24 @@ const NftsBuyDetailPage = ({ params, t }) => {
   const [bidsLoaded, setBidsLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
   const [bidAmount, setBidAmount] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [solBalance, setSolBalance] = useState(null);
 
   useEffect(() => {
     if (activeWallet) {
-      cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_BUY_DETAIL,
-        () => activeWallet.getCollectionItems(params.id),
-      ).then(async nfts => {
+      Promise.all([
+        activeWallet.getBalance(),
+        activeWallet.getCollectionItems(params.id),
+      ]).then(async ([balance, nfts]) => {
+        const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
           n => n.token_address === params.nftId,
         );
         if (nft) {
           setNftDetail(nft);
+          setPrice(nft?.lowest_listing_mpa?.price);
         }
+        setSolBalance(tks.length ? tks[0] : null);
         setLoaded(true);
         const bids = await activeWallet.getNftsBids();
         setBidAmount(
@@ -113,7 +118,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
     );
 
   const hasProperties = () => {
-    return [get(nftDetail, 'attributes', [])].length > 0;
+    return Object.keys(get(nftDetail, 'attributes', [])).length > 1;
   };
 
   const goToBack = () => {
@@ -131,10 +136,10 @@ const NftsBuyDetailPage = ({ params, t }) => {
   };
 
   const goToOffer = () => {
-    navigate(ROUTES_MAP.NFTS_BUYING, {
+    navigate(ROUTES_MAP.NFTS_BIDDING, {
       id: nftDetail.project_id,
       nftId: nftDetail.token_address,
-      type: bidAmount ? 'cancel-offer' : 'offer',
+      type: bidAmount ? 'cancel-offer' : 'create-offer',
     });
   };
 
@@ -156,7 +161,11 @@ const NftsBuyDetailPage = ({ params, t }) => {
   const getPropertiesData = () => [
     {
       caption: t('nft.current_price'),
-      title: `${nftDetail?.lowest_listing_mpa?.price} SOL`,
+      title: `${price.toFixed(2)} SOL (${showValue(
+        (price === '.' ? 0 : price) * solBalance?.usdPrice,
+        2,
+      )} 
+      ${t('general.usd')})`,
     },
     {
       caption: t('nft.owned_by'),
@@ -175,8 +184,6 @@ const NftsBuyDetailPage = ({ params, t }) => {
       title: getShortAddress(nftDetail?.token_address),
     },
   ];
-
-  console.log('nft', nftDetail);
 
   return (
     (loaded && (
@@ -233,20 +240,16 @@ const NftsBuyDetailPage = ({ params, t }) => {
           </View>
 
           <GlobalPadding size="xl" />
-          {hasProperties() && (
-            <>
-              <GlobalText type="body2">{t('nft.details')}</GlobalText>
+          <GlobalText type="body2">{t('nft.details')}</GlobalText>
 
-              <GlobalPadding size="sm" />
+          <GlobalPadding size="sm" />
 
-              <FlatList
-                data={getPropertiesData()}
-                renderItem={renderItem}
-                numColumns={2}
-                columnWrapperStyle={styles.columnWrapperStyle}
-              />
-            </>
-          )}
+          <FlatList
+            data={getPropertiesData()}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapperStyle}
+          />
 
           <GlobalPadding size="xl" />
           {hasProperties() && (

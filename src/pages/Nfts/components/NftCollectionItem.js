@@ -38,7 +38,7 @@ const NftCollectionItem = ({ item }) => {
       id: project_id,
     });
   };
-  console.log(item);
+
   return (
     <TouchableOpacity onPress={() => openCollection(item.project_id)}>
       <View style={styles.itemContainer}>
@@ -50,7 +50,9 @@ const NftCollectionItem = ({ item }) => {
         <View>
           <GlobalText type="body2">{item.project.display_name}</GlobalText>
           <GlobalText type="caption">{item.project.supply} Items</GlobalText>
-          <GlobalText type="caption">Floor: {item.floor_price}</GlobalText>
+          <GlobalText type="caption">
+            Floor: {item.floor_price.toFixed(2)}
+          </GlobalText>
           <GlobalText type="caption">
             1D Volume: {item.volume_1day} SOL
           </GlobalText>

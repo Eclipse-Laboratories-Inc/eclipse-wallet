@@ -103,6 +103,7 @@ export const TRANSACTION_STATUS = {
   UNLISTING: 'unlisting',
   CREATING_OFFER: 'creating-offer',
   CANCELING_OFFER: 'canceling-offer',
+  BUYING: 'buying',
   SWAPPING: 'swapping',
 };
 
@@ -140,6 +141,8 @@ export const getTransactionImage = transaction => {
     case 'creating-offer':
       return IconTransactionSending;
     case 'canceling-offer':
+      return IconTransactionSending;
+    case 'buying':
       return IconTransactionSending;
     default:
       return IconTransactionSent;

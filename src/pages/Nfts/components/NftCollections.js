@@ -63,7 +63,7 @@ const NftCollections = ({ t }) => {
 const renderCollection = (item, expanded) => {
   const { title, value } = item;
   const maxItems = expanded ? 6 : 2;
-  console.log(value);
+
   return (
     <View style={styles.collectionContainer}>
       <View style={globalStyles.inlineFlexButtons}>

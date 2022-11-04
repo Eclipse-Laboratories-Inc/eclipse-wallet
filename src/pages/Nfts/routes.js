@@ -3,6 +3,7 @@ import NftsCollectionDetailPage from './NftsCollectionDetailPage';
 import NftsDetailPage from './NftsDetailPage';
 import NftsBuyDetailPage from './NftsBuyDetailPage';
 import NftsBuyingPage from './NftsBuyingPage';
+import NftsBiddingPage from './NftsBiddingPage';
 
 import NftsListPage from './NftsListPage';
 import NftsSendPage from './NftsSendPage';
@@ -15,6 +16,7 @@ export const ROUTES_MAP = {
   NFTS_DETAIL: 'NFTS_DETAIL',
   NFTS_BUY_DETAIL: 'NFTS_BUY_DETAIL',
   NFTS_BUYING: 'NFTS_BUYING',
+  NFTS_BIDDING: 'NFTS_BIDDING',
   NFTS_SEND: 'NFTS_SEND',
   NFTS_LISTING: 'NFTS_LISTING',
 };
@@ -76,20 +78,20 @@ const routes = [
     Component: NftsBuyDetailPage,
     default: false,
   },
-  // {
-  //   key: ROUTES_MAP.NFTS_BUYING,
-  //   name: 'nftsBuying',
-  //   path: 'hyperspace/:id/:nftId/buy',
-  //   route: '/wallet/nfts/hyperspace/:id/:nftId/buy',
-  //   Component: NftsBuyingPage,
-  //   default: false,
-  // },
   {
     key: ROUTES_MAP.NFTS_BUYING,
     name: 'nftsBuying',
-    path: 'hyperspace/:id/:nftId/:type',
-    route: '/wallet/nfts/hyperspace/:id/:nftId/:type',
+    path: 'hyperspace/:id/:nftId/buy',
+    route: '/wallet/nfts/hyperspace/:id/:nftId/buy',
     Component: NftsBuyingPage,
+    default: false,
+  },
+  {
+    key: ROUTES_MAP.NFTS_BIDDING,
+    name: 'nftsBidding',
+    path: 'hyperspace/:id/:nftId/offer/:type',
+    route: '/wallet/nfts/hyperspace/:id/:nftId/offer/:type',
+    Component: NftsBiddingPage,
     default: false,
   },
 ];
