@@ -22,9 +22,11 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
+import SecureDialog from '../../component-library/Dialog/SecureDialog';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import stash from '../../utils/stash';
 
 const styles = StyleSheet.create({
   appVersion: {
@@ -39,8 +41,8 @@ const styles = StyleSheet.create({
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, config, selectedEndpoints, selectedLanguage },
-    { logout, removeWallet },
+    { activeWallet, config, selectedEndpoints, selectedLanguage, requiredLock },
+    { logout, removeWallet, checkPassword },
   ] = useContext(AppContext);
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
@@ -61,8 +63,8 @@ const SettingsOptionsPage = ({ t }) => {
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
 
-  const handleRemove = async () => {
-    await removeWallet(activeWallet.getReceiveAddress());
+  const handleRemove = async password => {
+    await removeWallet(activeWallet.getReceiveAddress(), password);
     toggleSingleDialog();
     trackEvent(EVENTS_MAP.LOGOUT_WALLET);
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
@@ -191,7 +193,7 @@ const SettingsOptionsPage = ({ t }) => {
           onPress={toggleAllDialog}
         />
       </GlobalLayout.Footer>
-      <SimpleDialog
+      <SecureDialog
         type="danger"
         title={
           <GlobalText center type="headline3" numberOfLines={1}>
@@ -208,6 +210,9 @@ const SettingsOptionsPage = ({ t }) => {
             {t(`settings.wallets.remove_wallet_description`)}
           </GlobalText>
         }
+        requiredLock={requiredLock}
+        checkPassword={checkPassword}
+        loadPassword={async () => stash.getItem('password')}
       />
       <SimpleDialog
         type="danger"

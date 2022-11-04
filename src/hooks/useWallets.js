@@ -186,7 +186,7 @@ const useWallets = () => {
 
   const addWallet = async (account, password, chain) => {
     setActiveWallet(account);
-    const address = await account.getReceiveAddress();
+    const address = account.getReceiveAddress();
     const path = account.path;
     const currentIndex = wallets.findIndex(w => w.address === address);
     const _lastNumber = lastNumber + 1;
@@ -309,22 +309,34 @@ const useWallets = () => {
     setLocked(false);
     setRequiredLock(false);
   };
-  const removeWallet = async address => {
+  const removeWallet = async (address, password) => {
     const newWallArr = wallets.filter(w => w.address !== address);
     setWallets(newWallArr);
     const _config = { ...config };
     delete _config[address];
     setConfig(_config);
-    await storage.setItem(STORAGE_KEYS.WALLETS, {
-      passwordRequired: false,
-      lastNumber: lastNumber,
-      config: _config,
-      wallets: newWallArr,
-    });
-    if (newWallArr.length) {
-      await changeActiveWallet(wallets.findIndex(w => w.address !== address));
+    if (password) {
+      const encryptedWallets = await lock(newWallArr, password);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: true,
+        lastNumber: lastNumber,
+        config: _config,
+        wallets: encryptedWallets,
+      });
     } else {
-      removeAllWallets();
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: false,
+        lastNumber: lastNumber,
+        config: _config,
+        wallets: newWallArr,
+      });
+    }
+    if (newWallArr.length) {
+      if (activeWallet.getReceiveAddress() === address) {
+        await changeActiveWallet(wallets.findIndex(w => w.address !== address));
+      }
+    } else {
+      await removeAllWallets();
     }
   };
   const editWalletName = async (address, name) => {
