@@ -5,6 +5,7 @@ import GlobalSlider from '../../../component-library/Global/GlobalSlider';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
+import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 import NftCollectionItem from './NftCollectionItem';
 import { withTranslation } from '../../../hooks/useTranslations';
 import IconHyperspace from '../../../assets/images/IconHyperspace.jpeg';
@@ -46,7 +47,7 @@ const NftCollections = ({ t }) => {
 
   return (
     <>
-      {(sliderItems?.length && (
+      {sliderItems?.length ? (
         <GlobalSlider
           items={sliderItems.filter(({ value }) => value.length)}
           slides={sliderItems.length}
@@ -54,8 +55,9 @@ const NftCollections = ({ t }) => {
           minHeight={294}
           maxHeight={740}
         />
-      )) ||
-        null}
+      ) : (
+        <GlobalSkeleton type="NftSlider" />
+      )}
     </>
   );
 };

@@ -14,6 +14,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
+import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
 
@@ -132,41 +133,40 @@ const NftsCollectionDetailPage = ({ params, t }) => {
     },
   ];
 
-  return (
-    (loaded && (
-      <GlobalLayout fullscreen>
-        <GlobalLayout.Header>
-          <Header activeWallet={activeWallet} config={config} t={t} />
-          <GlobalBackTitle
-            onBack={goToBack}
-            inlineTitle={
-              <GlobalText type="headline2" center>
-                {collectionDetail.project.display_name}
-              </GlobalText>
-            }
-            nospace
-          />
+  return loaded ? (
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header>
+        <Header activeWallet={activeWallet} config={config} t={t} />
+        <GlobalBackTitle
+          onBack={goToBack}
+          inlineTitle={
+            <GlobalText type="headline2" center>
+              {collectionDetail.project.display_name}
+            </GlobalText>
+          }
+          nospace
+        />
 
-          <GlobalPadding size="xxs" />
+        <GlobalPadding size="xxs" />
 
-          <View style={globalStyles.centered}>
-            <GlobalPadding size="xs" />
+        <View style={globalStyles.centered}>
+          <GlobalPadding size="xs" />
 
-            <View style={styles.imageContainer}>
-              <GlobalImage
-                source={getMediaRemoteUrl(collectionDetail.project.img_url)}
-                style={styles.nftImage}
-                square
-                squircle
-              />
-            </View>
-
-            <GlobalPadding size="lg" />
+          <View style={styles.imageContainer}>
+            <GlobalImage
+              source={getMediaRemoteUrl(collectionDetail.project.img_url)}
+              style={styles.nftImage}
+              square
+              squircle
+            />
           </View>
 
           <GlobalPadding size="lg" />
+        </View>
 
-          {/* <GlobalText type="body2">{t('nft.description')}</GlobalText>
+        <GlobalPadding size="lg" />
+
+        {/* <GlobalText type="body2">{t('nft.description')}</GlobalText>
 
           <GlobalPadding size="sm" />
 
@@ -176,30 +176,30 @@ const NftsCollectionDetailPage = ({ params, t }) => {
 
           <GlobalPadding size="xl" /> */}
 
-          <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+        <GlobalText type="body2">{t('nft.properties')}</GlobalText>
 
-          <GlobalPadding size="sm" />
+        <GlobalPadding size="sm" />
 
-          <FlatList
-            data={getPropertiesData()}
-            renderItem={renderItem}
-            numColumns={2}
-            columnWrapperStyle={styles.columnWrapperStyle}
-          />
+        <FlatList
+          data={getPropertiesData()}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapperStyle}
+        />
 
-          <GlobalPadding size="xl" />
-          <GlobalText type="body2">{t('nft.listed_items')}</GlobalText>
+        <GlobalPadding size="xl" />
+        <GlobalText type="body2">{t('nft.listed_items')}</GlobalText>
 
-          <GlobalPadding size="sm" />
-          <GlobalNftList
-            columns={3}
-            nonFungibleTokens={collectionItems}
-            onClick={onClick}
-          />
-        </GlobalLayout.Header>
-      </GlobalLayout>
-    )) ||
-    null
+        <GlobalPadding size="sm" />
+        <GlobalNftList
+          columns={3}
+          nonFungibleTokens={collectionItems}
+          onClick={onClick}
+        />
+      </GlobalLayout.Header>
+    </GlobalLayout>
+  ) : (
+    <GlobalSkeleton type="NftListScreen" />
   );
 };
 
