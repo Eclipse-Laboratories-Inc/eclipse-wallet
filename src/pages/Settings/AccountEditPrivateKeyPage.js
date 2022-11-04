@@ -40,16 +40,18 @@ const styles = StyleSheet.create({
 
 const AccountEditPrivateKeyPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ wallets, selectedEndpoints }] = useContext(AppContext);
+  const [{ wallets, mnemonics, selectedEndpoints }] = useContext(AppContext);
   const [wallet, setWallet] = useState();
   useEffect(() => {
     const w = wallets.find(f => f.address === params.address);
     if (w) {
-      recoverAccount(w.chain, w.mnemonic, selectedEndpoints[w.chain]).then(
-        account => setWallet(account),
-      );
+      recoverAccount(
+        w.chain,
+        mnemonics[w.address],
+        selectedEndpoints[w.chain],
+      ).then(account => setWallet(account));
     }
-  }, [params.address, wallets, selectedEndpoints]);
+  }, [params.address, wallets, mnemonics, selectedEndpoints]);
 
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
