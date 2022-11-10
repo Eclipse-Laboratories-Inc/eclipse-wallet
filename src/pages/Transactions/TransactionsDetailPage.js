@@ -137,14 +137,14 @@ const TransactionsDetailPage = ({ t, params }) => {
 
   const onCopyID = () => {
     clipboard.copy(transactionDetail.signature);
-    setShowToast(true);
+    // setShowToast(true);
   };
 
   const onCopyAddress = isReceive => {
     clipboard.copy(
       isReceive ? transactionDetail.source : transactionDetail.destination,
     );
-    setShowToast(true);
+    // setShowToast(true);
   };
 
   useEffect(() => {
