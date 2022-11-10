@@ -38,12 +38,12 @@ const NftCollectionItem = ({ item }) => {
       console.log(`UNSUPPORTED LINK ${url}`);
     }
   };
-  console.log(item);
   return (
     <TouchableOpacity onPress={() => openCollection(item.project_id)}>
       <View style={styles.itemContainer}>
         <GlobalImage
           source={item.project.img_url}
+          url={item.project.img_url}
           size="xxl"
           style={styles.image}
         />

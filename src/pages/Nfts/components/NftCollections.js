@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgPrimary,
     borderRadius: theme.borderRadius.borderRadiusMD,
     padding: theme.gutters.paddingSM,
-    paddingBottom: 15,
+    paddingBottom: theme.gutters.paddingNormal,
   },
 });
 
@@ -62,7 +62,6 @@ const NftCollections = ({ t }) => {
 const renderCollection = (item, expanded, t) => {
   const { title, value } = item;
   const maxItems = expanded ? 6 : 2;
-  console.log(value);
   return (
     <View style={styles.collectionContainer}>
       <View style={globalStyles.inlineFlexButtons}>

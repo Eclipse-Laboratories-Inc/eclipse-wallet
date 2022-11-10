@@ -7,7 +7,6 @@ import GlobalText from './GlobalText';
 const styles = StyleSheet.create({
   floatingBadge: {
     flex: 1,
-    maxWidth: '86%',
     flexDirection: 'row',
     position: 'absolute',
     bottom: theme.gutters.paddingSM + 2,
@@ -20,7 +19,6 @@ const styles = StyleSheet.create({
   floatingBadgeTop: {
     zIndex: 1,
     flex: 1,
-    maxWidth: '86%',
     flexDirection: 'row',
     position: 'absolute',
     top: theme.gutters.paddingSM + 2,
@@ -33,7 +31,6 @@ const styles = StyleSheet.create({
   floatingBadgeTopDetail: {
     zIndex: 1,
     flex: 1,
-    maxWidth: '86%',
     flexDirection: 'row',
     position: 'absolute',
     top: theme.gutters.paddingMD,
@@ -46,7 +43,6 @@ const styles = StyleSheet.create({
   floatingBadgeTopPrice: {
     zIndex: 1,
     flex: 1,
-    maxWidth: '86%',
     minWidth: '19%',
     flexDirection: 'row',
     position: 'absolute',
@@ -78,11 +74,7 @@ const GlobalFloatingBadge = ({
       </View>
     )}
     {titleTopPrice && (
-      <View style={styles.floatingBadgeTopPrice}>
-        <GlobalText type="caption" color="bgLight" numberOfLines={1}>
-          {titleTopPrice}
-        </GlobalText>
-      </View>
+      <View style={styles.floatingBadgeTopPrice}>{titleTopPrice}</View>
     )}
     {titleTop && (
       <View style={styles.floatingBadgeTop}>
