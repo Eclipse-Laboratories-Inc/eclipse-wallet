@@ -111,7 +111,7 @@
     "lint:fix": "eslint \"src/**/*.js\" --fix",
     "postinstall": "yarn patch-package",
     "login:4m": "aws codeartifact login --tool npm --repository npm-modules --domain four-m --domain-owner 363894166745 --namespace '@4m' --profile salmon --region us-east-1",
-    "apk": "react-native bundle --platform android --dev false --entry-file src/index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res --reset-cache",
+    "apk:debug": "react-native bundle --platform android --dev false --entry-file src/index.native.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res --reset-cache",
     "assemble": "cd ./android ./gradlew assembleDebug"
   },
   "eslintConfig": {
