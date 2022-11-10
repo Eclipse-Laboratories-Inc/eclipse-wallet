@@ -20,6 +20,16 @@ export class SolanaProvider extends EventEmitter {
     return this.#publicKey !== null;
   }
 
+  #encodeTransaction = transaction => {
+    let serialized;
+    if (typeof transaction.serializeMessage === 'function') {
+      serialized = transaction.serializeMessage();
+    } else {
+      serialized = transaction.message.serialize();
+    }
+    return bs58.encode(serialized);
+  };
+
   sendMessage = async message => {
     return new Promise((resolve, reject) => {
       const listener = event => {
@@ -85,7 +95,7 @@ export class SolanaProvider extends EventEmitter {
 
   signAndSendTransaction = async (transaction, network, options) => {
     const { result } = await this.sendRequest('signAndSendTransaction', {
-      message: bs58.encode(transaction.message.serialize()),
+      message: this.#encodeTransaction(transaction),
       network,
       options,
     });
@@ -94,7 +104,7 @@ export class SolanaProvider extends EventEmitter {
 
   signTransaction = async (transaction, network) => {
     const { result } = await this.sendRequest('signTransaction', {
-      message: bs58.encode(transaction.message.serialize()),
+      message: this.#encodeTransaction(transaction),
       network,
     });
     const signature = bs58.decode(result.signature);
@@ -105,7 +115,7 @@ export class SolanaProvider extends EventEmitter {
 
   signAllTransactions = async (transactions, network) => {
     const { result } = await this.sendRequest('signAllTransactions', {
-      messages: transactions.map(tx => bs58.encode(tx.message.serialize())),
+      messages: transactions.map(this.#encodeTransaction),
       network,
     });
     const signatures = result.signatures.map(s => bs58.decode(s));
