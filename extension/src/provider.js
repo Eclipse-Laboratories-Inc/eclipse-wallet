@@ -68,14 +68,8 @@ export class SolanaProvider extends EventEmitter {
   connect = async options => {
     const { method, params } = await this.sendRequest('connect', { options });
     if (method === 'connected') {
-      const newPublicKey = new PublicKey(params.publicKey);
-      if (!this.#publicKey || !this.#publicKey.equals(newPublicKey)) {
-        if (this.#publicKey && !this.#publicKey.equals(newPublicKey)) {
-          // TODO disconnect previuos
-        }
-        this.#publicKey = newPublicKey;
-      }
-      return { publicKey: newPublicKey };
+      this.#publicKey = new PublicKey(params.publicKey);
+      return { publicKey: this.#publicKey };
     } else {
       throw new Error('Not connected');
     }
@@ -84,10 +78,7 @@ export class SolanaProvider extends EventEmitter {
   disconnect = async () => {
     const { method } = await this.sendRequest('disconnect', {});
     if (method === 'disconnected') {
-      if (this.#publicKey) {
-        this.#publicKey = null;
-      }
-      // TODO reject all pending promises?
+      this.#publicKey = null;
     } else {
       throw new Error('Not disconnected');
     }
