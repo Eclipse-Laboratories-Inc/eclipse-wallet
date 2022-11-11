@@ -68,7 +68,7 @@ const TokenSendPage = ({ params, t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SEND_TOKEN);
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(params.toAddress ? 2 : 1);
   const [{ activeWallet, wallets, addressBook, config }] =
     useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
