@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import theme from './theme';
 import GlobalImage from './GlobalImage';
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    flex: 0.7,
     height: 50,
+    flex: Platform.OS === 'ios' || Platform.OS === 'android' ? 0.7 : 1,
     paddingHorizontal: theme.gutters.paddingSM,
     color: theme.colors.labelPrimary,
     fontSize: theme.fontSize.fontSizeNormal,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   endAction: {
     minWidth: 50,
-    flex: 0.3,
+    flex: Platform.OS === 'ios' || Platform.OS === 'android' ? 0.3 : 1,
     // height: '100%',
     alignItems: 'center',
     justifyContent: 'center',

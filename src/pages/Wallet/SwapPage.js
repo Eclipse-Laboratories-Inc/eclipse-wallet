@@ -301,7 +301,7 @@ const SwapPage = ({ t }) => {
         setProcessing(false);
         setTotalTransactions(txs.length);
 
-        if (totalTransactions !== 1) {
+        if (txs.length > 1) {
           console.error('Too many transactions.');
           setError(true);
           trackEvent(EVENTS_MAP.SWAP_FAILED);
