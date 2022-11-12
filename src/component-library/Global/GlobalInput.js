@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
+    flex: 0.7,
     height: 50,
     paddingHorizontal: theme.gutters.paddingSM,
     color: theme.colors.labelPrimary,
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
   },
   endAction: {
     minWidth: 50,
+    flex: 0.3,
     // height: '100%',
     alignItems: 'center',
     justifyContent: 'center',

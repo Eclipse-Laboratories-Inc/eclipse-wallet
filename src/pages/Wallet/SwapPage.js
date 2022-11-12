@@ -4,7 +4,6 @@ import get from 'lodash/get';
 import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
-import useTxSwapStatus from '../../hooks/useTxSwapStatus';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -15,7 +14,6 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
-import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
 import {
   getAvailableTokens,
   getFeaturedTokens,
@@ -199,23 +197,11 @@ const SwapPage = ({ t }) => {
   const [status, setStatus] = useState();
   const [routesNames, setRoutesNames] = useState('');
   const [tokenSymbols, setTokenSymbols] = useState('');
+  const [currentTransaction, setCurrentTransaction] = useState('');
+  const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-
   const { explorer } = useUserConfig(getWalletChain(activeWallet));
-
-  const {
-    setupTransaction,
-    setupStatus,
-    swapTransaction,
-    swapStatus,
-    cleanupTransaction,
-    cleanUpStatus,
-    totalTransactions,
-    currentTransaction,
-  } = useTxSwapStatus();
-
-  useEffect(() => {}, [currentTransaction, totalTransactions]);
 
   useEffect(() => {
     if (activeWallet) {
@@ -243,18 +229,23 @@ const SwapPage = ({ t }) => {
   }, [activeWallet]);
 
   const [inAmount, setInAmount] = useState(null);
+
   const [outAmount, setOutAmount] = useState('--');
   useEffect(() => {
     setError(false);
   }, [inAmount, inToken, outToken]);
+
   const zeroAmount = inToken && parseFloat(inAmount) <= 0;
+
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
     parseFloat(inAmount) > 0;
+
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
+
   const getRoutesSymbols = async routes => {
     const inputs = routes.map(
       async r =>
@@ -265,12 +256,15 @@ const SwapPage = ({ t }) => {
         await getTokenByAddress(r.outputMint).then(info => info[0].symbol),
     );
     const tokSymb = [...new Set([...inputs, ...outputs])];
+
     Promise.all(tokSymb).then(data => {
       setTokenSymbols([...new Set(data)].join(' → '));
     });
   };
+
   const getRoutesNames = routes =>
     setRoutesNames(routes.map(r => r.label).join(' x '));
+
   const onQuote = async () => {
     setError(false);
     setProcessing(true);
@@ -300,11 +294,21 @@ const SwapPage = ({ t }) => {
     setStep(3);
     activeWallet
       .createSwapTransaction(quote.route.id)
-      .then(ids => {
+      .then(txs => {
         setError(false);
         trackEvent(EVENTS_MAP.SWAP_COMPLETED);
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
+        setTotalTransactions(txs.length);
+
+        if (totalTransactions !== 1) {
+          console.error('Too many transactions.');
+          setError(true);
+          trackEvent(EVENTS_MAP.SWAP_FAILED);
+          setStatus(TRANSACTION_STATUS.FAIL);
+        } else {
+          setCurrentTransaction(txs[0]);
+        }
       })
       .catch(ex => {
         console.error(ex.message);
@@ -522,27 +526,12 @@ const SwapPage = ({ t }) => {
                 </GlobalText>
               )}
               <GlobalPadding size="sm" />
-              {setupTransaction &&
-                linkForTransaction(
-                  `Transaction Setup`,
-                  setupTransaction,
-                  setupStatus,
-                  explorer,
-                )}
-              {swapTransaction &&
-                linkForTransaction(
-                  `Transaction Swap`,
-                  swapTransaction,
-                  swapStatus,
-                  explorer,
-                )}
-              {cleanupTransaction &&
-                linkForTransaction(
-                  `Transaction Cleanup`,
-                  cleanupTransaction,
-                  cleanUpStatus,
-                  explorer,
-                )}
+              {linkForTransaction(
+                `Transaction Swap`,
+                currentTransaction.id,
+                currentTransaction.status,
+                explorer,
+              )}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
