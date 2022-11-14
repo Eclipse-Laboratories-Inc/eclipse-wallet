@@ -87,10 +87,7 @@ const styles = StyleSheet.create({
 
 const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
-  const [
-    { activeWallet, wallets },
-    { changeActiveWallet, resolveExplorerUrl },
-  ] = useContext(AppContext);
+  const [{ activeWallet }, { resolveExplorerUrl }] = useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -137,14 +134,14 @@ const TransactionsDetailPage = ({ t, params }) => {
 
   const onCopyID = () => {
     clipboard.copy(transactionDetail.signature);
-    // setShowToast(true);
+    setShowToast(true);
   };
 
   const onCopyAddress = isReceive => {
     clipboard.copy(
       isReceive ? transactionDetail.source : transactionDetail.destination,
     );
-    // setShowToast(true);
+    setShowToast(true);
   };
 
   useEffect(() => {

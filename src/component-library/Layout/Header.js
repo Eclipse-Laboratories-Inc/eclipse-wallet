@@ -122,9 +122,8 @@ const Header = ({ activeWallet, config, t }) => {
   };
 
   const onCopyAddress = () => {
-    // clipboard.copy(activeWallet.getReceiveAddress());
-    console.log('copied');
-    setShowToast(false);
+    clipboard.copy(activeWallet.getReceiveAddress());
+    setShowToast(true);
   };
 
   return (

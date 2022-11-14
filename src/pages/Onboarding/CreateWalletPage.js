@@ -60,7 +60,7 @@ const Form = ({ account, onComplete, onBack, t }) => {
   const [showToast, setShowToast] = useState(false);
   const onCopySeed = () => {
     clipboard.copy(account.mnemonic);
-    // setShowToast(true);
+    setShowToast(true);
   };
   return (
     <>

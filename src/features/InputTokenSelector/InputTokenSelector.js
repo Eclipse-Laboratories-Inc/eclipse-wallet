@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Modal, View } from 'react-native';
+import { Modal, View, StyleSheet } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import { hiddenValue } from '../../utils/amount';
@@ -14,6 +14,7 @@ import GlobalInputWithButton from '../../component-library/Global/GlobalInputWit
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import theme from '../../component-library/Global/theme';
 import { getShortAddress } from '../../utils/wallet';
+import { isNative } from '../../utils/platform';
 
 const MAX_PAG = 20;
 const getFilterItems = (items, search) =>
@@ -24,6 +25,13 @@ const getFilterItems = (items, search) =>
           (t.symbol || '').toLowerCase().includes(search.toLowerCase()),
       )
     : items;
+
+const styles = StyleSheet.create({
+  ddToken: {
+    flex: isNative() ? 0.7 : undefined,
+  },
+});
+
 const InputWithTokenSelector = ({
   params,
   value,
@@ -68,6 +76,7 @@ const InputWithTokenSelector = ({
         value={value}
         setValue={setValue}
         placeholder={placeholder}
+        inputStyle={styles.ddToken}
         action={
           <CardButton
             type="secondary"

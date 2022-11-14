@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import theme from './theme';
 import GlobalImage from './GlobalImage';
@@ -9,6 +9,7 @@ import IconSearch from '../../assets/images/IconSearch.png';
 import IconInteractionGreen from '../../assets/images/IconInteractionGreen.png';
 import IconSpinner from '../../assets/images/IconTransactionSending.gif';
 import GlobalTextInput from './GlobalTextInput';
+import { isNative } from '../../utils/platform';
 
 const styles = StyleSheet.create({
   inputGroup: {
@@ -22,7 +23,6 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 50,
-    flex: Platform.OS === 'ios' || Platform.OS === 'android' ? 0.7 : 1,
     paddingHorizontal: theme.gutters.paddingSM,
     color: theme.colors.labelPrimary,
     fontSize: theme.fontSize.fontSizeNormal,
@@ -36,15 +36,11 @@ const styles = StyleSheet.create({
   seedphrase: {
     paddingVertical: theme.gutters.paddingLG,
     fontSize: theme.fontSize.fontSizeNormal,
-    // lineHeight: 1.5,
     textAlign: 'center',
     wordSpacing: '10px',
   },
   forSearch: {
-    // width: 50,
     paddingLeft: theme.gutters.paddingSM,
-    // height: '100%',
-    // position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.7,
@@ -52,7 +48,6 @@ const styles = StyleSheet.create({
   },
   startLabel: {
     minWidth: 50,
-    // height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 1,
@@ -68,8 +63,7 @@ const styles = StyleSheet.create({
   },
   endAction: {
     minWidth: 50,
-    flex: Platform.OS === 'ios' || Platform.OS === 'android' ? 0.3 : 1,
-    // height: '100%',
+    flex: isNative() ? 0.3 : undefined,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: theme.gutters.paddingXS,
