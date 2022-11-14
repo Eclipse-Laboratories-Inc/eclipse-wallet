@@ -3,7 +3,7 @@
   "version": "0.2.5",
   "private": true,
   "dependencies": {
-    "4m-wallet-adapter": "file:/home/ezequiel//workspace/salmon/4m-modules/crypto/wallet-adapter",
+    "4m-wallet-adapter": "^0.0.82",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.4",
