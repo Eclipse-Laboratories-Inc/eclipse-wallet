@@ -27,7 +27,7 @@ const successStyles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.alertSuccessBg,
     borderColor: theme.colors.alertSuccessBorder,
-    borderWidth: '2px',
+    borderWidth: 2,
     borderStyle: 'solid',
   },
   text: {
@@ -39,7 +39,7 @@ const errorStyles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.alertErrorBg,
     borderColor: theme.colors.alertErrorBorder,
-    borderWidth: '2px',
+    borderWidth: 2,
     borderStyle: 'solid',
   },
   text: {
@@ -51,7 +51,7 @@ const warningStyles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.alertWarningBg,
     borderColor: theme.colors.alertWarningBorder,
-    borderWidth: '2px',
+    borderWidth: 2,
     borderStyle: 'solid',
   },
   text: {

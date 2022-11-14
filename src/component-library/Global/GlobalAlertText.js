@@ -4,7 +4,7 @@ import theme from './theme';
 
 const styles = StyleSheet.create({
   text: {
-    lineHeight: '1.5',
+    lineHeight: 1.5,
     textAlign: 'center',
   },
 });
