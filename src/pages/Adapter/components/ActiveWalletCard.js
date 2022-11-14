@@ -8,7 +8,7 @@ import { getShortAddress, getWalletName } from '../../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: ' row',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
