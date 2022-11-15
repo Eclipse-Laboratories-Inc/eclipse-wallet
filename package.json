@@ -35,7 +35,7 @@
     "react-ga4": "^1.4.1",
     "react-i18next": "^11.18.5",
     "react-idle-timer": "^5.4.2",
-    "react-native": "^0.70.4",
+    "react-native": "^0.70.5",
     "react-native-bootsplash": "^4.3.2",
     "react-native-camera": "^4.2.1",
     "react-native-crypto-js": "^1.0.0",
