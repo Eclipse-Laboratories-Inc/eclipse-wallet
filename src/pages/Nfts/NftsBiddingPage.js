@@ -100,7 +100,10 @@ const NftsBiddingPage = ({ params, t }) => {
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
-    parseFloat(price) * 0.01 <= solBalance?.uiAmount && parseFloat(price) > 0;
+    parseFloat(price) * 0.01 +
+      parseFloat(price) +
+      fee / TOKEN_DECIMALS.SOLANA <=
+      solBalance?.uiAmount && parseFloat(price) > 0;
 
   const goToBack = () => {
     if (step === 3) {
@@ -203,6 +206,9 @@ const NftsBiddingPage = ({ params, t }) => {
             </View>
             <View style={globalStyles.inlineFlexButtons}>
               <GlobalText type="body2">{t('nft.offer_amount')}</GlobalText>
+              <GlobalText type="body1" style={globalStyles.labelRight}>
+                {`${t('general.balance')}: ${solBalance.uiAmount}`}
+              </GlobalText>
             </View>
 
             <GlobalPadding size="xs" />
@@ -212,7 +218,7 @@ const NftsBiddingPage = ({ params, t }) => {
               setValue={setPrice}
               placeholder={t('swap.enter_amount')}
               hiddenValue={hiddenValue}
-              invalid={!validAmount && !!price}
+              invalid={!validAmount}
               number
               action={
                 <CardButton
@@ -229,18 +235,27 @@ const NftsBiddingPage = ({ params, t }) => {
               }
             />
 
-            {zeroAmount && (
-              <GlobalText type="body1" center color="negative">
-                {t(`token.send.amount.invalid`)}
-              </GlobalText>
-            )}
-
             <GlobalPadding size="xs" />
 
             <GlobalText type="body1" color="tertiary">
               {showValue((price === '.' ? 0 : price) * solBalance?.usdPrice, 6)}{' '}
               {t('general.usd')}
             </GlobalText>
+
+            {zeroAmount ? (
+              <GlobalText type="body1" center color="negative">
+                {t(`token.send.amount.invalid`)}
+              </GlobalText>
+            ) : (
+              !validAmount &&
+              !!price && (
+                <GlobalText type="body1" center color="negative">
+                  {t(`token.send.amount.insufficient`, {
+                    max: solBalance.uiAmount,
+                  })}
+                </GlobalText>
+              )
+            )}
 
             {error && (
               <GlobalText type="body1" color="negative">
@@ -301,7 +316,7 @@ const NftsBiddingPage = ({ params, t }) => {
             <GlobalButton
               type="primary"
               flex
-              disabled={!price || zeroAmount}
+              disabled={!price || !validAmount}
               title={t('nft.preview_sell')}
               onPress={() => setStep(2)}
               style={[globalStyles.button, globalStyles.buttonRight]}

@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   nftName: {
     paddingTop: theme.gutters.padding2XL + 6,
+    paddingHorizontal: theme.gutters.paddingXS,
   },
 });
 
@@ -73,9 +74,12 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           {...(isCollection(nft)
             ? { number: nft.length }
             : {
-                title: nft.marketInfo?.price && (
+                title: (nft.lowest_listing_mpa?.price ||
+                  nft.marketInfo?.price) && (
                   <>
-                    <Text>{nft.marketInfo?.price}</Text>
+                    <Text>
+                      {nft.lowest_listing_mpa?.price || nft.marketInfo?.price}
+                    </Text>
                     <GlobalImage
                       source={IconSolana}
                       circle
@@ -88,17 +92,15 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
         />
       </View>
     </TouchableOpacity>
-    {!nft.meta_data_img && (
-      <View style={styles.nameContainer}>
-        <GlobalText
-          style={styles.nftName}
-          center
-          type="caption"
-          numberOfLines={2}>
-          {isCollection(nft) ? nft.collection : nft.name || nft.symbol}
-        </GlobalText>
-      </View>
-    )}
+    <View style={styles.nameContainer}>
+      <GlobalText
+        style={styles.nftName}
+        center
+        type="caption"
+        numberOfLines={1}>
+        {isCollection(nft) ? nft.collection : nft.name || nft.symbol}
+      </GlobalText>
+    </View>
   </>
 );
 export default withTranslation()(GlobalNft);
