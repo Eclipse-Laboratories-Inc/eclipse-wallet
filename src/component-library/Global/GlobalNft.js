@@ -78,7 +78,8 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
                   nft.marketInfo?.price) && (
                   <>
                     <Text>
-                      {nft.lowest_listing_mpa?.price || nft.marketInfo?.price}
+                      {nft.lowest_listing_mpa?.price?.toFixed(2) ||
+                        nft.marketInfo?.price}
                     </Text>
                     <GlobalImage
                       source={IconSolana}
