@@ -1,6 +1,6 @@
 package com.salmonwallet.adapter;
 
-import static android.util.Base64.DEFAULT;
+import static android.util.Base64.NO_WRAP;
 import static com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -82,6 +82,15 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
     public void cancel() {
         try {
             adapter().cancel();
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
+    }
+
+    @ReactMethod
+    public void completeWithInternalError(String error) {
+        try {
+            adapter().completeWithInternalError(error);
         } catch (Exception e) {
             Log.e(TAG, "", e);
         }
@@ -186,7 +195,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
     }
 
     private static byte[] parseBase64(String input) {
-        return Base64.decode(input, DEFAULT);
+        return Base64.decode(input, NO_WRAP);
     }
 
     private static byte[][] parseBase64Array(ReadableArray input) {

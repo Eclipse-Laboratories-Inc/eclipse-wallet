@@ -65,7 +65,7 @@ public class ClientTrustVerifier {
                     try {
                         verified = verifier.verify(callingPackage, URI.create(clientIdentityUri.toString()));
                     } catch (CouldNotVerifyPackageException e) {
-                        Log.w(TAG, "Package verification failed for callingPackage=" + callingPackage + ", clientIdentityUri=" + clientIdentityUri);
+                        Log.w(TAG, "Package verification failed for callingPackage=" + callingPackage + ", clientIdentityUri=" + clientIdentityUri, e);
                         verified = false;
                     }
                     if (verified) {

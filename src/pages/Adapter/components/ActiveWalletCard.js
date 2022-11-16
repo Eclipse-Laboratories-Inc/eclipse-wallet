@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   network: {
     padding: theme.gutters.paddingXXS,
     borderWidth: 1,
-    borderColor: theme.colors.black,
+    borderColor: theme.colors.labelPrimary,
     borderRadius: theme.borderRadius.borderRadiusNormal,
   },
 });

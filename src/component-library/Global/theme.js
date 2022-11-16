@@ -160,6 +160,18 @@ const themes = {
     warning: '#ea772b',
     danger: '#dc3545',
 
+    alertSuccessBg: 'rgba(128, 255, 84, 0.2)',
+    alertSuccessBorder: 'rgba(128, 255, 84, 0.4)',
+    alertSuccessFont: 'rgba(128, 255, 84, 1)',
+
+    alertErrorBg: 'rgba(255,27,27, 0.2)',
+    alertErrorBorder: 'rgba(255,27,27, 0.4)',
+    alertErrorFont: 'rgba(252,252,252, 1)',
+
+    alertWarningBg: 'rgba(255,168,0, 0.2)',
+    alertWarningBorder: 'rgba(255,168,0, 0.4)',
+    alertWarningFont: 'rgba(255,168,0, 1)',
+
     niceSuccess: '#d1e7dd',
     niceSuccessText: '#0f5132',
     niceWarning: '#fff3cd',

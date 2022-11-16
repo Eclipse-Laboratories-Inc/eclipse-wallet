@@ -1,15 +1,19 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
-import bs58 from 'bs58';
-import nacl from 'tweetnacl';
+import { VersionedTransaction } from '@solana/web3.js';
 
 import AdapterModule from '../../../native/AdapterModule';
 import ApproveTransactionsForm from './ApproveTransactionsForm';
 import { AppContext } from '../../../AppProvider';
+import base58 from 'bs58';
 
 const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
   const [{ activeWallet }] = useContext(AppContext);
 
+  const options = useMemo(
+    () => ({ minContextSlot: request.minContextSlot }),
+    [request],
+  );
   const payloads = useMemo(
     // eslint-disable-next-line no-undef
     () => request.payloads.map(payload => Buffer.from(payload, 'base64')),
@@ -17,32 +21,36 @@ const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
   );
 
   const createSignature = useCallback(
-    payload => {
-      const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
-      return nacl.sign.detached(payload, secretKey);
+    async payload => {
+      const transaction = VersionedTransaction.deserialize(payload);
+      transaction.sign([activeWallet.keyPair]);
+      const connection = await activeWallet.getConnection();
+      return await connection.sendTransaction(transaction, options);
     },
-    [activeWallet],
+    [activeWallet, options],
   );
 
-  const onApprove = useCallback(() => {
+  const onApprove = useCallback(async () => {
     const valid = payloads.map(() => true);
 
-    const signedPayloads = payloads.map((payload, i) => {
-      try {
-        // eslint-disable-next-line no-undef
-        const buffer = Buffer.concat([payload, createSignature(payload)]);
-        return buffer.toString('base64');
-      } catch (e) {
-        console.log(e);
-        valid[i] = false;
-      }
-    });
+    const signedPayloads = await Promise.all(
+      payloads.map(async (payload, i) => {
+        try {
+          const signature = await createSignature(payload);
+          // eslint-disable-next-line no-undef
+          const buffer = Buffer.concat([payload, base58.decode(signature)]);
+          return buffer.toString('base64');
+        } catch (e) {
+          console.log(e);
+          valid[i] = false;
+        }
+      }),
+    );
 
     if (valid.every(Boolean)) {
-      // TODO send transactions
-      AdapterModule.completeWithSignedPayloads(signedPayloads);
+      AdapterModule.completeWithSignatures(signedPayloads);
     } else {
-      AdapterModule.completeWithInvalidPayloads(valid);
+      AdapterModule.completeWithInvalidSignatures(valid);
     }
   }, [createSignature, payloads]);
 

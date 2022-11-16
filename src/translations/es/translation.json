@@ -198,7 +198,12 @@
       "connection": {
         "title": "¿Permitir que este sitio acceda a tu cuenta?",
         "advice": "Conéctate sólo con sitios de confianza",
-        "advice2": "Sin embargo, se solicitará su aprobación para completar cualquier transacción."
+        "advice2": "Sin embargo, se solicitará su aprobación para completar cualquier transacción.",
+        "verification": {
+          "succeeded": "Verificado",
+          "failed": "Falló la verificación",
+          "notVerifiable": "No verificable"
+        }
       },
       "banner": {
         "message": "Mantén esta ventana abierta en segundo plano"

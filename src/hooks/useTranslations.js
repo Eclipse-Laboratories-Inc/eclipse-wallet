@@ -14,7 +14,7 @@ export const withTranslation = withTranslationHOC;
 
 const useTranslations = () => {
   const [loaded, setLoaded] = useState(i18n.isInitialized);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState(i18n.language || DEFAULT_LANGUAGE);
   useEffect(() => {
     if (!loaded) {
       storage.getItem(STORAGE_KEYS.LANGUAGE).then(language => {

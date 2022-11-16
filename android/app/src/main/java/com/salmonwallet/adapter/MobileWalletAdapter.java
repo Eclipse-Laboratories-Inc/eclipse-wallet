@@ -49,7 +49,7 @@ public class MobileWalletAdapter {
 
             // work-around to deal with race-condition: JS React listener component may be mounted after first request event
             if (this.request != null) {
-                Log.i(TAG, "---> Launching previous request: " + request);
+                Log.i(TAG, "Launching previous request: " + this.request);
                 listener.onRequest(this.request);
             }
         }
@@ -75,8 +75,17 @@ public class MobileWalletAdapter {
         this.request = null;
     }
 
+    public void completeWithInternalError(String error) {
+        this.request.completeWithInternalError(new RuntimeException(error));
+        this.request = null;
+    }
+
     private void invalidOperation(String operation) {
-        throw new RuntimeException("Cannot " + operation + " on " + (this.request != null ? this.request.getClass().getSimpleName() : "null request"));
+        if (this.request != null) {
+            completeWithInternalError("Cannot " + operation + " on " + this.request.getClass().getSimpleName());
+        } else {
+            Log.w(TAG, "Cannot " + operation + " without request");
+        }
     }
 
     public void completeWithDecline() {
