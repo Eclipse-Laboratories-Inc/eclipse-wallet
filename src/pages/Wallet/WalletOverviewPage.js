@@ -23,12 +23,7 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
-// import IconNotifications from '../../assets/images/IconNotifications.png';
-// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
 import { isMoreThanOne } from '../../utils/nfts';
-// import IconNotifications from '../../assets/images/IconNotifications.png';
-// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
-
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
   const [
@@ -43,7 +38,6 @@ const WalletOverviewPage = ({ t }) => {
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
   const [listedInfo, setListedInfo] = useState([]);
 
-  //const [hasNotifications, setHasNotifications] = useState(false);
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
@@ -95,7 +89,6 @@ const WalletOverviewPage = ({ t }) => {
       tokenId: tok.address,
     });
 
-  // const goToNotifications = () => setHasNotifications(!hasNotifications);
   const handleNftsClick = nft => {
     if (isMoreThanOne(nft)) {
       navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });

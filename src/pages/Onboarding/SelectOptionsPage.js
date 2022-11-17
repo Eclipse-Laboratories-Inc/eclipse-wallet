@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Linking, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Linking } from 'react-native';
 
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import { getChains, LOGOS } from '../../utils/wallet';
+import { getChains } from '../../utils/wallet';
 import { ROUTES_MAP as ROUTES_MAP_APP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 import theme from '../../component-library/Global/theme';
@@ -14,10 +14,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import CardButton from '../../component-library/CardButton/CardButton';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
-
-import AvatarImage from '../../component-library/Image/AvatarImage';
 
 import AppIcon from '../../assets/images/AppIcon.png';
 import AppTitle from '../../assets/images/AppTitle.png';
@@ -25,6 +22,8 @@ import { AppContext } from '../../AppProvider';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import { ChainCard } from './components/ChainCard';
+import { retriveConfig } from '../../utils/config';
 
 const styles = StyleSheet.create({
   appIconImage: {
@@ -40,14 +39,6 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     margin: 'auto',
-  },
-  touchable: {
-    maxWidth: theme.variables.buttonMaxWidth,
-  },
-  disabledAvatar: {
-    backgroundColor: '#999',
-    opacity: 0.5,
-    borderRadius: 50,
   },
 });
 
@@ -125,7 +116,14 @@ const ComingSoon = ({ currentChain, comingSoon, setComingSoon, t }) => {
   );
 };
 
-const SelectChain = ({ onNext, blockChains, onBack, t, onComingSoon }) => (
+const SelectChain = ({
+  onNext,
+  blockChains,
+  onBack,
+  t,
+  onComingSoon,
+  configurations,
+}) => (
   <GlobalLayout.Header>
     <GlobalBackTitle
       onBack={onBack}
@@ -141,38 +139,14 @@ const SelectChain = ({ onNext, blockChains, onBack, t, onComingSoon }) => (
     <GlobalPadding size="md" />
 
     {blockChains.map(chain => (
-      <CardButton
+      <ChainCard
         key={chain}
-        onPress={() => onNext(chain)}
-        icon={<AvatarImage url={LOGOS[chain]} size={48} />}
-        title={chain}
-        touchableStyles={styles.touchable}
+        chain={chain}
+        onNext={onNext}
+        onComingSoon={onComingSoon}
+        enabled={configurations[chain.toLowerCase()].enable}
       />
     ))}
-    <CardButton
-      key={'NEAR'}
-      onPress={() => onComingSoon('NEAR')}
-      icon={
-        <View style={styles.disabledAvatar}>
-          <AvatarImage url={LOGOS.NEAR} size={48} />
-        </View>
-      }
-      title={'NEAR'}
-      description={'coming soon'}
-      touchableStyles={styles.touchable}
-    />
-    <CardButton
-      key={'ETHEREUM'}
-      onPress={() => onComingSoon('ETHEREUM')}
-      icon={
-        <View style={styles.disabledAvatar}>
-          <AvatarImage url={LOGOS.ETHEREUM} size={48} />
-        </View>
-      }
-      title={'ETHEREUM'}
-      description={'coming soon'}
-      touchableStyles={styles.touchable}
-    />
   </GlobalLayout.Header>
 );
 
@@ -184,6 +158,12 @@ const SelectOptionsPage = ({ t }) => {
   const [step, setStep] = useState(0);
   const [comingSoon, setComingSoon] = useState(false);
   const [currentChain, setCurrentChain] = useState(null);
+  const [configs, setConfigs] = useState(null);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs => setConfigs(chainConfigs.data));
+  });
+
   const onSelectAction = action => {
     setActionRoute(action);
     setStep(1);
@@ -220,6 +200,7 @@ const SelectOptionsPage = ({ t }) => {
             blockChains={getChains()}
             onBack={() => setStep(0)}
             onComingSoon={onComingSoon}
+            configurations={configs}
             t={t}
           />
           <ComingSoon
