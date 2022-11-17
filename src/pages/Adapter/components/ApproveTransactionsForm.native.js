@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
+import { VersionedTransaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 
 import { AppContext } from '../../../AppProvider';
@@ -30,22 +25,21 @@ const ApproveTransactionsForm = ({
   const [simulation, setSimulation] = useState(null);
   const [continueAnyway, setContinueAnyway] = useState(false);
 
-  const transactions = useMemo(
-    () => payloads.map(payload => bs58.encode(payload)),
-    [payloads],
-  );
-
   const scanTransactions = useCallback(async () => {
     setLoading(true);
 
     try {
-      setFee(await activeWallet.estimateTransactionsFee(transactions));
+      const messages = payloads.map(
+        payload => VersionedTransaction.deserialize(payload).message,
+      );
+      setFee(await activeWallet.estimateTransactionsFee(messages));
     } catch (err) {
       console.error('Failed to get fee for message:', err);
       setFee(null);
     }
 
     try {
+      const transactions = payloads.map(payload => bs58.encode(payload));
       const options = { origin, language };
       setSimulation(await activeWallet.scanTransactions(transactions, options));
     } catch (err) {
@@ -54,7 +48,7 @@ const ApproveTransactionsForm = ({
     } finally {
       setLoading(false);
     }
-  }, [transactions, origin, language, activeWallet]);
+  }, [payloads, origin, language, activeWallet]);
 
   useEffect(() => {
     scanTransactions();

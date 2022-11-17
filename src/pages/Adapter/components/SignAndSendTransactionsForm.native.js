@@ -10,49 +10,61 @@ import base58 from 'bs58';
 const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
   const [{ activeWallet }] = useContext(AppContext);
 
-  const options = useMemo(
-    () => ({ minContextSlot: request.minContextSlot }),
-    [request],
-  );
   const payloads = useMemo(
-    // eslint-disable-next-line no-undef
-    () => request.payloads.map(payload => Buffer.from(payload, 'base64')),
+    () =>
+      request.payloads.map(payload =>
+        // eslint-disable-next-line no-undef
+        Buffer.from(payload, 'base64'),
+      ),
     [request],
-  );
-
-  const createSignature = useCallback(
-    async payload => {
-      const transaction = VersionedTransaction.deserialize(payload);
-      transaction.sign([activeWallet.keyPair]);
-      const connection = await activeWallet.getConnection();
-      return await connection.sendTransaction(transaction, options);
-    },
-    [activeWallet, options],
   );
 
   const onApprove = useCallback(async () => {
     const valid = payloads.map(() => true);
 
-    const signedPayloads = await Promise.all(
-      payloads.map(async (payload, i) => {
-        try {
-          const signature = await createSignature(payload);
-          // eslint-disable-next-line no-undef
-          const buffer = Buffer.concat([payload, base58.decode(signature)]);
-          return buffer.toString('base64');
-        } catch (e) {
-          console.log(e);
-          valid[i] = false;
-        }
-      }),
-    );
+    const signedTransactions = payloads.map((payload, i) => {
+      try {
+        const transaction = VersionedTransaction.deserialize(payload);
+        transaction.sign([activeWallet.keyPair]);
+        return transaction;
+      } catch (e) {
+        console.error(e);
+        valid[i] = false;
+      }
+    });
 
     if (valid.every(Boolean)) {
-      AdapterModule.completeWithSignatures(signedPayloads);
+      try {
+        const connection = await activeWallet.getConnection();
+
+        const options = { minContextSlot: request.minContextSlot };
+
+        const signedPayloads = await Promise.all(
+          signedTransactions.map(async transaction => {
+            const signature = await connection.sendTransaction(
+              transaction,
+              options,
+            );
+            // eslint-disable-next-line no-undef
+            return Buffer.from(base58.decode(signature)).toString('base64');
+          }),
+        );
+
+        AdapterModule.completeWithSignatures(signedPayloads);
+      } catch (e) {
+        console.error(e);
+
+        const signedPayloads = signedTransactions.map(transaction =>
+          // eslint-disable-next-line no-undef
+          Buffer.from(transaction.signatures).toString('base64'),
+        );
+
+        AdapterModule.completeWithNotSubmitted(signedPayloads);
+      }
     } else {
       AdapterModule.completeWithInvalidSignatures(valid);
     }
-  }, [createSignature, payloads]);
+  }, [request, payloads, activeWallet]);
 
   const onReject = () => AdapterModule.completeWithDecline();
 
