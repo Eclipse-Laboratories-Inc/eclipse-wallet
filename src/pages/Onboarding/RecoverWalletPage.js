@@ -26,7 +26,7 @@ import {
 } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
@@ -122,7 +122,11 @@ const RecoverWalletPage = ({ t }) => {
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
-    navigate(isAdapter ? ROUTES_MAP.ADAPTER : ROUTES_MAP.WALLET);
+    navigate(ROUTES_MAP.WALLET);
+  };
+  const goToAdapter = () => {
+    trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
+    navigate(ROUTES_MAP.ADAPTER);
   };
   const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
@@ -154,7 +158,8 @@ const RecoverWalletPage = ({ t }) => {
       )}
       {step === 3 && (
         <Success
-          goToWallet={goToWallet}
+          goToWallet={!isAdapter ? goToWallet : undefined}
+          goToAdapter={isAdapter ? goToAdapter : undefined}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}

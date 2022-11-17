@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgPrimary,
     borderRadius: theme.borderRadius.borderRadiusMD,
     padding: theme.gutters.paddingSM,
-    paddingBottom: 15,
+    paddingBottom: theme.gutters.paddingNormal,
   },
 });
 
@@ -32,18 +32,18 @@ const NftCollections = ({ t }) => {
         ([trendColls, newColls]) => {
           setSliderItems([
             {
-              title: 'Trending collections',
+              title: t(`nft.trending_collections`),
               value: trendColls?.project_stats?.splice(0, 6),
             },
             {
-              title: 'New collections',
+              title: t(`nft.new_collections`),
               value: newColls?.project_stats?.splice(0, 6),
             },
           ]);
         },
       );
     }
-  }, [activeWallet]);
+  }, [activeWallet, t]);
 
   return (
     <>
@@ -62,10 +62,9 @@ const NftCollections = ({ t }) => {
   );
 };
 
-const renderCollection = (item, expanded) => {
+const renderCollection = (item, expanded, t) => {
   const { title, value } = item;
   const maxItems = expanded ? 6 : 2;
-
   return (
     <View style={styles.collectionContainer}>
       <View style={globalStyles.inlineFlexButtons}>

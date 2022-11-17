@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import moment from 'moment';
 
 import { AppContext } from '../../AppProvider';
 import { withTranslation } from '../../hooks/useTranslations';
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import theme from '../../component-library/Global/theme';
 import {
   TRANSACTION_TYPE,
   TYPES_MAP,
@@ -12,7 +12,6 @@ import {
   SOL_ICON,
 } from './constants';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
-import { LOGOS } from '../../utils/wallet';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -20,7 +19,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../../src/component-library/Global/GlobalButton';
 import GlobalImage from '../../../src/component-library/Global/GlobalImage';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import AvatarImage from '../../component-library/Image/AvatarImage';
 import IconFailed from '../../assets/images/IconFailed.png';
 import IconSuccess from '../../assets/images/IconSuccessGreen.png';
 import Header from '../../component-library/Layout/Header';
@@ -155,7 +153,7 @@ const TransactionsListPage = ({ t }) => {
                     const isUnknown = !transaction.destination;
                     const isCreate = isUnknown && !transaction.amount;
                     return (
-                      <>
+                      <View key={`transaction-${i}`}>
                         <GlobalText
                           type="body2"
                           color="secondary"
@@ -269,11 +267,11 @@ const TransactionsListPage = ({ t }) => {
                           }
                           onPress={() => onDetail(i)}
                         />
-                      </>
+                      </View>
                     );
                   case TRANSACTION_TYPE.SWAP:
                     return (
-                      <>
+                      <View key={`transaction-${i}`}>
                         <GlobalText
                           type="body2"
                           color="secondary"
@@ -357,14 +355,14 @@ const TransactionsListPage = ({ t }) => {
                           }
                           onPress={() => onDetail(i)}
                         />
-                      </>
+                      </View>
                     );
                   case TRANSACTION_TYPE.GET_ACC_DATA:
                   case TRANSACTION_TYPE.CREATE_ACCOUNT:
                   case TRANSACTION_TYPE.CREATE:
                   case TRANSACTION_TYPE.CLOSE_ACCOUNT:
                     return (
-                      <>
+                      <View key={`transaction-${i}`}>
                         <GlobalText
                           type="body2"
                           color="secondary"
@@ -397,7 +395,7 @@ const TransactionsListPage = ({ t }) => {
                           }
                           onPress={() => onDetail(i)}
                         />
-                      </>
+                      </View>
                     );
                 }
               })

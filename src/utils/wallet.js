@@ -144,6 +144,8 @@ export const getTransactionImage = transaction => {
       return IconTransactionSending;
     case 'buying':
       return IconTransactionSending;
+    case 'burning':
+      return IconTransactionSending;
     default:
       return IconTransactionSent;
   }

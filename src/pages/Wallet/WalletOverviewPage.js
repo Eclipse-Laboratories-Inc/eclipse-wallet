@@ -47,21 +47,25 @@ const WalletOverviewPage = ({ t }) => {
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
-      Promise.all([
+      Promise.resolve(
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
           () => activeWallet.getBalance(),
         ),
+      ).then(async balance => {
+        setTotalBalance(balance);
+        setTokenList(getListedTokens(balance));
+        setNonListedTokenList(getNonListedTokens(balance, []));
+        setLoading(false);
+      });
+      Promise.resolve(
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.NFTS,
           () => activeWallet.getAllNftsGrouped(),
         ),
-      ]).then(async ([balance, nfts]) => {
-        setTotalBalance(balance);
-        setTokenList(getListedTokens(balance));
-        setNonListedTokenList(getNonListedTokens(balance, nfts));
+      ).then(async nfts => {
         setNftsList(nfts);
         setLoading(false);
         const listed = await activeWallet.getListedNfts();

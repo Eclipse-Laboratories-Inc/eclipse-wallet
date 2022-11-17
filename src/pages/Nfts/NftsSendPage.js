@@ -30,9 +30,11 @@ import IconCopy from '../../assets/images/IconCopy.png';
 import InputAddress from '../../features/InputAddress/InputAddress';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
+import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
@@ -74,6 +76,7 @@ const NftsSendPage = ({ params, t }) => {
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
@@ -156,7 +159,7 @@ const NftsSendPage = ({ params, t }) => {
   };
 
   const openTransaction = async () => {
-    const url = `https://solscan.io/tx/${transactionId}`;
+    const url = `${explorer.url}/tx/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);

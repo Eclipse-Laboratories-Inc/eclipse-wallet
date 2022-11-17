@@ -1,63 +1,63 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
 import bs58 from 'bs58';
-import nacl from 'tweetnacl';
+import { VersionedMessage, VersionedTransaction } from '@solana/web3.js';
 
-import AdapterModule from '../../../native/AdapterModule';
-import ApproveTransactionsForm from './ApproveTransactionsForm';
 import { AppContext } from '../../../AppProvider';
+import ApproveTransactionsForm from './ApproveTransactionsForm';
 
-const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
+const SignAndSendTransactionForm = ({
+  request,
+  name,
+  icon,
+  origin,
+  onApprove,
+  onReject,
+  onError,
+}) => {
   const [{ activeWallet }] = useContext(AppContext);
 
-  const payloads = useMemo(
-    // eslint-disable-next-line no-undef
-    () => request.payloads.map(payload => Buffer.from(payload, 'base64')),
-    [request],
+  const payload = useMemo(() => bs58.decode(request.params.message), [request]);
+  const options = useMemo(() => request.params.options, [request]);
+
+  const createSignature = useCallback(async () => {
+    const message = VersionedMessage.deserialize(payload);
+    const transaction = new VersionedTransaction(message);
+    transaction.sign([activeWallet.keyPair]);
+
+    const connection = await activeWallet.getConnection();
+    return connection.sendTransaction(transaction, options);
+  }, [activeWallet, payload, options]);
+
+  const getMessage = useCallback(
+    async () => ({
+      result: {
+        signature: await createSignature(),
+        publicKey: activeWallet.publicKey.toBase58(),
+      },
+      id: request.id,
+    }),
+    [request, activeWallet, createSignature],
   );
 
-  const createSignature = useCallback(
-    payload => {
-      const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
-      return nacl.sign.detached(payload, secretKey);
-    },
-    [activeWallet],
-  );
-
-  const onApprove = useCallback(() => {
-    const valid = payloads.map(() => true);
-
-    const signedPayloads = payloads.map((payload, i) => {
-      try {
-        // eslint-disable-next-line no-undef
-        const buffer = Buffer.concat([payload, createSignature(payload)]);
-        return buffer.toString('base64');
-      } catch (e) {
-        console.log(e);
-        valid[i] = false;
-      }
-    });
-
-    if (valid.every(Boolean)) {
-      // TODO send transactions
-      AdapterModule.completeWithSignedPayloads(signedPayloads);
-    } else {
-      AdapterModule.completeWithInvalidPayloads(valid);
+  const onAccept = useCallback(async () => {
+    try {
+      onApprove(await getMessage());
+    } catch (err) {
+      onError(err.message);
     }
-  }, [createSignature, payloads]);
-
-  const onReject = () => AdapterModule.completeWithDecline();
+  }, [getMessage, onApprove, onError]);
 
   return (
     <ApproveTransactionsForm
-      payloads={payloads}
+      payloads={[payload]}
       origin={origin}
       name={name}
       icon={icon}
-      onApprove={onApprove}
+      onApprove={onAccept}
       onReject={onReject}
     />
   );
 };
 
-export default SignAndSendTransactionsForm;
+export default SignAndSendTransactionForm;

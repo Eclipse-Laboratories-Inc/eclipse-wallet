@@ -54,7 +54,7 @@ const Password = ({
         setWrongpass(true);
         setChecking(false);
       } else {
-        onComplete(pass);
+        await onComplete(pass);
       }
     } else {
       await onComplete(pass);

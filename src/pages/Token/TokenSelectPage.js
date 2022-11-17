@@ -20,6 +20,7 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
 
 const MAX_PAG = 20;
 
@@ -134,7 +135,9 @@ const TokenSelectPage = ({ params, t }) => {
       </GlobalLayout.Header>
     </GlobalLayout>
   ) : (
-    <GlobalSkeleton type="TokenListSend" />
+    <GlobalBackgroundImage>
+      <GlobalSkeleton type="TokenListSend" />
+    </GlobalBackgroundImage>
   );
 };
 

@@ -7,6 +7,7 @@ import NftsBiddingPage from './NftsBiddingPage';
 
 import NftsListPage from './NftsListPage';
 import NftsSendPage from './NftsSendPage';
+import NftsBurnPage from './NftsBurnPage';
 import NftsListingPage from './NftsListingPage';
 
 export const ROUTES_MAP = {
@@ -18,6 +19,7 @@ export const ROUTES_MAP = {
   NFTS_BUYING: 'NFTS_BUYING',
   NFTS_BIDDING: 'NFTS_BIDDING',
   NFTS_SEND: 'NFTS_SEND',
+  NFTS_BURN: 'NFTS_BURN',
   NFTS_LISTING: 'NFTS_LISTING',
 };
 
@@ -92,6 +94,13 @@ const routes = [
     path: 'hyperspace/:id/:nftId/offer/:type',
     route: '/wallet/nfts/hyperspace/:id/:nftId/offer/:type',
     Component: NftsBiddingPage,
+  },
+  {
+    key: ROUTES_MAP.NFTS_BURN,
+    name: 'nftsBurn',
+    path: ':id/burn',
+    route: '/wallet/nfts/:id/burn',
+    Component: NftsBurnPage,
     default: false,
   },
 ];

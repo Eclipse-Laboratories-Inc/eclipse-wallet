@@ -7,7 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import { createAccount } from '../../utils/wallet';
 import { isExtension } from '../../utils/platform';
 
@@ -19,7 +19,6 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalPageDot from '../../component-library/Global/GlobalPageDot';
-import GlobalDivider from '../../component-library/Global/GlobalDivider';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -241,7 +240,11 @@ const CreateWalletPage = ({ params, t }) => {
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.CREATION_COMPLETED);
-    navigate(isAdapter ? APP_ROUTES_MAP.ADAPTER : APP_ROUTES_MAP.WALLET);
+    navigate(APP_ROUTES_MAP.WALLET);
+  };
+  const goToAdapter = () => {
+    trackEvent(EVENTS_MAP.CREATION_COMPLETED);
+    navigate(APP_ROUTES_MAP.ADAPTER);
   };
   const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
@@ -290,7 +293,8 @@ const CreateWalletPage = ({ params, t }) => {
       )}
       {step === 5 && (
         <Success
-          goToWallet={goToWallet}
+          goToWallet={!isAdapter ? goToWallet : undefined}
+          goToAdapter={isAdapter ? goToAdapter : undefined}
           goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}

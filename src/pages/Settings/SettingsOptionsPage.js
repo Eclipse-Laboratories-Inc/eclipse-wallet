@@ -5,8 +5,8 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
-import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { useNavigation } from '../../routes/hooks';
+import useUserConfig from '../../hooks/useUserConfig';
 import {
   getWalletChain,
   getWalletName,
@@ -22,9 +22,11 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
+import SecureDialog from '../../component-library/Dialog/SecureDialog';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import stash from '../../utils/stash';
 
 const styles = StyleSheet.create({
   appVersion: {
@@ -39,14 +41,15 @@ const styles = StyleSheet.create({
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, config, selectedEndpoints, selectedLanguage },
-    { logout, removeWallet },
+    { activeWallet, config, selectedEndpoints, selectedLanguage, requiredLock },
+    { logout, removeWallet, checkPassword },
   ] = useContext(AppContext);
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
   const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
   const { version } = packageInfo;
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SETTINGS);
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
 
   const toggleSingleDialog = () => {
     setShowSingleDialog(!showSingleDialog);
@@ -60,8 +63,8 @@ const SettingsOptionsPage = ({ t }) => {
     navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_HOME);
   };
 
-  const handleRemove = async () => {
-    await removeWallet(activeWallet.getReceiveAddress());
+  const handleRemove = async password => {
+    await removeWallet(activeWallet.getReceiveAddress(), password);
     toggleSingleDialog();
     trackEvent(EVENTS_MAP.LOGOUT_WALLET);
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
@@ -79,10 +82,13 @@ const SettingsOptionsPage = ({ t }) => {
   const goToNetwork = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
 
-  const goToSecurity = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_SECURITY);
+  const goToExplorer = () =>
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGEEXPLORER);
 
-  const goToNofifications = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_NOTIFICATIONS);
+  // const goToSecurity = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_SECURITY);
+
+  // const goToNofifications = () =>
+  //   navigate(ROUTES_SETTINGS_MAP.SETTINGS_NOTIFICATIONS);
 
   const goToTrustedApps = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_TRUSTEDAPPS);
@@ -134,6 +140,13 @@ const SettingsOptionsPage = ({ t }) => {
           </GlobalText>
         </CardButton>
 
+        <CardButton
+          title={t(`settings.select_explorer`)}
+          actionIcon="right"
+          onPress={goToExplorer}>
+          {explorer && <GlobalText type="caption">{explorer.name}</GlobalText>}
+        </CardButton>
+
         {/*Not implemented yet
         <CardButton
           title={t(`settings.security`)}
@@ -180,7 +193,7 @@ const SettingsOptionsPage = ({ t }) => {
           onPress={toggleAllDialog}
         />
       </GlobalLayout.Footer>
-      <SimpleDialog
+      <SecureDialog
         type="danger"
         title={
           <GlobalText center type="headline3" numberOfLines={1}>
@@ -197,6 +210,9 @@ const SettingsOptionsPage = ({ t }) => {
             {t(`settings.wallets.remove_wallet_description`)}
           </GlobalText>
         }
+        requiredLock={requiredLock}
+        checkPassword={checkPassword}
+        loadPassword={async () => stash.getItem('password')}
       />
       <SimpleDialog
         type="danger"

@@ -10,6 +10,7 @@ import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../Wallet/routes';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import { getMediaRemoteUrl } from '../../utils/media';
+import stash from '../../utils/stash';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import theme from '../../component-library/Global/theme';
@@ -19,7 +20,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
-import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
+import SecureDialog from '../../component-library/Dialog/SecureDialog';
 
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -36,8 +37,8 @@ const styles = StyleSheet.create({
 const AccountSelectPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, wallets, locked, config },
-    { removeWallet, changeActiveWallet },
+    { activeWallet, wallets, locked, config, requiredLock },
+    { removeWallet, changeActiveWallet, checkPassword },
   ] = useContext(AppContext);
   const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const [toRemove, setToRemove] = useState([]);
@@ -59,8 +60,8 @@ const AccountSelectPage = ({ t }) => {
     setToRemove(address);
     setShowRemoveDialog(!showRemoveDialog);
   };
-  const handleRemoveWallet = async address => {
-    await removeWallet(address);
+  const handleRemoveWallet = async (address, password) => {
+    await removeWallet(address, password);
     setShowRemoveDialog(!showRemoveDialog);
   };
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
@@ -87,9 +88,8 @@ const AccountSelectPage = ({ t }) => {
               </View>
               <>
                 {groupedWallets[chain].map(wallet => (
-                  <>
+                  <View key={wallet.address}>
                     <CardButtonWallet
-                      key={wallet.address}
                       title={getWalletName(wallet.address, config)}
                       address={wallet.address}
                       chain={wallet.chain}
@@ -102,7 +102,7 @@ const AccountSelectPage = ({ t }) => {
                       onSecondaryPress={() => editWallet(wallet)}
                       onTertiaryPress={() => toggleRemoveDialog(wallet)}
                     />
-                    <SimpleDialog
+                    <SecureDialog
                       type="danger"
                       title={
                         <GlobalText center type="headline3" numberOfLines={1}>
@@ -116,14 +116,19 @@ const AccountSelectPage = ({ t }) => {
                       btn2Title={t('actions.cancel')}
                       onClose={toggleRemoveDialog}
                       isOpen={showRemoveDialog}
-                      action={() => handleRemoveWallet(toRemove)}
+                      action={password =>
+                        handleRemoveWallet(toRemove, password)
+                      }
                       text={
                         <GlobalText center type="body1">
                           {t(`settings.wallets.remove_wallet_description`)}
                         </GlobalText>
                       }
+                      requiredLock={requiredLock}
+                      checkPassword={checkPassword}
+                      loadPassword={async () => stash.getItem('password')}
                     />
-                  </>
+                  </View>
                 ))}
               </>
             </React.Fragment>

@@ -38,12 +38,12 @@ const NftCollectionItem = ({ item }) => {
       id: project_id,
     });
   };
-
   return (
     <TouchableOpacity onPress={() => openCollection(item.project_id)}>
       <View style={styles.itemContainer}>
         <GlobalImage
           source={item.project.img_url}
+          url={item.project.img_url}
           size="xxl"
           style={styles.image}
         />

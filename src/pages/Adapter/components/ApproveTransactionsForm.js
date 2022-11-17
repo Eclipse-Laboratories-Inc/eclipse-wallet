@@ -1,4 +1,3 @@
-import { Message, Transaction } from '@solana/web3.js';
 import React, {
   useCallback,
   useContext,
@@ -8,6 +7,7 @@ import React, {
 } from 'react';
 
 import bs58 from 'bs58';
+import { VersionedMessage, VersionedTransaction } from '@solana/web3.js';
 
 import { AppContext } from '../../../AppProvider';
 import NonSimulatedTransactions from './NonSimulatedTransactions';
@@ -32,15 +32,14 @@ const ApproveTransactionsForm = ({
   const [continueAnyway, setContinueAnyway] = useState(false);
 
   const messages = useMemo(
-    () => payloads.map(payload => Message.from(payload)),
+    () => payloads.map(payload => VersionedMessage.deserialize(payload)),
     [payloads],
   );
 
   const transactions = useMemo(() => {
-    const opts = { requireAllSignatures: false, verifySignatures: false };
     return messages.map(message => {
-      const transaction = Transaction.populate(message, []);
-      const bytes = transaction.serialize(opts);
+      const transaction = new VersionedTransaction(message);
+      const bytes = transaction.serialize();
       return bs58.encode(bytes);
     });
   }, [messages]);

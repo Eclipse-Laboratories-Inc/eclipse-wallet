@@ -27,11 +27,12 @@ import GlobalInputWithButton from '../../component-library/Global/GlobalInputWit
 import CardButton from '../../component-library/CardButton/CardButton';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
-import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
-import QRScan from '../../features/QRScan/QRScan';
 
+import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
+import useUserConfig from '../../hooks/useUserConfig';
+
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
@@ -72,7 +73,7 @@ const NftsListingPage = ({ params, t }) => {
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
-
+  const { explorer } = useUserConfig(getWalletChain(activeWallet));
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   useEffect(() => {
@@ -151,7 +152,7 @@ const NftsListingPage = ({ params, t }) => {
   };
 
   const openTransaction = async () => {
-    const url = `https://solscan.io/tx/${transactionId}`;
+    const url = `${explorer.url}/tx/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);

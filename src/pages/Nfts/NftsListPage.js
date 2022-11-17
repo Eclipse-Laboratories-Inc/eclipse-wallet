@@ -9,7 +9,6 @@ import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
-import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
@@ -43,9 +42,6 @@ const NftsListPage = ({ t }) => {
     }
   }, [activeWallet]);
 
-  const goToBack = () => {
-    navigate(APP_ROUTES_MAP.WALLET);
-  };
   const onClick = nft => {
     if (isMoreThanOne(nft)) {
       navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
@@ -62,12 +58,14 @@ const NftsListPage = ({ t }) => {
         {loaded && (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
-            <View style={globalStyles.centered}>
-              <GlobalText type="headline2">{t(`wallet.nfts`)}</GlobalText>
+            <View>
+              <GlobalText center type="headline2">
+                {t(`wallet.nfts`)}
+              </GlobalText>
             </View>
             <NftCollections t />
-            <View style={globalStyles.centered}>
-              <GlobalText type="headline2">{t(`wallet.my_nfts`)}</GlobalText>
+            <View>
+              <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>
             <GlobalNftList
               nonFungibleTokens={nftsGroup}

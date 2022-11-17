@@ -16,6 +16,7 @@ import {
 const STORAGE_KEYS = {
   WALLETS: 'wallets',
   ENDPOINTS: 'endpoints',
+  EXPLORERS: 'explorers',
   ACTIVE: 'active',
 };
 
@@ -35,26 +36,33 @@ const buildEndpoints = () =>
     {},
   );
 
-const getWalletAccount = async (index, wallets, endpoints) => {
+const getWalletAccount = async (
+  index,
+  wallets,
+  mnemonics,
+  endpoints,
+  explorers,
+) => {
   const walletInfo = wallets[index];
   const isDerived = walletInfo.path !== DEFAULT_PATH;
   if (isDerived) {
     return await recoverDerivedAccount(
       walletInfo.chain,
-      walletInfo.mnemonic,
+      mnemonics[walletInfo.address],
       walletInfo.path,
       endpoints[walletInfo.chain],
     );
   }
   return await recoverAccount(
     walletInfo.chain,
-    walletInfo.mnemonic,
+    mnemonics[walletInfo.address],
     endpoints[walletInfo.chain],
   );
 };
 
 const useWallets = () => {
   const [wallets, setWallets] = useState([]);
+  const [mnemonics, setMnemonics] = useState({});
   const [config, setConfig] = useState({});
   const [lastNumber, setLastNumber] = useState(0);
   const [activeWallet, setActiveWallet] = useState(null);
@@ -62,49 +70,71 @@ const useWallets = () => {
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState({});
-  const waitUntilUnlock = w => {
-    setRequiredLock(true);
-    setLocked(true);
-    setWallets(w);
-  };
   const checkPassword = async password => {
     try {
       const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
-      await unlock(storedWallets.wallets, password);
+      await unlock(storedWallets.mnemonics, password);
       return true;
     } catch (error) {
       return false;
     }
   };
 
-  const unlockWalletsAt = useCallback(async (password, endpoints) => {
-    try {
-      const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
-      const unlockedWallets = await unlock(storedWallets.wallets, password);
-      const activeIndex = await storage.getItem(STORAGE_KEYS.ACTIVE);
-      setWallets(unlockedWallets);
-      setConfig(storedWallets.config || {});
-      setLastNumber(storedWallets.lastNumber || unlockedWallets.length);
-      if (!isNil(activeIndex)) {
-        try {
-          const account = await getWalletAccount(
-            activeIndex,
-            unlockedWallets,
-            endpoints,
+  const unlockWalletsAt = useCallback(
+    async (password, endpoints, explorers) => {
+      try {
+        const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+
+        /****************************************/
+        // Previous versions stored mnemonics inside wallets array info
+        // so entire wallets info was encrypted. Now mnemonics are stored separately.
+        if (!('mnemonics' in storedWallets)) {
+          storedWallets.wallets = await unlock(storedWallets.wallets, password);
+          storedWallets.mnemonics = await lock(
+            storedWallets.wallets.reduce((m, wallet) => {
+              m[wallet.address] = wallet.mnemonic;
+              delete wallet.mnemonic;
+              return m;
+            }, {}),
+            password,
           );
-          setActiveWallet(account);
-        } catch (error) {
-          // await storage.removeItem(STORAGE_KEYS.WALLETS);
-          console.log(error);
+          await storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
         }
+        /****************************************/
+
+        const unlockedMnemonics = await unlock(
+          storedWallets.mnemonics,
+          password,
+        );
+        const activeIndex = await storage.getItem(STORAGE_KEYS.ACTIVE);
+        setWallets(storedWallets.wallets);
+        setMnemonics(unlockedMnemonics);
+        setConfig(storedWallets.config || {});
+        setLastNumber(storedWallets.lastNumber || storedWallets.wallets.length);
+        if (!isNil(activeIndex)) {
+          try {
+            const account = await getWalletAccount(
+              activeIndex,
+              storedWallets.wallets,
+              unlockedMnemonics,
+              endpoints,
+              explorers,
+            );
+            setActiveWallet(account);
+          } catch (error) {
+            // await storage.removeItem(STORAGE_KEYS.WALLETS);
+            console.log(error);
+          }
+        }
+        setLocked(false);
+        return true;
+      } catch (error) {
+        console.log(error);
+        return false;
       }
-      setLocked(false);
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }, []);
+    },
+    [],
+  );
 
   const unlockWallets = useCallback(
     async password => {
@@ -131,12 +161,30 @@ const useWallets = () => {
       storage.getItem(STORAGE_KEYS.WALLETS),
       storage.getItem(STORAGE_KEYS.ACTIVE),
       storage.getItem(STORAGE_KEYS.ENDPOINTS),
-    ]).then(async ([storedWallets, activeIndex, endpoints]) => {
+      storage.getItem(STORAGE_KEYS.EXPLORERS),
+    ]).then(async ([storedWallets, activeIndex, endpoints, explorers]) => {
       const activeEndpoints = endpoints || buildEndpoints();
       setSelectedEndpoints(activeEndpoints);
       if (storedWallets && storedWallets.wallets) {
         if (!storedWallets.passwordRequired) {
+          /****************************************/
+          // Previous versions stored mnemonics inside wallets array info
+          // Now mnemonics are stored separately.
+          if (!('mnemonics' in storedWallets)) {
+            storedWallets.mnemonics = storedWallets.wallets.reduce(
+              (m, wallet) => {
+                m[wallet.address] = wallet.mnemonic;
+                delete wallet.mnemonic;
+                return m;
+              },
+              {},
+            );
+            storage.setItem(STORAGE_KEYS.WALLETS, storedWallets);
+          }
+          /****************************************/
+
           setWallets(storedWallets.wallets);
+          setMnemonics(storedWallets.mnemonics);
           setConfig(storedWallets.config || {});
           setLastNumber(
             storedWallets.lastNumber || storedWallets.wallets.length,
@@ -146,6 +194,7 @@ const useWallets = () => {
               const account = await getWalletAccount(
                 activeIndex,
                 storedWallets.wallets,
+                storedWallets.mnemonics,
                 activeEndpoints,
               );
               setActiveWallet(account);
@@ -155,13 +204,15 @@ const useWallets = () => {
             }
           }
         } else {
+          setRequiredLock(true);
+
           let result = false;
           const password = await stash.getItem('password');
           if (password) {
             result = await unlockWalletsAt(password, activeEndpoints);
           }
           if (!result) {
-            waitUntilUnlock(storedWallets.wallets);
+            setLocked(true);
           }
         }
         setReady(true);
@@ -194,7 +245,11 @@ const useWallets = () => {
         avatar: getRandomAvatar(),
       },
     };
-    const storedWallets = [
+    const storedMnemonics = {
+      ...mnemonics,
+      [address]: account.mnemonic,
+    };
+    const _wallets = [
       ...wallets,
       ...(noIndex(currentIndex)
         ? [
@@ -202,18 +257,18 @@ const useWallets = () => {
               address,
               path,
               chain,
-              mnemonic: account.mnemonic,
             },
           ]
         : []),
     ];
     if (password) {
-      const encryptedWallets = await lock(storedWallets, password);
+      const encryptedMnemonics = await lock(storedMnemonics, password);
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: true,
         lastNumber: _lastNumber,
         config: _config,
-        wallets: encryptedWallets,
+        mnemonics: encryptedMnemonics,
+        wallets: _wallets,
       });
       setRequiredLock(true);
       await stash.setItem('password', password);
@@ -222,15 +277,17 @@ const useWallets = () => {
         passwordRequired: false,
         lastNumber: _lastNumber,
         config: _config,
-        wallets: storedWallets,
+        mmemonics: storedMnemonics,
+        wallets: _wallets,
       });
     }
-    setWallets(storedWallets);
+    setWallets(_wallets);
+    setMnemonics(storedMnemonics);
     setLastNumber(_lastNumber);
     setConfig(_config);
     await storage.setItem(
       STORAGE_KEYS.ACTIVE,
-      noIndex(currentIndex) ? storedWallets.length - 1 : currentIndex,
+      noIndex(currentIndex) ? _wallets.length - 1 : currentIndex,
     );
   };
 
@@ -239,9 +296,8 @@ const useWallets = () => {
       address: account.getReceiveAddress(),
       path: account.path,
       chain,
-      mnemonic: activeWallet.mnemonic,
     }));
-    const derConfig = derivedAccounts.reduce(
+    const _config = derivedAccounts.reduce(
       (a, v) => ({
         ...a,
         [v.address]: {
@@ -249,36 +305,47 @@ const useWallets = () => {
           avatar: getRandomAvatar(),
         },
       }),
-      {},
+      config,
     );
-    const storedWallets = [
+    const storedMnemonics = derivedAccounts.reduce(
+      (a, v) => ({
+        ...a,
+        [v.address]: activeWallet.mnemonic,
+      }),
+      mnemonics,
+    );
+    const _wallets = [
       ...wallets.filter(
         w => !derivedAccounts.some(da => da.address === w.address),
       ),
       ...derivedAccounts,
     ];
     if (password) {
-      const encryptedWallets = await lock(storedWallets, password);
+      const encryptedMnemonics = await lock(storedMnemonics, password);
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: true,
-        wallets: encryptedWallets,
-        config: { ...config, ...derConfig },
+        wallets: _wallets,
+        mnemonics: encryptedMnemonics,
+        config: _config,
       });
     } else {
       await storage.setItem(STORAGE_KEYS.WALLETS, {
         passwordRequired: false,
-        wallets: storedWallets,
-        config: { ...config, ...derConfig },
+        wallets: _wallets,
+        mnemonics: storedMnemonics,
+        config: _config,
       });
     }
-    setWallets(storedWallets);
-    setConfig({ ...config, ...derConfig });
+    setWallets(_wallets);
+    setMnemonics(storedMnemonics);
+    setConfig(_config);
   };
 
   const changeActiveWallet = async walletIndex => {
     const account = await getWalletAccount(
       walletIndex,
       wallets,
+      mnemonics,
       selectedEndpoints,
     );
     await storage.setItem(STORAGE_KEYS.ACTIVE, walletIndex);
@@ -296,31 +363,50 @@ const useWallets = () => {
       activeWallet.setNetwork(value);
     }
   };
+
   const removeAllWallets = async () => {
     await storage.clear();
     setConfig({});
     setLastNumber(0);
+    setMnemonics({});
     setWallets([]);
     setActiveWallet(null);
     setLocked(false);
     setRequiredLock(false);
   };
-  const removeWallet = async address => {
+  const removeWallet = async (address, password) => {
     const newWallArr = wallets.filter(w => w.address !== address);
     setWallets(newWallArr);
+    const _mnemonics = { ...mnemonics };
+    delete _mnemonics[address];
+    setMnemonics(_mnemonics);
     const _config = { ...config };
     delete _config[address];
     setConfig(_config);
-    await storage.setItem(STORAGE_KEYS.WALLETS, {
-      passwordRequired: false,
-      lastNumber: lastNumber,
-      config: _config,
-      wallets: newWallArr,
-    });
-    if (newWallArr.length) {
-      await changeActiveWallet(wallets.findIndex(w => w.address !== address));
+    if (password) {
+      const encryptedMnemonics = await lock(_mnemonics, password);
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: true,
+        lastNumber: lastNumber,
+        config: _config,
+        mnemonics: encryptedMnemonics,
+        wallets: newWallArr,
+      });
     } else {
-      removeAllWallets();
+      await storage.setItem(STORAGE_KEYS.WALLETS, {
+        passwordRequired: false,
+        lastNumber: lastNumber,
+        config: _config,
+        mnemonics: _mnemonics,
+        wallets: newWallArr,
+      });
+    }
+    if (newWallArr.length) {
+      if (activeWallet.getReceiveAddress() === address) {
+        await changeActiveWallet(wallets.findIndex(w => w.address !== address));
+      }
+    } else {
+      await removeAllWallets();
     }
   };
   const editWalletName = async (address, name) => {
@@ -393,13 +479,13 @@ const useWallets = () => {
       ready,
       locked,
       wallets,
+      mnemonics,
       activeWallet,
       selectedEndpoints,
       requiredLock,
       config,
     },
     {
-      setWallets,
       changeActiveWallet,
       changeEndpoint,
       addWallet,

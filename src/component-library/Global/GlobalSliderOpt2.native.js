@@ -1,77 +1,106 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Dimensions } from 'react-native';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
-
+import React, { useState } from 'react';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { useKeenSliderNative } from 'keen-slider/react-native';
+import GlobalButton from './GlobalButton';
+import IconExpandMore from '../../assets/images/IconExpandMore.png';
+import IconExpandLess from '../../assets/images/IconExpandLess.png';
 import theme from './theme';
 
-const { width: windowWidth } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
-  containerDots: {
+  sliderContainer: {
+    paddingBottom: theme.gutters.paddingNormal,
+    overflow: 'hidden',
+  },
+  dotsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: theme.gutters.paddingSM,
+    flexDirection: 'row',
+  },
+  inactiveDot: {
+    border: 'none',
+    width: 10,
+    height: 10,
+    backgroundColor: '#6e7d86',
+    borderRadius: '50%',
+    marginLeft: 5,
+    marginRight: 5,
+    cursor: 'pointer',
+  },
+  activeDot: {
+    border: 'none',
+    width: 10,
+    height: 10,
+    backgroundColor: theme.colors.accentPrimary,
+    borderRadius: '50%',
+    marginLeft: 5,
+    marginRight: 5,
+    cursor: 'pointer',
+  },
+  collapseButton: {
     position: 'absolute',
     width: '100%',
     alignItems: 'center',
-    bottom: -50,
-  },
-  dot: {
-    width: 5,
-    height: 5,
-    backgroundColor: theme.colors.accentPrimary,
-    marginHorizontal: -10,
-  },
-  inactiveDot: {
-    backgroundColor: '#6e7d86',
-    width: 5,
-    height: 5,
-    marginHorizontal: -10,
+    bottom: 10,
+    backgroundColor: 'transparent',
   },
 });
 
-const GlobalSlider = ({ items, renderItem, sliderHeight }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const GlobalSlider = ({
+  items,
+  slides,
+  renderItem,
+  minHeight,
+  maxHeight,
+  dots = true,
+}) => {
+  console.log(items);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentHeight, setCurrentHeight] = useState(minHeight);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const slider = useKeenSliderNative({
+    slides: { number: slides, perView: 1, spacing: 20 },
+  });
 
-  const sliderWidth = windowWidth - 24;
-  const firstItemRef = useRef(null);
-  const lastItemRef = useRef(null);
-
-  const onRef = useCallback(
-    (ref, i) => {
-      if (ref) {
-        if (i === 0) {
-          firstItemRef.current = ref;
-        }
-        if (i === items.length - 1) {
-          lastItemRef.current = ref;
-        }
-      }
-    },
-    [items, firstItemRef, lastItemRef],
-  );
+  const toggleCollapse = t => {
+    setCurrentHeight(isExpanded ? minHeight : maxHeight);
+    setIsExpanded(!isExpanded);
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, paddingBottom: 50 }}>
-      <View>
-        <Carousel
-          pagingEnabled
-          layout={'default'}
-          ref={onRef}
-          data={items}
-          // sliderHeight={sliderHeight}
-          sliderWidth={sliderWidth}
-          itemWidth={sliderWidth}
-          renderItem={renderItem}
-          onSnapToItem={index => setActiveIndex(index)}
-        />
-        <Pagination
-          dotsLength={items.length}
-          activeDotIndex={activeIndex}
-          containerStyle={styles.containerDots}
-          dotStyle={styles.dot}
-          inactiveDotStyle={styles.inactiveDot}
-          inactiveDotScale={1}
-        />
+    <View style={styles.sliderContainer}>
+      <View style={{ height: currentHeight }} {...slider.containerProps}>
+        {items?.map((item, index) => (
+          <View key={index} {...slider.slidesProps[index]}>
+            {renderItem(item, isExpanded)}
+          </View>
+        ))}
       </View>
-    </SafeAreaView>
+      <GlobalButton
+        type="icon"
+        transparent
+        icon={isExpanded ? IconExpandLess : IconExpandMore}
+        onPress={toggleCollapse}
+        size="medium"
+        style={styles.collapseButton}
+      />
+      {dots && items.length > 1 && (
+        <View style={styles.dotsContainer}>
+          {items?.map((item, idx) => (
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentSlide(idx);
+                slider.moveToIdx(idx);
+              }}
+              style={
+                currentSlide === idx ? styles.activeDot : styles.inactiveDot
+              }
+            />
+          ))}
+        </View>
+      )}
+    </View>
   );
 };
+
 export default GlobalSlider;

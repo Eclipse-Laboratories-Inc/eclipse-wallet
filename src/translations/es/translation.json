@@ -10,7 +10,8 @@
     "seed_phrase": "Seed-phrase",
     "balance": "Balance",
     "sending": "Enviando...",
-    "sent": "¡Enviado!"
+    "sent": "¡Enviado!",
+    "open_explorer": "Abrir en explorer"
   },
   "actions": {
     "skip": "Omitir",
@@ -42,6 +43,7 @@
     "address_book": "Contactos",
     "display_language": "Idioma",
     "change_network": "Cambiar Network",
+    "select_explorer": "Seleccionar Explorador",
     "security": "Seguridad",
     "notifications": "Notificaciones",
     "trusted_apps": "Apps Autorizadas",
@@ -193,7 +195,7 @@
   },
   "adapter": {
     "select": {
-      "title": "Selecciona Wallet"
+      "title": "Bienvenido"
     },
     "detail": {
       "connection": {
@@ -264,7 +266,12 @@
     "creator_royalty": "Royalty Creador",
     "mint_address": "Dirección Mint",
     "update_authority": "Autoridad Actualización",
-    "offer_amount": "Monto oferta:"
+    "offer_amount": "Monto oferta:",
+    "goto_marketplace": "Ir al Marketplace",
+    "trending_collections": "Colleciones destacadas",
+    "new_collections": "Nuevas colleciones",
+    "burn_nft": "Quemar",
+    "burning": "Quemando"
   },
   "swap": {
     "swap": "Swap",
@@ -277,5 +284,9 @@
     "refresh_quote": "Refrescar cotización",
     "total_fee": "Tarifa total",
     "go_to_explorer": "Ir al Explorer"
+  },
+  "header": {
+    "connected": "Conectado a {{hostname}}",
+    "disconnected": "No conectado a {{hostname}}"
   }
 }
