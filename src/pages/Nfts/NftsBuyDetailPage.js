@@ -76,7 +76,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
     if (activeWallet) {
       Promise.all([
         activeWallet.getBalance(),
-        activeWallet.getCollectionItems(params.id),
+        activeWallet.getCollectionItems(params.id, params.pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -96,7 +96,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, params.id, params.nftId]);
+  }, [activeWallet, params.id, params.nftId, params.pageNumber]);
 
   const attributes = Object.entries(get(nftDetail, 'attributes', []));
   attributes.pop();
@@ -132,6 +132,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_BUYING, {
       id: nftDetail.project_id,
       nftId: nftDetail.token_address,
+      pageNumber: params.pageNumber,
       type: 'buy',
     });
   };
@@ -140,6 +141,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_BIDDING, {
       id: nftDetail.project_id,
       nftId: nftDetail.token_address,
+      pageNumber: params.pageNumber,
       type: bidAmount ? 'cancel-offer' : 'create-offer',
     });
   };

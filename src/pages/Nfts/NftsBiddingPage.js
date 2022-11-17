@@ -76,7 +76,7 @@ const NftsBiddingPage = ({ params, t }) => {
     if (activeWallet) {
       Promise.all([
         activeWallet.getBalance(),
-        activeWallet.getCollectionItems(params.id),
+        activeWallet.getCollectionItems(params.id, params.pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -96,7 +96,7 @@ const NftsBiddingPage = ({ params, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, params.id, params.nftId]);
+  }, [activeWallet, params.id, params.nftId, params.pageNumber]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
@@ -112,6 +112,7 @@ const NftsBiddingPage = ({ params, t }) => {
       navigate(NFTS_ROUTES_MAP.NFTS_BUY_DETAIL, {
         id: nftDetail.project_id,
         nftId: nftDetail.token_address,
+        pageNumber: params.pageNumber,
       });
     }
     setStep(step - 1);

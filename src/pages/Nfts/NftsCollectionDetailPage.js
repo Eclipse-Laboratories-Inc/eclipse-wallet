@@ -71,7 +71,12 @@ const NftsCollectionDetailPage = ({ params, t }) => {
           setLoaded(true);
         }
         if (collItems) {
-          setCollectionItems(collItems?.market_place_snapshots);
+          setCollectionItems(
+            collItems?.market_place_snapshots.map(v => ({
+              ...v,
+              page_number: 1,
+            })),
+          );
           setHasNextPage(collItems.pagination_info?.has_next_page);
         }
       });
@@ -93,6 +98,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_BUY_DETAIL, {
       id: nft.project_id,
       nftId: nft.token_address,
+      pageNumber: nft.page_number,
     });
   };
 
@@ -144,7 +150,10 @@ const NftsCollectionDetailPage = ({ params, t }) => {
         newItems =>
           setCollectionItems([
             ...collectionItems,
-            ...newItems?.market_place_snapshots,
+            ...newItems?.market_place_snapshots.map(v => ({
+              ...v,
+              page_number: pageNumber + 1,
+            })),
           ]),
         setPageNumber(pageNumber + 1),
       );

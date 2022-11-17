@@ -77,7 +77,7 @@ const NftsBuyingPage = ({ params, t }) => {
     if (activeWallet) {
       Promise.all([
         activeWallet.getBalance(),
-        activeWallet.getCollectionItems(params.id),
+        activeWallet.getCollectionItems(params.id, params.pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -91,7 +91,7 @@ const NftsBuyingPage = ({ params, t }) => {
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id, params.nftId]);
+  }, [activeWallet, params.id, params.nftId, params.pageNumber]);
 
   const insufficientFunds =
     solBalance?.uiAmount < price * 0.01 + price + fee / TOKEN_DECIMALS.SOLANA;
@@ -103,6 +103,7 @@ const NftsBuyingPage = ({ params, t }) => {
       navigate(NFTS_ROUTES_MAP.NFTS_BUY_DETAIL, {
         id: nftDetail.project_id,
         nftId: nftDetail.token_address,
+        pageNumber: params.pageNumber,
       });
     }
     setStep(step - 1);

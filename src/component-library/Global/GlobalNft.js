@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   },
   badgeIcon: {
     marginLeft: theme.gutters.paddingXXS,
+    marginBottom: -3,
   },
   solanaIcon: {
     marginBottom: -3,

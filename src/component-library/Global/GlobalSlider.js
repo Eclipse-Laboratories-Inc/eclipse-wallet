@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useKeenSliderNative } from 'keen-slider/react-native';
+import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
 import GlobalButton from './GlobalButton';
 import IconExpandMore from '../../assets/images/IconExpandMore.png';
 import IconExpandLess from '../../assets/images/IconExpandLess.png';
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     backgroundColor: '#6e7d86',
-    borderRadius: 50,
+    borderRadius: '50%',
     marginLeft: 5,
     marginRight: 5,
     cursor: 'pointer',
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     backgroundColor: theme.colors.accentPrimary,
-    borderRadius: 50,
+    borderRadius: '50%',
     marginLeft: 5,
     marginRight: 5,
     cursor: 'pointer',
@@ -55,10 +56,11 @@ const GlobalSlider = ({
   maxHeight,
   dots = true,
 }) => {
+  console.log(items);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
   const [isExpanded, setIsExpanded] = useState(false);
-  const slider = useKeenSliderNative({
+  const [sliderRef, slider] = useKeenSlider({
     slides: { number: slides, initial: 0, spacing: 20 },
     slideChanged(s) {
       setCurrentSlide(s.track.details.rel);
@@ -72,13 +74,16 @@ const GlobalSlider = ({
 
   return (
     <View style={styles.sliderContainer}>
-      <View className="keen-slider" style={{ height: currentHeight }}>
+      <div
+        ref={sliderRef}
+        className="keen-slider"
+        style={{ height: currentHeight }}>
         {items?.map((item, index) => (
-          <View key={index} className="keen-slider__slide">
+          <div key={index} className="keen-slider__slide">
             {renderItem(item, isExpanded)}
-          </View>
+          </div>
         ))}
-      </View>
+      </div>
       <GlobalButton
         type="icon"
         transparent
