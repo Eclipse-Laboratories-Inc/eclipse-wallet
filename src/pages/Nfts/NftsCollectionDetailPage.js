@@ -57,12 +57,14 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   const [loaded, setLoaded] = useState(false);
   const [collectionDetail, setCollectionDetail] = useState({});
   const [collectionItems, setCollectionItems] = useState({});
+  const [pageNumber, setPageNumber] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
         activeWallet.getCollection(params.id),
-        activeWallet.getCollectionItems(params.id),
+        activeWallet.getCollectionItems(params.id, 1),
       ]).then(async ([collDetail, collItems]) => {
         if (collDetail) {
           setCollectionDetail(collDetail?.project_stats[0]);
@@ -70,6 +72,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
         }
         if (collItems) {
           setCollectionItems(collItems?.market_place_snapshots);
+          setHasNextPage(collItems.pagination_info?.has_next_page);
         }
       });
     }
@@ -133,6 +136,21 @@ const NftsCollectionDetailPage = ({ params, t }) => {
     },
   ];
 
+  const onLoadMore = async () => {
+    if (hasNextPage) {
+      Promise.resolve(
+        activeWallet.getCollectionItems(params.id, pageNumber + 1),
+      ).then(
+        newItems =>
+          setCollectionItems([
+            ...collectionItems,
+            ...newItems?.market_place_snapshots,
+          ]),
+        setPageNumber(pageNumber + 1),
+      );
+    }
+  };
+
   return loaded ? (
     <GlobalLayout fullscreen>
       <GlobalLayout.Header>
@@ -191,10 +209,19 @@ const NftsCollectionDetailPage = ({ params, t }) => {
         <GlobalText type="body2">{t('nft.listed_items')}</GlobalText>
 
         <GlobalPadding size="sm" />
-        <GlobalNftList
-          columns={3}
-          nonFungibleTokens={collectionItems}
-          onClick={onClick}
+
+        <FlatList
+          onEndReachedThreshold={0.1}
+          onEndReached={onLoadMore}
+          data={['']}
+          renderItem={() => (
+            <GlobalNftList
+              columns={3}
+              nonFungibleTokens={collectionItems}
+              onClick={onClick}
+            />
+          )}
+          style={{ height: 550 }}
         />
       </GlobalLayout.Header>
     </GlobalLayout>
