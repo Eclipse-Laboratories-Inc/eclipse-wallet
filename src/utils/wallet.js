@@ -60,8 +60,8 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-//export const getChains = () => Object.keys(chains);
-export const getChains = () => ['SOLANA'];
+export const getChains = () => Object.keys(chains);
+// export const getChains = () => ['SOLANA'];
 
 export const getDefaultChain = () => 'SOLANA';
 

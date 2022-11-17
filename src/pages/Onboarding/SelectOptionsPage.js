@@ -149,7 +149,7 @@ const SelectChain = ({ onNext, blockChains, onBack, t, onComingSoon }) => (
         touchableStyles={styles.touchable}
       />
     ))}
-    <CardButton
+    {/* <CardButton
       key={'NEAR'}
       onPress={() => onComingSoon('NEAR')}
       icon={
@@ -160,7 +160,7 @@ const SelectChain = ({ onNext, blockChains, onBack, t, onComingSoon }) => (
       title={'NEAR'}
       description={'coming soon'}
       touchableStyles={styles.touchable}
-    />
+    /> */}
     <CardButton
       key={'ETHEREUM'}
       onPress={() => onComingSoon('ETHEREUM')}
