@@ -150,7 +150,6 @@ const NftsCollectionDetailPage = ({ params, t }) => {
       );
     }
   };
-
   return loaded ? (
     <GlobalLayout fullscreen>
       <GlobalLayout.Header>
@@ -226,7 +225,9 @@ const NftsCollectionDetailPage = ({ params, t }) => {
       </GlobalLayout.Header>
     </GlobalLayout>
   ) : (
-    <GlobalSkeleton type="NftListScreen" />
+    <GlobalLayout fullscreen>
+      <GlobalSkeleton type="NftListScreen" />
+    </GlobalLayout>
   );
 };
 
