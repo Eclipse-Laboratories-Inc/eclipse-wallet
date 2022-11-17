@@ -6,7 +6,6 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { getChains } from '../../utils/wallet';
 import { ROUTES_MAP as ROUTES_MAP_APP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
-import theme from '../../component-library/Global/theme';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -43,9 +42,6 @@ const styles = StyleSheet.create({
 });
 
 const SelectAction = ({ onNext, onBack, onboarded, t }) => {
-  const { trackEvent } = useAnalyticsEventTracker(
-    SECTIONS_MAP.SELECT_CREATE_RECOVER,
-  );
   return (
     <>
       <GlobalLayout.Header>
@@ -161,7 +157,7 @@ const SelectOptionsPage = ({ t }) => {
   const [configs, setConfigs] = useState(null);
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs => setConfigs(chainConfigs.data));
+    retriveConfig().then(chainConfigs => setConfigs(chainConfigs));
   });
 
   const onSelectAction = action => {
