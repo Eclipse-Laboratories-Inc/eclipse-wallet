@@ -63,7 +63,7 @@ const ApproveConnectionForm = ({
 
     const publicKey = activeWallet.publicKey.toBuffer().toString('base64');
     const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
-    const uri = 'https://app.salmonwallet.io/adapter';
+    const uri = 'https://salmonwallet.io/adapter';
 
     AdapterModule.completeWithAuthorize(publicKey, walletName, uri, scope);
   }, [activeWallet, config, onApprove, scope]);

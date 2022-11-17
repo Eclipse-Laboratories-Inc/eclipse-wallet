@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Linking } from 'react-native';
 
-const ADAPTER_PREFIXES = [
-  'solana-wallet:',
-  'https://app.salmonwallet.io/adapter',
-];
+const ADAPTER_PREFIXES = ['solana-wallet:', 'https://salmonwallet.io/adapter'];
 
 const useRuntime = () => {
   const [ready, setReady] = useState(false);
