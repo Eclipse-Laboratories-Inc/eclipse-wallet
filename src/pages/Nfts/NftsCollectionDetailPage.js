@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList, Modal } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -17,6 +17,7 @@ import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
+import NftsBuyDetailPage from './NftsBuyDetailPage';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -59,6 +60,16 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   const [collectionItems, setCollectionItems] = useState({});
   const [pageNumber, setPageNumber] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(params.nftId ? true : false);
+  const [selectedNft, setSelectedNft] = useState(
+    params.nftId
+      ? {
+          project_id: params.id,
+          token_address: params.nftId,
+          page_number: params.pageNumber,
+        }
+      : {},
+  );
 
   useEffect(() => {
     if (activeWallet) {
@@ -95,11 +106,8 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   };
 
   const onClick = nft => {
-    navigate(ROUTES_MAP.NFTS_BUY_DETAIL, {
-      id: nft.project_id,
-      nftId: nft.token_address,
-      pageNumber: nft.page_number,
-    });
+    setSelectedNft(nft);
+    setIsModalOpen(!isModalOpen);
   };
 
   const renderItem = ({ item }) => {
@@ -231,6 +239,19 @@ const NftsCollectionDetailPage = ({ params, t }) => {
           )}
           style={{ height: 550 }}
         />
+
+        <Modal
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsModalOpen(false)}
+          visible={isModalOpen}>
+          <NftsBuyDetailPage
+            id={selectedNft.project_id}
+            nftId={selectedNft.token_address}
+            pageNumber={selectedNft.page_number}
+            setIsModalOpen={setIsModalOpen}
+          />
+        </Modal>
       </GlobalLayout.Header>
     </GlobalLayout>
   ) : (

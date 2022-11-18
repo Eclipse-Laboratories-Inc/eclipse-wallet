@@ -100,9 +100,9 @@ const NftsBuyingPage = ({ params, t }) => {
     if (step === 2) {
       navigate(NFTS_ROUTES_MAP.NFTS_LIST);
     } else if (step === 1) {
-      navigate(NFTS_ROUTES_MAP.NFTS_BUY_DETAIL, {
-        id: nftDetail.project_id,
-        nftId: nftDetail.token_address,
+      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION_DETAIL_PARAMS, {
+        id: params.id,
+        nftId: params.nftId,
         pageNumber: params.pageNumber,
       });
     }

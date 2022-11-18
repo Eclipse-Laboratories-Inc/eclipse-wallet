@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const NftsBuyDetailPage = ({ params, t }) => {
+const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFTS_BUY_DETAIL);
   const navigate = useNavigation();
   const [{ activeWallet, config }] = useContext(AppContext);
@@ -76,11 +76,11 @@ const NftsBuyDetailPage = ({ params, t }) => {
     if (activeWallet) {
       Promise.all([
         activeWallet.getBalance(),
-        activeWallet.getCollectionItems(params.id, params.pageNumber),
+        activeWallet.getCollectionItems(id, pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
-          n => n.token_address === params.nftId,
+          n => n.token_address === nftId,
         );
         if (nft) {
           setNftDetail(nft);
@@ -90,13 +90,13 @@ const NftsBuyDetailPage = ({ params, t }) => {
         setLoaded(true);
         const bids = await activeWallet.getNftsBids();
         setBidAmount(
-          bids.find(b => b.token_address === params.nftId)?.market_place_state
+          bids.find(b => b.token_address === nftId)?.market_place_state
             ?.price || null,
         );
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, params.id, params.nftId, params.pageNumber]);
+  }, [activeWallet, id, nftId, pageNumber]);
 
   const attributes = Object.entries(get(nftDetail, 'attributes', []));
   attributes.pop();
@@ -123,16 +123,14 @@ const NftsBuyDetailPage = ({ params, t }) => {
   };
 
   const goToBack = () => {
-    navigate(ROUTES_MAP.NFTS_COLLECTION_DETAIL, {
-      id: params.id,
-    });
+    setIsModalOpen(false);
   };
 
   const goToBuy = () => {
     navigate(ROUTES_MAP.NFTS_BUYING, {
       id: nftDetail.project_id,
       nftId: nftDetail.token_address,
-      pageNumber: params.pageNumber,
+      pageNumber: pageNumber,
       type: 'buy',
     });
   };
@@ -141,7 +139,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.NFTS_BIDDING, {
       id: nftDetail.project_id,
       nftId: nftDetail.token_address,
-      pageNumber: params.pageNumber,
+      pageNumber: pageNumber,
       type: bidAmount ? 'cancel-offer' : 'create-offer',
     });
   };
@@ -164,19 +162,25 @@ const NftsBuyDetailPage = ({ params, t }) => {
   const getPropertiesData = () => [
     {
       caption: t('nft.current_price'),
-      title: `${price.toFixed(2)} SOL (${showValue(
-        (price === '.' ? 0 : price) * solBalance?.usdPrice,
-        2,
-      )} 
-      ${t('general.usd')})`,
+      title: price
+        ? `${price?.toFixed(2)} SOL (${showValue(
+            (price === '.' ? 0 : price) * solBalance?.usdPrice,
+            2,
+          )} 
+      ${t('general.usd')})`
+        : '-',
     },
     {
       caption: t('nft.owned_by'),
-      title: getShortAddress(nftDetail?.lowest_listing_mpa?.user_address),
+      title: nftDetail?.lowest_listing_mpa
+        ? getShortAddress(nftDetail?.lowest_listing_mpa?.user_address)
+        : '-',
     },
     {
       caption: t('nft.creator_royalty'),
-      title: `${nftDetail?.lowest_listing_mpa?.fee}%`,
+      title: nftDetail?.lowest_listing_mpa
+        ? `${nftDetail?.lowest_listing_mpa?.fee}%`
+        : '-',
     },
     // {
     //   caption: t('nft.marketplace'),
@@ -226,6 +230,7 @@ const NftsBuyDetailPage = ({ params, t }) => {
               onPress={goToBuy}
               style={[globalStyles.button, globalStyles.buttonLeft]}
               touchableStyles={globalStyles.buttonTouchable}
+              disabled={!price}
             />
 
             <GlobalButton
@@ -275,7 +280,9 @@ const NftsBuyDetailPage = ({ params, t }) => {
       </GlobalLayout.Header>
     </GlobalLayout>
   ) : (
-    <GlobalSkeleton type="NftDetail" />
+    <GlobalLayout fullscreen>
+      <GlobalSkeleton type="NftDetail" />
+    </GlobalLayout>
   );
 };
 
