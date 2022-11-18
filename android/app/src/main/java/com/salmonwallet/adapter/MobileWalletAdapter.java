@@ -44,14 +44,12 @@ public class MobileWalletAdapter {
     }
 
     public void addRequestEventListener(RequestEventListener listener) {
-        if (!this.listeners.contains(listener)) {
-            this.listeners.add(listener);
+        this.listeners.add(listener);
 
-            // work-around to deal with race-condition: JS React listener component may be mounted after first request event
-            if (this.request != null) {
-                Log.i(TAG, "Launching previous request: " + this.request);
-                listener.onRequest(this.request);
-            }
+        // work-around to deal with race-condition: JS React listener component may be mounted after first request event
+        if (this.request != null) {
+            Log.i(TAG, "Launching previous request: " + this.request.getClass().getSimpleName());
+            listener.onRequest(this.request);
         }
     }
 
