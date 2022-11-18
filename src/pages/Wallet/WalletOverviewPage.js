@@ -106,6 +106,8 @@ const WalletOverviewPage = ({ t }) => {
                 <GlobalSendReceive
                   goToSend={goToSend}
                   goToReceive={goToReceive}
+                  canSend={configs?.features?.send}
+                  canReceive={configs?.features?.receive}
                 />
               }
             />

@@ -22,6 +22,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
+import { retriveConfig } from '../../utils/config';
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
@@ -29,6 +30,14 @@ const TokenDetailPage = ({ params, t }) => {
   const [token, setToken] = useState({});
   const [{ activeWallet, hiddenBalance }, { toggleHideBalance }] =
     useContext(AppContext);
+
+  const [configs, setConfigs] = useState(null);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs =>
+      setConfigs(chainConfigs[activeWallet.chain].sections.token_detail),
+    );
+  });
 
   useEffect(() => {
     if (activeWallet) {
@@ -91,6 +100,8 @@ const TokenDetailPage = ({ params, t }) => {
               <GlobalSendReceive
                 goToSend={goToSend}
                 goToReceive={goToReceive}
+                canSend={configs?.features?.send}
+                canReceive={configs?.features?.receive}
               />
             }
           />
