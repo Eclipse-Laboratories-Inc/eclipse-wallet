@@ -2,7 +2,7 @@ const EXPLORERS = {
   SOLANA: {
     SOLSCAN: {
       name: 'Solscan',
-      url: 'https://solscan.io',
+      url: 'https://solscan.io/tx',
     },
     SOLANA_FM: {
       name: 'Solana FM',
@@ -20,7 +20,7 @@ const EXPLORERS = {
   NEAR: {
     NEAR_EXPLORER: {
       name: 'Near Explorer',
-      url: 'https://explorer.near.org',
+      url: 'https://explorer.near.org/transactions',
     },
   },
 };

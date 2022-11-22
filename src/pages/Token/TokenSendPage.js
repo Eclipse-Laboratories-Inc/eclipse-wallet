@@ -155,7 +155,7 @@ const TokenSendPage = ({ params, t }) => {
   const recipient = recipientName ? recipientName : recipientAddress;
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
