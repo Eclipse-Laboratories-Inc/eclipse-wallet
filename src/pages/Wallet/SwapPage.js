@@ -30,6 +30,7 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import SwapAmounts from '../Transactions/SwapAmounts';
+import { DEFAULT_SYMBOL } from '../Transactions/constants';
 
 const styles = StyleSheet.create({
   viewTxLink: {
@@ -201,7 +202,8 @@ const SwapPage = ({ t }) => {
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const current_blockchan = getWalletChain(activeWallet);
+  const { explorer } = useUserConfig(current_blockchan);
 
   useEffect(() => {
     if (activeWallet) {
@@ -293,7 +295,12 @@ const SwapPage = ({ t }) => {
     setStatus(TRANSACTION_STATUS.CREATING);
     setStep(3);
     activeWallet
-      .createSwapTransaction(quote.route.id)
+      .createSwapTransaction(
+        quote,
+        inToken.mint || inToken.address,
+        outToken.address,
+        parseFloat(inAmount),
+      )
       .then(txs => {
         setError(false);
         trackEvent(EVENTS_MAP.SWAP_COMPLETED);
@@ -451,11 +458,13 @@ const SwapPage = ({ t }) => {
                 t={t}
               />
             )}
-            {quote?.fee && (
+            {(quote?.fee || quote?.pool.total_fee) && (
               <DetailItem
-                key={quote?.fee}
+                key={quote?.fee || quote?.pool.total_fee}
                 title={t('swap.total_fee')}
-                value={`${quote.fee.toFixed(8)} SOL`}
+                value={`${
+                  quote?.fee?.toFixed(8) || quote?.pool.total_fee?.toFixed(4)
+                } ${DEFAULT_SYMBOL[current_blockchan]}`}
               />
             )}
           </GlobalLayout.Header>
@@ -499,8 +508,8 @@ const SwapPage = ({ t }) => {
               <GlobalPadding size="lg" />
               <View>
                 <SwapAmounts
-                  inAmount={quote.route.inAmount}
-                  outAmount={quote.route.outAmount}
+                  inAmount={quote.route.inAmount || quote.pool.amounts[0]}
+                  outAmount={quote.route.outAmount || quote.pool.amounts[1]}
                   inToken={inToken.symbol}
                   outToken={outToken.symbol}
                 />
