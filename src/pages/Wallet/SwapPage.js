@@ -30,7 +30,7 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import SwapAmounts from '../Transactions/SwapAmounts';
-import { DEFAULT_SYMBOL } from '../Transactions/constants';
+import { DEFAULT_SYMBOL, TOKEN_DECIMALS } from '../Transactions/constants';
 
 const styles = StyleSheet.create({
   viewTxLink: {
@@ -277,8 +277,10 @@ const SwapPage = ({ t }) => {
         parseFloat(inAmount),
       );
       setQuote(q);
-      getRoutesNames(q?.route?.marketInfos);
-      await getRoutesSymbols(q?.route?.marketInfos);
+      if (current_blockchan === 'SOLANA') {
+        getRoutesNames(q?.route?.marketInfos);
+        await getRoutesSymbols(q?.route?.marketInfos);
+      }
       setProcessing(false);
       trackEvent(EVENTS_MAP.SWAP_QUOTE);
       setStep(2);
@@ -438,17 +440,22 @@ const SwapPage = ({ t }) => {
             <GlobalPadding />
             <BigDetailItem
               title={t('swap.you_send')}
-              value={`${get(quote, 'uiInfo.in.uiAmount')} ${get(
-                quote,
-                'uiInfo.in.symbol',
-              )}`}
+              value={`${
+                get(quote, 'uiInfo.in.uiAmount') ||
+                (
+                  quote.pool.amounts[0] / Math.pow(10, quote.uiInfo.in.decimals)
+                ).toFixed(4)
+              } ${get(quote, 'uiInfo.in.symbol')}`}
             />
             <BigDetailItem
               title={t('swap.you_receive')}
-              value={`${get(quote, 'uiInfo.out.uiAmount')} ${get(
-                quote,
-                'uiInfo.out.symbol',
-              )}`}
+              value={`${
+                get(quote, 'uiInfo.out.uiAmount') ||
+                (
+                  quote.pool.amounts[1] /
+                  Math.pow(10, quote.uiInfo.out.decimals)
+                ).toFixed(4)
+              } ${get(quote, 'uiInfo.out.symbol')}`}
             />
             <GlobalPadding size="2xl" />
             {quote?.route?.marketInfos && (
@@ -463,7 +470,8 @@ const SwapPage = ({ t }) => {
                 key={quote?.fee || quote?.pool.total_fee}
                 title={t('swap.total_fee')}
                 value={`${
-                  quote?.fee?.toFixed(8) || quote?.pool.total_fee?.toFixed(4)
+                  quote?.fee?.toFixed(8) ||
+                  quote?.pool.total_fee / TOKEN_DECIMALS[current_blockchan]
                 } ${DEFAULT_SYMBOL[current_blockchan]}`}
               />
             )}
