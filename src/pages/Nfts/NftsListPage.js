@@ -5,7 +5,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
@@ -18,6 +17,7 @@ import Header from '../../component-library/Layout/Header';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
+import NftOffersMade from './components/NftOffersMade';
 
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
@@ -72,6 +72,7 @@ const NftsListPage = ({ t }) => {
               listedInfo={listedInfo}
               onClick={onClick}
             />
+            <NftOffersMade t />
           </GlobalLayout.Header>
         )}
         {!loaded && <GlobalSkeleton type="NftListScreen" />}

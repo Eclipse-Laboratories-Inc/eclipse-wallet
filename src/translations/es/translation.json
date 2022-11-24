@@ -253,6 +253,7 @@
     "goto_marketplace": "Ir al Marketplace",
     "listed_items": "Items Listados",
     "buy_now": "Comprar Ahora",
+    "offers_made": "Ofertas Hechas",
     "make_offer": "Ofertar",
     "cancel_offer": "Cancelar Oferta {{bidAmount}}",
     "details": "Details",
@@ -267,11 +268,11 @@
     "mint_address": "Dirección Mint",
     "update_authority": "Autoridad Actualización",
     "offer_amount": "Monto oferta:",
-    "goto_marketplace": "Ir al Marketplace",
     "trending_collections": "Colleciones destacadas",
     "new_collections": "Nuevas colleciones",
     "burn_nft": "Quemar",
-    "burning": "Quemando"
+    "burning": "Quemando",
+    "update": "update"
   },
   "swap": {
     "swap": "Swap",

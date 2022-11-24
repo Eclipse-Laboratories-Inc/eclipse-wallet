@@ -56,7 +56,6 @@ const GlobalSlider = ({
   maxHeight,
   dots = true,
 }) => {
-  console.log(items);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,7 +70,6 @@ const GlobalSlider = ({
     setCurrentHeight(isExpanded ? minHeight : maxHeight);
     setIsExpanded(!isExpanded);
   };
-
   return (
     <View style={styles.sliderContainer}>
       <div
@@ -84,14 +82,16 @@ const GlobalSlider = ({
           </div>
         ))}
       </div>
-      <GlobalButton
-        type="icon"
-        transparent
-        icon={isExpanded ? IconExpandLess : IconExpandMore}
-        onPress={toggleCollapse}
-        size="medium"
-        style={styles.collapseButton}
-      />
+      {items[0].value.length > 1 && (
+        <GlobalButton
+          type="icon"
+          transparent
+          icon={isExpanded ? IconExpandLess : IconExpandMore}
+          onPress={toggleCollapse}
+          size="medium"
+          style={styles.collapseButton}
+        />
+      )}
       {dots && items.length > 1 && (
         <View style={styles.dotsContainer}>
           {items?.map((item, idx) => (

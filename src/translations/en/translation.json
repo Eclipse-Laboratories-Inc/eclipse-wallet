@@ -286,6 +286,7 @@
     "goto_marketplace": "Go to Marketplace",
     "listed_items": "Listed Items",
     "buy_now": "Buy Now",
+    "offers_made": "Offers Made",
     "make_offer": "Make Offer",
     "cancel_offer": "Cancel Offer\n{{bidAmount}}",
     "details": "Details",
@@ -301,7 +302,8 @@
     "update_authority": "Update Authority",
     "offer_amount": "Offer amount:",
     "trending_collections": "Trending collections",
-    "new_collections": "New collections"
+    "new_collections": "New collections",
+    "update": "UPDATE"
   },
   "swap": {
     "swap": "Swap",

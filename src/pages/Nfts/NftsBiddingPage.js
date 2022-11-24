@@ -77,6 +77,7 @@ const NftsBiddingPage = ({ params, t }) => {
       Promise.all([
         activeWallet.getBalance(),
         activeWallet.getCollectionItems(params.id, params.pageNumber),
+        activeWallet.getNftsBids(),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -86,9 +87,11 @@ const NftsBiddingPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
-
-        setLoaded(true);
         const bids = await activeWallet.getNftsBids();
+        if (isBidded) {
+          setNftDetail(bids.find(n => n.token_address === params.nftId));
+        }
+        setLoaded(true);
         setPrice(
           bids.find(b => b.token_address === params.nftId)?.market_place_state
             ?.price || null,
@@ -96,7 +99,7 @@ const NftsBiddingPage = ({ params, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, params.id, params.nftId, params.pageNumber]);
+  }, [activeWallet, isBidded, params.id, params.nftId, params.pageNumber]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
