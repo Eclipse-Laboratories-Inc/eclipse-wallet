@@ -202,8 +202,8 @@ const SwapPage = ({ t }) => {
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const current_blockchan = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchan);
+  const current_blockchain = getWalletChain(activeWallet);
+  const { explorer } = useUserConfig(current_blockchain);
 
   useEffect(() => {
     if (activeWallet) {
@@ -277,7 +277,7 @@ const SwapPage = ({ t }) => {
         parseFloat(inAmount),
       );
       setQuote(q);
-      if (current_blockchan === 'SOLANA') {
+      if (current_blockchain === 'SOLANA') {
         getRoutesNames(q?.route?.marketInfos);
         await getRoutesSymbols(q?.route?.marketInfos);
       }
@@ -471,8 +471,8 @@ const SwapPage = ({ t }) => {
                 title={t('swap.total_fee')}
                 value={`${
                   quote?.fee?.toFixed(8) ||
-                  quote?.pool.total_fee / TOKEN_DECIMALS[current_blockchan]
-                } ${DEFAULT_SYMBOL[current_blockchan]}`}
+                  quote?.pool.total_fee / TOKEN_DECIMALS[current_blockchain]
+                } ${DEFAULT_SYMBOL[current_blockchain]}`}
               />
             )}
           </GlobalLayout.Header>

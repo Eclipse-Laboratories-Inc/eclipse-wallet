@@ -84,8 +84,8 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const current_blockchan = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchan);
+  const current_blockchain = getWalletChain(activeWallet);
+  const { explorer } = useUserConfig(current_blockchain);
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -394,8 +394,8 @@ const TokenSendPage = ({ params, t }) => {
                     </GlobalText>
 
                     <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS[current_blockchan]}{' '}
-                      {DEFAULT_SYMBOL[current_blockchan]}
+                      {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
+                      {DEFAULT_SYMBOL[current_blockchain]}
                     </GlobalText>
                   </View>
                 )}

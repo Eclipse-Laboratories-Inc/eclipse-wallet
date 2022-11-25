@@ -7,7 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { getWalletName } from '../../utils/wallet';
+import { getWalletChain } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -68,6 +68,7 @@ const NftsDetailPage = ({ params, t }) => {
   const [nftDetail, setNftDetail] = useState({});
   const [listedInfo, setListedInfo] = useState([]);
   const [{ activeWallet, config }] = useContext(AppContext);
+  const current_blockchain = getWalletChain(activeWallet);
 
   useEffect(() => {
     if (activeWallet) {
@@ -80,13 +81,15 @@ const NftsDetailPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed.find(l => l.token_address === params.id));
-        setListedLoaded(true);
+        if (current_blockchain === 'SOLANA') {
+          const listed = await activeWallet.getListedNfts();
+          setListedInfo(listed.find(l => l.token_address === params.id));
+          setListedLoaded(true);
+        }
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeWallet, current_blockchain, params.id]);
 
   const getListBtnTitle = () =>
     !listedLoaded ? (
