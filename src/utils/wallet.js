@@ -26,11 +26,10 @@ const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
 
 export const LOGOS = {
-  SOLANA:
-    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png',
-  NEAR: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/near/info/logo.png',
+  SOLANA: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
+  NEAR: 'https://assets-cdn.trustwallet.com/blockchains/near/info/logo.png',
   ETHEREUM:
-    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    'https://assets-cdn.trustwallet.com/blockchains/ethereum/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
