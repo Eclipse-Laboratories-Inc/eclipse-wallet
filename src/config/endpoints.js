@@ -12,7 +12,7 @@ const ENDPOINTS = {
   },
   ETHEREUM: {
     MAIN: 'mainnet',
-    TEST: 'testnet',
+    TEST: 'goerli',
   },
 };
 
