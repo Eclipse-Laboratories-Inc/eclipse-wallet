@@ -54,11 +54,12 @@ const GlobalSlider = ({
   renderItem,
   minHeight,
   maxHeight,
+  isExpanded,
+  setIsExpanded,
   dots = true,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [sliderRef, slider] = useKeenSlider({
     slides: { number: slides, initial: 0, spacing: 20 },
     slideChanged(s) {
@@ -78,7 +79,7 @@ const GlobalSlider = ({
         style={{ height: currentHeight }}>
         {items?.map((item, index) => (
           <div key={index} className="keen-slider__slide">
-            {renderItem(item, isExpanded)}
+            {renderItem({ item })}
           </div>
         ))}
       </div>

@@ -24,6 +24,7 @@ const NftOffersMade = ({ t }) => {
   const [sliderItems, setSliderItems] = useState([]);
   const [{ activeWallet }] = useContext(AppContext);
   const [bidsLoaded, setBidsLoaded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -38,6 +39,19 @@ const NftOffersMade = ({ t }) => {
     }
   }, [activeWallet, t]);
 
+  const renderCollection = ({ item }) => {
+    const { value } = item;
+    const maxItems = isExpanded ? item.length : 2;
+    return (
+      <View style={styles.collectionContainer}>
+        <GlobalPadding size="xxs" />
+        {value?.slice(0, maxItems).map(item => (
+          <NftOfferMadeItem item={item} />
+        ))}
+      </View>
+    );
+  };
+
   return (
     <>
       {sliderItems[0]?.value?.length ? (
@@ -50,8 +64,10 @@ const NftOffersMade = ({ t }) => {
             items={sliderItems.filter(({ value }) => value.length)}
             slides={sliderItems.length}
             renderItem={renderCollection}
-            minHeight={66 * sliderItems[0]?.value?.length}
-            maxHeight={123 * sliderItems[0]?.value?.length}
+            isExpanded={isExpanded}
+            setIsExpanded={setIsExpanded}
+            minHeight={53 * sliderItems[0]?.value?.length}
+            maxHeight={120 * sliderItems[0]?.value?.length}
           />
         </>
       ) : null}
@@ -62,19 +78,6 @@ const NftOffersMade = ({ t }) => {
         </>
       )}
     </>
-  );
-};
-
-const renderCollection = (item, expanded, t) => {
-  const { value } = item;
-  const maxItems = expanded ? item.length : 2;
-  return (
-    <View style={styles.collectionContainer}>
-      <GlobalPadding size="xxs" />
-      {value?.slice(0, maxItems).map(item => (
-        <NftOfferMadeItem item={item} />
-      ))}
-    </View>
   );
 };
 
