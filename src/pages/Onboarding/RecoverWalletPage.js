@@ -2,7 +2,7 @@ import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
@@ -93,7 +93,7 @@ const Form = ({ onComplete, onBack, t }) => {
   );
 };
 
-const RecoverWalletPage = ({ t }) => {
+const RecoverWalletPage = ({ params, t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
@@ -103,9 +103,10 @@ const RecoverWalletPage = ({ t }) => {
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
+  const { chainCode } = params;
   const handleRecover = async seedPhrase => {
     const a = await recoverAccount(
-      getDefaultChain(),
+      chainCode,
       seedPhrase.trim(),
       selectedEndpoints[getDefaultChain()],
     );
@@ -115,7 +116,7 @@ const RecoverWalletPage = ({ t }) => {
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addWallet(account, password, getDefaultChain());
+    await addWallet(account, password, chainCode);
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
@@ -169,4 +170,4 @@ const RecoverWalletPage = ({ t }) => {
   );
 };
 
-export default withTranslation()(RecoverWalletPage);
+export default withParams(withTranslation()(RecoverWalletPage));

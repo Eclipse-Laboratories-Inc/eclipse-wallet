@@ -14,6 +14,9 @@ const ENDPOINTS = {
     MAIN: 'mainnet',
     TEST: 'testnet',
   },
+  BITCOIN: {
+    MAIN: 'mainnet',
+  },
 };
 
 export default ENDPOINTS;

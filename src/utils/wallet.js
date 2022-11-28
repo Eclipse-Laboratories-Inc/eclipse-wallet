@@ -31,6 +31,8 @@ export const LOGOS = {
   NEAR: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/near/info/logo.png',
   ETHEREUM:
     'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+  BITCOIN:
+    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
@@ -60,7 +62,7 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
+export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';
 
