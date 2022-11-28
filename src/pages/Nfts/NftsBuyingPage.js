@@ -119,7 +119,11 @@ const NftsBuyingPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(2);
-      const txId = await activeWallet.buyNft(nftDetail.token_address, price);
+      const txId = await activeWallet.buyNft(
+        nftDetail.token_address,
+        price,
+        nftDetail.lowest_listing_mpa?.marketplace_program_id,
+      );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.BUYING);
       await activeWallet.confirmTransferTransaction(txId);
