@@ -51,7 +51,7 @@ const NftCollectionItem = ({ item }) => {
           <GlobalText type="body2">{item.project.display_name}</GlobalText>
           <GlobalText type="caption">{item.project.supply} Items</GlobalText>
           <GlobalText type="caption">
-            Floor: {item.floor_price.toFixed(2)}
+            Floor: {item.floor_price?.toFixed(2)}
           </GlobalText>
           <GlobalText type="caption">
             1D Volume: {item.volume_1day} SOL
