@@ -343,7 +343,7 @@ const NftsBiddingPage = ({ params, t }) => {
             />
 
             <GlobalText type="headline2" center>
-              {nftDetail.name}
+              {isBidded ? 'Cancel Offer -' : ''} {nftDetail.name}
             </GlobalText>
 
             <View style={globalStyles.centered}>

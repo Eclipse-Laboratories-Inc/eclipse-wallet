@@ -20,10 +20,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import CardButton from '../../component-library/CardButton/CardButton';
-import Header from '../../component-library/Layout/Header';
 import IconSolana from '../../assets/images/IconSolana.png';
-import IconHyperspaceWhite from '../../assets/images/IconHyperspaceWhite.png';
-import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -38,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   nftImage: {
-    width: '80%',
+    width: '100%',
     margin: 'auto',
   },
   imageContainer: {
@@ -195,10 +192,9 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   return loaded ? (
     <GlobalLayout fullscreen>
       <GlobalLayout.Header>
-        <Header activeWallet={activeWallet} config={config} t={t} />
         <GlobalBackTitle
           onBack={goToBack}
-          inlineTitle={
+          title={
             <GlobalText type="headline2" center>
               {nftDetail.name}
             </GlobalText>

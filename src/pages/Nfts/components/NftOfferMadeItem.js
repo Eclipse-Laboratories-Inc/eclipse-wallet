@@ -96,7 +96,7 @@ const NftOfferMadeItem = ({ item, t }) => {
           <GlobalText type="body2">{item.name}</GlobalText>
           <GlobalText type="caption">{item.project_name}</GlobalText>
           <GlobalText type="caption">
-            Price: {item.floor_price.toFixed(2)}
+            Price: {item.floor_price?.toFixed(2)}
           </GlobalText>
           <GlobalText type="caption">
             Offer made: {item.market_place_state.price} SOL
