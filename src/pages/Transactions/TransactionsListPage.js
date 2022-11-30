@@ -9,8 +9,9 @@ import {
   TRANSACTION_TYPE,
   TYPES_MAP,
   TOKEN_DECIMALS,
-  SOL_ICON,
+  DEFAULT_SYMBOL,
 } from './constants';
+import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
 import { cache, invalidate, CACHE_TYPES } from '../../utils/cache';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButtonTransaction from '../../component-library/CardButton/CardButtonTransaction';
@@ -59,6 +60,7 @@ const TransactionsListPage = ({ t }) => {
   const [lastTransaction, setLastTransaction] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const current_blockchain = getWalletChain(activeWallet);
 
   useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
@@ -148,6 +150,7 @@ const TransactionsListPage = ({ t }) => {
               recentTransactions?.map((transaction, i) => {
                 switch (transaction.type) {
                   case TRANSACTION_TYPE.TRANSFER:
+                  case TRANSACTION_TYPE.TRANSFER_NEAR:
                   case TRANSACTION_TYPE.TRANSFER_CHECKED:
                     const isReceive = transaction.transferType === 'received';
                     const isUnknown = !transaction.destination;
@@ -174,7 +177,8 @@ const TransactionsListPage = ({ t }) => {
                             transaction.transferLogoIn ||
                             transaction.transferLogoOut ||
                             transaction.nftAmount ||
-                            (!transaction.error && SOL_ICON)
+                            (!transaction.error &&
+                              getBlockchainIcon(current_blockchain))
                           }
                           title={isCreate && TYPES_MAP[transaction.type]}
                           address={
@@ -257,9 +261,10 @@ const TransactionsListPage = ({ t }) => {
                                             : 'negativeLight'
                                         }>
                                         {isReceive ? '+' : '-'}
-                                        {transaction.amount ||
+                                        {transaction.amount /
+                                          TOKEN_DECIMALS[current_blockchain] ||
                                           transaction.transferAmount}
-                                        {` SOL  `}
+                                        {` ${DEFAULT_SYMBOL[current_blockchain]}`}
                                       </GlobalText>
                                     )}
                                   </View>,
@@ -269,134 +274,134 @@ const TransactionsListPage = ({ t }) => {
                         />
                       </View>
                     );
-                  case TRANSACTION_TYPE.SWAP:
-                    return (
-                      <View key={`transaction-${i}`}>
-                        <GlobalText
-                          type="body2"
-                          color="secondary"
-                          style={
-                            i === 0 ? styles.dateStyleFirst : styles.dateStyle
-                          }>
-                          {showDate(recentTransactions, i)}
-                        </GlobalText>
-                        <CardButtonTransaction
-                          transaction="swap"
-                          tokenImg1={
-                            !transaction.error && transaction.tokenLogoIn
-                          }
-                          tokenImg2={
-                            !transaction.error && transaction.tokenLogoOut
-                          }
-                          tokenNames={
-                            !transaction.error &&
-                            transaction.tokenNameIn &&
-                            transaction.tokenNameOut
-                              ? `${transaction.tokenNameIn} → ${transaction.tokenNameOut}
-                                `
-                              : 'Unknown'
-                          }
-                          // percentage="+0000%"
-                          actions={
-                            transaction.error
-                              ? [
-                                  <View style={styles.inline}>
-                                    <GlobalText
-                                      key={'amount-action'}
-                                      type="body1"
-                                      color="negativeLight">
-                                      {`${'-'}${
-                                        transaction.fee / TOKEN_DECIMALS.SOLANA
-                                      } SOL  `}
-                                    </GlobalText>
-                                    <GlobalImage
-                                      source={IconFailed}
-                                      size="xxs"
-                                    />
-                                  </View>,
-                                ]
-                              : transaction.swapAmountIn !== '0' &&
-                                [
-                                  <View style={styles.inline}>
-                                    <GlobalText
-                                      key={'amount-action'}
-                                      type="body1"
-                                      color="positive">
-                                      {`+${
-                                        transaction.swapAmountIn /
-                                        (transaction.tokenNameIn === 'SOL' ||
-                                        !transaction.tokenNameIn
-                                          ? TOKEN_DECIMALS.SOLANA
-                                          : TOKEN_DECIMALS.COINS)
-                                      } ${transaction.tokenNameIn || 'SOL'} `}
-                                    </GlobalText>
-                                  </View>,
-                                  <View style={styles.inline}>
-                                    {transaction.swapAmountOut && (
-                                      <>
-                                        <GlobalText
-                                          key={'amount-action'}
-                                          type="body1"
-                                          color="negativeLight">
-                                          {`-${
-                                            transaction.swapAmountOut /
-                                            (transaction.tokenNameOut ===
-                                              'SOL' || !transaction.tokenNameOut
-                                              ? TOKEN_DECIMALS.SOLANA
-                                              : TOKEN_DECIMALS.COINS)
-                                          } ${
-                                            transaction.tokenNameOut || 'SOL'
-                                          } `}
-                                        </GlobalText>
-                                      </>
-                                    )}
-                                  </View>,
-                                ].filter(Boolean)
-                          }
-                          onPress={() => onDetail(i)}
-                        />
-                      </View>
-                    );
-                  case TRANSACTION_TYPE.GET_ACC_DATA:
-                  case TRANSACTION_TYPE.CREATE_ACCOUNT:
-                  case TRANSACTION_TYPE.CREATE:
-                  case TRANSACTION_TYPE.CLOSE_ACCOUNT:
-                    return (
-                      <View key={`transaction-${i}`}>
-                        <GlobalText
-                          type="body2"
-                          color="secondary"
-                          style={
-                            i === 0 ? styles.dateStyleFirst : styles.dateStyle
-                          }>
-                          {showDate(recentTransactions, i)}
-                        </GlobalText>
-                        <CardButtonTransaction
-                          transaction="interaction"
-                          title={TYPES_MAP[transaction.type]}
-                          actions={
-                            transaction.error
-                              ? [
-                                  <View style={styles.inline}>
-                                    <GlobalImage
-                                      source={IconFailed}
-                                      size="xxs"
-                                    />
-                                  </View>,
-                                ]
-                              : [
-                                  <View style={styles.inline}>
-                                    <GlobalImage
-                                      source={IconSuccess}
-                                      size="xxs"
-                                    />
-                                  </View>,
-                                ].filter(Boolean)
-                          }
-                          onPress={() => onDetail(i)}
-                        />
-                      </View>
-                    );
+                  // case TRANSACTION_TYPE.SWAP:
+                  //   return (
+                  //     <View key={`transaction-${i}`}>
+                  //       <GlobalText
+                  //         type="body2"
+                  //         color="secondary"
+                  //         style={
+                  //           i === 0 ? styles.dateStyleFirst : styles.dateStyle
+                  //         }>
+                  //         {showDate(recentTransactions, i)}
+                  //       </GlobalText>
+                  //       <CardButtonTransaction
+                  //         transaction="swap"
+                  //         tokenImg1={
+                  //           !transaction.error && transaction.tokenLogoIn
+                  //         }
+                  //         tokenImg2={
+                  //           !transaction.error && transaction.tokenLogoOut
+                  //         }
+                  //         tokenNames={
+                  //           !transaction.error &&
+                  //           transaction.tokenNameIn &&
+                  //           transaction.tokenNameOut
+                  //             ? `${transaction.tokenNameIn} → ${transaction.tokenNameOut}
+                  //               `
+                  //             : 'Unknown'
+                  //         }
+                  //         // percentage="+0000%"
+                  //         actions={
+                  //           transaction.error
+                  //             ? [
+                  //                 <View style={styles.inline}>
+                  //                   <GlobalText
+                  //                     key={'amount-action'}
+                  //                     type="body1"
+                  //                     color="negativeLight">
+                  //                     {`${'-'}${
+                  //                       transaction.fee / TOKEN_DECIMALS.SOLANA
+                  //                     } SOL  `}
+                  //                   </GlobalText>
+                  //                   <GlobalImage
+                  //                     source={IconFailed}
+                  //                     size="xxs"
+                  //                   />
+                  //                 </View>,
+                  //               ]
+                  //             : transaction.swapAmountIn !== '0' &&
+                  //               [
+                  //                 <View style={styles.inline}>
+                  //                   <GlobalText
+                  //                     key={'amount-action'}
+                  //                     type="body1"
+                  //                     color="positive">
+                  //                     {`+${
+                  //                       transaction.swapAmountIn /
+                  //                       (transaction.tokenNameIn === 'SOL' ||
+                  //                       !transaction.tokenNameIn
+                  //                         ? TOKEN_DECIMALS.SOLANA
+                  //                         : TOKEN_DECIMALS.COINS)
+                  //                     } ${transaction.tokenNameIn || 'SOL'} `}
+                  //                   </GlobalText>
+                  //                 </View>,
+                  //                 <View style={styles.inline}>
+                  //                   {transaction.swapAmountOut && (
+                  //                     <>
+                  //                       <GlobalText
+                  //                         key={'amount-action'}
+                  //                         type="body1"
+                  //                         color="negativeLight">
+                  //                         {`-${
+                  //                           transaction.swapAmountOut /
+                  //                           (transaction.tokenNameOut ===
+                  //                             'SOL' || !transaction.tokenNameOut
+                  //                             ? TOKEN_DECIMALS.SOLANA
+                  //                             : TOKEN_DECIMALS.COINS)
+                  //                         } ${
+                  //                           transaction.tokenNameOut || 'SOL'
+                  //                         } `}
+                  //                       </GlobalText>
+                  //                     </>
+                  //                   )}
+                  //                 </View>,
+                  //               ].filter(Boolean)
+                  //         }
+                  //         onPress={() => onDetail(i)}
+                  //       />
+                  //     </View>
+                  //   );
+                  // case TRANSACTION_TYPE.GET_ACC_DATA:
+                  // case TRANSACTION_TYPE.CREATE_ACCOUNT:
+                  // case TRANSACTION_TYPE.CREATE:
+                  // case TRANSACTION_TYPE.CLOSE_ACCOUNT:
+                  //   return (
+                  //     <View key={`transaction-${i}`}>
+                  //       <GlobalText
+                  //         type="body2"
+                  //         color="secondary"
+                  //         style={
+                  //           i === 0 ? styles.dateStyleFirst : styles.dateStyle
+                  //         }>
+                  //         {showDate(recentTransactions, i)}
+                  //       </GlobalText>
+                  //       <CardButtonTransaction
+                  //         transaction="interaction"
+                  //         title={TYPES_MAP[transaction.type]}
+                  //         actions={
+                  //           transaction.error
+                  //             ? [
+                  //                 <View style={styles.inline}>
+                  //                   <GlobalImage
+                  //                     source={IconFailed}
+                  //                     size="xxs"
+                  //                   />
+                  //                 </View>,
+                  //               ]
+                  //             : [
+                  //                 <View style={styles.inline}>
+                  //                   <GlobalImage
+                  //                     source={IconSuccess}
+                  //                     size="xxs"
+                  //                   />
+                  //                 </View>,
+                  //               ].filter(Boolean)
+                  //         }
+                  //         onPress={() => onDetail(i)}
+                  //       />
+                  //     </View>
+                  //   );
                 }
               })
             ) : recentTransactions?.length === 0 ? (

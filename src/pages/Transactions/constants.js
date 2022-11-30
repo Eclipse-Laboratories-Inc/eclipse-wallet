@@ -1,5 +1,6 @@
 const TRANSACTION_TYPE = {
   TRANSFER: 'transfer',
+  TRANSFER_NEAR: 'TRANSFER',
   TRANSFER_CHECKED: 'transferChecked',
   GET_ACC_DATA: 'getAccountDataSize',
   SWAP: 'swap',
@@ -16,7 +17,7 @@ const TYPES_MAP = {
 
 const TOKEN_DECIMALS = {
   SOLANA: 1000000000,
-  NEAR: 1000000000000,
+  NEAR: 1000000000000000000000000,
   COINS: 1000000,
 };
 

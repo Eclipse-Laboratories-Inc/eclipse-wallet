@@ -21,6 +21,8 @@ import IconTransactionResultWarning from '../assets/images/IconTransactionResult
 import IconTransactionResultFail from '../assets/images/IconTransactionResultFail.png';
 import IconTransactionCreating from '../assets/images/IconTransactionCreating.png';
 import IconTransactionSending from '../assets/images/IconTransactionSending.gif';
+import IconSolana from '../assets/images/IconSolana.png';
+import IconNear from '../assets/images/IconNear.png';
 
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
@@ -88,6 +90,15 @@ export const getWalletChain = wallet => {
     return type.toUpperCase();
   }
   return getDefaultChain();
+};
+
+export const getBlockchainIcon = blockchain => {
+  switch (blockchain) {
+    case 'SOLANA':
+      return IconSolana;
+    case 'NEAR':
+      return IconNear;
+  }
 };
 
 export const getShortAddress = address =>
