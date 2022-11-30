@@ -14,7 +14,7 @@ import {
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
-import { TOKEN_DECIMALS } from '../Transactions/constants';
+import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -84,7 +84,8 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const current_blockchain = getWalletChain(activeWallet);
+  const { explorer } = useUserConfig(current_blockchain);
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -154,7 +155,7 @@ const TokenSendPage = ({ params, t }) => {
   const recipient = recipientName ? recipientName : recipientAddress;
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -393,7 +394,8 @@ const TokenSendPage = ({ params, t }) => {
                     </GlobalText>
 
                     <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS.SOLANA} SOL
+                      {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
+                      {DEFAULT_SYMBOL[current_blockchain]}
                     </GlobalText>
                   </View>
                 )}

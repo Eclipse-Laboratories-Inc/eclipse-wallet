@@ -1,5 +1,6 @@
 const TRANSACTION_TYPE = {
   TRANSFER: 'transfer',
+  TRANSFER_NEAR: 'TRANSFER',
   TRANSFER_CHECKED: 'transferChecked',
   GET_ACC_DATA: 'getAccountDataSize',
   SWAP: 'swap',
@@ -16,10 +17,22 @@ const TYPES_MAP = {
 
 const TOKEN_DECIMALS = {
   SOLANA: 1000000000,
+  NEAR: 1000000000000000000000000,
   COINS: 1000000,
+};
+
+const DEFAULT_SYMBOL = {
+  SOLANA: 'SOL',
+  NEAR: 'NEAR',
 };
 
 const SOL_ICON =
   'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
 
-export { TYPES_MAP, TRANSACTION_TYPE, TOKEN_DECIMALS, SOL_ICON };
+export {
+  TYPES_MAP,
+  TRANSACTION_TYPE,
+  TOKEN_DECIMALS,
+  DEFAULT_SYMBOL,
+  SOL_ICON,
+};
