@@ -99,9 +99,10 @@ const RecoverWalletPage = ({ params, t }) => {
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
+  const { chainCode } = params;
   const handleRecover = async seedPhrase => {
     const a = await recoverAccount(
-      params.chainCode,
+      chainCode,
       seedPhrase.trim(),
       selectedEndpoints[params.chainCode],
     );
@@ -111,7 +112,7 @@ const RecoverWalletPage = ({ params, t }) => {
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addWallet(account, password, params.chainCode);
+    await addWallet(account, password, chainCode);
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);

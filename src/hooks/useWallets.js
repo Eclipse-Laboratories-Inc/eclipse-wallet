@@ -23,7 +23,11 @@ const STORAGE_KEYS = {
 const WALLET_PLACEHOLDER = 'Wallet NRO';
 const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';
 
-const DEFAULT_PATHS = ["m/44'/501'/0'/0'", "m/44'/397'/0'"];
+const DEFAULT_PATHS = [
+  "m/44'/501'/0'/0'",
+  "m/44'/397'/0'/0'",
+  "m/44'/0'/0'/0/0",
+];
 
 const noIndex = idx => idx === -1;
 

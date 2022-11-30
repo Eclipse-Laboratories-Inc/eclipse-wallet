@@ -32,6 +32,8 @@ export const LOGOS = {
   NEAR: 'https://assets-cdn.trustwallet.com/blockchains/near/info/logo.png',
   ETHEREUM:
     'https://assets-cdn.trustwallet.com/blockchains/ethereum/info/logo.png',
+  BITCOIN:
+    'https://assets-cdn.trustwallet.com/blockchains/bitcoin/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
@@ -61,9 +63,9 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
 //export const getChains = () => Object.keys(chains);
 // export const getChains = () => ['SOLANA'];
+export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';
 
