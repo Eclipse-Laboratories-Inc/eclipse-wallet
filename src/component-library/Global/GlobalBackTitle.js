@@ -8,6 +8,7 @@ import GlobalButton from './GlobalButton';
 import GlobalText from './GlobalText';
 
 import IconArrowBack from '../../assets/images/IconArrowBack.png';
+import IconClose from '../../assets/images/IconClose.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,6 +58,7 @@ const GlobalBackTitle = ({
   inlineTitle,
   inlineAddress,
   nospace,
+  isModal,
   children,
 }) => (
   <SafeAreaView edges={['top']}>
@@ -65,7 +67,7 @@ const GlobalBackTitle = ({
         <GlobalButton
           type="icon"
           transparent
-          icon={IconArrowBack}
+          icon={isModal ? IconClose : IconArrowBack}
           onPress={onBack}
         />
       )}

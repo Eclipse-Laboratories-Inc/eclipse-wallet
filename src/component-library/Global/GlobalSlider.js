@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     alignItems: 'center',
-    bottom: 10,
+    bottom: 2,
     backgroundColor: 'transparent',
   },
 });
@@ -83,7 +83,7 @@ const GlobalSlider = ({
           </div>
         ))}
       </div>
-      {items[0].value.length > 1 && (
+      {items[0].value.length > 2 && (
         <GlobalButton
           type="icon"
           transparent

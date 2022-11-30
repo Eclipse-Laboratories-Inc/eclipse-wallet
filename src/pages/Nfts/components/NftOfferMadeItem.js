@@ -1,5 +1,11 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+  Modal,
+} from 'react-native';
 import { useNavigation } from '../../../routes/hooks';
 import { ROUTES_MAP } from '../routes';
 import { withTranslation } from '../../../hooks/useTranslations';
@@ -7,6 +13,7 @@ import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import theme, { globalStyles } from '../../../component-library/Global/theme';
+import NftsBiddingPageModal from '../NftsBiddingPageModal';
 
 const styles = StyleSheet.create({
   image: {
@@ -56,7 +63,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const NftOfferMadeItem = ({ item, t }) => {
+const NftOfferMadeItem = ({ item, isModalOpen, setIsModalOpen, t }) => {
   const navigate = useNavigation();
 
   const openCollection = async project_id => {
@@ -76,12 +83,7 @@ const NftOfferMadeItem = ({ item, t }) => {
   };
 
   const cancelOffer = () => {
-    navigate(ROUTES_MAP.NFTS_BIDDING, {
-      id: item.project_id,
-      nftId: item.token_address,
-      pageNumber: 1,
-      type: 'cancel-offer',
-    });
+    setIsModalOpen(true);
   };
   return (
     <TouchableOpacity onPress={() => openCollection(item.project_id)}>
@@ -119,6 +121,19 @@ const NftOfferMadeItem = ({ item, t }) => {
           </View>
         </View>
       </View>
+      <Modal
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsModalOpen(false)}
+        visible={isModalOpen}>
+        <NftsBiddingPageModal
+          id={item.project_id}
+          nftId={item.token_address}
+          pageNumber={1}
+          type="cancel-offer"
+          setIsModalOpen={setIsModalOpen}
+        />
+      </Modal>
     </TouchableOpacity>
   );
 };
