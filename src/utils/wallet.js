@@ -1,5 +1,5 @@
 import {
-  isDerivedPath as isDerivedPath4m,
+  isDefaultPath as isDefaultPath4m,
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
@@ -60,9 +60,9 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-export const isDerivedPath = path => isDerivedPath4m(path);
+export const isDefaultPath = path => isDefaultPath4m(path);
 
-export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
+export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';
 

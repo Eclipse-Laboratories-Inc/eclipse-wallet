@@ -9,7 +9,7 @@ import { lock, unlock } from '../utils/password';
 import {
   getChains,
   getDefaultEndpoint,
-  isDerivedPath,
+  isDefaultPath,
   recoverAccount,
   recoverDerivedAccount,
 } from '../utils/wallet';
@@ -43,7 +43,7 @@ const getWalletAccount = async (
   explorers,
 ) => {
   const walletInfo = wallets[index];
-  if (isDerivedPath(walletInfo.path)) {
+  if (!isDefaultPath(walletInfo.path)) {
     return await recoverDerivedAccount(
       walletInfo.chain,
       mnemonics[walletInfo.address],
