@@ -93,7 +93,8 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Recibir"
+      "title": "Recibir",
+      "warning": "Esta dirección es para tokens en la block chain {{chain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
     },
     "send": {
       "address": {

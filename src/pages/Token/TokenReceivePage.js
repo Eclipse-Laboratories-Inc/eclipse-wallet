@@ -82,7 +82,7 @@ const TokenReceivePage = ({ t }) => {
             <GlobalPadding size="md" />
 
             <GlobalText type="body1" center>
-              {t('token.receive.warning')}
+              {t('token.receive.warning', { chain: activeWallet.chain })}
             </GlobalText>
           </View>
         </GlobalLayout.Header>
