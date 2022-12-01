@@ -1,4 +1,5 @@
 import {
+  isDerivedPath as isDerivedPath4m,
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
@@ -58,6 +59,8 @@ export const recoverDerivedAccount = async (
     acc => acc.mnemonic === mnemonic && acc.path === path,
   )[0];
 };
+
+export const isDerivedPath = path => isDerivedPath4m(path);
 
 export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
 

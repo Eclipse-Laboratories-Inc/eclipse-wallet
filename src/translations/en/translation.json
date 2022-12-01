@@ -110,8 +110,7 @@
     },
     "receive": {
       "title": "Receive",
-      "solana_warning": "This address is for receive SOL and SPL tokens only on Solana",
-      "warning": "This address is for receive SOL and SPL tokens only on Solana"
+      "warning": "This address is for tokens on the {{chain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
     },
     "send": {
       "address": {

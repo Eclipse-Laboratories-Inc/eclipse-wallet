@@ -9,6 +9,7 @@ import { lock, unlock } from '../utils/password';
 import {
   getChains,
   getDefaultEndpoint,
+  isDerivedPath,
   recoverAccount,
   recoverDerivedAccount,
 } from '../utils/wallet';
@@ -22,8 +23,6 @@ const STORAGE_KEYS = {
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
 const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';
-
-const DEFAULT_PATH = "m/44'/501'/0'/0'";
 
 const noIndex = idx => idx === -1;
 
@@ -44,8 +43,7 @@ const getWalletAccount = async (
   explorers,
 ) => {
   const walletInfo = wallets[index];
-  const isDerived = walletInfo.path !== DEFAULT_PATH;
-  if (isDerived) {
+  if (isDerivedPath(walletInfo.path)) {
     return await recoverDerivedAccount(
       walletInfo.chain,
       mnemonics[walletInfo.address],
@@ -459,6 +457,43 @@ const useWallets = () => {
     });
     setConfig(_config);
   };
+  ///////////
+  const importToken = async (address, domain, { symbol, decimals } = {}) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        tokens: {
+          ...get(config, `${address}.tokens`, {}),
+          [domain]: { symbol, decimals },
+        },
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
+  const removeToken = async (address, domain) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        tokens: {
+          ...omit(get(config, `${address}.tokens`, {}), domain),
+        },
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
+  ///////////
   const editWalletAvatar = async (address, avatar) => {
     const _config = {
       ...config,
