@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -47,9 +48,8 @@ const AddressBookPage = ({ t }) => {
         )}
 
         {addressBook.map(addressBookItem => (
-          <>
+          <View key={addressBookItem.address}>
             <CardButtonWallet
-              key={addressBookItem.address}
               title={addressBookItem.name}
               subtitle={
                 addressBookItem.domain
@@ -81,7 +81,7 @@ const AddressBookPage = ({ t }) => {
                 </GlobalText>
               }
             />
-          </>
+          </View>
         ))}
       </GlobalLayout.Header>
 

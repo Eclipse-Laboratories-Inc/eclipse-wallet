@@ -1,4 +1,5 @@
 import {
+  isDefaultPath as isDefaultPath4m,
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
@@ -63,8 +64,8 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-//export const getChains = () => Object.keys(chains);
-// export const getChains = () => ['SOLANA'];
+export const isDefaultPath = path => isDefaultPath4m(path);
+
 export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';

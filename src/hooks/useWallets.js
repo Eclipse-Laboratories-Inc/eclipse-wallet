@@ -9,6 +9,7 @@ import { lock, unlock } from '../utils/password';
 import {
   getChains,
   getDefaultEndpoint,
+  isDefaultPath,
   recoverAccount,
   recoverDerivedAccount,
 } from '../utils/wallet';
@@ -22,12 +23,6 @@ const STORAGE_KEYS = {
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
 const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';
-
-const DEFAULT_PATHS = [
-  "m/44'/501'/0'/0'",
-  "m/44'/397'/0'/0'",
-  "m/44'/0'/0'/0/0",
-];
 
 const noIndex = idx => idx === -1;
 
@@ -48,8 +43,7 @@ const getWalletAccount = async (
   explorers,
 ) => {
   const walletInfo = wallets[index];
-  const isDerived = !DEFAULT_PATHS.includes(walletInfo.path);
-  if (isDerived) {
+  if (!isDefaultPath(walletInfo.path)) {
     return await recoverDerivedAccount(
       walletInfo.chain,
       mnemonics[walletInfo.address],
