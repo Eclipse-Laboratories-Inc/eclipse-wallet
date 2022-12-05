@@ -83,10 +83,11 @@ const WalletOverviewPage = ({ t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = tok =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
-      tokenId: tok.address,
-    });
+  const goToTokenDetail = tok => {
+    if (tok.type !== 'native') {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
+    }
+  };
 
   return (
     activeWallet && (
