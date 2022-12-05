@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -76,13 +77,21 @@ const NftsListingPage = ({ params, t }) => {
   const { explorer } = useUserConfig(getWalletChain(activeWallet));
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
@@ -105,7 +114,7 @@ const NftsListingPage = ({ params, t }) => {
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeWallet, params.id, tokensAddresses]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =

@@ -1,5 +1,6 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
+import { getTopTokensByPlatform } from '4m-wallet-adapter/services/price-service';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -23,6 +24,7 @@ import { recoverAccount, validateSeedPhrase } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
 import clipboard from '../../utils/clipboard.native';
+import PLATFORMS from '../../config/platforms';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
@@ -94,7 +96,7 @@ const RecoverWalletPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [
     { selectedEndpoints, requiredLock, isAdapter },
-    { addWallet, checkPassword },
+    { addWallet, checkPassword, importTokens },
   ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
@@ -116,6 +118,15 @@ const RecoverWalletPage = ({ params, t }) => {
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
+
+    try {
+      if (account.useExplicitTokens()) {
+        const tokens = await getTopTokensByPlatform(PLATFORMS[chainCode]);
+        await importTokens(account.getReceiveAddress(), tokens);
+      }
+    } catch (e) {
+      console.error('Could not import tokens', e);
+    }
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);

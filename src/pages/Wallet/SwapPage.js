@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
 import get from 'lodash/get';
 import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
@@ -184,7 +184,8 @@ const linkForTransaction = (title, id, status, explorer) => {
 
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
+  const [{ activeWallet, hiddenValue, config }, { importTokens }] =
+    useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
@@ -205,13 +206,21 @@ const SwapPage = ({ t }) => {
   const current_blockchain = getWalletChain(activeWallet);
   const { explorer } = useUserConfig(current_blockchain);
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
         cache(`${activeWallet.chain}`, CACHE_TYPES.AVAILABLE_TOKENS, () =>
           getAvailableTokens(activeWallet.chain),
@@ -228,7 +237,7 @@ const SwapPage = ({ t }) => {
         setReady(true);
       });
     }
-  }, [activeWallet]);
+  }, [activeWallet, tokensAddresses]);
 
   const [inAmount, setInAmount] = useState(null);
 
@@ -309,6 +318,14 @@ const SwapPage = ({ t }) => {
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
         setTotalTransactions(txs.length);
+
+        if (activeWallet.useExplicitTokens()) {
+          importTokens(activeWallet.getReceiveAddress(), [outToken]).catch(
+            e => {
+              console.error('Could not import token:', outToken, e);
+            },
+          );
+        }
 
         if (txs.length > 1) {
           console.error('Too many transactions.');
