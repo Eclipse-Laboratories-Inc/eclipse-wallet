@@ -102,9 +102,9 @@ const WalletOverviewPage = ({ t }) => {
               }
               {...{
                 [`${getLabelValue(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 )}Total`]: showPercentage(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 ),
               }}
               messages={[]}
