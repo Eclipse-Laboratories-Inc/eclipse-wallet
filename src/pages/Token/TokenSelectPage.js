@@ -1,4 +1,5 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -32,7 +33,7 @@ const TokenSelectPage = ({ params, t }) => {
   const [loaded, setloaded] = useState(false);
 
   const [tokens, setTokens] = useState({});
-  const [{ activeWallet, hiddenBalance }] = useContext(AppContext);
+  const [{ activeWallet, hiddenBalance, config }] = useContext(AppContext);
 
   const [searchToken, setSearchToken] = useState('');
   const [drawedList, setDrawedList] = useState([]);
@@ -59,20 +60,28 @@ const TokenSelectPage = ({ params, t }) => {
     }
   }, [filteredTokens]);
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         setTokens(balance.items || []);
         setloaded(true);
       });
     }
-  }, [activeWallet, params]);
+  }, [activeWallet, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);

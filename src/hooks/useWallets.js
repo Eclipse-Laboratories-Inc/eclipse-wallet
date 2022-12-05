@@ -457,6 +457,29 @@ const useWallets = () => {
     });
     setConfig(_config);
   };
+  const importTokens = async (address, tokens) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        tokens: (tokens || [])
+          .filter(token => !!token?.address)
+          .reduce(
+            (obj, token) => ({
+              ...obj,
+              [token.address]: omit(token, 'address'),
+            }),
+            get(config, `${address}.tokens`, {}),
+          ),
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
   const editWalletAvatar = async (address, avatar) => {
     const _config = {
       ...config,
@@ -497,6 +520,7 @@ const useWallets = () => {
       editWalletAvatar,
       addTrustedApp,
       removeTrustedApp,
+      importTokens,
     },
   ];
 };

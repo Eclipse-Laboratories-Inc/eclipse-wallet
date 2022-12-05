@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -42,6 +42,14 @@ const WalletOverviewPage = ({ t }) => {
     );
   });
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
@@ -49,7 +57,7 @@ const WalletOverviewPage = ({ t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ).then(async balance => {
         setTotalBalance(balance);
@@ -58,7 +66,7 @@ const WalletOverviewPage = ({ t }) => {
         setLoading(false);
       });
     }
-  }, [activeWallet, selectedEndpoints, reload]);
+  }, [activeWallet, selectedEndpoints, reload, tokensAddresses]);
 
   const onRefresh = () => {
     invalidate(CACHE_TYPES.BALANCE);
