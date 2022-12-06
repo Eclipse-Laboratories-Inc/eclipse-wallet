@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import pick from 'lodash/pick';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -7,12 +8,10 @@ import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import {
-  LOGOS,
   getTransactionImage,
   TRANSACTION_STATUS,
   getWalletName,
 } from '../../utils/wallet';
-import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
 import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
@@ -113,6 +112,7 @@ const TokenSendPage = ({ params, t }) => {
           recipientAddress,
           token.address,
           recipientAmount,
+          { ...pick(token, 'decimals') },
         );
         setFee(feeSend);
       }
@@ -128,6 +128,7 @@ const TokenSendPage = ({ params, t }) => {
         recipientAddress,
         token.address,
         recipientAmount,
+        { ...pick(token, 'decimals') },
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);

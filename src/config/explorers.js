@@ -26,7 +26,7 @@ const EXPLORERS = {
   ETHEREUM: {
     ETHERSCAN: {
       name: 'Etherscan',
-      url: 'https://etherscan.io',
+      url: 'https://etherscan.io/tx',
     },
   },
 };

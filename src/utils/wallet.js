@@ -87,13 +87,8 @@ export const getWalletAvatar = (address, config) =>
     'http://static.salmonwallet.io/avatar/00.png',
   );
 
-export const getWalletChain = wallet => {
-  const type = wallet ? wallet.chain : '';
-  if (type) {
-    return type.toUpperCase();
-  }
-  return getDefaultChain();
-};
+export const getWalletChain = wallet =>
+  wallet?.chain?.toUpperCase() || getDefaultChain();
 
 export const getBlockchainIcon = blockchain => {
   switch (blockchain) {
