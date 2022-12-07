@@ -22,7 +22,7 @@ import { AppContext } from '../../AppProvider';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import { ChainCard } from './components/ChainCard';
-import { retriveConfig } from '../../utils/config';
+import { retriveConfig } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   appIconImage: {

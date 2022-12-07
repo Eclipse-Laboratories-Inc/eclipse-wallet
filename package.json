@@ -3,7 +3,7 @@
   "version": "0.2.5",
   "private": true,
   "dependencies": {
-    "4m-wallet-adapter": "^0.0.82",
+    "4m-wallet-adapter": "^0.0.84",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.4",
@@ -98,6 +98,8 @@
   },
   "scripts": {
     "start:web": "react-scripts start",
+    "start:web:main": "REACT_APP_SALMON_ENV=main react-scripts start",
+    "start:web:prod": "REACT_APP_SALMON_ENV=prod react-scripts start",
     "build": "react-scripts build",
     "build:extension:chrome": "rm -rf build-extension && BUILD_PATH=./build-extension REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --minify --target=chrome58 --outdir=./build-extension && cp -a ./extension/src/manifest.json ./build-extension/manifest.json",
     "build:extension:mozilla": "rm -rf build-extension-mozilla && BUILD_PATH=./build-extension-mozilla REACT_APP_IS_EXTENSION=true GENERATE_SOURCEMAP=false react-scripts build && esbuild ./extension/src/background.js ./extension/src/contentscript.js ./extension/src/script.js --bundle --minify --target=firefox57 --outdir=./build-extension-mozilla && cp -a ./extension/src/manifest.mozilla.json ./build-extension-mozilla/manifest.json",

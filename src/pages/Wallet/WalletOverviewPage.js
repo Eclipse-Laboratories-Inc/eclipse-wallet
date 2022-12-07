@@ -21,7 +21,7 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import { MyNfts } from './components/MyNfts';
-import { retriveConfig } from '../../utils/config';
+import { retriveConfig } from '../../utils/wallet';
 
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
