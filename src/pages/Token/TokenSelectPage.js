@@ -19,7 +19,7 @@ import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
-import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import { SECTIONS_MAP } from '../../utils/tracking';
 import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
 
 const MAX_PAG = 20;
@@ -52,11 +52,14 @@ const TokenSelectPage = ({ params, t }) => {
   );
 
   useEffect(() => {
-    if (filteredTokens.length > MAX_PAG) {
+    if (filteredTokens.length === 1) {
+      onSelect(filteredTokens[0]);
+    } else if (filteredTokens.length > MAX_PAG) {
       setDrawedList(filteredTokens.slice(0, MAX_PAG));
     } else {
       setDrawedList(filteredTokens);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredTokens]);
 
   useEffect(() => {
