@@ -95,6 +95,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   }, [activeWallet, params.id]);
 
   const { rank } = collectionDetail;
+  const listedAmount = collectionDetail.num_of_token_listed;
   const perc = Math.round(collectionDetail.percentage_of_token_listed * 100);
   const totalSupply = Math.round(
     collectionDetail.num_of_token_listed /
@@ -222,7 +223,9 @@ const NftsCollectionDetailPage = ({ params, t }) => {
         />
 
         <GlobalPadding size="xl" />
-        <GlobalText type="body2">{t('nft.listed_items')}</GlobalText>
+        <GlobalText type="body2">
+          {t('nft.listed_items', { listedAmount })}
+        </GlobalText>
 
         <GlobalPadding size="sm" />
 

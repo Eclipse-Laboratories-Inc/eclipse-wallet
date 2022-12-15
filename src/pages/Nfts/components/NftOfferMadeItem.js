@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
 
 const NftOfferMadeItem = ({ item, isModalOpen, setIsModalOpen, t }) => {
   const navigate = useNavigation();
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const openCollection = async project_id => {
     navigate(ROUTES_MAP.NFTS_COLLECTION_DETAIL, {
@@ -82,7 +83,8 @@ const NftOfferMadeItem = ({ item, isModalOpen, setIsModalOpen, t }) => {
     }
   };
 
-  const cancelOffer = () => {
+  const cancelOffer = selectedItem => {
+    setSelectedItem(selectedItem);
     setIsModalOpen(true);
   };
   return (
@@ -116,24 +118,26 @@ const NftOfferMadeItem = ({ item, isModalOpen, setIsModalOpen, t }) => {
               style={{ minHeight: 0 }}
               textStyle={styles.cancelBtnTxt}
               title={t('actions.cancel')}
-              onPress={cancelOffer}
+              onPress={() => cancelOffer(item)}
             />
           </View>
         </View>
       </View>
-      <Modal
-        transparent
-        animationType="fade"
-        onRequestClose={() => setIsModalOpen(false)}
-        visible={isModalOpen}>
-        <NftsBiddingPageModal
-          id={item.project_id}
-          nftId={item.token_address}
-          pageNumber={1}
-          type="cancel-offer"
-          setIsModalOpen={setIsModalOpen}
-        />
-      </Modal>
+      {selectedItem && (
+        <Modal
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsModalOpen(false)}
+          visible={isModalOpen}>
+          <NftsBiddingPageModal
+            id={selectedItem.project_id}
+            nftId={selectedItem.token_address}
+            pageNumber={1}
+            type="cancel-offer"
+            setIsModalOpen={setIsModalOpen}
+          />
+        </Modal>
+      )}
     </TouchableOpacity>
   );
 };

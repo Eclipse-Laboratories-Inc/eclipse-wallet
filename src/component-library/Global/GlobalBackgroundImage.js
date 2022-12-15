@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 'auto',
     marginTop: 0,
-    marginBottom: theme.variables.margin,
+    // marginBottom: theme.variables.margin,
     top: 0,
     right: 0,
     bottom: -1,

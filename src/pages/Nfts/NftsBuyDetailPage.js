@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -10,6 +16,7 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getShortAddress } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
+import clipboard from '../../utils/clipboard.native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -19,8 +26,10 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
+import GlobalToast from '../../component-library/Global/GlobalToast';
 import CardButton from '../../component-library/CardButton/CardButton';
 import IconSolana from '../../assets/images/IconSolana.png';
+import IconCopy from '../../assets/images/IconCopy.png';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -56,6 +65,10 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.fontSizeSM,
     lineHeight: theme.lineHeight.lineHeightSM,
   },
+  iconCopy: {
+    marginLeft: theme.gutters.paddingXXS,
+    marginTop: theme.gutters.paddingXXS,
+  },
 });
 
 const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
@@ -68,6 +81,7 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   const [bidAmount, setBidAmount] = useState(null);
   const [price, setPrice] = useState(null);
   const [solBalance, setSolBalance] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -141,6 +155,11 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
     });
   };
 
+  const onCopyAddress = address => {
+    clipboard.copy(address);
+    setShowToast(true);
+  };
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.renderItemStyle}>
@@ -149,8 +168,8 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
           caption={item.caption}
           title={item.title}
           description={item.description}
+          touchableStyles={globalStyles.buttonTouchable}
           nospace
-          readonly
         />
       </View>
     );
@@ -169,9 +188,21 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
     },
     {
       caption: t('nft.owned_by'),
-      title: nftDetail?.lowest_listing_mpa
-        ? getShortAddress(nftDetail?.lowest_listing_mpa?.user_address)
-        : '-',
+      title: nftDetail?.lowest_listing_mpa ? (
+        <TouchableOpacity
+          onPress={() =>
+            onCopyAddress(nftDetail?.lowest_listing_mpa?.user_address)
+          }>
+          <View style={globalStyles.inline}>
+            <Text>
+              {getShortAddress(nftDetail?.lowest_listing_mpa?.user_address)}
+            </Text>
+            <GlobalImage source={IconCopy} style={styles.iconCopy} size="xxs" />
+          </View>
+        </TouchableOpacity>
+      ) : (
+        '-'
+      ),
     },
     {
       caption: t('nft.creator_royalty'),
@@ -185,7 +216,15 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
     // },
     {
       caption: t('nft.mint_address'),
-      title: getShortAddress(nftDetail?.token_address),
+      title: (
+        <TouchableOpacity
+          onPress={() => onCopyAddress(nftDetail?.token_address)}>
+          <View style={globalStyles.inline}>
+            <Text>{getShortAddress(nftDetail?.token_address)}</Text>
+            <GlobalImage source={IconCopy} style={styles.iconCopy} size="xxs" />
+          </View>
+        </TouchableOpacity>
+      ),
     },
   ];
 
@@ -273,6 +312,11 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
             />
           </>
         )}
+        <GlobalToast
+          message={t('wallet.copied')}
+          open={showToast}
+          setOpen={setShowToast}
+        />
       </GlobalLayout.Header>
     </GlobalLayout>
   ) : (

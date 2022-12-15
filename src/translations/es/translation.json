@@ -251,7 +251,7 @@
     "success_cancel_offer": "Su oferta por {{price}} SOL ha sido removida",
     "success_buying": "Compra exitosa",
     "goto_marketplace": "Ir al Marketplace",
-    "listed_items": "Items Listados",
+    "listed_items": "Items Listados ({{listedAmount}})",
     "buy_now": "Comprar Ahora",
     "offers_made": "Ofertas Hechas",
     "make_offer": "Ofertar",

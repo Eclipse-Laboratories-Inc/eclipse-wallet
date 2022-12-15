@@ -284,7 +284,7 @@
     "success_cancel_offer": "Your offer for {{price}} SOL has been removed",
     "success_buying": "Purchase successful",
     "goto_marketplace": "Go to Marketplace",
-    "listed_items": "Listed Items",
+    "listed_items": "Listed Items ({{listedAmount}})",
     "buy_now": "Buy Now",
     "offers_made": "Offers Made",
     "make_offer": "Make Offer",

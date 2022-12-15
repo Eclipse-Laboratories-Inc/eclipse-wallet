@@ -110,8 +110,6 @@ const NftsBiddingPage = ({ params, t }) => {
 
   const goToBack = () => {
     if (step === 3) {
-      navigate(NFTS_ROUTES_MAP.NFTS_LIST);
-    } else if (step === 1 || isBidded) {
       navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION_DETAIL_PARAMS, {
         id: params.id,
         nftId: params.nftId,

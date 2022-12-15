@@ -98,8 +98,6 @@ const NftsBuyingPage = ({ params, t }) => {
 
   const goToBack = () => {
     if (step === 2) {
-      navigate(NFTS_ROUTES_MAP.NFTS_LIST);
-    } else if (step === 1) {
       navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION_DETAIL_PARAMS, {
         id: params.id,
         nftId: params.nftId,
