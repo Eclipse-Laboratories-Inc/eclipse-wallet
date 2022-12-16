@@ -76,7 +76,7 @@ const GlobalBackTitle = ({
       {(title || secondaryTitle || tertiaryTitle) && (
         <View style={styles.vertical}>
           {title && (
-            <GlobalText type={'headline2'} center nospace>
+            <GlobalText type={'headline3'} center nospace>
               {title}
             </GlobalText>
           )}
