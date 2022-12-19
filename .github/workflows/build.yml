@@ -32,11 +32,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Install node modules
-        run: npm install --prefer-offline --no-audit
+        run: yarn install
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
-        run: npm run build:extension
+        run: yarn build:extension
       - name: Upload bundle into S3
-        run: npm run upload:bundle:${{ env.GITHUB_REF_SLUG }}
+        run: yarn upload:bundle:${{ env.GITHUB_REF_SLUG }}
         env: # Or as an environment variable
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
