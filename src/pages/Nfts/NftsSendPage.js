@@ -131,15 +131,16 @@ const NftsSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      const txId = await activeWallet.createTransferTransaction(
-        recipientAddress,
-        nftDetail.mint,
-        1,
-        { isNft: true, contractId: nftDetail.contractId },
-      );
+      const { txId, executableTx } =
+        await activeWallet.createTransferTransaction(
+          recipientAddress,
+          nftDetail.mint,
+          1,
+          { isNft: true, contractId: nftDetail.contractId },
+        );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeWallet.confirmTransferTransaction(executableTx);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);

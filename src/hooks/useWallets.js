@@ -12,13 +12,7 @@ import {
   recoverAccount,
   recoverDerivedAccount,
 } from '../utils/wallet';
-
-const STORAGE_KEYS = {
-  WALLETS: 'wallets',
-  ENDPOINTS: 'endpoints',
-  EXPLORERS: 'explorers',
-  ACTIVE: 'active',
-};
+import STORAGE_KEYS from '../utils/storageKeys';
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
 const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';

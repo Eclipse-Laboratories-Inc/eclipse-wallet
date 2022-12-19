@@ -134,6 +134,7 @@
     "buttonUnlock": "Desbloquear"
   },
   "wallet": {
+    "transactions_in_progress": "Transacciones en progreso",
     "my_tokens": "Mis Tokens",
     "non_listed_tokens": "Tokens no-listados",
     "my_nfts": "Mis NFTs",

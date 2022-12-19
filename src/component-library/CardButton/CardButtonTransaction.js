@@ -45,6 +45,8 @@ const CardButtonTransaction = ({
         return 'Paid';
       case 'unknown':
         return 'Unknown';
+      case 'inProgress':
+        return 'Sending...';
       default:
         return 'Sent';
     }

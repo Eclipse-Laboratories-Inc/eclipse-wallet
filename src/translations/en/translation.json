@@ -156,6 +156,7 @@
     "buttonUnlock": "Unlock"
   },
   "wallet": {
+    "transactions_in_progress": "Transactions In Progress",
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",

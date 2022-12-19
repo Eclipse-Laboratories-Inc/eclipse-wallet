@@ -195,7 +195,7 @@ const TransactionsListPage = ({ t }) => {
                                       <GlobalText
                                         key={'amount-action'}
                                         type="body2"
-                                        color="negativeLight">
+                                        color="primary">
                                         {`${'-'}${
                                           transaction.fee /
                                           TOKEN_DECIMALS.SOLANA

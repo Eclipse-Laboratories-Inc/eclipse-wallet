@@ -39,6 +39,8 @@ import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -124,15 +126,17 @@ const TokenSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(4);
-      const txId = await activeWallet.createTransferTransaction(
-        recipientAddress,
-        token.address,
-        recipientAmount,
-      );
+      const { txId, executableTx } =
+        await activeWallet.createTransferTransaction(
+          recipientAddress,
+          token.address,
+          recipientAmount,
+        );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(txId);
+      //await activeWallet.confirmTransferTransaction(executableTx);
       setStatus(TRANSACTION_STATUS.SUCCESS);
+      savePendingTx(txId, token.symbol, recipientAmount);
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
@@ -161,6 +165,24 @@ const TokenSendPage = ({ params, t }) => {
       await Linking.openURL(url);
     } else {
       console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
+
+  const savePendingTx = async (txId, tokenSymbol, amount) => {
+    console.log(activeWallet.chain);
+    if (activeWallet.chain === 'bitcoin') {
+      let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
+      console.log(transactions);
+      if (transactions === null) transactions = [];
+      transactions.push({
+        account: activeWallet.publicKey,
+        chain: activeWallet.chain,
+        txId,
+        recipient,
+        tokenSymbol,
+        amount,
+      });
+      storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
     }
   };
 

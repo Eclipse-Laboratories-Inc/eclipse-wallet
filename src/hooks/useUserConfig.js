@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import storage from '../utils/storage';
-
-const STORAGE_KEYS = {
-  USER_CONFIG: 'user_config',
-};
+import STORAGE_KEYS from '../utils/storageKeys';
 import { EXPLORERS, DEFAULT_EXPLORERS } from '../config/explorers';
 
 const useUserConfig = chain => {

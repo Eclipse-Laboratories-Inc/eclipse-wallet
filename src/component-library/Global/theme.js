@@ -137,6 +137,7 @@ const themes = {
     bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
+    actionMsg: 'hsl(61, 100%, 50%,1)',
 
     labelPrimary: 'hsla(0, 0%, 99%, 1)',
     labelSecondary: 'rgba(191, 197, 210, 1)',
@@ -211,6 +212,7 @@ const themes = {
     bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
     bgLight: 'hsla(223, 34%, 13%, 1)',
     cards: 'rgba(42, 56, 78, 1)',
+    actionMsg: 'hsla(61, 100%, 50%, 1)',
 
     labelPrimary: 'hsla(0, 0%, 99%, 1)',
     labelSecondary: 'rgba(191, 197, 210, 1)',

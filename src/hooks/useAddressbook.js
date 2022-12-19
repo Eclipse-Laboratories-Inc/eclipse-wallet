@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import storage from '../utils/storage';
-// addressBook: [
-//   {
-//     name: 'TEST 1',
-//     address: 'MjMRoC8j1P2732DapDq6SjzhJ7kq2p',
-//     chain: 'SOLANA',
-//   },
-//   {
-//     name: 'TEST 2',
-//     address: 'LjMRoC8j1P2732DapDq6SjzhJ7kq2p',
-//     chain: 'SOLANA',
-//   },
-// ],
-
-const STORAGE_KEYS = {
-  ADDRESS: 'address',
-};
+import STORAGE_KEYS from '../utils/storageKeys';
 
 const useAddressbook = () => {
   const [addressBook, setAddressbook] = useState([]);
