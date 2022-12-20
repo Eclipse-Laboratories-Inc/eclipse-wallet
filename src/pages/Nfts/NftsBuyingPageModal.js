@@ -32,7 +32,7 @@ import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.black500,
+    backgroundColor: theme.colors.bgDarkenFaded,
   },
   viewContainer: {
     paddingVertical: theme.gutters.paddingNormal,

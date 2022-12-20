@@ -104,70 +104,7 @@ const staticColor = {
 };
 
 const themes = {
-  light: {
-    white: '#fff',
-    black: '#000000',
-
-    white100: 'rgba(255, 255, 255, 0.1)',
-    white200: 'rgba(255, 255, 255, 0.2)',
-    white300: 'rgba(255, 255, 255, 0.3)',
-    white400: 'rgba(255, 255, 255, 0.4)',
-    white500: 'rgba(255, 255, 255, 0.5)',
-    white600: 'rgba(255, 255, 255, 0.6)',
-    white700: 'rgba(255, 255, 255, 0.7)',
-    white800: 'rgba(255, 255, 255, 0.8)',
-    white850: 'rgba(255, 255, 255, 0.85)',
-    white900: 'rgba(255, 255, 255, 0.9)',
-
-    black100: 'rgba(0, 0, 0, 0.1)',
-    black150: 'rgba(0, 0, 0, 0.15)',
-    black200: 'rgba(0, 0, 0, 0.2)',
-    black300: 'rgba(0, 0, 0, 0.3)',
-    black400: 'rgba(0, 0, 0, 0.4)',
-    black500: 'rgba(0, 0, 0, 0.5)',
-    black600: 'rgba(0, 0, 0, 0.6)',
-    black700: 'rgba(0, 0, 0, 0.7)',
-    black800: 'rgba(0, 0, 0, 0.8)',
-    black850: 'rgba(0, 0, 0, 0.85)',
-    black900: 'rgba(0, 0, 0, 0.9)',
-
-    // bgPrimary: 'hsla(225, 25%, 25%, 1)',
-    bgPrimary: 'hsla(225, 27%, 9%, 1)',
-    bgDarken: 'hsla(225, 27%, 9%, 1)',
-    bgDarkenFaded: 'hsla(225, 27%, 9%, 0.3)',
-    bgLight: 'hsla(223, 34%, 13%, 1)',
-    cards: 'rgba(42, 56, 78, 1)',
-
-    labelPrimary: 'hsla(0, 0%, 99%, 1)',
-    labelSecondary: 'rgba(191, 197, 210, 1)',
-    labelTertiary: 'rgba(128, 135, 153, 1)',
-
-    accentPrimary: 'hsla(7, 100%, 64%, 1)',
-    accentSecondary: 'hsla(0, 59%, 40%, 1)',
-    accentTertiary: 'hsla(0, 100%, 86%, 1)',
-
-    btnHover: 'hsla(0, 79%, 53%, 1)',
-    btnOnClick: 'hsla(14, 55%, 21%, 1)',
-    btnBrandDark: 'hsla(224, 19%, 27%, 1)',
-    btnBrandLight: 'hsla(224, 18%, 49%, 1)',
-
-    positiveBright: 'rgba(124, 255, 81, 1)',
-    negativeBright: 'rgba(255, 25, 25, 1)',
-    warningBright: 'rgba(238, 255, 0, 1)',
-
-    success: '#07b114',
-    info: '#006EC5',
-    warning: '#ea772b',
-    danger: '#dc3545',
-
-    niceSuccess: '#d1e7dd',
-    niceSuccessText: '#0f5132',
-    niceWarning: '#fff3cd',
-    niceWarningText: '#856404',
-    niceDanger: '#f8d7da',
-    niceDangerText: '#842029',
-  },
-  dark: {
+  default: {
     white: '#1f1f1f',
     black: '#FFFFFF',
 
@@ -243,8 +180,7 @@ const themes = {
   },
 };
 
-const colorTheme =
-  Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light;
+const colorTheme = themes.default;
 
 export const globalStyles = StyleSheet.create({
   alignEnd: {
