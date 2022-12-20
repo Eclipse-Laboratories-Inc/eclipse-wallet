@@ -5,6 +5,8 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
+  ImageBackground,
+  Modal,
 } from 'react-native';
 import get from 'lodash/get';
 
@@ -12,13 +14,13 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getShortAddress } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
+import AppBackground from '../../assets/images/AppBackground.png';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -30,11 +32,24 @@ import GlobalToast from '../../component-library/Global/GlobalToast';
 import CardButton from '../../component-library/CardButton/CardButton';
 import IconSolana from '../../assets/images/IconSolana.png';
 import IconCopy from '../../assets/images/IconCopy.png';
+import NftsBiddingPageModal from './NftsBiddingPageModal';
+import NftsBuyingPageModal from './NftsBuyingPageModal';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.black500,
+  },
+  viewContainer: {
+    paddingVertical: theme.gutters.paddingNormal,
+    paddingBottom: theme.gutters.padding4XL,
+    paddingHorizontal: theme.gutters.paddingSM,
+  },
+  imageBg: {
+    borderRadius: theme.borderRadius.borderRadiusMD,
+  },
   renderItemStyle: {
     width: '49%',
     marginBottom: theme.gutters.paddingXS,
@@ -82,6 +97,8 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   const [price, setPrice] = useState(null);
   const [solBalance, setSolBalance] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const [isBidOpen, setIsBidOpen] = useState(false);
+  const [isBuyOpen, setIsBuyOpen] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -107,7 +124,7 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, id, nftId, pageNumber]);
+  }, [activeWallet, id, nftId, pageNumber, isBidOpen]);
 
   const attributes = Object.entries(get(nftDetail, 'attributes', []));
   attributes.pop();
@@ -138,21 +155,11 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   };
 
   const goToBuy = () => {
-    navigate(ROUTES_MAP.NFTS_BUYING, {
-      id: nftDetail.project_id,
-      nftId: nftDetail.token_address,
-      pageNumber: pageNumber,
-      type: 'buy',
-    });
+    setIsBuyOpen(true);
   };
 
   const goToOffer = () => {
-    navigate(ROUTES_MAP.NFTS_BIDDING, {
-      id: nftDetail.project_id,
-      nftId: nftDetail.token_address,
-      pageNumber: pageNumber,
-      type: bidAmount ? 'cancel-offer' : 'create-offer',
-    });
+    setIsBidOpen(true);
   };
 
   const onCopyAddress = address => {
@@ -229,99 +236,138 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   ];
 
   return loaded ? (
-    <GlobalLayout fullscreen>
-      <GlobalLayout.Header>
-        <GlobalBackTitle
-          onBack={goToBack}
-          title={
-            <GlobalText type="headline2" center>
-              {nftDetail.name}
-            </GlobalText>
-          }
-          nospace
-        />
-
-        <GlobalPadding size="xxs" />
-
-        <View style={globalStyles.centered}>
-          <GlobalPadding size="xs" />
-
-          <View style={styles.imageContainer}>
-            <GlobalImage
-              source={getMediaRemoteUrl(nftDetail.meta_data_img)}
-              style={styles.nftImage}
-              square
-              squircle
-            />
-          </View>
-
-          <GlobalPadding size="lg" />
-
-          <View style={globalStyles.inlineFlexButtons}>
-            <GlobalButton
-              type="primary"
-              flex
-              title={t('nft.buy_now')}
-              onPress={goToBuy}
-              style={[globalStyles.button, globalStyles.buttonLeft]}
-              touchableStyles={globalStyles.buttonTouchable}
-              disabled={!price}
+    <>
+      <GlobalLayout style={styles.container}>
+        <ImageBackground
+          source={AppBackground}
+          style={styles.viewContainer}
+          imageStyle={styles.imageBg}>
+          <GlobalLayout.Header>
+            <GlobalBackTitle
+              onBack={goToBack}
+              title={
+                <GlobalText type="headline2" center>
+                  {nftDetail.name}
+                </GlobalText>
+              }
+              nospace
+              isModal
             />
 
-            <GlobalButton
-              type="secondary"
-              flex
-              title={getBidBtnTitle()}
-              onPress={goToOffer}
-              disabled={!bidsLoaded}
-              textStyle={bidAmount && styles.biddedBtn}
-              style={[globalStyles.button, globalStyles.buttonRight]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-          </View>
-        </View>
+            <GlobalPadding size="xxs" />
 
-        <GlobalPadding size="xl" />
-        <GlobalText type="body2">{t('nft.details')}</GlobalText>
+            <View style={globalStyles.centered}>
+              <GlobalPadding size="xs" />
 
-        <GlobalPadding size="sm" />
+              <View style={styles.imageContainer}>
+                <GlobalImage
+                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
+                  style={styles.nftImage}
+                  square
+                  squircle
+                />
+              </View>
 
-        <FlatList
-          data={getPropertiesData()}
-          renderItem={renderItem}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapperStyle}
-        />
+              <GlobalPadding size="lg" />
 
-        <GlobalPadding size="xl" />
-        {hasProperties() && (
-          <>
-            <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+              <View style={globalStyles.inlineFlexButtons}>
+                <GlobalButton
+                  type="primary"
+                  flex
+                  title={t('nft.buy_now')}
+                  onPress={goToBuy}
+                  style={[globalStyles.button, globalStyles.buttonLeft]}
+                  touchableStyles={globalStyles.buttonTouchable}
+                  disabled={!price}
+                />
+
+                <GlobalButton
+                  type="secondary"
+                  flex
+                  title={getBidBtnTitle()}
+                  onPress={goToOffer}
+                  disabled={!bidsLoaded}
+                  textStyle={bidAmount && styles.biddedBtn}
+                  style={[globalStyles.button, globalStyles.buttonRight]}
+                  touchableStyles={globalStyles.buttonTouchable}
+                />
+              </View>
+            </View>
+
+            <GlobalPadding size="xl" />
+            <GlobalText type="body2">{t('nft.details')}</GlobalText>
 
             <GlobalPadding size="sm" />
 
             <FlatList
-              data={attributes.map(([k, v], i) => ({
-                caption: k.charAt(0).toUpperCase() + k.slice(1),
-                title: v.charAt(0).toUpperCase() + v.slice(1),
-                description: '',
-              }))}
+              data={getPropertiesData()}
               renderItem={renderItem}
               numColumns={2}
               columnWrapperStyle={styles.columnWrapperStyle}
             />
-          </>
-        )}
-        <GlobalToast
-          message={t('wallet.copied')}
-          open={showToast}
-          setOpen={setShowToast}
+
+            <GlobalPadding size="xl" />
+            {hasProperties() && (
+              <>
+                <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+
+                <GlobalPadding size="sm" />
+
+                <FlatList
+                  data={attributes.map(([k, v], i) => ({
+                    caption: k.charAt(0).toUpperCase() + k.slice(1),
+                    title: v.charAt(0).toUpperCase() + v.slice(1),
+                    description: '',
+                  }))}
+                  renderItem={renderItem}
+                  numColumns={2}
+                  columnWrapperStyle={styles.columnWrapperStyle}
+                />
+              </>
+            )}
+            <GlobalToast
+              message={t('wallet.copied')}
+              open={showToast}
+              setOpen={setShowToast}
+            />
+          </GlobalLayout.Header>
+        </ImageBackground>
+      </GlobalLayout>
+      <Modal
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsBidOpen(false)}
+        visible={isBidOpen}>
+        <NftsBiddingPageModal
+          id={nftDetail.project_id}
+          nftId={nftDetail.token_address}
+          pageNumber={pageNumber}
+          type={bidAmount ? 'cancel-offer' : 'create-offer'}
+          setIsModalOpen={setIsBidOpen}
         />
-      </GlobalLayout.Header>
-    </GlobalLayout>
+      </Modal>
+      <Modal
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsBuyOpen(false)}
+        visible={isBuyOpen}>
+        <NftsBuyingPageModal
+          id={nftDetail.project_id}
+          nftId={nftDetail.token_address}
+          pageNumber={pageNumber}
+          type="buy"
+          setIsModalOpen={setIsBuyOpen}
+        />
+      </Modal>
+    </>
   ) : (
-    <GlobalLayout fullscreen>
-      <GlobalSkeleton type="NftDetail" />
+    <GlobalLayout style={styles.container}>
+      <ImageBackground
+        source={AppBackground}
+        style={styles.viewContainer}
+        imageStyle={styles.imageBg}>
+        <GlobalSkeleton type="NftDetail" />
+      </ImageBackground>
     </GlobalLayout>
   );
 };
