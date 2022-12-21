@@ -23,6 +23,9 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.black300,
+  },
   renderItemStyle: {
     width: '49%',
     marginBottom: theme.gutters.paddingXS,
@@ -169,7 +172,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
     }
   };
   return loaded ? (
-    <GlobalLayout fullscreen>
+    <GlobalLayout fullscreen style={isModalOpen && styles.container}>
       <GlobalLayout.Header>
         <Header activeWallet={activeWallet} config={config} t={t} />
         <GlobalBackTitle

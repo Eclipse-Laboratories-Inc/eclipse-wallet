@@ -20,12 +20,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const NftOffersMade = ({ t }) => {
+const NftOffersMade = ({ isModalOpen, setIsModalOpen, t }) => {
   const [sliderItems, setSliderItems] = useState([]);
   const [{ activeWallet }] = useContext(AppContext);
   const [bidsLoaded, setBidsLoaded] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {

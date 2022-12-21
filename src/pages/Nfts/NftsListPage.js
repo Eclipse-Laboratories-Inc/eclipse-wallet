@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -8,6 +8,7 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
+import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
@@ -19,6 +20,12 @@ import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
 import NftOffersMade from './components/NftOffersMade';
 
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.black300,
+  },
+});
+
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
   const navigate = useNavigation();
@@ -26,6 +33,7 @@ const NftsListPage = ({ t }) => {
   const [loaded, setLoaded] = useState(false);
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -54,7 +62,7 @@ const NftsListPage = ({ t }) => {
 
   return (
     (
-      <GlobalLayout>
+      <GlobalLayout style={isModalOpen && styles.container}>
         {loaded && (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
@@ -72,7 +80,11 @@ const NftsListPage = ({ t }) => {
               listedInfo={listedInfo}
               onClick={onClick}
             />
-            <NftOffersMade t />
+            <NftOffersMade
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+              t
+            />
           </GlobalLayout.Header>
         )}
         {!loaded && <GlobalSkeleton type="NftListScreen" />}

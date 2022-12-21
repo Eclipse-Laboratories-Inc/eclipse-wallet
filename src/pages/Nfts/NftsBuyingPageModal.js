@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Linking, ImageBackground } from 'react-native';
+import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { withParams } from '../../routes/hooks';
@@ -13,7 +13,6 @@ import { getMediaRemoteUrl } from '../../utils/media';
 import { TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
-import AppBackground from '../../assets/images/AppBackground.png';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -31,17 +30,6 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.bgDarkenFaded,
-  },
-  viewContainer: {
-    paddingVertical: theme.gutters.paddingNormal,
-    paddingBottom: theme.gutters.padding4XL,
-    paddingHorizontal: theme.gutters.paddingSM,
-  },
-  imageBg: {
-    borderRadius: theme.borderRadius.borderRadiusMD,
-  },
   mediumSizeImage: {
     width: 234,
     height: 234,
@@ -169,268 +157,255 @@ const NftsBuyingPageModal = ({
   };
 
   return loaded ? (
-    <GlobalLayout style={styles.container}>
-      <ImageBackground
-        source={AppBackground}
-        style={styles.viewContainer}
-        imageStyle={styles.imageBg}>
-        {step === 1 && (
-          <>
-            <GlobalLayout.Header>
-              <GlobalBackTitle
-                onBack={goToBack}
-                inlineTitle={getWalletName(
-                  activeWallet.getReceiveAddress(),
-                  config,
-                )}
-                inlineAddress={activeWallet.getReceiveAddress()}
-              />
+    <GlobalLayout fullscreen modal>
+      {step === 1 && (
+        <>
+          <GlobalLayout.Header>
+            <GlobalBackTitle
+              onBack={goToBack}
+              inlineTitle={getWalletName(
+                activeWallet.getReceiveAddress(),
+                config,
+              )}
+              inlineAddress={activeWallet.getReceiveAddress()}
+            />
 
-              <GlobalText type="headline2" center>
-                {nftDetail.name}
-              </GlobalText>
+            <GlobalText type="headline2" center>
+              {nftDetail.name}
+            </GlobalText>
 
-              <View style={globalStyles.centered}>
-                <View
-                  style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
-                  <GlobalImage
-                    source={getMediaRemoteUrl(nftDetail.meta_data_img)}
-                    style={globalStyles.bigImage}
-                    square
-                    squircle
-                  />
+            <View style={globalStyles.centered}>
+              <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
+                <GlobalImage
+                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
+                  style={globalStyles.bigImage}
+                  square
+                  squircle
+                />
+              </View>
+
+              <GlobalPadding size="xl" />
+
+              <GlobalImage source={IconExpandMoreAccent1} size="md" />
+
+              <GlobalPadding size="xs" />
+
+              <View style={globalStyles.inlineWell}>
+                <GlobalText type="caption" color="tertiary">
+                  {t('nft.sell_price')}
+                </GlobalText>
+                <View>
+                  <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
+                    <GlobalText type="body1" nospace>
+                      {price?.toFixed(2)} SOL
+                    </GlobalText>
+                  </View>
+                  <GlobalText
+                    type="caption"
+                    color="tertiary"
+                    style={[
+                      globalStyles.alignEnd,
+                      {
+                        marginBottom: theme.gutters.paddingSM,
+                        // paddingVertical: theme.gutters.paddingXS,
+                        paddingHorizontal: theme.gutters.paddingSM,
+                      },
+                    ]}>
+                    {showValue(price * solBalance?.usdPrice, 2)}{' '}
+                    {t('general.usd')}
+                  </GlobalText>
                 </View>
+              </View>
 
-                <GlobalPadding size="xl" />
+              <View style={globalStyles.inlineWell}>
+                <GlobalText type="caption" color="tertiary">
+                  {t('nft.marketplace_fee')}
+                </GlobalText>
+                <View>
+                  <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
+                    <GlobalImage
+                      style={[
+                        globalStyles.centeredSmall,
+                        { marginRight: theme.gutters.paddingXXS },
+                      ]}
+                      source={IconHyperspace}
+                      size="xs"
+                      circle
+                    />
+                    <GlobalText type="body1" nospace>
+                      {t('nft.marketplace_name')}
+                    </GlobalText>
+                  </View>
+                  <GlobalText
+                    type="caption"
+                    color="tertiary"
+                    style={[
+                      globalStyles.alignEnd,
+                      {
+                        marginBottom: theme.gutters.paddingSM,
+                        // paddingVertical: theme.gutters.paddingXS,
+                        paddingHorizontal: theme.gutters.paddingSM,
+                      },
+                    ]}>
+                    {t('nft.marketplace_fee_perc')}
+                  </GlobalText>
+                </View>
+              </View>
 
-                <GlobalImage source={IconExpandMoreAccent1} size="md" />
-
-                <GlobalPadding size="xs" />
-
+              {fee && (
                 <View style={globalStyles.inlineWell}>
                   <GlobalText type="caption" color="tertiary">
-                    {t('nft.sell_price')}
+                    {t('adapter.detail.transaction.fee')}
                   </GlobalText>
-                  <View>
-                    <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
-                      <GlobalText type="body1" nospace>
-                        {price?.toFixed(2)} SOL
-                      </GlobalText>
-                    </View>
-                    <GlobalText
-                      type="caption"
-                      color="tertiary"
-                      style={[
-                        globalStyles.alignEnd,
-                        {
-                          marginBottom: theme.gutters.paddingSM,
-                          // paddingVertical: theme.gutters.paddingXS,
-                          paddingHorizontal: theme.gutters.paddingSM,
-                        },
-                      ]}>
-                      {showValue(price * solBalance?.usdPrice, 2)}{' '}
-                      {t('general.usd')}
-                    </GlobalText>
-                  </View>
-                </View>
-
-                <View style={globalStyles.inlineWell}>
-                  <GlobalText type="caption" color="tertiary">
-                    {t('nft.marketplace_fee')}
+                  <GlobalText type="body2">
+                    {fee / TOKEN_DECIMALS.SOLANA} SOL
                   </GlobalText>
-                  <View>
-                    <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
-                      <GlobalImage
-                        style={[
-                          globalStyles.centeredSmall,
-                          { marginRight: theme.gutters.paddingXXS },
-                        ]}
-                        source={IconHyperspace}
-                        size="xs"
-                        circle
-                      />
-                      <GlobalText type="body1" nospace>
-                        {t('nft.marketplace_name')}
-                      </GlobalText>
-                    </View>
-                    <GlobalText
-                      type="caption"
-                      color="tertiary"
-                      style={[
-                        globalStyles.alignEnd,
-                        {
-                          marginBottom: theme.gutters.paddingSM,
-                          // paddingVertical: theme.gutters.paddingXS,
-                          paddingHorizontal: theme.gutters.paddingSM,
-                        },
-                      ]}>
-                      {t('nft.marketplace_fee_perc')}
-                    </GlobalText>
-                  </View>
                 </View>
-
-                {fee && (
-                  <View style={globalStyles.inlineWell}>
-                    <GlobalText type="caption" color="tertiary">
-                      {t('adapter.detail.transaction.fee')}
-                    </GlobalText>
-                    <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS.SOLANA} SOL
-                    </GlobalText>
-                  </View>
-                )}
-                {/* {addressEmpty && (
+              )}
+              {/* {addressEmpty && (
                 <GlobalText type="caption" center color={'warning'}>
                   {t(`token.send.empty_account_fee`)}
                 </GlobalText>
               )} */}
-              </View>
-            </GlobalLayout.Header>
+            </View>
+          </GlobalLayout.Header>
 
-            <GlobalLayout.Footer inlineFlex>
-              <GlobalButton
-                type="secondary"
-                flex
-                title={t(`actions.cancel`)}
-                onPress={onCancel}
-                style={[globalStyles.button, globalStyles.buttonLeft]}
-                touchableStyles={globalStyles.buttonTouchable}
+          <GlobalLayout.Footer inlineFlex>
+            <GlobalButton
+              type="secondary"
+              flex
+              title={t(`actions.cancel`)}
+              onPress={onCancel}
+              style={[globalStyles.button, globalStyles.buttonLeft]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+
+            <GlobalButton
+              disabled={sending || insufficientFunds}
+              type="primary"
+              flex
+              title={
+                insufficientFunds
+                  ? t(`token.send.amount.insufficient`)
+                  : t(`general.confirm`)
+              }
+              onPress={onConfirm}
+              textStyle={insufficientFunds && styles.insufficientBtn}
+              style={[globalStyles.button, globalStyles.buttonRight]}
+              touchableStyles={globalStyles.buttonTouchable}
+            />
+          </GlobalLayout.Footer>
+        </>
+      )}
+      {step === 2 && (
+        <>
+          <GlobalLayout.Header>
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+
+            {(status === 'creating' || status === 'sending') && (
+              <>
+                <GlobalPadding size="4xl" />
+                <GlobalPadding size="4xl" />
+              </>
+            )}
+
+            <View style={globalStyles.centeredSmall}>
+              <GlobalImage
+                source={getTransactionImage(status)}
+                size="3xl"
+                circle
               />
-
-              <GlobalButton
-                disabled={sending || insufficientFunds}
-                type="primary"
-                flex
-                title={
-                  insufficientFunds
-                    ? t(`token.send.amount.insufficient`)
-                    : t(`general.confirm`)
-                }
-                onPress={onConfirm}
-                textStyle={insufficientFunds && styles.insufficientBtn}
-                style={[globalStyles.button, globalStyles.buttonRight]}
-                touchableStyles={globalStyles.buttonTouchable}
-              />
-            </GlobalLayout.Footer>
-          </>
-        )}
-        {step === 2 && (
-          <>
-            <GlobalLayout.Header>
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
-              <GlobalPadding size="4xl" />
-
-              {(status === 'creating' || status === 'sending') && (
+              <GlobalPadding />
+              {status !== 'creating' && (
+                <GlobalText
+                  type={status === 'buying' ? 'subtitle2' : 'headline2'}
+                  color={status === 'buying' && 'secondary'}
+                  center>
+                  {t(`token.send.transaction_${status}`)}
+                </GlobalText>
+              )}
+              {status !== 'success' && (
                 <>
+                  <GlobalPadding size="4xl" />
+                  <GlobalPadding size="4xl" />
                   <GlobalPadding size="4xl" />
                   <GlobalPadding size="4xl" />
                 </>
               )}
-
-              <View style={globalStyles.centeredSmall}>
-                <GlobalImage
-                  source={getTransactionImage(status)}
-                  size="3xl"
-                  circle
-                />
-                <GlobalPadding />
-                {status !== 'creating' && (
-                  <GlobalText
-                    type={status === 'buying' ? 'subtitle2' : 'headline2'}
-                    color={status === 'buying' && 'secondary'}
-                    center>
-                    {t(`token.send.transaction_${status}`)}
+              {status === 'success' && (
+                <>
+                  <GlobalPadding size="xs" />
+                  <GlobalText type="body1" center>
+                    {t(`nft.success_buying`, { price })}
                   </GlobalText>
-                )}
-                {status !== 'success' && (
-                  <>
-                    <GlobalPadding size="4xl" />
-                    <GlobalPadding size="4xl" />
-                    <GlobalPadding size="4xl" />
-                    <GlobalPadding size="4xl" />
-                  </>
-                )}
+                  <GlobalPadding size="xxs" />
+                </>
+              )}
+            </View>
+          </GlobalLayout.Header>
+
+          <GlobalLayout.Footer>
+            {status === 'success' || status === 'fail' ? (
+              <>
                 {status === 'success' && (
                   <>
-                    <GlobalPadding size="xs" />
-                    <GlobalText type="body1" center>
-                      {t(`nft.success_buying`, { price })}
-                    </GlobalText>
-                    <GlobalPadding size="xxs" />
+                    <GlobalButton
+                      type="primary"
+                      wide
+                      title={t(`nft.goto_marketplace`)}
+                      onPress={openMarketplace}
+                      style={globalStyles.button}
+                      touchableStyles={globalStyles.buttonTouchable}
+                    />
+                    <GlobalPadding size="md" />
                   </>
                 )}
-              </View>
-            </GlobalLayout.Header>
 
-            <GlobalLayout.Footer>
-              {status === 'success' || status === 'fail' ? (
-                <>
-                  {status === 'success' && (
-                    <>
-                      <GlobalButton
-                        type="primary"
-                        wide
-                        title={t(`nft.goto_marketplace`)}
-                        onPress={openMarketplace}
-                        style={globalStyles.button}
-                        touchableStyles={globalStyles.buttonTouchable}
-                      />
-                      <GlobalPadding size="md" />
-                    </>
-                  )}
-
-                  <GlobalButton
-                    type="primary"
-                    wide
-                    title={t(`token.send.goto_explorer`)}
-                    onPress={openTransaction}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
-
-                  <GlobalPadding size="md" />
-
-                  <GlobalButton
-                    type="secondary"
-                    title={t(`general.close`)}
-                    wide
-                    onPress={goToBack}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
-                </>
-              ) : (
                 <GlobalButton
-                  type="text"
+                  type="primary"
                   wide
-                  textStyle={
-                    status === 'creating'
-                      ? styles.creatingTx
-                      : styles.viewTxLink
-                  }
-                  title={
-                    status === 'creating'
-                      ? t(`token.send.transaction_creating`)
-                      : t(`token.send.view_transaction`)
-                  }
-                  readonly={status === 'creating'}
+                  title={t(`token.send.goto_explorer`)}
                   onPress={openTransaction}
+                  style={globalStyles.button}
+                  touchableStyles={globalStyles.buttonTouchable}
                 />
-              )}
-            </GlobalLayout.Footer>
-          </>
-        )}
-      </ImageBackground>
+
+                <GlobalPadding size="md" />
+
+                <GlobalButton
+                  type="secondary"
+                  title={t(`general.close`)}
+                  wide
+                  onPress={goToBack}
+                  style={globalStyles.button}
+                  touchableStyles={globalStyles.buttonTouchable}
+                />
+              </>
+            ) : (
+              <GlobalButton
+                type="text"
+                wide
+                textStyle={
+                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
+                }
+                title={
+                  status === 'creating'
+                    ? t(`token.send.transaction_creating`)
+                    : t(`token.send.view_transaction`)
+                }
+                readonly={status === 'creating'}
+                onPress={openTransaction}
+              />
+            )}
+          </GlobalLayout.Footer>
+        </>
+      )}
     </GlobalLayout>
   ) : (
-    <GlobalLayout style={styles.container}>
-      <ImageBackground
-        source={AppBackground}
-        style={styles.viewContainer}
-        imageStyle={styles.imageBg}>
-        <GlobalSkeleton type="NftDetail" />
-      </ImageBackground>
+    <GlobalLayout fullscreen modal>
+      <GlobalSkeleton type="NftDetail" />
     </GlobalLayout>
   );
 };

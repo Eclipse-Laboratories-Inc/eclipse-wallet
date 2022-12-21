@@ -17,10 +17,20 @@ const styles = StyleSheet.create({
     maxWidth: theme.variables.mobileWidthXL,
     maxHeight: theme.variables.mobileHeightLG,
   },
+  modal: {
+    marginTop: theme.gutters.paddingNormal,
+  },
+  modalBr: {
+    borderRadius: theme.borderRadius.borderRadiusMD,
+  },
 });
 
-const GlobalBackgroundImage = ({ children, ...props }) => (
-  <ImageBackground source={AppBackground} style={styles.image} {...props}>
+const GlobalBackgroundImage = ({ children, isModal, ...props }) => (
+  <ImageBackground
+    source={AppBackground}
+    style={[styles.image, isModal && styles.modal]}
+    imageStyle={isModal && styles.modalBr}
+    {...props}>
     {children}
   </ImageBackground>
 );

@@ -5,14 +5,12 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
-  ImageBackground,
   Modal,
 } from 'react-native';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getShortAddress } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
@@ -20,7 +18,6 @@ import { showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
-import AppBackground from '../../assets/images/AppBackground.png';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -39,17 +36,6 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.bgDarkenFaded,
-  },
-  viewContainer: {
-    paddingVertical: theme.gutters.paddingNormal,
-    paddingBottom: theme.gutters.padding4XL,
-    paddingHorizontal: theme.gutters.paddingSM,
-  },
-  imageBg: {
-    borderRadius: theme.borderRadius.borderRadiusMD,
-  },
   renderItemStyle: {
     width: '49%',
     marginBottom: theme.gutters.paddingXS,
@@ -237,101 +223,96 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
 
   return loaded ? (
     <>
-      <GlobalLayout style={styles.container}>
-        <ImageBackground
-          source={AppBackground}
-          style={styles.viewContainer}
-          imageStyle={styles.imageBg}>
-          <GlobalLayout.Header>
-            <GlobalBackTitle
-              onBack={goToBack}
-              title={
-                <GlobalText type="headline2" center>
-                  {nftDetail.name}
-                </GlobalText>
-              }
-              nospace
-              isModal
-            />
+      <GlobalLayout fullscreen modal>
+        <GlobalLayout.Header>
+          <GlobalBackTitle
+            onBack={goToBack}
+            title={
+              <GlobalText type="headline2" center>
+                {nftDetail.name}
+              </GlobalText>
+            }
+            nospace
+            isModal
+          />
 
-            <GlobalPadding size="xxs" />
+          <GlobalPadding size="xxs" />
 
-            <View style={globalStyles.centered}>
-              <GlobalPadding size="xs" />
+          <View style={globalStyles.centered}>
+            <GlobalPadding size="xs" />
 
-              <View style={styles.imageContainer}>
-                <GlobalImage
-                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
-                  style={styles.nftImage}
-                  square
-                  squircle
-                />
-              </View>
-
-              <GlobalPadding size="lg" />
-
-              <View style={globalStyles.inlineFlexButtons}>
-                <GlobalButton
-                  type="primary"
-                  flex
-                  title={t('nft.buy_now')}
-                  onPress={goToBuy}
-                  style={[globalStyles.button, globalStyles.buttonLeft]}
-                  touchableStyles={globalStyles.buttonTouchable}
-                  disabled={!price}
-                />
-
-                <GlobalButton
-                  type="secondary"
-                  flex
-                  title={getBidBtnTitle()}
-                  onPress={goToOffer}
-                  disabled={!bidsLoaded}
-                  textStyle={bidAmount && styles.biddedBtn}
-                  style={[globalStyles.button, globalStyles.buttonRight]}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
-              </View>
+            <View style={styles.imageContainer}>
+              <GlobalImage
+                source={getMediaRemoteUrl(nftDetail.meta_data_img)}
+                style={styles.nftImage}
+                square
+                squircle
+              />
             </View>
 
-            <GlobalPadding size="xl" />
-            <GlobalText type="body2">{t('nft.details')}</GlobalText>
+            <GlobalPadding size="lg" />
 
-            <GlobalPadding size="sm" />
+            <View style={globalStyles.inlineFlexButtons}>
+              <GlobalButton
+                type="primary"
+                flex
+                title={t('nft.buy_now')}
+                onPress={goToBuy}
+                style={[globalStyles.button, globalStyles.buttonLeft]}
+                touchableStyles={globalStyles.buttonTouchable}
+                disabled={!price}
+              />
 
-            <FlatList
-              data={getPropertiesData()}
-              renderItem={renderItem}
-              numColumns={2}
-              columnWrapperStyle={styles.columnWrapperStyle}
-            />
+              <GlobalButton
+                type="secondary"
+                flex
+                title={getBidBtnTitle()}
+                onPress={goToOffer}
+                disabled={!bidsLoaded}
+                textStyle={bidAmount && styles.biddedBtn}
+                style={[globalStyles.button, globalStyles.buttonRight]}
+                touchableStyles={globalStyles.buttonTouchable}
+              />
+            </View>
+          </View>
 
-            <GlobalPadding size="xl" />
-            {hasProperties() && (
-              <>
-                <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+          <GlobalPadding size="xl" />
+          <GlobalText type="body2">{t('nft.details')}</GlobalText>
 
-                <GlobalPadding size="sm" />
+          <GlobalPadding size="sm" />
 
-                <FlatList
-                  data={attributes.map(([k, v], i) => ({
-                    caption: k.charAt(0).toUpperCase() + k.slice(1),
-                    title: v.charAt(0).toUpperCase() + v.slice(1),
-                    description: '',
-                  }))}
-                  renderItem={renderItem}
-                  numColumns={2}
-                  columnWrapperStyle={styles.columnWrapperStyle}
-                />
-              </>
-            )}
-            <GlobalToast
-              message={t('wallet.copied')}
-              open={showToast}
-              setOpen={setShowToast}
-            />
-          </GlobalLayout.Header>
-        </ImageBackground>
+          <FlatList
+            data={getPropertiesData()}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapperStyle}
+          />
+
+          <GlobalPadding size="xl" />
+          {hasProperties() && (
+            <>
+              <GlobalText type="body2">{t('nft.properties')}</GlobalText>
+
+              <GlobalPadding size="sm" />
+
+              <FlatList
+                data={attributes.map(([k, v], i) => ({
+                  caption: k.charAt(0).toUpperCase() + k.slice(1),
+                  title: v.charAt(0).toUpperCase() + v.slice(1),
+                  description: '',
+                }))}
+                renderItem={renderItem}
+                numColumns={2}
+                columnWrapperStyle={styles.columnWrapperStyle}
+              />
+            </>
+          )}
+          <GlobalToast
+            message={t('wallet.copied')}
+            open={showToast}
+            setOpen={setShowToast}
+          />
+        </GlobalLayout.Header>
       </GlobalLayout>
       <Modal
         transparent
@@ -361,13 +342,8 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
       </Modal>
     </>
   ) : (
-    <GlobalLayout style={styles.container}>
-      <ImageBackground
-        source={AppBackground}
-        style={styles.viewContainer}
-        imageStyle={styles.imageBg}>
-        <GlobalSkeleton type="NftDetail" />
-      </ImageBackground>
+    <GlobalLayout fullscreen modal style={styles.container}>
+      <GlobalSkeleton type="NftDetail" />
     </GlobalLayout>
   );
 };
