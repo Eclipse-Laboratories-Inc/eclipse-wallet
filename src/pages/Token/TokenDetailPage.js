@@ -22,7 +22,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-import { retriveConfig } from '../../utils/config';
+import { retriveConfig } from '../../utils/wallet';
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();

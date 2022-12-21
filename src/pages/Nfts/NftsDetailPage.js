@@ -26,7 +26,6 @@ import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
-import { style } from '@mui/system';
 
 const styles = StyleSheet.create({
   renderItemStyle: {
