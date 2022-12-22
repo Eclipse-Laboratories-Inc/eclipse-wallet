@@ -232,7 +232,22 @@
     "view_transaction": "Ver transacción",
     "today": "Hoy",
     "yesterday": "Ayer",
-    "empty": "No se encontraron transacciones"
+    "empty": "No se encontraron transacciones",
+    "send": "Enviado",
+    "receive": "Recibido",
+    "swap": "Swap",
+    "unknown": "Desconocido",
+    "fromAddress": "De: {{address}}",
+    "toAddress": "Para: {{address}}",
+    "date": "Fecha",
+    "type": "Tipo",
+    "id": "ID de transacción",
+    "status": "Estado",
+    "completed": "Realizado",
+    "failed": "Fallido",
+    "from": "De",
+    "to": "Para",
+    "fee": "Comisión"
   },
   "nft": {
     "description": "Descripción",
