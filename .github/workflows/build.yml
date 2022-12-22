@@ -1,12 +1,14 @@
 name: Build
 
+env:
+  CI: false
+
 # Run this workflow every time a new commit pushed to your repository
 on:
   push:
     branches:
       - develop
       - main
-
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
@@ -34,6 +36,10 @@ jobs:
           aws-region: us-east-1
       - name: Install node modules
         run: yarn install
+      - name: Build ${{ env.GITHUB_REF_SLUG }}
+        run: yarn build
+      - name: Publish ${{ env.GITHUB_REF_SLUG }}
+        run: yarn serverless:deploy:${{ env.GITHUB_REF_SLUG }}
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
         run: yarn build:extension
       - name: Upload bundle into S3

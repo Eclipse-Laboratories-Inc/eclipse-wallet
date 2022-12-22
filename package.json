@@ -11,10 +11,12 @@
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
+    "@silvermine/serverless-plugin-cloudfront-lambda-edge": "^2.2.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
     "assert": "^2.0.0",
+    "aws-sdk": "^2.1281.0",
     "browserify-zlib": "^0.2.0",
     "bs58": "^5.0.0",
     "crypto-browserify": "^3.12.0",
@@ -60,6 +62,8 @@
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "salmon-wallet-standard": "^0.0.6",
+    "serverless": "^3.25.1",
+    "serverless-s3-sync": "^3.1.0",
     "stream-browserify": "^3.0.0",
     "tweetnacl": "^1.0.3",
     "util": "^0.12.4",
@@ -122,7 +126,11 @@
     "postinstall": "yarn patch-package",
     "login:4m": "aws codeartifact login --tool npm --repository npm-modules --domain four-m --domain-owner 363894166745 --namespace '@4m' --profile salmon --region us-east-1",
     "apk:bundle": "rimraf android/app/build/* && react-native bundle --platform android --dev false --entry-file src/index.native.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res --reset-cache",
-    "apk:assemble": "cd ./android && ./gradlew assembleDebug"
+    "apk:assemble": "cd ./android && ./gradlew assembleDebug",
+    "serverless:remove:main": "serverless remove --stage main",
+    "serverless:deploy:main": "serverless deploy --stage main",
+    "serverless:remove:develop": "serverless remove --stage develop",
+    "serverless:deploy:develop": "serverless deploy --stage develop"
   },
   "eslintConfig": {
     "extends": [
