@@ -2,6 +2,7 @@ const TRANSACTION_TYPE = {
   SEND: 'send',
   RECEIVE: 'receive',
   SWAP: 'swap',
+  INTERACTION: 'interaction',
   UNKNOWN: 'unknown',
 };
 

@@ -132,7 +132,7 @@ const IconsBanner = ({ type, status, inputs, outputs }) => {
           circle
         />
         <GlobalImage
-          source={getTransactionImage(success ? 'received' : 'fail')}
+          source={getTransactionImage(success ? 'sent' : 'fail')}
           size="md"
           circle
           style={styles.floatingTransaction}
@@ -151,11 +151,32 @@ const IconsBanner = ({ type, status, inputs, outputs }) => {
           circle
         />
         <GlobalImage
-          source={getTransactionImage(success ? 'sent' : 'fail')}
+          source={getTransactionImage(success ? 'received' : 'fail')}
           size="md"
           circle
           style={styles.floatingTransaction}
         />
+      </View>
+    );
+  }
+
+  if (type === TRANSACTION_TYPE.INTERACTION) {
+    return (
+      <View style={styles.floatingTransactionBox}>
+        <GlobalImage
+          source={getTransactionImage('interaction')}
+          size="xxl"
+          style={styles.bigImage}
+          circle
+        />
+        {!success && (
+          <GlobalImage
+            source={getTransactionImage('fail')}
+            size="md"
+            circle
+            style={styles.floatingTransaction}
+          />
+        )}
       </View>
     );
   }
