@@ -56,6 +56,8 @@ const CardButtonTransaction = ({ t, transaction, onPress }) => {
       tokenImg1 = inputs[0].logo;
       tokenImg2 = outputs[0].logo;
     }
+  } else if (type === TRANSACTION_TYPE.INTERACTION) {
+    image = getTransactionImage('interaction');
   } else {
     image = getTransactionImage('unknown');
   }

@@ -236,6 +236,7 @@
     "send": "Enviado",
     "receive": "Recibido",
     "swap": "Swap",
+    "interaction": "Interacción",
     "unknown": "Desconocido",
     "fromAddress": "De: {{address}}",
     "toAddress": "Para: {{address}}",
