@@ -57,7 +57,9 @@ const NftsBurnPage = ({ params, t }) => {
   const [transactionId, setTransactionId] = useState(null);
   const [burnFee, setBurnFee] = useState(null);
   const [{ activeWallet, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const { explorer } = useUserConfig(
+    getWalletChain(activeWallet, activeWallet.networkId),
+  );
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   const openTransaction = async () => {

@@ -9,8 +9,14 @@ import GlobalButton from './GlobalButton';
 const GlobalSendReceive = ({
   goToSend,
   goToReceive,
+  goToList,
+  goToBurn,
   canSend = false,
   canReceive = false,
+  canList = false,
+  canBurn = false,
+  titleList,
+  listedLoaded,
   t,
 }) => {
   return (
@@ -32,6 +38,28 @@ const GlobalSendReceive = ({
           flex
           title={t('actions.receive')}
           onPress={goToReceive}
+          style={[globalStyles.button, globalStyles.buttonRight]}
+          touchableStyles={globalStyles.buttonTouchable}
+        />
+      )}
+      {canList && (
+        <GlobalButton
+          type="secondary"
+          flex
+          title={titleList}
+          onPress={goToList}
+          disabled={!listedLoaded}
+          key={'send-button'}
+          style={[globalStyles.button, globalStyles.buttonLeft]}
+          touchableStyles={globalStyles.buttonTouchable}
+        />
+      )}
+      {canBurn && (
+        <GlobalButton
+          type="secondary"
+          flex
+          title={t('nft.burn_nft')}
+          onPress={goToBurn}
           style={[globalStyles.button, globalStyles.buttonRight]}
           touchableStyles={globalStyles.buttonTouchable}
         />

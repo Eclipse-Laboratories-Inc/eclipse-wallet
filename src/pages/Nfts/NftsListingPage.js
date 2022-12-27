@@ -74,7 +74,10 @@ const NftsListingPage = ({ params, t }) => {
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const { explorer } = useUserConfig(
+    getWalletChain(activeWallet),
+    activeWallet.networkId,
+  );
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   const tokensAddresses = useMemo(

@@ -77,7 +77,10 @@ const NftsSendPage = ({ params, t }) => {
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
   const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchain);
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 

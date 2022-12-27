@@ -84,7 +84,10 @@ const TokenSendPage = ({ params, t }) => {
   );
   const [recipientAmount, setRecipientAmount] = useState('');
   const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchain);
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =

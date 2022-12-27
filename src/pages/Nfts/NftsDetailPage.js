@@ -18,6 +18,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalFloatingBadge from '../../component-library/Global/GlobalFloatingBadge';
+import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import CardButton from '../../component-library/CardButton/CardButton';
 import Header from '../../component-library/Layout/Header';
 import IconSolana from '../../assets/images/IconSolana.png';
@@ -26,6 +27,7 @@ import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
+import { retriveConfig } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   renderItemStyle: {
@@ -67,7 +69,14 @@ const NftsDetailPage = ({ params, t }) => {
   const [nftDetail, setNftDetail] = useState({});
   const [listedInfo, setListedInfo] = useState([]);
   const [{ activeWallet, config }] = useContext(AppContext);
+  const [configs, setConfigs] = useState(null);
   const current_blockchain = getWalletChain(activeWallet);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs =>
+      setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
+    );
+  });
 
   useEffect(() => {
     if (activeWallet) {
@@ -225,32 +234,15 @@ const NftsDetailPage = ({ params, t }) => {
           <GlobalPadding size="lg" />
 
           <View style={globalStyles.inlineFlexButtons}>
-            <GlobalButton
-              type="primary"
-              flex
-              title={t('nft.send_nft')}
-              onPress={goToSend}
-              style={[globalStyles.button, globalStyles.buttonLeft]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-
-            <GlobalButton
-              type="secondary"
-              flex
-              title={getListBtnTitle()}
-              onPress={goToListing}
-              disabled={!listedLoaded}
-              style={[globalStyles.button, globalStyles.buttonRight]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-
-            <GlobalButton
-              type="secondary"
-              flex
-              title={t('nft.burn_nft')}
-              onPress={goToBurn}
-              style={[globalStyles.button, globalStyles.buttonRight]}
-              touchableStyles={globalStyles.buttonTouchable}
+            <GlobalSendReceive
+              goToSend={goToSend}
+              canSend={configs?.send}
+              goToList={goToListing}
+              canList={configs?.list_in_marketplace?.active}
+              titleList={getListBtnTitle()}
+              listedLoaded
+              goToBurn={goToBurn}
+              canBurn={configs?.burn}
             />
           </View>
 

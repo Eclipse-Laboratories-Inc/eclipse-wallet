@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
 };
 import { EXPLORERS, DEFAULT_EXPLORERS } from '../config/explorers';
 
-const useUserConfig = chain => {
+const useUserConfig = (chain, networkId) => {
   const [userConfig, setUserConfig] = useState(null);
   const [explorer, setExplorer] = useState();
   const [explorers, setExplorers] = useState();
@@ -25,14 +25,14 @@ const useUserConfig = chain => {
       if (!config.explorers) config.explorers = DEFAULT_EXPLORERS;
       storage.setItem(STORAGE_KEYS.USER_CONFIG, config);
       setUserConfig(config);
-      setExplorer(EXPLORERS[chain][config.explorers[chain]]);
-      setExplorers(toArray(EXPLORERS[chain]));
+      setExplorer(EXPLORERS[chain][networkId][config.explorers[chain]]);
+      setExplorers(toArray(EXPLORERS[chain][networkId]));
     });
-  }, [chain]);
+  }, [chain, networkId]);
 
   const changeExplorer = async value => {
     userConfig.explorers[chain] = value;
-    setExplorer(EXPLORERS[chain][userConfig.explorers[chain]]);
+    setExplorer(EXPLORERS[chain][networkId][userConfig.explorers[chain]]);
     storage.setItem(STORAGE_KEYS.USER_CONFIG, userConfig);
   };
 
