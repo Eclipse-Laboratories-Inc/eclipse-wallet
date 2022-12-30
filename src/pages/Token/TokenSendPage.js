@@ -134,7 +134,7 @@ const TokenSendPage = ({ params, t }) => {
         );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      //await activeWallet.confirmTransferTransaction(executableTx);
+      await activeWallet.confirmTransferTransaction(executableTx);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       savePendingTx(txId, token.symbol, recipientAmount);
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
@@ -171,8 +171,9 @@ const TokenSendPage = ({ params, t }) => {
   const savePendingTx = async (txId, tokenSymbol, amount) => {
     console.log(activeWallet.chain);
     if (activeWallet.chain === 'bitcoin') {
+      const lastStatus = new Date().getTime();
+      const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
       let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
-      console.log(transactions);
       if (transactions === null) transactions = [];
       transactions.push({
         account: activeWallet.publicKey,
@@ -181,6 +182,9 @@ const TokenSendPage = ({ params, t }) => {
         recipient,
         tokenSymbol,
         amount,
+        status: 'inProgress',
+        lastStatus,
+        expires,
       });
       storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
     }

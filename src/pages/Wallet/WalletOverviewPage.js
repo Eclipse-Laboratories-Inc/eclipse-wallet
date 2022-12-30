@@ -115,7 +115,7 @@ const WalletOverviewPage = ({ t }) => {
           )}
           <GlobalPadding />
 
-          <PendingTxs translate={t} />
+          <PendingTxs activeWallet={activeWallet} translate={t} />
 
           <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
             <TokenList

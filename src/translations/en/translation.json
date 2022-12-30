@@ -218,6 +218,11 @@
       "title3": "Stay tuned",
       "content3": "Follow us at ",
       "content3b": "@salmonwallet"
+    },
+    "pending_txs": {
+      "inProgress": "In Progress",
+      "fail": "Failed",
+      "success": "Succeded"
     }
   },
   "adapter": {

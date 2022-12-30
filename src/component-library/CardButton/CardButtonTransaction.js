@@ -29,6 +29,7 @@ const CardButtonTransaction = ({
   touchableStyles,
   tokenImg1,
   tokenImg2,
+  ...props
 }) => {
   const getTransactionTitle = () => {
     const object = transaction;
@@ -72,6 +73,7 @@ const CardButtonTransaction = ({
       imageStyle={styles.imageStyle}
       actions={actions}
       onPress={onPress}
+      {...props}
     />
   );
 };

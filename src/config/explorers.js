@@ -29,12 +29,19 @@ const EXPLORERS = {
       url: 'https://etherscan.io',
     },
   },
+  BITCOIN: {
+    BLOCKCYPHER: {
+      name: 'Blockcypher',
+      url: 'https://live.blockcypher.com/btc-testnet/tx',
+    },
+  },
 };
 
 const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   NEAR: 'NEAR_EXPLORER',
   ETHEREUM: 'ETHERSCAN',
+  BITCOIN: 'ETHERSCAN',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };

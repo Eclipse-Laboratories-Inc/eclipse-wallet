@@ -189,6 +189,11 @@
       "titleWelcome": "Bienvenidx",
       "select_blockchain": "Seleccionar Blockchain",
       "select_blockchain_text": "Ten en cuenta que la Wallet que estás por crear funcionará únicamente en este blockchain.\nPodrás agregar Wallets de otros blockchains más tarde."
+    },
+    "pending_txs": {
+      "inProgress": "En Curso",
+      "fail": "Falló",
+      "success": "Exitosa"
     }
   },
   "adapter": {
