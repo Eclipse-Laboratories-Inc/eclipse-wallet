@@ -5,7 +5,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
@@ -33,12 +32,15 @@ const NftsListPage = ({ t }) => {
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
-      ).then(async nfts => {
-        setNftsGroup(nfts);
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed);
-        setLoaded(true);
-      });
+      )
+        .then(async nfts => {
+          setNftsGroup(nfts);
+          const listed = await activeWallet.getListedNfts();
+          setListedInfo(listed);
+        })
+        .finally(() => {
+          setLoaded(true);
+        });
     }
   }, [activeWallet]);
 

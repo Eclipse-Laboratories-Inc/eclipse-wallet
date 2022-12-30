@@ -28,15 +28,18 @@ const NftsCollectionPage = ({ params, t }) => {
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
-      ).then(async nfts => {
-        const collection = nfts.find(n => n.collection === params.id);
-        if (collection) {
-          setNftsCollection(collection.items);
-        }
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed);
-        setLoaded(true);
-      });
+      )
+        .then(async nfts => {
+          const collection = nfts.find(n => n.collection === params.id);
+          if (collection) {
+            setNftsCollection(collection.items);
+          }
+          const listed = await activeWallet.getListedNfts();
+          setListedInfo(listed);
+        })
+        .finally(() => {
+          setLoaded(true);
+        });
     }
   }, [activeWallet, params.id]);
   const goToBack = () => {
