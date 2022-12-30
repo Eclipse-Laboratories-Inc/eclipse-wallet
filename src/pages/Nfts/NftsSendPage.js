@@ -77,7 +77,10 @@ const NftsSendPage = ({ params, t }) => {
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
   const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchain);
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
@@ -131,16 +134,15 @@ const NftsSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      const { txId, executableTx } =
-        await activeWallet.createTransferTransaction(
-          recipientAddress,
-          nftDetail.mint,
-          1,
-          { isNft: true, contractId: nftDetail.contractId },
-        );
+      const { txId } = await activeWallet.createTransferTransaction(
+        recipientAddress,
+        nftDetail.mint,
+        1,
+        { isNft: true, contractId: nftDetail.contractId },
+      );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(executableTx);
+      await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);

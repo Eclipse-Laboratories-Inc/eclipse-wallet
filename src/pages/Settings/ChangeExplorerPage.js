@@ -16,7 +16,10 @@ const ChangeExplorerPage = ({ t }) => {
 
   const [{ activeWallet }] = useContext(AppContext);
   const chain = getWalletChain(activeWallet);
-  const { explorer, explorers, changeExplorer } = useUserConfig(chain);
+  const { explorer, explorers, changeExplorer } = useUserConfig(
+    chain,
+    activeWallet.networkId,
+  );
 
   const onSelect = value => {
     changeExplorer(value);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -21,7 +21,7 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import { MyNfts } from './components/MyNfts';
-import { retriveConfig } from '../../utils/config';
+import { retriveConfig } from '../../utils/wallet';
 import { PendingTxs } from './components/PendingTxs';
 
 const WalletOverviewPage = ({ t }) => {
@@ -43,6 +43,14 @@ const WalletOverviewPage = ({ t }) => {
     );
   });
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
@@ -50,7 +58,7 @@ const WalletOverviewPage = ({ t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ).then(async balance => {
         setTotalBalance(balance);
@@ -59,7 +67,7 @@ const WalletOverviewPage = ({ t }) => {
         setLoading(false);
       });
     }
-  }, [activeWallet, selectedEndpoints, reload]);
+  }, [activeWallet, selectedEndpoints, reload, tokensAddresses]);
 
   const onRefresh = () => {
     invalidate(CACHE_TYPES.BALANCE);
@@ -76,10 +84,11 @@ const WalletOverviewPage = ({ t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = tok =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
-      tokenId: tok.address,
-    });
+  const goToTokenDetail = tok => {
+    if (tok.type !== 'native') {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
+    }
+  };
 
   return (
     activeWallet && (
@@ -95,9 +104,9 @@ const WalletOverviewPage = ({ t }) => {
               }
               {...{
                 [`${getLabelValue(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 )}Total`]: showPercentage(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 ),
               }}
               messages={[]}

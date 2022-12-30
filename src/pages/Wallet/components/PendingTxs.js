@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
-import CardButtonTransaction from '../../../component-library/CardButton/CardButtonTransaction';
+import CardButtonPendingTx from '../../../component-library/CardButton/CardButtonPendingTx';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import { StyleSheet, View } from 'react-native';
@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
 
 export const PendingTxs = ({ activeWallet, translate }) => {
   const [transactions, setTransactions] = useState(null);
+  const isBitcoin = activeWallet.chain === 'bitcoin';
   useEffect(() => {
     const updateStatus = async txs => {
       const dateNow = new Date().getTime();
@@ -48,14 +49,14 @@ export const PendingTxs = ({ activeWallet, translate }) => {
     storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
   }
 
-  return transactions && transactions.length > 0 ? (
+  return isBitcoin && transactions && transactions.length > 0 ? (
     <>
       <GlobalCollapse
         title={translate('wallet.transactions_in_progress')}
         isOpen>
         {transactions.map((transaction, i) => {
           return (
-            <CardButtonTransaction
+            <CardButtonPendingTx
               transaction={transaction.status}
               address={transaction.recipient}
               key={i}

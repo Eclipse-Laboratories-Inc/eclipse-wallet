@@ -93,7 +93,8 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Recibir"
+      "title": "Recibir",
+      "warning": "Esta dirección es para tokens en la block chain {{chain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
     },
     "send": {
       "address": {
@@ -237,7 +238,23 @@
     "view_transaction": "Ver transacción",
     "today": "Hoy",
     "yesterday": "Ayer",
-    "empty": "No se encontraron transacciones"
+    "empty": "No se encontraron transacciones",
+    "send": "Enviado",
+    "receive": "Recibido",
+    "swap": "Swap",
+    "interaction": "Interacción",
+    "unknown": "Desconocido",
+    "fromAddress": "De: {{address}}",
+    "toAddress": "Para: {{address}}",
+    "date": "Fecha",
+    "type": "Tipo",
+    "id": "ID de transacción",
+    "status": "Estado",
+    "completed": "Realizado",
+    "failed": "Fallido",
+    "from": "De",
+    "to": "Para",
+    "fee": "Comisión"
   },
   "nft": {
     "description": "Descripción",

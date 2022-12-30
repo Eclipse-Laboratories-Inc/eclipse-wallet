@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import pick from 'lodash/pick';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -7,12 +8,10 @@ import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import {
-  LOGOS,
   getTransactionImage,
   TRANSACTION_STATUS,
   getWalletName,
 } from '../../utils/wallet';
-import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
 import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
@@ -87,7 +86,11 @@ const TokenSendPage = ({ params, t }) => {
   );
   const [recipientAmount, setRecipientAmount] = useState('');
   const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(current_blockchain);
+  const isBitcoin = current_blockchain === 'BITCOIN';
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -115,6 +118,7 @@ const TokenSendPage = ({ params, t }) => {
           recipientAddress,
           token.address,
           recipientAmount,
+          { ...pick(token, 'decimals') },
         );
         setFee(feeSend);
       }
@@ -131,12 +135,15 @@ const TokenSendPage = ({ params, t }) => {
           recipientAddress,
           token.address,
           recipientAmount,
+          { ...pick(token, 'decimals') },
         );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(executableTx);
+      await activeWallet.confirmTransferTransaction(
+        isBitcoin ? executableTx : txId,
+      );
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      savePendingTx(txId, token.symbol, recipientAmount);
+      isBitcoin && savePendingTx(txId, token.symbol, recipientAmount);
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {

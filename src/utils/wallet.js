@@ -1,9 +1,11 @@
 import {
+  isDefaultPath as isDefaultPath4m,
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
   getAvailableTokens as getAvailableTokens4m,
   getFeaturedTokens as getFeaturedTokens4m,
+  retriveConfig as retrieveConfig4m,
 } from '4m-wallet-adapter';
 import chains from '4m-wallet-adapter/constants/chains';
 import get from 'lodash/get';
@@ -63,8 +65,8 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-//export const getChains = () => Object.keys(chains);
-// export const getChains = () => ['SOLANA'];
+export const isDefaultPath = path => isDefaultPath4m(path);
+
 export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';
@@ -86,13 +88,8 @@ export const getWalletAvatar = (address, config) =>
     'http://static.salmonwallet.io/avatar/00.png',
   );
 
-export const getWalletChain = wallet => {
-  const type = wallet ? wallet.chain : '';
-  if (type) {
-    return type.toUpperCase();
-  }
-  return getDefaultChain();
-};
+export const getWalletChain = wallet =>
+  wallet?.chain?.toUpperCase() || getDefaultChain();
 
 export const getBlockchainIcon = blockchain => {
   switch (blockchain) {
@@ -168,3 +165,5 @@ export const getListedTokens = balance =>
 export const getAvailableTokens = getAvailableTokens4m;
 
 export const getFeaturedTokens = getFeaturedTokens4m;
+
+export const retriveConfig = retrieveConfig4m;
