@@ -90,7 +90,7 @@ export const getWalletChain = wallet => {
 };
 
 export const getShortAddress = address =>
-  `${address.substr(0, 4)}...${address.substr(-4)}`;
+  address && `${address.substr(0, 4)}...${address.substr(-4)}`;
 
 export const TRANSACTION_STATUS = {
   FAIL: 'fail',
@@ -100,6 +100,9 @@ export const TRANSACTION_STATUS = {
   SENDING: 'sending',
   LISTING: 'listing',
   UNLISTING: 'unlisting',
+  CREATING_OFFER: 'creating-offer',
+  CANCELING_OFFER: 'canceling-offer',
+  BUYING: 'buying',
   SWAPPING: 'swapping',
 };
 
@@ -133,6 +136,12 @@ export const getTransactionImage = transaction => {
     case 'listing':
       return IconTransactionSending;
     case 'unlisting':
+      return IconTransactionSending;
+    case 'creating-offer':
+      return IconTransactionSending;
+    case 'canceling-offer':
+      return IconTransactionSending;
+    case 'buying':
       return IconTransactionSending;
     case 'burning':
       return IconTransactionSending;

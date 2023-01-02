@@ -40,10 +40,12 @@ const styles = StyleSheet.create({
   },
   badgeIcon: {
     marginLeft: theme.gutters.paddingXXS,
+    marginBottom: -3,
   },
   solanaIcon: {
     marginBottom: -3,
     marginLeft: 6,
+    paddingHorizontal: theme.gutters.paddingXS,
   },
 });
 
@@ -72,7 +74,11 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           source={
             isBlacklisted(nft)
               ? Blacklisted
-              : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
+              : getMediaRemoteUrl(
+                  isCollection(nft)
+                    ? nft.thumb
+                    : nft.media || nft.meta_data_img,
+                )
           }
           size="block"
         />
@@ -80,21 +86,20 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           {...(isCollection(nft) && nft.length > 1
             ? { number: nft.length }
             : {
-                title: nft.marketInfo?.price && (
-                  <View style={globalStyles.inlineFlexButtons}>
-                    <GlobalText
-                      type="caption"
-                      color="tertiary"
-                      numberOfLines={1}>
-                      {nft.marketInfo?.price}
-                    </GlobalText>
+                title: (nft.lowest_listing_mpa?.price ||
+                  nft.marketInfo?.price) && (
+                  <>
+                    <Text>
+                      {nft.lowest_listing_mpa?.price?.toFixed(2) ||
+                        nft.marketInfo?.price}
+                    </Text>
                     <GlobalImage
                       source={IconSolana}
                       circle
                       size="xxs"
                       style={styles.badgeIcon}
                     />
-                  </View>
+                  </>
                 ),
               })}
         />

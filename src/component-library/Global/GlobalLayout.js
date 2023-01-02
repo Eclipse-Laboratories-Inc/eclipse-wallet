@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
 
 const GlobalLayout = ({
   fullscreen,
+  modal,
   style,
   children,
   onRefresh,
@@ -100,7 +101,14 @@ const GlobalLayout = ({
     </>
   );
 
-  return <GlobalBackgroundImage>{inner}</GlobalBackgroundImage>;
+  return (
+    <>
+      {fullscreen && (
+        <GlobalBackgroundImage isModal={modal}>{inner}</GlobalBackgroundImage>
+      )}
+      {!fullscreen && inner}
+    </>
+  );
 };
 
 const Header = ({ centered, children }) => (

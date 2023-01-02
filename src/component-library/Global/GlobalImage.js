@@ -7,6 +7,10 @@ import ImageMaskXLCards from '../../assets/images/ImageMaskXLCards.png';
 import ImageMaskXXLCards from '../../assets/images/ImageMaskXXLCards.png';
 
 const styles = StyleSheet.create({
+  sizeXXXS: {
+    width: 14,
+    height: 14,
+  },
   sizeXXS: {
     width: 16,
     height: 16,
@@ -95,6 +99,7 @@ const GlobalImage = ({
   ...props
 }) => {
   const imageStyles = {
+    ...(size === 'xxxs' && styles.sizeXXXS),
     ...(size === 'xxs' && styles.sizeXXS),
     ...(size === 'xs' && styles.sizeXS),
     ...(size === 'sm' && styles.sizeSM),

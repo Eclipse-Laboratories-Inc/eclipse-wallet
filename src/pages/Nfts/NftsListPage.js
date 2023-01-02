@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
+import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
@@ -18,6 +18,13 @@ import Header from '../../component-library/Layout/Header';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
+import NftOffersMade from './components/NftOffersMade';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.black300,
+  },
+});
 
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
@@ -26,6 +33,7 @@ const NftsListPage = ({ t }) => {
   const [loaded, setLoaded] = useState(false);
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeWallet) {
@@ -54,7 +62,7 @@ const NftsListPage = ({ t }) => {
 
   return (
     (
-      <GlobalLayout>
+      <GlobalLayout style={isModalOpen && styles.container}>
         {loaded && (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
@@ -71,6 +79,11 @@ const NftsListPage = ({ t }) => {
               nonFungibleTokens={nftsGroup}
               listedInfo={listedInfo}
               onClick={onClick}
+            />
+            <NftOffersMade
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+              t
             />
           </GlobalLayout.Header>
         )}

@@ -2,18 +2,15 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
+import { withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   getTransactionImage,
   getWalletName,
   TRANSACTION_STATUS,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS, SOL_ICON } from '../Transactions/constants';
+import { TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -23,25 +20,19 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
-import CardButton from '../../component-library/CardButton/CardButton';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
+import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
+import QRScan from '../../features/QRScan/QRScan';
 
-import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
-import useUserConfig from '../../hooks/useUserConfig';
-
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
     width: 234,
     height: 234,
-  },
-  titleStyle: {
-    color: theme.colors.labelTertiary,
   },
   viewTxLink: {
     fontFamily: theme.fonts.dmSansRegular,
@@ -55,104 +46,98 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textTransform: 'none',
   },
+  insufficientBtn: {
+    fontSize: theme.fontSize.fontSizeSM,
+    lineHeight: theme.lineHeight.lineHeightSM,
+  },
+  zeroMargin: {
+    paddingBottom: 0,
+    marginBottom: 0,
+  },
 });
 
-const NftsListingPage = ({ params, t }) => {
-  const navigate = useNavigation();
-  const isListed = params.type === 'unlist';
-
+const NftsBuyingPageModal = ({
+  id,
+  nftId,
+  pageNumber,
+  type,
+  setIsModalOpen,
+  params,
+  t,
+}) => {
   const [loaded, setLoaded] = useState(false);
-  const [listedLoaded, setListedLoaded] = useState(false);
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState();
-  const [step, setStep] = useState(isListed ? 2 : 1);
+  const [step, setStep] = useState(1);
   const [nftDetail, setNftDetail] = useState({});
   const [transactionId, setTransactionId] = useState();
   const [error, setError] = useState(false);
   const [solBalance, setSolBalance] = useState(null);
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
-  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
-  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
+  const [{ activeWallet, config }] = useContext(AppContext);
+
+  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_BUY);
 
   useEffect(() => {
     if (activeWallet) {
       Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
-        ),
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NFTS_ALL,
-          () => activeWallet.getAllNfts(),
-        ),
+        activeWallet.getBalance(),
+        activeWallet.getCollectionItems(id, pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
-        const nft = nfts.find(n => n.mint === params.id);
+        const nft = nfts.market_place_snapshots.find(
+          n => n.token_address === nftId,
+        );
         setSolBalance(tks.length ? tks[0] : null);
         if (nft) {
           setNftDetail(nft);
+          setPrice(nft.lowest_listing_mpa?.price);
         }
-        const listed = await activeWallet.getListedNfts();
-        setPrice(
-          listed.find(l => l.token_address === params.id)?.market_place_state
-            ?.price || null,
-        );
-        setListedLoaded(true);
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeWallet, id, nftId, pageNumber]);
 
-  const zeroAmount = parseFloat(price) <= 0;
-  const validAmount =
-    parseFloat(price) * 0.01 <= solBalance?.uiAmount && parseFloat(price) > 0;
+  const insufficientFunds =
+    solBalance?.uiAmount < price * 0.01 + price + fee / TOKEN_DECIMALS.SOLANA;
 
   const goToBack = () => {
-    if (step === 3) {
-      navigate(NFTS_ROUTES_MAP.NFTS_LIST);
-    } else if (step === 1 || isListed) {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
-    }
-    setStep(step - 1);
+    setIsModalOpen(false);
   };
 
   const onCancel = () => {
     trackEvent(EVENTS_MAP.cancelled);
-    navigate(NFTS_ROUTES_MAP.NFTS_LIST);
+    setIsModalOpen(false);
   };
 
   const onConfirm = async () => {
     setSending(true);
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
-      setStep(3);
-      let txId;
-      isListed
-        ? (txId = await activeWallet.unlistNft(nftDetail.mint))
-        : (txId = await activeWallet.listNft(nftDetail.mint, price));
-      setTransactionId(txId);
-      setStatus(
-        isListed ? TRANSACTION_STATUS.UNLISTING : TRANSACTION_STATUS.LISTING,
+      setStep(2);
+      const txId = await activeWallet.buyNft(
+        nftDetail.token_address,
+        price,
+        nftDetail.lowest_listing_mpa?.marketplace_program_id,
       );
+      setTransactionId(txId);
+      setStatus(TRANSACTION_STATUS.BUYING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      trackEvent(EVENTS_MAP.NFT_LIST_COMPLETED);
+      trackEvent(EVENTS_MAP.NFT_BUY_COMPLETED);
       setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
-      trackEvent(EVENTS_MAP.NFT_LIST_FAILED);
-      setStep(3);
+      trackEvent(EVENTS_MAP.NFT_BUY_FAILED);
+      setStep(2);
       setSending(false);
     }
   };
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `https://solscan.io/tx/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -172,7 +157,7 @@ const NftsListingPage = ({ params, t }) => {
   };
 
   return loaded ? (
-    <GlobalLayout fullscreen>
+    <GlobalLayout fullscreen modal>
       {step === 1 && (
         <>
           <GlobalLayout.Header>
@@ -186,163 +171,13 @@ const NftsListingPage = ({ params, t }) => {
             />
 
             <GlobalText type="headline2" center>
-              {nftDetail.name || nftDetail.symbol}
+              {nftDetail.name}
             </GlobalText>
 
             <View style={globalStyles.centered}>
               <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
                 <GlobalImage
-                  source={getMediaRemoteUrl(nftDetail.media)}
-                  style={globalStyles.bigImage}
-                  square
-                  squircle
-                />
-              </View>
-            </View>
-
-            <GlobalPadding size="xl" />
-
-            <View style={globalStyles.centered}>
-              <GlobalImage source={IconExpandMoreAccent1} size="md" />
-            </View>
-            <View style={globalStyles.inlineFlexButtons}>
-              <GlobalText type="body2">{t('nft.sell_price')}</GlobalText>
-            </View>
-
-            <GlobalPadding size="xs" />
-
-            <GlobalInputWithButton
-              value={price}
-              setValue={setPrice}
-              placeholder={t('swap.enter_amount')}
-              hiddenValue={hiddenValue}
-              invalid={!validAmount && !!price}
-              number
-              action={
-                <CardButton
-                  type="secondary"
-                  size="sm"
-                  title="SOL"
-                  image={SOL_ICON}
-                  imageSize="xs"
-                  onPress={() => {}}
-                  buttonStyle={{ paddingRight: 6, paddingLeft: 6 }}
-                  keyboardType="numeric"
-                  nospace
-                />
-              }
-            />
-
-            {zeroAmount && (
-              <GlobalText type="body1" center color="negative">
-                {t(`token.send.amount.invalid`)}
-              </GlobalText>
-            )}
-
-            <GlobalPadding size="xs" />
-
-            <GlobalText type="body1" color="tertiary">
-              {showValue((price === '.' ? 0 : price) * solBalance?.usdPrice, 6)}{' '}
-              {t('general.usd')}
-            </GlobalText>
-
-            {error && (
-              <GlobalText type="body1" color="negative">
-                {t('general.error')}
-              </GlobalText>
-            )}
-
-            <GlobalPadding size="lg" />
-
-            <View
-              style={[
-                globalStyles.inlineWell,
-                { paddingBottom: 0, marginBottom: 0 },
-              ]}>
-              <GlobalText type="caption" color="tertiary">
-                {t('nft.marketplace_fee')}
-              </GlobalText>
-              <View>
-                <View
-                  style={[
-                    globalStyles.inlineWell,
-                    { paddingBottom: 0, marginBottom: 0 },
-                  ]}>
-                  <GlobalImage
-                    style={[
-                      globalStyles.centeredSmall,
-                      { marginRight: theme.gutters.paddingXXS },
-                    ]}
-                    source={IconHyperspace}
-                    size="xs"
-                    circle
-                  />
-                  <GlobalText type="body1" nospace>
-                    {t('nft.marketplace_name')}
-                  </GlobalText>
-                </View>
-                <GlobalText
-                  type="caption"
-                  color="tertiary"
-                  style={[
-                    globalStyles.alignEnd,
-                    {
-                      marginBottom: theme.gutters.paddingSM,
-                      // paddingVertical: theme.gutters.paddingXS,
-                      paddingHorizontal: theme.gutters.paddingSM,
-                    },
-                  ]}>
-                  {t('nft.marketplace_fee_perc')}
-                </GlobalText>
-              </View>
-            </View>
-          </GlobalLayout.Header>
-
-          <GlobalPadding size="lg" />
-
-          <GlobalLayout.Footer inlineFlex>
-            <GlobalButton
-              type="secondary"
-              flex
-              title="Cancel"
-              onPress={onCancel}
-              style={[globalStyles.button, globalStyles.buttonLeft]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-
-            <GlobalButton
-              type="primary"
-              flex
-              disabled={!price || zeroAmount}
-              title={t('nft.preview_sell')}
-              onPress={() => setStep(2)}
-              style={[globalStyles.button, globalStyles.buttonRight]}
-              touchableStyles={globalStyles.buttonTouchable}
-            />
-          </GlobalLayout.Footer>
-        </>
-      )}
-
-      {step === 2 && (
-        <>
-          <GlobalLayout.Header>
-            <GlobalBackTitle
-              onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
-            />
-
-            <GlobalText type="headline2" center>
-              {nftDetail.name || nftDetail.symbol}
-            </GlobalText>
-
-            <View style={globalStyles.centered}>
-              <View style={[globalStyles.squareRatio, styles.mediumSizeImage]}>
-                <GlobalImage
-                  source={getMediaRemoteUrl(nftDetail.media)}
+                  source={getMediaRemoteUrl(nftDetail.meta_data_img)}
                   style={globalStyles.bigImage}
                   square
                   squircle
@@ -360,13 +195,9 @@ const NftsListingPage = ({ params, t }) => {
                   {t('nft.sell_price')}
                 </GlobalText>
                 <View>
-                  <View
-                    style={[
-                      globalStyles.inlineWell,
-                      { paddingBottom: 0, marginBottom: 0 },
-                    ]}>
+                  <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
                     <GlobalText type="body1" nospace>
-                      {price} SOL
+                      {price?.toFixed(2)} SOL
                     </GlobalText>
                   </View>
                   <GlobalText
@@ -388,14 +219,10 @@ const NftsListingPage = ({ params, t }) => {
 
               <View style={globalStyles.inlineWell}>
                 <GlobalText type="caption" color="tertiary">
-                  {isListed ? t('nft.marketplace') : t('nft.marketplace_fee')}
+                  {t('nft.marketplace_fee')}
                 </GlobalText>
                 <View>
-                  <View
-                    style={[
-                      globalStyles.inlineWell,
-                      { paddingBottom: 0, marginBottom: 0 },
-                    ]}>
+                  <View style={[globalStyles.inlineWell, styles.zeroMargin]}>
                     <GlobalImage
                       style={[
                         globalStyles.centeredSmall,
@@ -409,21 +236,19 @@ const NftsListingPage = ({ params, t }) => {
                       {t('nft.marketplace_name')}
                     </GlobalText>
                   </View>
-                  {!isListed && (
-                    <GlobalText
-                      type="caption"
-                      color="tertiary"
-                      style={[
-                        globalStyles.alignEnd,
-                        {
-                          marginBottom: theme.gutters.paddingSM,
-                          // paddingVertical: theme.gutters.paddingXS,
-                          paddingHorizontal: theme.gutters.paddingSM,
-                        },
-                      ]}>
-                      {t('nft.marketplace_fee_perc')}
-                    </GlobalText>
-                  )}
+                  <GlobalText
+                    type="caption"
+                    color="tertiary"
+                    style={[
+                      globalStyles.alignEnd,
+                      {
+                        marginBottom: theme.gutters.paddingSM,
+                        // paddingVertical: theme.gutters.paddingXS,
+                        paddingHorizontal: theme.gutters.paddingSM,
+                      },
+                    ]}>
+                    {t('nft.marketplace_fee_perc')}
+                  </GlobalText>
                 </View>
               </View>
 
@@ -456,18 +281,23 @@ const NftsListingPage = ({ params, t }) => {
             />
 
             <GlobalButton
-              disabled={sending || !listedLoaded}
+              disabled={sending || insufficientFunds}
               type="primary"
               flex
-              title={t(`general.confirm`)}
+              title={
+                insufficientFunds
+                  ? t(`token.send.amount.insufficient`)
+                  : t(`general.confirm`)
+              }
               onPress={onConfirm}
+              textStyle={insufficientFunds && styles.insufficientBtn}
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
             />
           </GlobalLayout.Footer>
         </>
       )}
-      {step === 3 && (
+      {step === 2 && (
         <>
           <GlobalLayout.Header>
             <GlobalPadding size="4xl" />
@@ -490,40 +320,27 @@ const NftsListingPage = ({ params, t }) => {
               <GlobalPadding />
               {status !== 'creating' && (
                 <GlobalText
-                  type={
-                    status === 'listing' || status === 'unlisting'
-                      ? 'subtitle2'
-                      : 'headline2'
-                  }
-                  color={
-                    (status === 'listing' || status === 'unlisting') &&
-                    'secondary'
-                  }
+                  type={status === 'buying' ? 'subtitle2' : 'headline2'}
+                  color={status === 'buying' && 'secondary'}
                   center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
+              )}
+              {status !== 'success' && (
+                <>
+                  <GlobalPadding size="4xl" />
+                  <GlobalPadding size="4xl" />
+                  <GlobalPadding size="4xl" />
+                  <GlobalPadding size="4xl" />
+                </>
               )}
               {status === 'success' && (
                 <>
                   <GlobalPadding size="xs" />
                   <GlobalText type="body1" center>
-                    {isListed ? t(`nft.success_unlist`) : t(`nft.success_list`)}
+                    {t(`nft.success_buying`, { price })}
                   </GlobalText>
                   <GlobalPadding size="xxs" />
-                  <View style={globalStyles.inlineCentered}>
-                    <GlobalImage
-                      style={[
-                        globalStyles.centeredSmall,
-                        { marginRight: theme.gutters.paddingXXS },
-                      ]}
-                      source={IconHyperspace}
-                      size="xs"
-                      circle
-                    />
-                    <GlobalText type="body2" center>
-                      {t(`nft.marketplace_name`)}
-                    </GlobalText>
-                  </View>
                 </>
               )}
             </View>
@@ -587,8 +404,10 @@ const NftsListingPage = ({ params, t }) => {
       )}
     </GlobalLayout>
   ) : (
-    <GlobalSkeleton type="NftDetail" />
+    <GlobalLayout fullscreen modal>
+      <GlobalSkeleton type="NftDetail" />
+    </GlobalLayout>
   );
 };
 
-export default withParams(withTranslation()(NftsListingPage));
+export default withParams(withTranslation()(NftsBuyingPageModal));

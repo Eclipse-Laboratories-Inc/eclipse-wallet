@@ -37,9 +37,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const GlobalSlider = ({ items, renderItem }) => {
+const GlobalSlider = ({ items, renderItem, isExpanded, setIsExpanded }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const sliderWidth = windowWidth - 24;
   const firstItemRef = useRef(null);
@@ -73,7 +72,7 @@ const GlobalSlider = ({ items, renderItem }) => {
           data={items}
           sliderWidth={sliderWidth}
           itemWidth={sliderWidth}
-          renderItem={() => renderItem(items[activeIndex], isExpanded)}
+          renderItem={renderItem}
           onSnapToItem={index => setActiveIndex(index)}
         />
         <GlobalButton
