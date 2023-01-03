@@ -50,7 +50,8 @@
     "logout": "Logout",
     "view_more": "View more",
     "continue": "Continue",
-    "follow_us": "Follow us"
+    "follow_us": "Follow us",
+    "bridge": "Bridge"
   },
   "settings": {
     "title": "Settings",

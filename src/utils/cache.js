@@ -12,6 +12,7 @@ export const CACHE_TYPES = {
   TOKENS: 'TOKENS',
   AVAILABLE_TOKENS: 'AVAILABLE_TOKENS',
   FEATURED_TOKENS: 'FEATURED_TOKENS',
+  BRIDGE_SUPPORTED: 'BRIDGE_SUPPORTED',
 };
 
 var CACHE = {
@@ -51,6 +52,11 @@ var CACHE = {
     value: [],
   },
   [CACHE_TYPES.FEATURED_TOKENS]: {
+    expires: null,
+    key: '',
+    value: [],
+  },
+  [CACHE_TYPES.BRIDGE_SUPPORTED]: {
     expires: null,
     key: '',
     value: [],

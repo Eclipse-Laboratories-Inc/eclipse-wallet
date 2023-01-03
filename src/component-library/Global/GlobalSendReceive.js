@@ -11,10 +11,12 @@ const GlobalSendReceive = ({
   goToReceive,
   goToList,
   goToBurn,
+  goToBridge,
   canSend = false,
   canReceive = false,
   canList = false,
   canBurn = false,
+  canBridge = false,
   titleList,
   listedLoaded,
   t,
@@ -60,6 +62,16 @@ const GlobalSendReceive = ({
           flex
           title={t('nft.burn_nft')}
           onPress={goToBurn}
+          style={[globalStyles.button, globalStyles.buttonRight]}
+          touchableStyles={globalStyles.buttonTouchable}
+        />
+      )}
+      {canBridge && (
+        <GlobalButton
+          type="primary"
+          flex
+          title={t('actions.bridge')}
+          onPress={goToBridge}
           style={[globalStyles.button, globalStyles.buttonRight]}
           touchableStyles={globalStyles.buttonTouchable}
         />

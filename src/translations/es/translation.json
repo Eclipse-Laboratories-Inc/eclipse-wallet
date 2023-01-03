@@ -36,7 +36,8 @@
     "logout": "Cerrar sesión",
     "view_more": "Ver más",
     "continue": "Cotinuar",
-    "follow_us": "¡Síguenos!"
+    "follow_us": "¡Síguenos!",
+    "bridge": "Bridge"
   },
   "settings": {
     "title": "Configuración",

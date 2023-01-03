@@ -5,6 +5,7 @@ import { AppContext } from '../../AppProvider';
 import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from './routes';
 import { getListedTokens, getNonListedTokens } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
@@ -84,6 +85,8 @@ const WalletOverviewPage = ({ t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
+  const goToBridge = () => navigate(WALLET_ROUTES_MAP.WALLET_BRIDGE);
+
   const goToTokenDetail = tok => {
     if (tok.type !== 'native') {
       navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
@@ -116,8 +119,10 @@ const WalletOverviewPage = ({ t }) => {
                 <GlobalSendReceive
                   goToSend={goToSend}
                   goToReceive={goToReceive}
+                  goToBridge={goToBridge}
                   canSend={configs?.features?.send}
                   canReceive={configs?.features?.receive}
+                  canBridge={!configs?.features?.bridge}
                 />
               }
             />

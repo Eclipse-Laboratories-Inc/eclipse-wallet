@@ -3,6 +3,7 @@ import SwapPage from './SwapPage';
 import TransactionsPage from '../Transactions/TransactionsPage';
 import SettingsSection from '../Settings';
 import NftsSection from '../Nfts';
+import BridgePage from './BridgePage';
 
 import IconWallet from '../../assets/images/IconWallet.png';
 import IconNFT from '../../assets/images/IconNFT.png';
@@ -17,6 +18,7 @@ export const ROUTES_MAP = {
   WALLET_SWAP: 'WALLET_SWAP',
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
   WALLET_SETTINGS: 'WALLET_SETTINGS',
+  WALLET_BRIDGE: 'WALLET_BRIDGE',
 };
 
 const NFTS_ROUTES = require('../Nfts/routes').default;
@@ -69,6 +71,14 @@ const routes = [
     Component: SettingsSection,
     default: false,
     icon: IconSettings,
+  },
+  {
+    key: ROUTES_MAP.WALLET_BRIDGE,
+    name: 'Bridge',
+    path: 'bridge',
+    route: '/wallet/bridge',
+    Component: BridgePage,
+    default: false,
   },
   ...getRoutesWithParent(NFTS_ROUTES, ROUTES_MAP.WALLET_NFTS),
   ...getRoutesWithParent(SETTINGS_ROUTES, ROUTES_MAP.WALLET_SETTINGS),
