@@ -37,7 +37,7 @@ jobs:
       - name: Install node modules
         run: yarn install
       - name: Build ${{ env.GITHUB_REF_SLUG }}
-        run: yarn build
+        run: yarn build:${{ env.GITHUB_REF_SLUG }}
       - name: Publish ${{ env.GITHUB_REF_SLUG }}
         run: yarn serverless:deploy:${{ env.GITHUB_REF_SLUG }}
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
