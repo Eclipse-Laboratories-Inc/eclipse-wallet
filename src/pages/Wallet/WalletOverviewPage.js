@@ -24,6 +24,7 @@ import { MyNfts } from './components/MyNfts';
 import { retriveConfig } from '../../utils/wallet';
 
 const WalletOverviewPage = ({ t }) => {
+  console.log(process.env.REACT_APP_SALMON_ENV);
   const navigate = useNavigation();
   const [
     { activeWallet, config, selectedEndpoints, hiddenBalance },

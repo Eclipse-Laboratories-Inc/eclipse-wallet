@@ -10,6 +10,7 @@ provider:
   runtime: nodejs16.x
   stage: ${opt:stage}
   region: 'us-east-1'
+  environment: ${file(env.${opt:stage, self:provider.stage}.json)}
 
 custom:
   bucketName: salmon-wallet-${opt:stage}
