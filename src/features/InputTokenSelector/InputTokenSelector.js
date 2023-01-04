@@ -116,8 +116,8 @@ const InputWithTokenSelector = ({
             <GlobalPadding />
             {featuredTokens && (
               <View style={theme.globalStyles.inline}>
-                {featuredTokens?.map(token => (
-                  <View>
+                {featuredTokens?.map((token, i) => (
+                  <View key={`featured-token-${i}`}>
                     <CardButton
                       key={token.mint || token.address}
                       onPress={() => onSelect(token)}

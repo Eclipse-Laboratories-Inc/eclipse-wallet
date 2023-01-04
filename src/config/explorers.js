@@ -24,6 +24,20 @@ const EXPLORERS = {
     testnet: SOLANA_EXPLORERS,
     devnet: SOLANA_EXPLORERS,
   },
+  ETHEREUM: {
+    mainnet: {
+      ETHERSCAN: {
+        name: 'Etherscan',
+        url: 'https://etherscan.io/tx',
+      },
+    },
+    goerli: {
+      ETHERSCAN: {
+        name: 'Etherscan',
+        url: 'https://goerli.etherscan.io/tx',
+      },
+    },
+  },
   NEAR: {
     mainnet: {
       NEAR_EXPLORER: {
