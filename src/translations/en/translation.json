@@ -321,6 +321,9 @@
     "total_fee": "Total fee",
     "go_to_explorer": "Go to Explorer"
   },
+  "bridge": {
+    "preview": "Bridge Preview"
+  },
   "header": {
     "connected": "Connected to {{hostname}}",
     "disconnected": "Not connected to {{hostname}}"

@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
 import get from 'lodash/get';
-import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
+import debounce from 'lodash/debounce';
+
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -14,12 +15,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
-import {
-  getAvailableTokens,
-  getFeaturedTokens,
-  getTransactionImage,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
@@ -29,8 +25,9 @@ import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
-import SwapAmounts from '../Transactions/SwapAmounts';
-import { DEFAULT_SYMBOL, TOKEN_DECIMALS } from '../Transactions/constants';
+import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
+import clipboard from '../../utils/clipboard.native';
+import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
   viewTxLink: {
@@ -57,30 +54,6 @@ const styles = StyleSheet.create({
     bottom: -5,
   },
 });
-
-const DetailItem = ({ title, value, color = 'primary', t }) => (
-  <View style={globalStyles.inlineWell}>
-    <GlobalText type="caption" color={color}>
-      {title}
-    </GlobalText>
-
-    <GlobalText type="body1">{value}</GlobalText>
-  </View>
-);
-
-const RouteDetailItem = ({ names, symbols, t }) => (
-  <View style={globalStyles.inlineWell}>
-    <GlobalText type="caption" color="negativeLight">
-      {t('swap.best_route')}
-    </GlobalText>
-    <View>
-      <GlobalText type="body2">{names}</GlobalText>
-      <GlobalText type="caption" color="tertiary">
-        {`(${symbols})`}
-      </GlobalText>
-    </View>
-  </View>
-);
 
 const BigDetailItem = ({ title, value, t }) => (
   <View
@@ -182,6 +155,21 @@ const linkForTransaction = (title, id, status, explorer) => {
   );
 };
 
+const mergeStealthExTokenData = (bsupp, tks) => {
+  const isMatch = (tok1, tok2) =>
+    tok1.symbol.slice(0, 3) === tok2.symbol.toLowerCase().slice(0, 3);
+  return bsupp
+    .filter(el => {
+      return tks.find(element => {
+        return isMatch(el, element);
+      });
+    })
+    .map(el => ({
+      ...tks.find(element => isMatch(el, element)),
+      ...el,
+    }));
+};
+
 const BridgePage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeWallet, hiddenValue, config }, { importTokens }] =
@@ -195,12 +183,13 @@ const BridgePage = ({ t }) => {
   const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
-  const [quote, setQuote] = useState({});
+  const [exchangeDetails, setExchangeDetails] = useState(null);
   const [status, setStatus] = useState();
-  const [routesNames, setRoutesNames] = useState('');
-  const [tokenSymbols, setTokenSymbols] = useState('');
-  const [currentTransaction, setCurrentTransaction] = useState('');
-  const [totalTransactions, setTotalTransactions] = useState(0);
+  const [recipientAddress, setRecipientAddress] = useState('');
+  const [validAddress, setValidAddress] = useState(false);
+  const [addressEmpty, setAddressEmpty] = useState(false);
+  const [checkingAddress, setCheckingAddress] = useState(false);
+  const [result, setResult] = useState(false);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
   const current_blockchain = getWalletChain(activeWallet);
@@ -231,18 +220,16 @@ const BridgePage = ({ t }) => {
           CACHE_TYPES.BRIDGE_SUPPORTED,
           () => activeWallet.getBridgeSupportedTokens(),
         ),
-      ]).then(([balance, bsupp, avtks]) => {
+        activeWallet.getBridgeFeaturedTokens('sol'),
+        activeWallet.getBridgeAvailableTokens('sol'),
+      ]).then(([balance, bsupp, ftks, avtks]) => {
         const tks = balance.items || [];
-        console.log('avtks', avtks);
-        const tksSupp = bsupp.filter(el => {
-          return tks.find(element => {
-            return (
-              el.symbol.slice(0, 3) === element.symbol.toLowerCase().slice(0, 3)
-            );
-          });
-        });
+        const tksSupp = mergeStealthExTokenData(bsupp, tks);
         setTokens(tksSupp);
         setInToken(tks.length ? tks[0] : null);
+        setOutToken(ftks.length ? ftks[0] : null);
+        setFeaturedTokens(ftks);
+        setAvailableTokens(avtks);
         setReady(true);
       });
     }
@@ -251,21 +238,20 @@ const BridgePage = ({ t }) => {
   const [inAmount, setInAmount] = useState(null);
 
   const [outAmount, setOutAmount] = useState('--');
-  useEffect(() => {
-    if (inToken) {
-      Promise.all([
-        activeWallet.getBridgeFeaturedTokens(inToken.symbol.toLowerCase()),
-        activeWallet.getBridgeAvailableTokens(inToken.symbol.toLowerCase()),
-      ]).then(([ftks, avtks]) => {
-        setFeaturedTokens(ftks);
-        setAvailableTokens(avtks);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inToken]);
 
-  useEffect(() => {
-    if (inAmount && availableTokens) {
+  const onChangeInToken = token => {
+    setInToken(token);
+    Promise.all([
+      activeWallet.getBridgeFeaturedTokens(token.symbol.toLowerCase()),
+      activeWallet.getBridgeAvailableTokens(token.symbol.toLowerCase()),
+    ]).then(([ftks, avtks]) => {
+      setFeaturedTokens(ftks);
+      setAvailableTokens(avtks);
+    });
+  };
+
+  const onRefreshEstimate = () => {
+    if (Number(inAmount) > 0 && outToken) {
       Promise.resolve(
         activeWallet.getBridgeEstimatedAmount(
           inToken.symbol.toLowerCase(),
@@ -275,9 +261,26 @@ const BridgePage = ({ t }) => {
       ).then(async estAmount => {
         setOutAmount(estAmount);
       });
+    } else {
+      setOutAmount('--');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inAmount]);
+  };
+
+  useEffect(() => {
+    if (Number(inAmount) > 0 && outToken) {
+      Promise.resolve(
+        activeWallet.getBridgeEstimatedAmount(
+          inToken.symbol.toLowerCase(),
+          outToken.symbol,
+          inAmount,
+        ),
+      ).then(async estAmount => {
+        setOutAmount(estAmount);
+      });
+    } else {
+      setOutAmount('--');
+    }
+  }, [activeWallet, inAmount, inToken, outToken]);
 
   useEffect(() => {
     setError(false);
@@ -294,39 +297,10 @@ const BridgePage = ({ t }) => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
 
-  const getRoutesSymbols = async routes => {
-    const inputs = routes.map(
-      async r =>
-        await getTokenByAddress(r.inputMint).then(info => info[0].symbol),
-    );
-    const outputs = routes.map(
-      async r =>
-        await getTokenByAddress(r.outputMint).then(info => info[0].symbol),
-    );
-    const tokSymb = [...new Set([...inputs, ...outputs])];
-
-    Promise.all(tokSymb).then(data => {
-      setTokenSymbols([...new Set(data)].join(' → '));
-    });
-  };
-
-  const getRoutesNames = routes =>
-    setRoutesNames(routes.map(r => r.label).join(' x '));
-
   const onQuote = async () => {
     setError(false);
     setProcessing(true);
     try {
-      const q = await activeWallet.getBestSwapQuote(
-        inToken.mint || inToken.address,
-        outToken.address,
-        parseFloat(inAmount),
-      );
-      setQuote(q);
-      if (current_blockchain === 'SOLANA') {
-        getRoutesNames(q?.route?.marketInfos);
-        await getRoutesSymbols(q?.route?.marketInfos);
-      }
       setProcessing(false);
       trackEvent(EVENTS_MAP.SWAP_QUOTE);
       setStep(2);
@@ -343,35 +317,18 @@ const BridgePage = ({ t }) => {
     setStatus(TRANSACTION_STATUS.CREATING);
     setStep(3);
     activeWallet
-      .createSwapTransaction(
-        quote,
-        inToken.mint || inToken.address,
-        outToken.address,
-        parseFloat(inAmount),
+      .createBridgeExchange(
+        inToken.symbol.toLowerCase(),
+        outToken.symbol,
+        inAmount,
+        recipientAddress,
       )
-      .then(txs => {
+      .then(ex => {
         setError(false);
         trackEvent(EVENTS_MAP.SWAP_COMPLETED);
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
-        setTotalTransactions(txs.length);
-
-        if (activeWallet.useExplicitTokens()) {
-          importTokens(activeWallet.getReceiveAddress(), [outToken]).catch(
-            e => {
-              console.error('Could not import token:', outToken, e);
-            },
-          );
-        }
-
-        if (txs.length > 1) {
-          console.error('Too many transactions.');
-          setError(true);
-          trackEvent(EVENTS_MAP.SWAP_FAILED);
-          setStatus(TRANSACTION_STATUS.FAIL);
-        } else {
-          setCurrentTransaction(txs[0]);
-        }
+        setExchangeDetails(ex);
       })
       .catch(ex => {
         console.error(ex.message);
@@ -394,6 +351,41 @@ const BridgePage = ({ t }) => {
         return 'primary';
     }
   };
+
+  const validateAddress = useMemo(
+    () =>
+      debounce(async (a, regex) => {
+        setCheckingAddress(true);
+        setValidAddress(null);
+        if (a) {
+          const valid = new RegExp(regex).test(a);
+          if (valid) {
+            setCheckingAddress(false);
+            setValidAddress(true);
+            setAddressEmpty(true);
+            setResult({ type: 'SUCCESS', code: 'VALID_ACCOUNT' });
+          } else {
+            setCheckingAddress(false);
+            setValidAddress(false);
+            setResult({ type: 'ERROR', code: 'ERROR' });
+            console.log(error);
+          }
+        }
+      }, 500),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeWallet],
+  );
+  useEffect(() => {
+    setResult();
+    if (recipientAddress) {
+      validateAddress(recipientAddress, outToken.validation_address);
+    } else {
+      setValidAddress(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipientAddress]);
+
+  console.log('ex', exchangeDetails);
 
   return (
     <GlobalLayout>
@@ -423,7 +415,7 @@ const BridgePage = ({ t }) => {
                   tokens={tokens}
                   hiddenValue={hiddenValue}
                   image={getMediaRemoteUrl(inToken.logo)}
-                  onChange={setInToken}
+                  onChange={onChangeInToken}
                   invalid={!validAmount && !!inAmount}
                   number
                 />
@@ -480,7 +472,7 @@ const BridgePage = ({ t }) => {
             <GlobalButton
               type="primary"
               wideSmall
-              title={t('swap.quote')}
+              title={t('actions.next')}
               disabled={!validAmount || !outToken || processing}
               onPress={onQuote}
             />
@@ -494,34 +486,38 @@ const BridgePage = ({ t }) => {
             <GlobalPadding />
             <BigDetailItem
               title={t('swap.you_send')}
-              value={`${get(quote, 'uiInfo.in.uiAmount') || inAmount} ${
-                get(quote, 'uiInfo.in.symbol') || inToken.symbol
-              }`}
+              value={`${inAmount} ${inToken.symbol}`}
             />
             <BigDetailItem
               title={t('swap.you_receive')}
-              value={`${get(quote, 'uiInfo.out.uiAmount') || inAmount} ${
-                get(quote, 'uiInfo.out.symbol') || outToken.symbol
-              }`}
+              value={`${outAmount} ${outToken.symbol}`}
             />
             <GlobalPadding size="2xl" />
-            {quote?.route?.marketInfos && (
-              <RouteDetailItem
-                names={routesNames}
-                symbols={tokenSymbols}
-                t={t}
-              />
-            )}
-            {(quote?.fee || quote?.pool?.total_fee) && (
-              <DetailItem
-                key={quote?.fee || quote?.pool?.total_fee}
-                title={t('swap.total_fee')}
-                value={`${
-                  quote?.fee?.toFixed(8) || quote?.pool?.total_fee / 100
-                }${quote?.pool?.total_fee ? '%' : ''} ${
-                  DEFAULT_SYMBOL[current_blockchain]
-                }`}
-              />
+            <GlobalInputWithButton
+              startLabel={t('general.to')}
+              placeholder={t('general.recipient_s_address', {
+                token: outToken.symbol.toUpperCase(),
+              })}
+              value={recipientAddress}
+              setValue={setRecipientAddress}
+              onActionPress={() => {}}
+              editable={!checkingAddress}
+              validating={checkingAddress}
+              complete={validAddress}
+              inputStyle={
+                result && result.type !== 'SUCCESS' ? styles[result.type] : {}
+              }
+            />
+            {result && result.type !== 'SUCCESS' && (
+              <>
+                <GlobalPadding size="sm" />
+                <GlobalText
+                  type="body1"
+                  center
+                  color={result.type === 'ERROR' ? 'negative' : 'warning'}>
+                  {t(`general.address_validation.${result.code}`)}
+                </GlobalText>
+              </>
             )}
           </GlobalLayout.Header>
           <GlobalLayout.Footer inlineFlex>
@@ -536,11 +532,11 @@ const BridgePage = ({ t }) => {
             <GlobalButtonTimer
               type="primary"
               flex
-              disabled={processing}
+              disabled={processing || !validAddress}
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
               onConfirm={onConfirm}
-              onQuote={onQuote}
+              onQuote={onRefreshEstimate}
               t={t}
             />
           </GlobalLayout.Footer>
@@ -573,7 +569,7 @@ const BridgePage = ({ t }) => {
               </View>
               <GlobalPadding size="lg" />
               <View>
-                <SwapAmounts
+                {/* <SwapAmounts
                   inAmount={quote?.route?.inAmount || inAmount}
                   outAmount={
                     quote?.route?.outAmount ||
@@ -583,10 +579,10 @@ const BridgePage = ({ t }) => {
                   inToken={inToken.symbol}
                   outToken={outToken.symbol}
                   blockchain={current_blockchain}
-                />
+                /> */}
               </View>
               <GlobalPadding size="xl" />
-              {status !== 'creating' && (
+              {/* {status !== 'creating' && (
                 <GlobalText
                   type={'body2'}
                   color={getStatusColor(status)}
@@ -604,14 +600,42 @@ const BridgePage = ({ t }) => {
                     total: totalTransactions,
                   })}
                 </GlobalText>
+              )} */}
+              {exchangeDetails && (
+                <>
+                  <GlobalText
+                    type={'body2'}
+                    color={getStatusColor(status)}
+                    center>
+                    {t(
+                      `You send ${
+                        exchangeDetails?.expected_amount
+                      } ${exchangeDetails?.currency_from?.toUpperCase()} to address: `,
+                    )}
+                  </GlobalText>
+                  <GlobalPadding size="sm" />
+                  <View style={globalStyles.inlineWell}>
+                    <GlobalText type="caption">
+                      {exchangeDetails?.address_from}
+                    </GlobalText>
+
+                    <GlobalButton
+                      onPress={() =>
+                        clipboard.copy(exchangeDetails?.address_from)
+                      }
+                      transparent>
+                      <GlobalImage source={IconCopy} size="xs" />
+                    </GlobalButton>
+                  </View>
+                </>
               )}
               <GlobalPadding size="sm" />
-              {linkForTransaction(
+              {/* {linkForTransaction(
                 `Transaction Swap`,
                 currentTransaction.id,
                 currentTransaction.status,
                 explorer,
-              )}
+              )} */}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>

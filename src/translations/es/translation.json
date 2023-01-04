@@ -291,6 +291,9 @@
     "total_fee": "Tarifa total",
     "go_to_explorer": "Ir al Explorer"
   },
+  "bridge": {
+    "preview": "Confirmar Bridge"
+  },
   "header": {
     "connected": "Conectado a {{hostname}}",
     "disconnected": "No conectado a {{hostname}}"
