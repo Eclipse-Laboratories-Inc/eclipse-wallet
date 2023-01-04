@@ -25,8 +25,7 @@ export const MyNfts = ({ activeWallet, whenLoading, translate }) => {
       const listed = await activeWallet.getListedNfts();
       setListedInfo(listed);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeWallet]);
+  }, [activeWallet, whenLoading]);
 
   const goToNFTs = token =>
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: token.address });

@@ -40,14 +40,17 @@ const NftsListPage = ({ t }) => {
         `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
-      ).then(async nfts => {
-        setNftsGroup(nfts);
-        if (configs?.list_in_marketplace?.active) {
-          const listed = await activeWallet.getListedNfts();
-          setListedInfo(listed);
-        }
-        setLoaded(true);
-      });
+      )
+        .then(async nfts => {
+          setNftsGroup(nfts);
+          if (configs?.list_in_marketplace?.active) {
+            const listed = await activeWallet.getListedNfts();
+            setListedInfo(listed);
+          }
+        })
+        .finally(() => {
+          setLoaded(true);
+        });
     }
   }, [activeWallet, configs?.list_in_marketplace?.active]);
 
