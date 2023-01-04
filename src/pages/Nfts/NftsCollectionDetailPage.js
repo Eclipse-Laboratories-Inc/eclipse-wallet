@@ -236,6 +236,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
           onEndReachedThreshold={0.1}
           onEndReached={onLoadMore}
           data={['']}
+          showsVerticalScrollIndicator={false}
           renderItem={() => (
             <GlobalNftList
               columns={3}
