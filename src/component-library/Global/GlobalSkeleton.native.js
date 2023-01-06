@@ -27,6 +27,8 @@ const GlobalSkeleton = ({ type }) => {
       return <TransactionSimulation />;
     case 'Swap':
       return <Swap />;
+    case 'NftSlider':
+      return <NftSlider />;
     case 'Generic':
       return <Generic />;
   }
@@ -78,12 +80,13 @@ const NftListScreen = () => (
     foregroundColor={theme.colors.cards}
     backgroundColor={theme.colors.bgLight}
     viewBox="0 0 100 200">
-    <Rect x="0" y="32" rx="5" ry="5" width="48" height="48" />
-    <Rect x="52" y="32" rx="5" ry="5" width="48" height="48" />
-    <Rect x="0" y="86" rx="5" ry="5" width="48" height="48" />
-    <Rect x="52" y="86" rx="5" ry="5" width="48" height="48" />
-    <Rect x="0" y="141" rx="5" ry="5" width="48" height="48" />
-    <Rect x="52" y="141" rx="5" ry="5" width="48" height="48" />
+    <Rect x="0" y="25" rx="5" ry="5" width="100" height="70" />
+    <Rect x="0" y="112" rx="5" ry="5" width="48" height="48" />
+    <Rect x="52" y="112" rx="5" ry="5" width="48" height="48" />
+    <Rect x="0" y={43 * 2 + 80} rx="5" ry="5" width="48" height="48" />
+    <Rect x="52" y={43 * 2 + 80} rx="5" ry="5" width="48" height="48" />
+    <Rect x="0" y={47 * 3 + 80} rx="5" ry="5" width="48" height="48" />
+    <Rect x="52" y={47 * 3 + 80} rx="5" ry="5" width="48" height="48" />
   </ContentLoader>
 );
 
@@ -165,6 +168,15 @@ const Swap = () => (
     <Rect x="0" y="25" rx="3" ry="3" width="100" height="23" />
     <Rect x="0" y="50" rx="3" ry="3" width="100" height="23" />
     <Rect x="0" y="75" rx="3" ry="3" width="100" height="23" />
+  </ContentLoader>
+);
+
+const NftSlider = () => (
+  <ContentLoader
+    foregroundColor={theme.colors.cards}
+    backgroundColor={theme.colors.bgLight}
+    viewBox="0 0 100 90">
+    <Rect x="0" y="0" rx="6" ry="6" width="100" height="80" />
   </ContentLoader>
 );
 

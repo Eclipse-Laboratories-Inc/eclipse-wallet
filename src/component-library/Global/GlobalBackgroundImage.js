@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 'auto',
     marginTop: 0,
-    marginBottom: theme.variables.margin,
+    // marginBottom: theme.variables.margin,
     top: 0,
     right: 0,
     bottom: -1,
@@ -17,10 +17,20 @@ const styles = StyleSheet.create({
     maxWidth: theme.variables.mobileWidthXL,
     maxHeight: theme.variables.mobileHeightLG,
   },
+  modal: {
+    marginTop: theme.gutters.paddingNormal,
+  },
+  modalBr: {
+    borderRadius: theme.borderRadius.borderRadiusMD,
+  },
 });
 
-const GlobalBackgroundImage = ({ children, ...props }) => (
-  <ImageBackground source={AppBackground} style={styles.image} {...props}>
+const GlobalBackgroundImage = ({ children, isModal, ...props }) => (
+  <ImageBackground
+    source={AppBackground}
+    style={[styles.image, isModal && styles.modal]}
+    imageStyle={isModal && styles.modalBr}
+    {...props}>
     {children}
   </ImageBackground>
 );

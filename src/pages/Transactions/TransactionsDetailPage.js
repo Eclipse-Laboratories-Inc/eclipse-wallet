@@ -17,7 +17,7 @@ import {
   getTransactionImage,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
@@ -87,10 +87,7 @@ const styles = StyleSheet.create({
 
 const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
-  const [
-    { activeWallet, wallets },
-    { changeActiveWallet, resolveExplorerUrl },
-  ] = useContext(AppContext);
+  const [{ activeWallet }, { resolveExplorerUrl }] = useContext(AppContext);
   const [transactionDetail, setTransactionDetail] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);

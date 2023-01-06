@@ -114,7 +114,7 @@ const NftsListingPage = ({ params, t }) => {
   const goToBack = () => {
     if (step === 3) {
       navigate(NFTS_ROUTES_MAP.NFTS_LIST);
-    } else if (step === 1) {
+    } else if (step === 1 || isListed) {
       navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
     }
     setStep(step - 1);

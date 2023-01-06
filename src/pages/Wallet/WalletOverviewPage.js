@@ -5,8 +5,6 @@ import { AppContext } from '../../AppProvider';
 import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
-import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../pages/Wallet/routes';
-import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../pages/Nfts/routes';
 import { getListedTokens, getNonListedTokens } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
@@ -20,16 +18,13 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
-import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
-// import IconNotifications from '../../assets/images/IconNotifications.png';
-// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
-import { isMoreThanOne } from '../../utils/nfts';
-// import IconNotifications from '../../assets/images/IconNotifications.png';
-// import IconNotificationsAdd from '../../assets/images/IconNotificationsAdd.png';
+import { MyNfts } from './components/MyNfts';
+import { retriveConfig } from '../../utils/wallet';
 
 const WalletOverviewPage = ({ t }) => {
+  console.log(process.env.REACT_APP_SALMON_ENV);
   const navigate = useNavigation();
   const [
     { activeWallet, config, selectedEndpoints, hiddenBalance },
@@ -39,33 +34,29 @@ const WalletOverviewPage = ({ t }) => {
   const [loading, setLoading] = useState(false);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
-  const [nftsList, setNftsList] = useState(null);
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
-  const [listedInfo, setListedInfo] = useState([]);
+  const [configs, setConfigs] = useState(null);
 
-  //const [hasNotifications, setHasNotifications] = useState(false);
+  useEffect(() => {
+    retriveConfig().then(chainConfigs =>
+      setConfigs(chainConfigs[activeWallet.chain].sections.overview),
+    );
+  });
+
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
-      Promise.all([
+      Promise.resolve(
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
           () => activeWallet.getBalance(),
         ),
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.NFTS,
-          () => activeWallet.getAllNftsGrouped(),
-        ),
-      ]).then(async ([balance, nfts]) => {
+      ).then(async balance => {
         setTotalBalance(balance);
         setTokenList(getListedTokens(balance));
-        setNonListedTokenList(getNonListedTokens(balance, nfts));
-        setNftsList(nfts);
+        setNonListedTokenList(getNonListedTokens(balance, []));
         setLoading(false);
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed);
       });
     }
   }, [activeWallet, selectedEndpoints, reload]);
@@ -75,7 +66,6 @@ const WalletOverviewPage = ({ t }) => {
     invalidate(CACHE_TYPES.NFTS);
     setTotalBalance({});
     setTokenList(null);
-    setNftsList(null);
     setReload(!reload);
   };
 
@@ -90,19 +80,6 @@ const WalletOverviewPage = ({ t }) => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
       tokenId: tok.address,
     });
-
-  // const goToNotifications = () => setHasNotifications(!hasNotifications);
-  const handleNftsClick = nft => {
-    if (isMoreThanOne(nft)) {
-      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
-    } else {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, {
-        id: nft.mint || nft.items[0].mint,
-      });
-    }
-  };
-  const goToNFTs = tok =>
-    navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: tok.address });
 
   return (
     activeWallet && (
@@ -130,6 +107,8 @@ const WalletOverviewPage = ({ t }) => {
                 <GlobalSendReceive
                   goToSend={goToSend}
                   goToReceive={goToReceive}
+                  canSend={configs?.features?.send}
+                  canReceive={configs?.features?.receive}
                 />
               }
             />
@@ -153,19 +132,16 @@ const WalletOverviewPage = ({ t }) => {
             </GlobalCollapse>
           ) : null}
 
-          <GlobalPadding />
-
-          <GlobalCollapse
-            title={t('wallet.my_nfts')}
-            viewAllAction={goToNFTs}
-            isOpen>
-            <GlobalNftList
-              nonFungibleTokens={nftsList}
-              listedInfo={listedInfo}
-              onClick={handleNftsClick}
-              t={t}
-            />
-          </GlobalCollapse>
+          {configs?.features.nfts && (
+            <>
+              <GlobalPadding />
+              <MyNfts
+                activeWallet={activeWallet}
+                whenLoading={setLoading}
+                translate={t}
+              />
+            </>
+          )}
         </GlobalLayout.Header>
       </GlobalLayout>
     )

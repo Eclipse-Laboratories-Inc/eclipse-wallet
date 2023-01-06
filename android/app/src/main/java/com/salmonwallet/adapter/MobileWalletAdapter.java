@@ -44,14 +44,12 @@ public class MobileWalletAdapter {
     }
 
     public void addRequestEventListener(RequestEventListener listener) {
-        if (!this.listeners.contains(listener)) {
-            this.listeners.add(listener);
+        this.listeners.add(listener);
 
-            // work-around to deal with race-condition: JS React listener component may be mounted after first request event
-            if (this.request != null) {
-                Log.i(TAG, "---> Launching previous request: " + request);
-                listener.onRequest(this.request);
-            }
+        // work-around to deal with race-condition: JS React listener component may be mounted after first request event
+        if (this.request != null) {
+            Log.i(TAG, "Launching previous request: " + this.request.getClass().getSimpleName());
+            listener.onRequest(this.request);
         }
     }
 
@@ -75,8 +73,17 @@ public class MobileWalletAdapter {
         this.request = null;
     }
 
+    public void completeWithInternalError(String error) {
+        this.request.completeWithInternalError(new RuntimeException(error));
+        this.request = null;
+    }
+
     private void invalidOperation(String operation) {
-        throw new RuntimeException("Cannot " + operation + " on " + (this.request != null ? this.request.getClass().getSimpleName() : "null request"));
+        if (this.request != null) {
+            completeWithInternalError("Cannot " + operation + " on " + this.request.getClass().getSimpleName());
+        } else {
+            Log.w(TAG, "Cannot " + operation + " without request");
+        }
     }
 
     public void completeWithDecline() {

@@ -33,7 +33,7 @@ import InputAddress from '../../features/InputAddress/InputAddress';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import { getWalletChain } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -68,7 +68,7 @@ const TokenSendPage = ({ params, t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SEND_TOKEN);
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(params.toAddress ? 2 : 1);
   const [{ activeWallet, wallets, addressBook, config }] =
     useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);

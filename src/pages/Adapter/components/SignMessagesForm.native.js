@@ -17,7 +17,7 @@ const SignMessagesForm = ({ request, name, icon, origin }) => {
   );
 
   const messages = useMemo(
-    () => payloads.map(payload => payload.toString('hex')),
+    () => payloads.map(payload => payload.toString('utf8')),
     [payloads],
   );
 

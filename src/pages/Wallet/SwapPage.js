@@ -14,7 +14,6 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
-import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
 import {
   getAvailableTokens,
   getFeaturedTokens,
@@ -198,78 +197,11 @@ const SwapPage = ({ t }) => {
   const [status, setStatus] = useState();
   const [routesNames, setRoutesNames] = useState('');
   const [tokenSymbols, setTokenSymbols] = useState('');
+  const [currentTransaction, setCurrentTransaction] = useState('');
+  const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-
-  const [transactions, setTransactions] = useState([]);
-  const [setupTransaction, setSetupTransaction] = useState('');
-  const [swapTransaction, setSwapTransaction] = useState('');
-  const [cleanupTransaction, setCleanupTransaction] = useState('');
-  const [setupStatus, setSetupStatus] = useState(null);
-  const [swapStatus, setSwapStatus] = useState(null);
-  const [cleanUpStatus, setCleanUpStatus] = useState(null);
-  const [totalTransactions, setTotalTransactions] = useState(0);
-  const [currentTransaction, setCurrentTransaction] = useState(1);
   const { explorer } = useUserConfig(getWalletChain(activeWallet));
-
-  useEffect(() => {
-    document.addEventListener('send_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupTransaction(e.detail.id);
-          setSetupStatus(0);
-          break;
-        case 'swapTransaction':
-          setSwapTransaction(e.detail.id);
-          setSwapStatus(0);
-          break;
-        case 'cleanupTransaction':
-          setCleanupTransaction(e.detail.id);
-          setCleanUpStatus(0);
-          break;
-      }
-      setTotalTransactions(totalTransactions + 1);
-      console.log(
-        `Transaction ${e.detail.name} with id ${e.detail.id} was submitted.`,
-      );
-    });
-
-    document.addEventListener('confirmed_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupStatus(1);
-          break;
-        case 'swapTransaction':
-          setSwapStatus(1);
-          break;
-        case 'cleanupTransaction':
-          setCleanUpStatus(1);
-          break;
-      }
-      if (currentTransaction < totalTransactions)
-        setCurrentTransaction(currentTransaction + 1);
-      console.log(
-        `Confirm transaction with id: ${e.detail.id} and status ${e.detail.status}`,
-      );
-    });
-
-    document.addEventListener('failed_swap_tx', e => {
-      switch (e.detail.name) {
-        case 'setupTransaction':
-          setSetupStatus(2);
-          break;
-        case 'swapTransaction':
-          setSwapStatus(2);
-          break;
-        case 'cleanupTransaction':
-          setCleanUpStatus(2);
-          break;
-      }
-      console.log(
-        `Transaction ${e.detail.name} with id: ${e.detail.id} failed`,
-      );
-    });
-  }, [currentTransaction, totalTransactions]);
 
   useEffect(() => {
     if (activeWallet) {
@@ -297,18 +229,23 @@ const SwapPage = ({ t }) => {
   }, [activeWallet]);
 
   const [inAmount, setInAmount] = useState(null);
+
   const [outAmount, setOutAmount] = useState('--');
   useEffect(() => {
     setError(false);
   }, [inAmount, inToken, outToken]);
+
   const zeroAmount = inToken && parseFloat(inAmount) <= 0;
+
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
     parseFloat(inAmount) > 0;
+
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
+
   const getRoutesSymbols = async routes => {
     const inputs = routes.map(
       async r =>
@@ -319,12 +256,15 @@ const SwapPage = ({ t }) => {
         await getTokenByAddress(r.outputMint).then(info => info[0].symbol),
     );
     const tokSymb = [...new Set([...inputs, ...outputs])];
+
     Promise.all(tokSymb).then(data => {
       setTokenSymbols([...new Set(data)].join(' → '));
     });
   };
+
   const getRoutesNames = routes =>
     setRoutesNames(routes.map(r => r.label).join(' x '));
+
   const onQuote = async () => {
     setError(false);
     setProcessing(true);
@@ -354,11 +294,21 @@ const SwapPage = ({ t }) => {
     setStep(3);
     activeWallet
       .createSwapTransaction(quote.route.id)
-      .then(ids => {
+      .then(txs => {
         setError(false);
         trackEvent(EVENTS_MAP.SWAP_COMPLETED);
         setStatus(TRANSACTION_STATUS.SUCCESS);
         setProcessing(false);
+        setTotalTransactions(txs.length);
+
+        if (txs.length > 1) {
+          console.error('Too many transactions.');
+          setError(true);
+          trackEvent(EVENTS_MAP.SWAP_FAILED);
+          setStatus(TRANSACTION_STATUS.FAIL);
+        } else {
+          setCurrentTransaction(txs[0]);
+        }
       })
       .catch(ex => {
         console.error(ex.message);
@@ -576,27 +526,12 @@ const SwapPage = ({ t }) => {
                 </GlobalText>
               )}
               <GlobalPadding size="sm" />
-              {setupTransaction &&
-                linkForTransaction(
-                  `Transaction Setup`,
-                  setupTransaction,
-                  setupStatus,
-                  explorer,
-                )}
-              {swapTransaction &&
-                linkForTransaction(
-                  `Transaction Swap`,
-                  swapTransaction,
-                  swapStatus,
-                  explorer,
-                )}
-              {cleanupTransaction &&
-                linkForTransaction(
-                  `Transaction Cleanup`,
-                  cleanupTransaction,
-                  cleanUpStatus,
-                  explorer,
-                )}
+              {linkForTransaction(
+                `Transaction Swap`,
+                currentTransaction.id,
+                currentTransaction.status,
+                explorer,
+              )}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>

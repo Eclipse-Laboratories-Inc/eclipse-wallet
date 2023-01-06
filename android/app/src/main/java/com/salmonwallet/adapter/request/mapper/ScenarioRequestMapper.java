@@ -1,5 +1,7 @@
 package com.salmonwallet.adapter.request.mapper;
 
+import static android.util.Base64.NO_WRAP;
+
 import android.util.Base64;
 
 import com.facebook.react.bridge.Arguments;
@@ -16,7 +18,7 @@ public interface ScenarioRequestMapper<Request extends ScenarioRequest> {
     }
 
     default String toBase64(byte[] input) {
-        return Base64.encodeToString(input, Base64.DEFAULT);
+        return Base64.encodeToString(input, NO_WRAP);
     }
 
     default ReadableArray toBase64(byte[][] input) {

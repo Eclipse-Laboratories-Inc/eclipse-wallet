@@ -15,13 +15,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.bgPrimary,
     borderRadius: theme.borderRadius.borderRadiusMD,
     padding: theme.gutters.paddingSM,
-    paddingBottom: 15,
+    paddingBottom: theme.gutters.paddingNormal,
   },
 });
 
 const NftCollections = ({ t }) => {
   const [sliderItems, setSliderItems] = useState([]);
   const [{ activeWallet }] = useContext(AppContext);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const getTrandingCollections = activeWallet.getCollectionGroup('trending');
@@ -44,6 +45,28 @@ const NftCollections = ({ t }) => {
     }
   }, [activeWallet, t]);
 
+  const renderCollection = ({ item }) => {
+    const { title, value } = item;
+    const maxItems = isExpanded ? 6 : 2;
+    return (
+      <View style={styles.collectionContainer}>
+        <View style={globalStyles.inlineFlexButtons}>
+          <GlobalText type="body2">{title}</GlobalText>
+          <GlobalImage
+            circle
+            source={IconHyperspace}
+            size="xs"
+            style={globalStyles.centeredSmall}
+          />
+        </View>
+        <GlobalPadding size="sm" />
+        {value?.slice(0, maxItems).map(item => (
+          <NftCollectionItem item={item} />
+        ))}
+      </View>
+    );
+  };
+
   return (
     <>
       {sliderItems?.length ? (
@@ -51,34 +74,13 @@ const NftCollections = ({ t }) => {
           items={sliderItems.filter(({ value }) => value.length)}
           slides={sliderItems.length}
           renderItem={renderCollection}
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
           minHeight={294}
           maxHeight={740}
         />
       ) : null}
     </>
-  );
-};
-
-const renderCollection = (item, expanded, t) => {
-  const { title, value } = item;
-  const maxItems = expanded ? 6 : 2;
-  console.log(value);
-  return (
-    <View style={styles.collectionContainer}>
-      <View style={globalStyles.inlineFlexButtons}>
-        <GlobalText type="body2">{title}</GlobalText>
-        <GlobalImage
-          circle
-          source={IconHyperspace}
-          size="xs"
-          style={globalStyles.centeredSmall}
-        />
-      </View>
-      <GlobalPadding size="sm" />
-      {value?.slice(0, maxItems).map(item => (
-        <NftCollectionItem item={item} />
-      ))}
-    </View>
   );
 };
 

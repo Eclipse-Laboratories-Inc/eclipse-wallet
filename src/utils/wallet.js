@@ -4,6 +4,7 @@ import {
   restoreDerivedAccounts,
   getAvailableTokens as getAvailableTokens4m,
   getFeaturedTokens as getFeaturedTokens4m,
+  retriveConfig as retrieveConfig4m,
 } from '4m-wallet-adapter';
 import chains from '4m-wallet-adapter/constants/chains';
 import get from 'lodash/get';
@@ -26,11 +27,10 @@ const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
 
 export const LOGOS = {
-  SOLANA:
-    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png',
-  NEAR: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/near/info/logo.png',
+  SOLANA: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
+  NEAR: 'https://assets-cdn.trustwallet.com/blockchains/near/info/logo.png',
   ETHEREUM:
-    'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
+    'https://assets-cdn.trustwallet.com/blockchains/ethereum/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
@@ -60,8 +60,7 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-//export const getChains = () => Object.keys(chains);
-export const getChains = () => ['SOLANA'];
+export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
 
 export const getDefaultChain = () => 'SOLANA';
 
@@ -91,7 +90,7 @@ export const getWalletChain = wallet => {
 };
 
 export const getShortAddress = address =>
-  `${address.substr(0, 4)}...${address.substr(-4)}`;
+  address && `${address.substr(0, 4)}...${address.substr(-4)}`;
 
 export const TRANSACTION_STATUS = {
   FAIL: 'fail',
@@ -101,6 +100,9 @@ export const TRANSACTION_STATUS = {
   SENDING: 'sending',
   LISTING: 'listing',
   UNLISTING: 'unlisting',
+  CREATING_OFFER: 'creating-offer',
+  CANCELING_OFFER: 'canceling-offer',
+  BUYING: 'buying',
   SWAPPING: 'swapping',
 };
 
@@ -135,6 +137,12 @@ export const getTransactionImage = transaction => {
       return IconTransactionSending;
     case 'unlisting':
       return IconTransactionSending;
+    case 'creating-offer':
+      return IconTransactionSending;
+    case 'canceling-offer':
+      return IconTransactionSending;
+    case 'buying':
+      return IconTransactionSending;
     case 'burning':
       return IconTransactionSending;
     default:
@@ -153,3 +161,5 @@ export const getListedTokens = balance =>
 export const getAvailableTokens = getAvailableTokens4m;
 
 export const getFeaturedTokens = getFeaturedTokens4m;
+
+export const retriveConfig = retrieveConfig4m;

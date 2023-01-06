@@ -1,6 +1,6 @@
 package com.salmonwallet.adapter;
 
-import static android.util.Base64.DEFAULT;
+import static android.util.Base64.NO_WRAP;
 import static com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -47,6 +47,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void addListener(String eventName) {
+        Log.i(TAG, "Listen to " + eventName);
         if (eventName.equals("onRequest")) {
             try {
                 adapter().addRequestEventListener(this);
@@ -58,10 +59,12 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void removeListeners(Integer count) {
+        Log.i(TAG, "Remove listeners: " + count);
     }
 
     @Override
     public void onRequest(ScenarioRequest request) {
+        Log.i(TAG, "New request: " + request.getClass().getSimpleName());
         getReactApplicationContext()
                 .getJSModule(RCTDeviceEventEmitter.class)
                 .emit("onRequest", requestMapper.toReadableMap(request));
@@ -69,6 +72,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void verifyAuthorizationSource(String identityUri, Promise promise) {
+        Log.i(TAG, "Verify authorization source for " + identityUri);
         try {
             VerificationState verification = adapter().verifyAuthorizationSource(parseUri(identityUri));
             promise.resolve(verificationStateMapper.toReadableMap(verification));
@@ -80,6 +84,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void cancel() {
+        Log.i(TAG, "Cancel current request");
         try {
             adapter().cancel();
         } catch (Exception e) {
@@ -88,7 +93,18 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
     }
 
     @ReactMethod
+    public void completeWithInternalError(String error) {
+        Log.i(TAG, "Complete current request with internal error: " + error);
+        try {
+            adapter().completeWithInternalError(error);
+        } catch (Exception e) {
+            Log.e(TAG, "", e);
+        }
+    }
+
+    @ReactMethod
     public void completeWithDecline() {
+        Log.i(TAG, "Complete current request with decline");
         try {
             adapter().completeWithDecline();
         } catch (Exception e) {
@@ -98,6 +114,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithAuthorize(String publicKey, String accountLabel, String walletUriBase, String scope) {
+        Log.i(TAG, "Complete current request with authorize");
         try {
             adapter().completeWithAuthorize(parseBase64(publicKey), accountLabel, parseUri(walletUriBase), parseUtf8(scope));
         } catch (Exception e) {
@@ -107,6 +124,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithReauthorize() {
+        Log.i(TAG, "Complete current request with reauthorize");
         try {
             adapter().completeWithReauthorize();
         } catch (Exception e) {
@@ -116,6 +134,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithSignedPayloads(ReadableArray signedPayloads) {
+        Log.i(TAG, "Complete current request with signed payloads");
         try {
             adapter().completeWithSignedPayloads(parseBase64Array(signedPayloads));
         } catch (Exception e) {
@@ -125,6 +144,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithInvalidPayloads(ReadableArray valid) {
+        Log.i(TAG, "Complete current request with invalid payloads");
         try {
             adapter().completeWithInvalidPayloads(parseBooleanArray(valid));
         } catch (Exception e) {
@@ -134,6 +154,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithSignatures(ReadableArray signatures) {
+        Log.i(TAG, "Complete current request with signatures");
         try {
             adapter().completeWithSignatures(parseBase64Array(signatures));
         } catch (Exception e) {
@@ -143,6 +164,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithInvalidSignatures(ReadableArray valid) {
+        Log.i(TAG, "Complete current request with invalid signatures");
         try {
             adapter().completeWithInvalidSignatures(parseBooleanArray(valid));
         } catch (Exception e) {
@@ -152,6 +174,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithNotSubmitted(ReadableArray signatures) {
+        Log.i(TAG, "Complete current request with not submitted");
         try {
             adapter().completeWithNotSubmitted(parseBase64Array(signatures));
         } catch (Exception e) {
@@ -161,6 +184,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithTooManyPayloads() {
+        Log.i(TAG, "Complete current request with too many payloads");
         try {
             adapter().completeWithTooManyPayloads();
         } catch (Exception e) {
@@ -170,6 +194,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
 
     @ReactMethod
     public void completeWithAuthorizationNotValid() {
+        Log.i(TAG, "Complete current request with authorization not valid");
         try {
             adapter().completeWithAuthorizationNotValid();
         } catch (Exception e) {
@@ -186,7 +211,7 @@ public class MobileWalletAdapterModule extends ReactContextBaseJavaModule implem
     }
 
     private static byte[] parseBase64(String input) {
-        return Base64.decode(input, DEFAULT);
+        return Base64.decode(input, NO_WRAP);
     }
 
     private static byte[][] parseBase64Array(ReadableArray input) {

@@ -7,11 +7,18 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import Grid from '../../component-library/Grid/Grid';
 import { getNftListedInfo } from '../../utils/nfts';
 
-const GlobalNftList = ({ nonFungibleTokens, listedInfo, onClick, t }) => {
+const GlobalNftList = ({
+  columns,
+  nonFungibleTokens,
+  listedInfo,
+  onClick,
+  t,
+}) => {
   if (nonFungibleTokens === null) return <GlobalSkeleton type="NftList" />;
   if (nonFungibleTokens.length === 0) return <Empty t={t} />;
   return (
     <List
+      columns={columns}
       nonFungibleTokens={nonFungibleTokens}
       listedInfo={listedInfo}
       onClick={onClick}
@@ -19,10 +26,10 @@ const GlobalNftList = ({ nonFungibleTokens, listedInfo, onClick, t }) => {
   );
 };
 
-const List = ({ nonFungibleTokens, listedInfo, onClick }) => (
+const List = ({ columns, nonFungibleTokens, listedInfo, onClick }) => (
   <Grid
     spacing={1}
-    columns={2}
+    columns={columns || 2}
     items={nonFungibleTokens.map(nft => (
       <GlobalNft
         nft={listedInfo ? getNftListedInfo(nft, listedInfo) : nft}

@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
 
 const GlobalLayout = ({
   fullscreen,
+  modal,
   style,
   children,
   onRefresh,
@@ -102,7 +103,9 @@ const GlobalLayout = ({
 
   return (
     <>
-      {fullscreen && <GlobalBackgroundImage>{inner}</GlobalBackgroundImage>}
+      {fullscreen && (
+        <GlobalBackgroundImage isModal={modal}>{inner}</GlobalBackgroundImage>
+      )}
       {!fullscreen && inner}
     </>
   );

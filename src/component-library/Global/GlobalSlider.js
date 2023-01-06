@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     alignItems: 'center',
-    bottom: 10,
+    bottom: 2,
     backgroundColor: 'transparent',
   },
 });
@@ -54,11 +54,12 @@ const GlobalSlider = ({
   renderItem,
   minHeight,
   maxHeight,
+  isExpanded,
+  setIsExpanded,
   dots = true,
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentHeight, setCurrentHeight] = useState(minHeight);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [sliderRef, slider] = useKeenSlider({
     slides: { number: slides, initial: 0, spacing: 20 },
     slideChanged(s) {
@@ -70,7 +71,6 @@ const GlobalSlider = ({
     setCurrentHeight(isExpanded ? minHeight : maxHeight);
     setIsExpanded(!isExpanded);
   };
-
   return (
     <View style={styles.sliderContainer}>
       <div
@@ -79,18 +79,20 @@ const GlobalSlider = ({
         style={{ height: currentHeight }}>
         {items?.map((item, index) => (
           <div key={index} className="keen-slider__slide">
-            {renderItem(item, isExpanded)}
+            {renderItem({ item })}
           </div>
         ))}
       </div>
-      <GlobalButton
-        type="icon"
-        transparent
-        icon={isExpanded ? IconExpandLess : IconExpandMore}
-        onPress={toggleCollapse}
-        size="medium"
-        style={styles.collapseButton}
-      />
+      {items[0].value.length > 2 && (
+        <GlobalButton
+          type="icon"
+          transparent
+          icon={isExpanded ? IconExpandLess : IconExpandMore}
+          onPress={toggleCollapse}
+          size="medium"
+          style={styles.collapseButton}
+        />
+      )}
       {dots && items.length > 1 && (
         <View style={styles.dotsContainer}>
           {items?.map((item, idx) => (

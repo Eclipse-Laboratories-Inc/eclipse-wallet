@@ -15,7 +15,7 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import QRImage from '../../features/QRImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 import { getShortAddress, getWalletName } from '../../utils/wallet';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import { AppContext } from '../../AppProvider';
 
 const styles = StyleSheet.create({

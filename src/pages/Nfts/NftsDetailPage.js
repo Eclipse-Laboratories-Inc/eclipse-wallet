@@ -7,7 +7,6 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { getWalletName } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -43,16 +42,19 @@ const styles = StyleSheet.create({
   imageContainer: {
     flexGrow: 1,
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   hyperspaceIcon: {
-    marginBottom: -3,
-    marginLeft: 4,
+    marginLeft: theme.gutters.paddingXXS,
+  },
+  topPrice: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 55,
   },
   topPriceIcon: {
-    marginBottom: -3,
-    marginLeft: 2,
-    position: 'absolute',
-    right: 8,
+    marginLeft: theme.gutters.paddingXXS,
   },
 });
 
@@ -179,26 +181,36 @@ const NftsDetailPage = ({ params, t }) => {
                 <GlobalFloatingBadge
                   {...{
                     titleTopDetail: (
-                      <>
-                        <Text>{t('nft.listed_nft')}</Text>
+                      <View style={globalStyles.inlineFlexButtons}>
+                        <GlobalText
+                          type="caption"
+                          color="body2"
+                          numberOfLines={1}>
+                          {t('nft.listed_nft')}
+                        </GlobalText>
                         <GlobalImage
-                          source={IconHyperspace}
                           circle
+                          source={IconHyperspace}
                           size="xxs"
                           style={styles.hyperspaceIcon}
                         />
-                      </>
+                      </View>
                     ),
                     titleTopPrice: (
-                      <>
-                        <Text>{listedInfo?.market_place_state?.price}</Text>
+                      <View style={styles.topPrice}>
+                        <GlobalText
+                          type="caption"
+                          color="tertiary"
+                          numberOfLines={1}>
+                          {listedInfo?.market_place_state?.price}
+                        </GlobalText>
                         <GlobalImage
                           source={IconSolana}
                           circle
                           size="xxs"
                           style={styles.topPriceIcon}
                         />
-                      </>
+                      </View>
                     ),
                   }}
                 />

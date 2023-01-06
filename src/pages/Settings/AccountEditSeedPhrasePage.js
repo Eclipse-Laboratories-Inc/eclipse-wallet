@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
@@ -13,7 +13,7 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import { AppContext } from '../../AppProvider';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 
 const styles = StyleSheet.create({
   positionRelative: {
@@ -39,14 +39,11 @@ const styles = StyleSheet.create({
 
 const AccountEditSeedPhrasePage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ wallets }] = useContext(AppContext);
-  const [wallet, setWallet] = useState({});
-  useEffect(() => {
-    const w = wallets.find(f => f.address === params.address);
-    if (w) {
-      setWallet(w);
-    }
-  }, [params.address, wallets]);
+  const [{ mnemonics }] = useContext(AppContext);
+  const mnemonic = useMemo(
+    () => mnemonics[params.address],
+    [params.address, mnemonics],
+  );
 
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
@@ -55,7 +52,7 @@ const AccountEditSeedPhrasePage = ({ params, t }) => {
       address: params.address,
     });
 
-  const goToCopy = () => clipboard.copy(wallet.mnemonic);
+  const goToCopy = () => clipboard.copy(mnemonic);
 
   const onReveal = () => setShowSeedPhrase(!showSeedPhrase);
 
@@ -83,7 +80,7 @@ const AccountEditSeedPhrasePage = ({ params, t }) => {
             />
           )}
           <GlobalInput
-            value={showSeedPhrase ? wallet.mnemonic : ''}
+            value={showSeedPhrase ? mnemonic : ''}
             setValue={() => {}}
             seedphrase
             multiline

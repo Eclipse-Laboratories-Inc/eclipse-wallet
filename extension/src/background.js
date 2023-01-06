@@ -89,15 +89,17 @@ const getConnection = async (origin, { wallets, active }) => {
     return null;
   }
   const json = JSON.parse(wallets);
-  if (!json.wallets || active < 0 || active >= json.wallets.length) {
+  if (!json.wallets) {
     return null;
   }
-  let wallet;
-  if (json.passwordRequired) {
+  if (json.wallets.encrypted) {
+    /* This check is for old versions where wallets info could be encrypted */
     return null;
-  } else {
-    wallet = json.wallets[active];
   }
+  if (active < 0 || active >= json.wallets.length) {
+    return null;
+  }
+  const wallet = json.wallets[active];
   if (wallet.chain !== 'SOLANA') {
     return null;
   }

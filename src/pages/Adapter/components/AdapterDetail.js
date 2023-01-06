@@ -194,11 +194,11 @@ const AdapterDetail = () => {
     };
 
     const onReject = () => {
-      popRequest();
       postMessage({
         error: 'Connection cancelled',
-        id: request.id,
+        id: isExtension() ? request.id : undefined,
       });
+      popRequest();
 
       window?.close();
     };

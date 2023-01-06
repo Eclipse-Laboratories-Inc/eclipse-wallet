@@ -20,6 +20,16 @@ export class SolanaProvider extends EventEmitter {
     return this.#publicKey !== null;
   }
 
+  #encodeTransaction = transaction => {
+    let serialized;
+    if (typeof transaction.serializeMessage === 'function') {
+      serialized = transaction.serializeMessage();
+    } else {
+      serialized = transaction.message.serialize();
+    }
+    return bs58.encode(serialized);
+  };
+
   sendMessage = async message => {
     return new Promise((resolve, reject) => {
       const listener = event => {
@@ -58,14 +68,8 @@ export class SolanaProvider extends EventEmitter {
   connect = async options => {
     const { method, params } = await this.sendRequest('connect', { options });
     if (method === 'connected') {
-      const newPublicKey = new PublicKey(params.publicKey);
-      if (!this.#publicKey || !this.#publicKey.equals(newPublicKey)) {
-        if (this.#publicKey && !this.#publicKey.equals(newPublicKey)) {
-          // TODO disconnect previuos
-        }
-        this.#publicKey = newPublicKey;
-      }
-      return { publicKey: newPublicKey };
+      this.#publicKey = new PublicKey(params.publicKey);
+      return { publicKey: this.#publicKey };
     } else {
       throw new Error('Not connected');
     }
@@ -74,10 +78,7 @@ export class SolanaProvider extends EventEmitter {
   disconnect = async () => {
     const { method } = await this.sendRequest('disconnect', {});
     if (method === 'disconnected') {
-      if (this.#publicKey) {
-        this.#publicKey = null;
-      }
-      // TODO reject all pending promises?
+      this.#publicKey = null;
     } else {
       throw new Error('Not disconnected');
     }
@@ -85,7 +86,7 @@ export class SolanaProvider extends EventEmitter {
 
   signAndSendTransaction = async (transaction, network, options) => {
     const { result } = await this.sendRequest('signAndSendTransaction', {
-      message: bs58.encode(transaction.message.serialize()),
+      message: this.#encodeTransaction(transaction),
       network,
       options,
     });
@@ -94,7 +95,7 @@ export class SolanaProvider extends EventEmitter {
 
   signTransaction = async (transaction, network) => {
     const { result } = await this.sendRequest('signTransaction', {
-      message: bs58.encode(transaction.message.serialize()),
+      message: this.#encodeTransaction(transaction),
       network,
     });
     const signature = bs58.decode(result.signature);
@@ -105,7 +106,7 @@ export class SolanaProvider extends EventEmitter {
 
   signAllTransactions = async (transactions, network) => {
     const { result } = await this.sendRequest('signAllTransactions', {
-      messages: transactions.map(tx => bs58.encode(tx.message.serialize())),
+      messages: transactions.map(this.#encodeTransaction),
       network,
     });
     const signatures = result.signatures.map(s => bs58.decode(s));

@@ -22,6 +22,13 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <intent-filter android:autoVerify="true" android:priority="100">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:host="app.salmonwallet.io" />
+            <data android:scheme="https" android:host="app.salmonwallet.io" />
+        </intent-filter>
       </activity>
       <activity
         android:name=".MobileWalletAdapterActivity"
@@ -44,8 +51,8 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="http" android:host="*.salmonwallet.io" />
-            <data android:scheme="https" android:host="*.salmonwallet.io" />
+            <data android:scheme="http" android:host="salmonwallet.io" android:pathPrefix="/adapter" />
+            <data android:scheme="https" android:host="salmonwallet.io" android:pathPrefix="/adapter" />
         </intent-filter>
       </activity>
     </application>

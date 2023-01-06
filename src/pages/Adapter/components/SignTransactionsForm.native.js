@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 
-import bs58 from 'bs58';
-import nacl from 'tweetnacl';
+import { VersionedTransaction } from '@solana/web3.js';
 
 import AdapterModule from '../../../native/AdapterModule';
 import ApproveTransactionsForm from './ApproveTransactionsForm';
@@ -19,8 +18,9 @@ const SignTransactionsForm = ({ t, request, name, icon, origin }) => {
 
   const createSignature = useCallback(
     payload => {
-      const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
-      return nacl.sign.detached(payload, secretKey);
+      const transaction = VersionedTransaction.deserialize(payload);
+      transaction.sign([activeWallet.keyPair]);
+      return transaction.serialize();
     },
     [activeWallet],
   );
@@ -31,7 +31,7 @@ const SignTransactionsForm = ({ t, request, name, icon, origin }) => {
     const signedPayloads = payloads.map((payload, i) => {
       try {
         // eslint-disable-next-line no-undef
-        const buffer = Buffer.concat([payload, createSignature(payload)]);
+        const buffer = Buffer.from(createSignature(payload));
         return buffer.toString('base64');
       } catch (e) {
         console.log(e);

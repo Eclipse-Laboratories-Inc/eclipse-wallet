@@ -23,11 +23,18 @@ const EXPLORERS = {
       url: 'https://explorer.near.org',
     },
   },
+  ETHEREUM: {
+    ETHERSCAN: {
+      name: 'Etherscan',
+      url: 'https://etherscan.io',
+    },
+  },
 };
 
 const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   NEAR: 'NEAR_EXPLORER',
+  ETHEREUM: 'ETHERSCAN',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };

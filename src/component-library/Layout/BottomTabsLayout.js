@@ -1,20 +1,21 @@
 import React from 'react';
+import { Button, View } from 'react-native';
 
 export const BottomTabs = ({ tabs }) => (
-  <div style={styles.tabsContainer}>
+  <View style={styles.tabsContainer}>
     {tabs.map(t => (
-      <button onClick={t.onClick} key={`btn-${t.title}`}>
+      <Button onClick={t.onClick} key={`btn-${t.title}`}>
         {t.title}
-      </button>
+      </Button>
     ))}
-  </div>
+  </View>
 );
 
 const BottomTabsLayout = ({ children, tabs }) => (
-  <div style={styles.container}>
-    <div style={styles.container}>{children}</div>
+  <View style={styles.container}>
+    <View style={styles.container}>{children}</View>
     <BottomTabs tabs={tabs} />
-  </div>
+  </View>
 );
 
 const styles = {

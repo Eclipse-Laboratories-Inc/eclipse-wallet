@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 
 import { withTranslation } from '../../hooks/useTranslations';
-import theme from './theme';
+import theme, { globalStyles } from './theme';
 import GlobalImage from './GlobalImage';
 import GlobalText from './GlobalText';
 import GlobalFloatingBadge from './GlobalFloatingBadge';
@@ -38,13 +38,14 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingLeft: 15,
   },
-  hsIcon: {
+  badgeIcon: {
+    marginLeft: theme.gutters.paddingXXS,
     marginBottom: -3,
-    marginLeft: 4,
   },
   solanaIcon: {
     marginBottom: -3,
     marginLeft: 6,
+    paddingHorizontal: theme.gutters.paddingXS,
   },
 });
 
@@ -55,15 +56,17 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
         <GlobalFloatingBadge
           {...{
             titleTop: nft.marketInfo?.price && (
-              <>
-                <Text>{t('nft.listed_nft')}</Text>
+              <View style={globalStyles.inlineFlexButtons}>
+                <GlobalText type="caption" color="body2" numberOfLines={1}>
+                  {t('nft.listed_nft')}
+                </GlobalText>
                 <GlobalImage
-                  source={IconHyperspace}
                   circle
+                  source={IconHyperspace}
                   size="xxs"
-                  style={styles.hsIcon}
+                  style={styles.badgeIcon}
                 />
-              </>
+              </View>
             ),
           }}
         />
@@ -71,7 +74,11 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           source={
             isBlacklisted(nft)
               ? Blacklisted
-              : getMediaRemoteUrl(isCollection(nft) ? nft.thumb : nft.media)
+              : getMediaRemoteUrl(
+                  isCollection(nft)
+                    ? nft.thumb
+                    : nft.media || nft.meta_data_img,
+                )
           }
           size="block"
         />
@@ -79,14 +86,18 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
           {...(isCollection(nft) && nft.length > 1
             ? { number: nft.length }
             : {
-                title: nft.marketInfo?.price && (
+                title: (nft.lowest_listing_mpa?.price ||
+                  nft.marketInfo?.price) && (
                   <>
-                    <Text>{nft.marketInfo?.price}</Text>
+                    <Text>
+                      {nft.lowest_listing_mpa?.price?.toFixed(2) ||
+                        nft.marketInfo?.price}
+                    </Text>
                     <GlobalImage
                       source={IconSolana}
                       circle
                       size="xxs"
-                      style={{ marginBottom: -3, marginLeft: 6 }}
+                      style={styles.badgeIcon}
                     />
                   </>
                 ),

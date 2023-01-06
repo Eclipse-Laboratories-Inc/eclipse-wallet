@@ -88,3 +88,5 @@ buck-out/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
+android/app/src/main/assets
+android/app/src/main/res

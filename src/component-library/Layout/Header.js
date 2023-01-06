@@ -18,7 +18,7 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isExtension, isNative } from '../../utils/platform';
-import clipboard from '../../utils/clipboard';
+import clipboard from '../../utils/clipboard.native';
 import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   },
   walletNameAddress: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'flex-start',
     marginLeft: theme.gutters.paddingSM,
   },
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
   },
   walletAddress: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
+    marginLeft: theme.gutters.paddingXS,
   },
   walletActions: {
     flexDirection: 'row',
@@ -57,8 +59,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.gutters.paddingSM,
   },
   addressCopyIcon: {
-    marginLeft: theme.gutters.margin,
-    marginTop: 1,
+    marginLeft: theme.gutters.paddingXXS,
+    marginTop: 2,
     position: 'absolute',
   },
   appStatus: {
@@ -147,7 +149,7 @@ const Header = ({ activeWallet, config, t }) => {
             </GlobalText>
             <TouchableOpacity onPress={onCopyAddress}>
               <GlobalText
-                type="body1"
+                type="caption"
                 color="tertiary"
                 style={styles.walletAddress}
                 numberOfLines={1}>
@@ -155,7 +157,7 @@ const Header = ({ activeWallet, config, t }) => {
                 <GlobalImage
                   source={IconCopy}
                   style={styles.addressCopyIcon}
-                  size="xxs"
+                  size="xxxs"
                 />
               </GlobalText>
             </TouchableOpacity>

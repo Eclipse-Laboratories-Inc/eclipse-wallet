@@ -20,15 +20,21 @@ import com.solana.mobilewalletadapter.walletlib.association.LocalAssociationUri;
 import com.solana.mobilewalletadapter.walletlib.authorization.AuthIssuerConfig;
 import com.solana.mobilewalletadapter.walletlib.protocol.MobileWalletAdapterConfig;
 import com.solana.mobilewalletadapter.walletlib.scenario.AuthorizeRequest;
+import com.solana.mobilewalletadapter.walletlib.scenario.DeauthorizedEvent;
 import com.solana.mobilewalletadapter.walletlib.scenario.ReauthorizeRequest;
 import com.solana.mobilewalletadapter.walletlib.scenario.Scenario;
 import com.solana.mobilewalletadapter.walletlib.scenario.SignAndSendTransactionsRequest;
 import com.solana.mobilewalletadapter.walletlib.scenario.SignMessagesRequest;
 import com.solana.mobilewalletadapter.walletlib.scenario.SignTransactionsRequest;
 
+import static com.solana.mobilewalletadapter.walletlib.protocol.MobileWalletAdapterConfig.LEGACY_TRANSACTION_VERSION;
+
+import java.util.Set;
+
 public class MobileWalletAdapterActivity extends ReactActivity {
 
     private final String TAG = getClass().getSimpleName();
+    private final Set<String> CLUSTERS = Set.of("mainnet", "mainnet-beta", "testnet", "devnet");
 
     private MobileWalletAdapter mobileWalletAdapter;
 
@@ -111,7 +117,11 @@ public class MobileWalletAdapterActivity extends ReactActivity {
 
             scenario = associationUri.createScenario(
                     activity.getApplicationContext(),
-                    new MobileWalletAdapterConfig(true, 10, 10),
+                    new MobileWalletAdapterConfig(
+                            true,
+                            10,
+                            10,
+                            new Object[] { LEGACY_TRANSACTION_VERSION, 0 }),
                     new AuthIssuerConfig("SalmonWallet"),
                     new MobileWalletAdapterScenarioCallbacks()
             );
@@ -179,7 +189,11 @@ public class MobileWalletAdapterActivity extends ReactActivity {
             @Override
             public void onAuthorizeRequest(@NonNull AuthorizeRequest request) {
                 Log.i(TAG, "Authorize request");
-                mobileWalletAdapter.dispatchRequest(request);
+                if (CLUSTERS.contains(request.getCluster())) {
+                    mobileWalletAdapter.dispatchRequest(request);
+                } else {
+                    request.completeWithClusterNotSupported();
+                }
             }
 
             @Override
@@ -234,6 +248,12 @@ public class MobileWalletAdapterActivity extends ReactActivity {
                 } else {
                     request.completeWithDecline();
                 }
+            }
+
+            @Override
+            public void onDeauthorizedEvent(@NonNull DeauthorizedEvent event) {
+                Log.d(TAG, event.getIdentityName() + " deauthorized");
+                event.complete();
             }
         }
     }
