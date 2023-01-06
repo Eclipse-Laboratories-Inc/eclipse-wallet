@@ -92,7 +92,7 @@ const NftsListingPage = ({ params, t }) => {
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.find(n => n.mint === params.id);
-        setSolBalance(tks.length ? tks[0] : null);
+        setSolBalance(tks.find(tk => tk.symbol === 'SOL'));
         if (nft) {
           setNftDetail(nft);
         }

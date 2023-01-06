@@ -89,7 +89,7 @@ const NftsBiddingPageModal = ({
         const nft = nfts.market_place_snapshots.find(
           n => n.token_address === nftId,
         );
-        setSolBalance(tks.length ? tks[0] : null);
+        setSolBalance(tks.find(tk => tk.symbol === 'SOL'));
         if (nft) {
           setNftDetail(nft);
         }
