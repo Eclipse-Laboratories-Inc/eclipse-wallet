@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Linking, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import pick from 'lodash/pick';
@@ -8,7 +8,7 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import theme, { globalStyles } from '../../component-library/Global/theme';
+import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -27,21 +27,8 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
-import clipboard from '../../utils/clipboard.native';
-import IconCopy from '../../assets/images/IconCopy.png';
 
 const styles = StyleSheet.create({
-  viewTxLink: {
-    fontFamily: theme.fonts.dmSansRegular,
-    fontWeight: 'normal',
-    textTransform: 'none',
-  },
-  creatingTx: {
-    fontFamily: theme.fonts.dmSansRegular,
-    color: theme.colors.labelSecondary,
-    fontWeight: 'normal',
-    textTransform: 'none',
-  },
   symbolContainer: {
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
@@ -106,56 +93,6 @@ const GlobalButtonTimer = React.memo(function ({
   );
 });
 
-const linkForTransaction = (title, id, status, explorer) => {
-  const openTransaction = async tx => {
-    const url = `${explorer.url}/tx/${tx}`;
-    const supported = await Linking.canOpenURL(url);
-
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.log(`UNSUPPORTED LINK ${url}`);
-    }
-  };
-
-  return (
-    <View style={globalStyles.inlineCentered}>
-      <GlobalButton
-        type="text"
-        wide
-        textStyle={styles.viewTxLink}
-        title={title}
-        readonly={false}
-        onPress={() => openTransaction(id)}
-      />
-      {status === 0 && (
-        <GlobalImage
-          style={globalStyles.centeredSmall}
-          source={getTransactionImage('swapping')}
-          size="xs"
-          circle
-        />
-      )}
-      {status === 1 && (
-        <GlobalImage
-          style={globalStyles.centeredSmall}
-          source={getTransactionImage('success')}
-          size="xs"
-          circle
-        />
-      )}
-      {status === 2 && (
-        <GlobalImage
-          style={globalStyles.centeredSmall}
-          source={getTransactionImage('fail')}
-          size="xs"
-          circle
-        />
-      )}
-    </View>
-  );
-};
-
 const mergeStealthExTokenData = (bsupp, tks) => {
   const isMatch = (tok1, tok2) =>
     tok1.symbol.slice(0, 3) === tok2.symbol.toLowerCase().slice(0, 3);
@@ -184,7 +121,6 @@ const BridgePage = ({ t }) => {
   const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
-  const [exchangeDetails, setExchangeDetails] = useState(null);
   const [status, setStatus] = useState();
   const [recipientAddress, setRecipientAddress] = useState('');
   const [validAddress, setValidAddress] = useState(false);
@@ -192,14 +128,9 @@ const BridgePage = ({ t }) => {
   const [checkingAddress, setCheckingAddress] = useState(false);
   const [result, setResult] = useState(false);
   const [minimalAmount, setMinimalAmount] = useState(null);
-  const [transactionId, setTransactionId] = useState();
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
   const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
-  );
 
   const tokensAddresses = useMemo(
     () =>
@@ -240,7 +171,8 @@ const BridgePage = ({ t }) => {
 
   const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
-  const isMinimalAmount = parseFloat(inAmount) >= minimalAmount;
+  const isMinimalAmount =
+    minimalAmount && parseFloat(inAmount) >= minimalAmount;
 
   const onChangeInToken = token => {
     setInToken(token);
@@ -282,7 +214,6 @@ const BridgePage = ({ t }) => {
           outToken.symbol,
         ),
       ]).then(([estAmount, minAmount]) => {
-        console.log('setOutAmount', estAmount);
         setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
         setMinimalAmount(minAmount);
       });
@@ -312,7 +243,7 @@ const BridgePage = ({ t }) => {
     setProcessing(true);
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
-      setStep(4);
+      setStep(3);
       const exDet = await activeWallet.createBridgeExchange(
         inToken.symbol.toLowerCase(),
         outToken.symbol,
@@ -325,11 +256,9 @@ const BridgePage = ({ t }) => {
         exDet?.expected_amount,
         { ...pick(inToken, 'decimals') },
       );
-      console.log('txId', txId);
-      setTransactionId(txId);
-      setStatus(TRANSACTION_STATUS.SENDING);
+      setStatus(TRANSACTION_STATUS.BRIDGING);
       await activeWallet.confirmTransferTransaction(txId);
-      setStatus(TRANSACTION_STATUS.SUCCESS);
+      setStatus(TRANSACTION_STATUS.BRIDGE_SUCCESS);
       trackEvent(EVENTS_MAP.BRIDGE_COMPLETED);
       setProcessing(false);
       setError(false);
@@ -338,39 +267,10 @@ const BridgePage = ({ t }) => {
       setError(true);
       setStatus(TRANSACTION_STATUS.FAIL);
       trackEvent(EVENTS_MAP.BRIDGE_FAILED);
-      setStep(4);
+
+      setStep(3);
       setProcessing(false);
     }
-
-    // const exDet = await activeWallet.createBridgeExchange(
-    //   inToken.symbol.toLowerCase(),
-    //   outToken.symbol,
-    //   inAmount,
-    //   recipientAddress,
-    // );
-    // setStep(3);
-    // activeWallet
-    //   .createBridgeExchange(
-    //     inToken.symbol.toLowerCase(),
-    //     outToken.symbol,
-    //     inAmount,
-    //     recipientAddress,
-    //   )
-    //   .then(ex => {
-    //     setError(false);
-    //     trackEvent(EVENTS_MAP.SWAP_COMPLETED);
-    //     setStatus(TRANSACTION_STATUS.SUCCESS);
-    //     setProcessing(false);
-    //   })
-    //   .catch(ex => {
-    //     console.error(ex.message);
-    //     setError(true);
-    //     trackEvent(EVENTS_MAP.SWAP_FAILED);
-    //     setStatus(TRANSACTION_STATUS.FAIL);
-    //     setProcessing(false);
-    //   });
-
-    // setStatus(TRANSACTION_STATUS.SWAPPING);
   };
 
   const getStatusColor = status => {
@@ -391,7 +291,7 @@ const BridgePage = ({ t }) => {
         setValidAddress(null);
         if (a) {
           const valid = new RegExp(regex).test(a);
-          if (valid) {
+          if (valid || !regex) {
             setCheckingAddress(false);
             setValidAddress(true);
             setAddressEmpty(true);
@@ -416,8 +316,6 @@ const BridgePage = ({ t }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipientAddress]);
-
-  // console.log('ex', availableTokens);
 
   return (
     <GlobalLayout>
@@ -513,7 +411,8 @@ const BridgePage = ({ t }) => {
               type="primary"
               wideSmall
               title={t('actions.next')}
-              disabled={!validAmount || !outToken || processing || !outAmount}
+              // disabled={!validAmount || !outToken || processing || !outAmount}
+              disabled={validAmount || !outToken || processing || !outAmount}
               onPress={() => setStep(2)}
             />
           </GlobalLayout.Footer>
@@ -608,21 +507,8 @@ const BridgePage = ({ t }) => {
                 />
               </View>
               <GlobalPadding size="lg" />
-              <View>
-                {/* <SwapAmounts
-                  inAmount={quote?.route?.inAmount || inAmount}
-                  outAmount={
-                    quote?.route?.outAmount ||
-                    get(quote, 'uiInfo.out.uiAmount') ||
-                    inAmount
-                  }
-                  inToken={inToken.symbol}
-                  outToken={outToken.symbol}
-                  blockchain={current_blockchain}
-                /> */}
-              </View>
               <GlobalPadding size="xl" />
-              {/* {status !== 'creating' && (
+              {status !== 'creating' && (
                 <GlobalText
                   type={'body2'}
                   color={getStatusColor(status)}
@@ -630,58 +516,13 @@ const BridgePage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === 'swapping' && totalTransactions > 0 && (
-                <GlobalText
-                  type={'body1'}
-                  color={getStatusColor(status)}
-                  center>
-                  {t(`token.send.swap_step`, {
-                    current: currentTransaction,
-                    total: totalTransactions,
-                  })}
-                </GlobalText>
-              )} */}
-              {exchangeDetails && (
-                <>
-                  <GlobalText
-                    type={'body2'}
-                    color={getStatusColor(status)}
-                    center>
-                    {t(
-                      `You send ${
-                        exchangeDetails?.expected_amount
-                      } ${exchangeDetails?.currency_from?.toUpperCase()} to address: `,
-                    )}
-                  </GlobalText>
-                  <GlobalPadding size="sm" />
-                  <View style={globalStyles.inlineWell}>
-                    <GlobalText type="caption">
-                      {exchangeDetails?.address_from}
-                    </GlobalText>
-
-                    <GlobalButton
-                      onPress={() =>
-                        clipboard.copy(exchangeDetails?.address_from)
-                      }
-                      transparent>
-                      <GlobalImage source={IconCopy} size="xs" />
-                    </GlobalButton>
-                  </View>
-                </>
-              )}
               <GlobalPadding size="sm" />
-              {/* {linkForTransaction(
-                `Transaction Swap`,
-                currentTransaction.id,
-                currentTransaction.status,
-                explorer,
-              )} */}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
-            {status === 'success' || status === 'fail' ? (
+            {(status === 'bridge_success' || status === 'fail') && (
               <GlobalButton
                 type="secondary"
                 title={t(`general.close`)}
@@ -690,16 +531,6 @@ const BridgePage = ({ t }) => {
                 style={globalStyles.button}
                 touchableStyles={globalStyles.buttonTouchable}
               />
-            ) : (
-              status === 'creating' && (
-                <GlobalButton
-                  type="text"
-                  wide
-                  textStyle={styles.creatingTx}
-                  title={t(`token.send.transaction_creating`)}
-                  readonly
-                />
-              )
             )}
           </GlobalLayout.Footer>
         </>

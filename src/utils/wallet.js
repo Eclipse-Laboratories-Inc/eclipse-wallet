@@ -112,6 +112,8 @@ export const TRANSACTION_STATUS = {
   LISTING: 'listing',
   UNLISTING: 'unlisting',
   SWAPPING: 'swapping',
+  BRIDGING: 'bridging',
+  BRIDGE_SUCCESS: 'bridge_success',
 };
 
 export const getTransactionImage = transaction => {
