@@ -43,6 +43,7 @@ const InputWithTokenSelector = ({
   hiddenBalance,
   tokens,
   featuredTokens,
+  chips,
   onChange = () => {},
   ...props
 }) => {
@@ -146,6 +147,7 @@ const InputWithTokenSelector = ({
                       }`
                     : token.symbol
                 }
+                chip={chips && token.network}
               />
             ))}
           </GlobalLayout.Header>

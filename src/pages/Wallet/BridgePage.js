@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
+import pick from 'lodash/pick';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -190,6 +191,8 @@ const BridgePage = ({ t }) => {
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [checkingAddress, setCheckingAddress] = useState(false);
   const [result, setResult] = useState(false);
+  const [minimalAmount, setMinimalAmount] = useState(null);
+  const [transactionId, setTransactionId] = useState();
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
   const current_blockchain = getWalletChain(activeWallet);
@@ -236,8 +239,8 @@ const BridgePage = ({ t }) => {
   }, [activeWallet, tokensAddresses]);
 
   const [inAmount, setInAmount] = useState(null);
-
   const [outAmount, setOutAmount] = useState('--');
+  const isMinimalAmount = parseFloat(inAmount) >= minimalAmount;
 
   const onChangeInToken = token => {
     setInToken(token);
@@ -268,14 +271,20 @@ const BridgePage = ({ t }) => {
 
   useEffect(() => {
     if (Number(inAmount) > 0 && outToken) {
-      Promise.resolve(
+      Promise.all([
         activeWallet.getBridgeEstimatedAmount(
           inToken.symbol.toLowerCase(),
           outToken.symbol,
           inAmount,
         ),
-      ).then(async estAmount => {
-        setOutAmount(estAmount);
+        activeWallet.getBridgeMinimalAmount(
+          inToken.symbol.toLowerCase(),
+          outToken.symbol,
+        ),
+      ]).then(([estAmount, minAmount]) => {
+        console.log('setOutAmount', estAmount);
+        setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
+        setMinimalAmount(minAmount);
       });
     } else {
       setOutAmount('--');
@@ -291,54 +300,77 @@ const BridgePage = ({ t }) => {
   const validAmount =
     inToken &&
     parseFloat(inAmount) <= inToken.uiAmount &&
-    parseFloat(inAmount) > 0;
+    parseFloat(inAmount) > 0 &&
+    isMinimalAmount;
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
 
-  const onQuote = async () => {
-    setError(false);
-    setProcessing(true);
-    try {
-      setProcessing(false);
-      trackEvent(EVENTS_MAP.SWAP_QUOTE);
-      setStep(2);
-    } catch (e) {
-      setError(true);
-      setProcessing(false);
-    }
-  };
   const onConfirm = async () => {
     setError(false);
     setProcessing(true);
-    trackEvent(EVENTS_MAP.SWAP_CONFIRMED);
-
-    setStatus(TRANSACTION_STATUS.CREATING);
-    setStep(3);
-    activeWallet
-      .createBridgeExchange(
+    try {
+      setStatus(TRANSACTION_STATUS.CREATING);
+      setStep(4);
+      const exDet = await activeWallet.createBridgeExchange(
         inToken.symbol.toLowerCase(),
         outToken.symbol,
         inAmount,
         recipientAddress,
-      )
-      .then(ex => {
-        setError(false);
-        trackEvent(EVENTS_MAP.SWAP_COMPLETED);
-        setStatus(TRANSACTION_STATUS.SUCCESS);
-        setProcessing(false);
-        setExchangeDetails(ex);
-      })
-      .catch(ex => {
-        console.error(ex.message);
-        setError(true);
-        trackEvent(EVENTS_MAP.SWAP_FAILED);
-        setStatus(TRANSACTION_STATUS.FAIL);
-        setProcessing(false);
-      });
+      );
+      const { txId } = await activeWallet.createTransferTransaction(
+        exDet?.address_from,
+        inToken.address,
+        exDet?.expected_amount,
+        { ...pick(inToken, 'decimals') },
+      );
+      console.log('txId', txId);
+      setTransactionId(txId);
+      setStatus(TRANSACTION_STATUS.SENDING);
+      await activeWallet.confirmTransferTransaction(txId);
+      setStatus(TRANSACTION_STATUS.SUCCESS);
+      trackEvent(EVENTS_MAP.BRIDGE_COMPLETED);
+      setProcessing(false);
+      setError(false);
+    } catch (e) {
+      console.error(e);
+      setError(true);
+      setStatus(TRANSACTION_STATUS.FAIL);
+      trackEvent(EVENTS_MAP.BRIDGE_FAILED);
+      setStep(4);
+      setProcessing(false);
+    }
 
-    setStatus(TRANSACTION_STATUS.SWAPPING);
+    // const exDet = await activeWallet.createBridgeExchange(
+    //   inToken.symbol.toLowerCase(),
+    //   outToken.symbol,
+    //   inAmount,
+    //   recipientAddress,
+    // );
+    // setStep(3);
+    // activeWallet
+    //   .createBridgeExchange(
+    //     inToken.symbol.toLowerCase(),
+    //     outToken.symbol,
+    //     inAmount,
+    //     recipientAddress,
+    //   )
+    //   .then(ex => {
+    //     setError(false);
+    //     trackEvent(EVENTS_MAP.SWAP_COMPLETED);
+    //     setStatus(TRANSACTION_STATUS.SUCCESS);
+    //     setProcessing(false);
+    //   })
+    //   .catch(ex => {
+    //     console.error(ex.message);
+    //     setError(true);
+    //     trackEvent(EVENTS_MAP.SWAP_FAILED);
+    //     setStatus(TRANSACTION_STATUS.FAIL);
+    //     setProcessing(false);
+    //   });
+
+    // setStatus(TRANSACTION_STATUS.SWAPPING);
   };
 
   const getStatusColor = status => {
@@ -385,7 +417,7 @@ const BridgePage = ({ t }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipientAddress]);
 
-  console.log('ex', exchangeDetails);
+  // console.log('ex', availableTokens);
 
   return (
     <GlobalLayout>
@@ -423,6 +455,13 @@ const BridgePage = ({ t }) => {
                   <GlobalText type="body1" center color="negative">
                     {t(`token.send.amount.invalid`)}
                   </GlobalText>
+                ) : !isMinimalAmount && !!inAmount ? (
+                  <GlobalText type="body1" center color="negative">
+                    {t(`bridge.less_than_minimal`, {
+                      min: minimalAmount,
+                      symbol: inToken.symbol,
+                    })}
+                  </GlobalText>
                 ) : (
                   !validAmount &&
                   !!inAmount && (
@@ -454,6 +493,7 @@ const BridgePage = ({ t }) => {
                   }
                   onChange={setOutToken}
                   disabled
+                  chips
                 />
 
                 <GlobalPadding size="xs" />
@@ -473,8 +513,8 @@ const BridgePage = ({ t }) => {
               type="primary"
               wideSmall
               title={t('actions.next')}
-              disabled={!validAmount || !outToken || processing}
-              onPress={onQuote}
+              disabled={!validAmount || !outToken || processing || !outAmount}
+              onPress={() => setStep(2)}
             />
           </GlobalLayout.Footer>
         </>

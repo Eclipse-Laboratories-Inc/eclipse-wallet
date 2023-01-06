@@ -39,4 +39,7 @@ export const EVENTS_MAP = {
   SWAP_CONFIRMED: 'swap-confirmed',
   SWAP_COMPLETED: 'swap-compleeted',
   SWAP_FAILED: 'swap-failed',
+  BRIDGE_COMPLETED: 'bridge-completed',
+  BRIDGE_FAILED: 'bridge-failed',
+  BRIDGE_CANCELLED: 'bridge-cancelled',
 };

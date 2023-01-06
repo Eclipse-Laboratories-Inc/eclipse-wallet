@@ -322,7 +322,8 @@
     "go_to_explorer": "Go to Explorer"
   },
   "bridge": {
-    "preview": "Bridge Preview"
+    "preview": "Bridge Preview",
+    "less_than_minimal": "Minimun amount: {{min}} {{symbol}}"
   },
   "header": {
     "connected": "Connected to {{hostname}}",

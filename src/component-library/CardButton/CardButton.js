@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import theme from '../Global/theme';
+import theme, { globalStyles } from '../Global/theme';
 import GlobalButton from '../Global/GlobalButton';
 import GlobalImage from '../Global/GlobalImage';
 import GlobalText from '../Global/GlobalText';
@@ -64,6 +64,14 @@ const styles = StyleSheet.create({
   description: {
     opacity: 0.9,
   },
+  chip: {
+    paddingHorizontal: theme.gutters.paddingXXS,
+    marginLeft: theme.gutters.paddingXXS,
+    marginTop: theme.gutters.paddingXXS,
+    paddingTop: 1,
+    height: theme.gutters.paddingNormal - 2,
+    borderRadius: theme.borderRadius.borderRadiusXS,
+  },
   cardActions: {
     alignItems: 'flex-end',
   },
@@ -87,6 +95,26 @@ const styles = StyleSheet.create({
   },
 });
 
+const getChipColor = type => {
+  console.log('tyoe', type);
+  switch (type) {
+    case 'ETH':
+      return 'rgb(145, 165, 240)';
+    case 'BSC':
+      return 'rgb(245, 206, 84)';
+    case 'BEP20':
+      return 'rgb(245, 206, 84)';
+    case 'BEP2':
+      return 'rgb(245, 206, 84)';
+    case 'TRX':
+      return 'rgb(255, 102, 113)';
+    case 'MAINNET':
+      return 'rgb(87, 222, 214)';
+    default:
+      return 'rgb(158, 176, 197)';
+  }
+};
+
 const CardButton = ({
   type,
   size,
@@ -100,6 +128,7 @@ const CardButton = ({
   subtitle,
   caption,
   description,
+  chip,
   children,
   selected,
   active,
@@ -187,12 +216,21 @@ const CardButton = ({
               {caption}
             </GlobalText>
           )}
-
-          {title && (
-            <GlobalText type="body2" numberOfLines={1}>
-              {title}
-            </GlobalText>
-          )}
+          <View style={globalStyles.inline}>
+            {title && (
+              <GlobalText type="body2" numberOfLines={1}>
+                {title}
+              </GlobalText>
+            )}
+            {chip && (
+              <View
+                style={[styles.chip, { backgroundColor: getChipColor(chip) }]}>
+                <GlobalText type="overline" color="primary" bold>
+                  {chip}
+                </GlobalText>
+              </View>
+            )}
+          </View>
 
           {description && (
             <GlobalText
