@@ -100,7 +100,7 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
           setNftDetail(nft);
           setPrice(nft?.lowest_listing_mpa?.price);
         }
-        setSolBalance(tks.length ? tks[0] : null);
+        setSolBalance(tks.find(tk => tk.symbol === 'SOL'));
         setLoaded(true);
         const bids = await activeWallet.getNftsBids();
         setBidAmount(
