@@ -37,13 +37,13 @@ jobs:
       - name: Install node modules
         run: yarn install
       - name: Build ${{ env.GITHUB_REF_SLUG }}
-        run: yarn build:${{ env.GITHUB_REF_SLUG }}
+        run: yarn build:prod
       - name: Publish ${{ env.GITHUB_REF_SLUG }}
-        run: yarn serverless:deploy:${{ env.GITHUB_REF_SLUG }}
+        run: yarn serverless:deploy:prod
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
         run: yarn build:extension
       - name: Upload bundle into S3
-        run: yarn upload:bundle:${{ env.GITHUB_REF_SLUG }}
+        run: yarn upload:bundle:prod
         env: # Or as an environment variable
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
