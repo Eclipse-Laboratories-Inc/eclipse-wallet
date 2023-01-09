@@ -356,7 +356,7 @@ const BridgePage = ({ t }) => {
                 ) : !isMinimalAmount && !!inAmount ? (
                   <GlobalText type="body1" center color="negative">
                     {t(`bridge.less_than_minimal`, {
-                      min: minimalAmount,
+                      min: minimalAmount || '-',
                       symbol: inToken.symbol,
                     })}
                   </GlobalText>
@@ -411,8 +411,7 @@ const BridgePage = ({ t }) => {
               type="primary"
               wideSmall
               title={t('actions.next')}
-              // disabled={!validAmount || !outToken || processing || !outAmount}
-              disabled={validAmount || !outToken || processing || !outAmount}
+              disabled={!validAmount || !outToken || processing || !outAmount}
               onPress={() => setStep(2)}
             />
           </GlobalLayout.Footer>
@@ -421,7 +420,7 @@ const BridgePage = ({ t }) => {
       {step === 2 && (
         <>
           <GlobalLayout.Header>
-            <GlobalBackTitle title={t('swap.swap_preview')} />
+            <GlobalBackTitle title={t('bridge.preview')} />
             <GlobalPadding />
             <BigDetailItem
               title={t('swap.you_send')}
