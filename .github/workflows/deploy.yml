@@ -39,7 +39,7 @@ jobs:
       - name: Build ${{ env.GITHUB_REF_SLUG }}
         run: yarn build:prod
       - name: Publish ${{ env.GITHUB_REF_SLUG }}
-        run: yarn serverless:deploy:prod
+        run: yarn serverless:deploy
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
         run: yarn build:extension
       - name: Upload bundle into S3
