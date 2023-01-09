@@ -133,7 +133,9 @@
     "serverless:remove:main": "serverless remove --stage main",
     "serverless:deploy:main": "serverless deploy --stage main",
     "serverless:remove:develop": "serverless remove --stage develop",
-    "serverless:deploy:develop": "serverless deploy --stage develop"
+    "serverless:deploy:develop": "serverless deploy --stage develop",
+    "serverless:remove": "serverless remove --stage prod",
+    "serverless:deploy": "serverless deploy --stage prod"
   },
   "eslintConfig": {
     "extends": [
