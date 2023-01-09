@@ -43,7 +43,7 @@ jobs:
       - name: Build extensions ${{ env.GITHUB_REF_SLUG }} stack
         run: yarn build:extension
       - name: Upload bundle into S3
-        run: yarn upload:bundle:prod
+        run: yarn upload:bundle
         env: # Or as an environment variable
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
