@@ -112,7 +112,7 @@
       "from": "De: {{name}}",
       "transaction_creating": "Creando transacción...",
       "transaction_sending": "Enviando...",
-      "transaction_bridging": "Bridging...",
+      "transaction_bridging": "Swapping...",
       "transaction_listing": "Listando...",
       "transaction_unlisting": "Deslistando...",
       "transaction_success": "Transacción Exitosa",
@@ -139,6 +139,7 @@
   },
   "wallet": {
     "transactions_in_progress": "Transacciones en progreso",
+    "swaps_in_progress": "Swaps en progreso",
     "my_tokens": "Mis Tokens",
     "non_listed_tokens": "Tokens no-listados",
     "my_nfts": "Mis NFTs",

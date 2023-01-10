@@ -24,6 +24,7 @@ import Header from '../../component-library/Layout/Header';
 import { MyNfts } from './components/MyNfts';
 import { retriveConfig } from '../../utils/wallet';
 import { PendingTxs } from './components/PendingTxs';
+import { PendingBridgeTxs } from './components/PendingBridgeTxs';
 
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
@@ -130,6 +131,7 @@ const WalletOverviewPage = ({ t }) => {
           <GlobalPadding />
 
           <PendingTxs activeWallet={activeWallet} translate={t} />
+          <PendingBridgeTxs activeWallet={activeWallet} translate={t} />
 
           <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
             <TokenList

@@ -24,9 +24,10 @@ import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
-import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 const styles = StyleSheet.create({
   symbolContainer: {
@@ -244,6 +245,7 @@ const BridgePage = ({ t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
+      setStatus(TRANSACTION_STATUS.BRIDGING);
       const exDet = await activeWallet.createBridgeExchange(
         inToken.symbol.toLowerCase(),
         outToken.symbol,
@@ -256,9 +258,9 @@ const BridgePage = ({ t }) => {
         exDet?.expected_amount,
         { ...pick(inToken, 'decimals') },
       );
-      setStatus(TRANSACTION_STATUS.BRIDGING);
       await activeWallet.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.BRIDGE_SUCCESS);
+      savePendingTx(exDet);
       trackEvent(EVENTS_MAP.BRIDGE_COMPLETED);
       setProcessing(false);
       setError(false);
@@ -316,6 +318,22 @@ const BridgePage = ({ t }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipientAddress]);
+
+  const savePendingTx = async exDet => {
+    exDet.status = 'inProgress';
+    const lastStatus = new Date().getTime();
+    const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
+    let transactions = await storage.getItem(STORAGE_KEYS.PENDING_BRIDGE_TXS);
+    if (transactions === null) transactions = [];
+    transactions.push({
+      account: activeWallet.publicKey,
+      chain: activeWallet.chain,
+      lastStatus,
+      expires,
+      ...exDet,
+    });
+    storage.setItem(STORAGE_KEYS.PENDING_BRIDGE_TXS, transactions);
+  };
 
   return (
     <GlobalLayout>

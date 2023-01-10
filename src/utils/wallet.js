@@ -142,7 +142,7 @@ export const getTransactionImage = transaction => {
     case 'sending':
       return IconTransactionSending;
     case 'inProgress':
-      return IconTransactionSent;
+      return IconTransactionSending;
     case 'swapping':
       return IconTransactionSending;
     case 'listing':

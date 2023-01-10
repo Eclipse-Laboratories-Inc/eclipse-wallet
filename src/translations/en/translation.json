@@ -127,7 +127,7 @@
       "validate": "Validate",
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
-      "transaction_bridging": "Bridging...",
+      "transaction_bridging": "Swapping...",
       "transaction_sending": "Sending...",
       "transaction_listing": "Listing...",
       "transaction_unlisting": "Unlisting...",
@@ -159,6 +159,7 @@
   },
   "wallet": {
     "transactions_in_progress": "Transactions In Progress",
+    "swaps_in_progress": "Swaps In Progress",
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",

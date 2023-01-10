@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
 });
 
 const getChipColor = type => {
-  console.log('tyoe', type);
   switch (type) {
     case 'ETH':
       return 'rgb(145, 165, 240)';
