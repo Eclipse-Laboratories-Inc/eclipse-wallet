@@ -31,6 +31,8 @@ import InputAddress from '../../features/InputAddress/InputAddress';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
 import clipboard from '../../utils/clipboard.native';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -138,6 +140,7 @@ const NftsSendPage = ({ params, t }) => {
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
+      savePendingNftSend();
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);
@@ -149,6 +152,17 @@ const NftsSendPage = ({ params, t }) => {
       setSending(false);
     }
   };
+
+  const savePendingNftSend = async () => {
+    let pendingNfts = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_SEND);
+    if (pendingNfts === null) pendingNfts = [];
+    pendingNfts.push({
+      ...nftDetail,
+      pending: true,
+    });
+    storage.setItem(STORAGE_KEYS.PENDING_NFTS_SEND, pendingNfts);
+  };
+
   const toggleScan = () => {
     setShowScan(!showScan);
   };

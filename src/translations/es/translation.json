@@ -277,7 +277,8 @@
     "new_collections": "Nuevas colleciones",
     "burn_nft": "Quemar",
     "burning": "Quemando",
-    "update": "update"
+    "update": "update",
+    "status_pending": "Esperando confirmación"
   },
   "swap": {
     "swap": "Swap",

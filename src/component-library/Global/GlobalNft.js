@@ -81,26 +81,36 @@ const GlobalNft = ({ nft, onClick = () => {}, t }) => (
                 )
           }
           size="block"
+          style={nft.pending && { filter: 'blur(3px)' }}
         />
         <GlobalFloatingBadge
           {...(isCollection(nft) && nft.length > 1
             ? { number: nft.length }
             : {
-                title: (nft.lowest_listing_mpa?.price ||
-                  nft.marketInfo?.price) && (
-                  <>
-                    <Text>
-                      {nft.lowest_listing_mpa?.price?.toFixed(2) ||
-                        nft.marketInfo?.price}
-                    </Text>
-                    <GlobalImage
-                      source={IconSolana}
-                      circle
-                      size="xxs"
-                      style={styles.badgeIcon}
-                    />
-                  </>
-                ),
+                title:
+                  nft.lowest_listing_mpa?.price || nft.marketInfo?.price ? (
+                    <>
+                      <Text>
+                        {nft.lowest_listing_mpa?.price?.toFixed(2) ||
+                          nft.marketInfo?.price}
+                      </Text>
+                      <GlobalImage
+                        source={IconSolana}
+                        circle
+                        size="xxs"
+                        style={styles.badgeIcon}
+                      />
+                    </>
+                  ) : (
+                    nft.pending && (
+                      <GlobalText
+                        type="caption"
+                        color="tertiary"
+                        numberOfLines={1}>
+                        {t('nft.status_pending')}
+                      </GlobalText>
+                    )
+                  ),
               })}
         />
       </View>

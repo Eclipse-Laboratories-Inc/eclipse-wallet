@@ -308,7 +308,8 @@
     "offer_amount": "Offer amount:",
     "trending_collections": "Trending collections",
     "new_collections": "New collections",
-    "update": "UPDATE"
+    "update": "UPDATE",
+    "status_pending": "Waiting confirmation"
   },
   "swap": {
     "swap": "Swap",

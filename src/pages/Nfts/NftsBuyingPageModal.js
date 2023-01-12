@@ -25,6 +25,8 @@ import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
 import QRScan from '../../features/QRScan/QRScan';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -124,6 +126,7 @@ const NftsBuyingPageModal = ({
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.BUYING);
       await activeWallet.confirmTransferTransaction(txId);
+      savePendingNftBuy();
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_BUY_COMPLETED);
       setSending(false);
@@ -134,6 +137,24 @@ const NftsBuyingPageModal = ({
       setStep(2);
       setSending(false);
     }
+  };
+
+  const savePendingNftBuy = async () => {
+    const pendingExpires = new Date().getTime() + 5 * 60 * 1000;
+    let pendingNfts = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_BUY);
+    if (pendingNfts === null) pendingNfts = [];
+    pendingNfts.push({
+      ...nftDetail,
+      mint: nftDetail.address,
+      uri: nftDetail.meta_data_uri,
+      media: nftDetail.meta_data_img,
+      extras: { attributes: [nftDetail.attributes] },
+      lowest_listing_mpa: false,
+      blacklisted: false,
+      pending: true,
+      pendingExpires,
+    });
+    storage.setItem(STORAGE_KEYS.PENDING_NFTS_BUY, pendingNfts);
   };
 
   const openTransaction = async () => {
