@@ -123,7 +123,7 @@ const WalletOverviewPage = ({ t }) => {
                   goToBridge={goToBridge}
                   canSend={configs?.features?.send}
                   canReceive={configs?.features?.receive}
-                  canBridge={!configs?.features?.bridge}
+                  canBridge={configs?.features?.bridge}
                 />
               }
             />
