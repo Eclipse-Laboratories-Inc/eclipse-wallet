@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
+import { ROUTES_MAP as WALLET_ROUTES_MAP } from './routes';
 import { getListedTokens, getNonListedTokens } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
@@ -22,6 +23,8 @@ import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import { MyNfts } from './components/MyNfts';
 import { retriveConfig } from '../../utils/wallet';
+import { PendingTxs } from './components/PendingTxs';
+import { PendingBridgeTxs } from './components/PendingBridgeTxs';
 
 const WalletOverviewPage = ({ t }) => {
   console.log(process.env.REACT_APP_SALMON_ENV);
@@ -43,6 +46,14 @@ const WalletOverviewPage = ({ t }) => {
     );
   });
 
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
+
   useEffect(() => {
     if (activeWallet) {
       setLoading(true);
@@ -50,7 +61,7 @@ const WalletOverviewPage = ({ t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ).then(async balance => {
         setTotalBalance(balance);
@@ -59,7 +70,7 @@ const WalletOverviewPage = ({ t }) => {
         setLoading(false);
       });
     }
-  }, [activeWallet, selectedEndpoints, reload]);
+  }, [activeWallet, selectedEndpoints, reload, tokensAddresses]);
 
   const onRefresh = () => {
     invalidate(CACHE_TYPES.BALANCE);
@@ -76,10 +87,13 @@ const WalletOverviewPage = ({ t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = tok =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, {
-      tokenId: tok.address,
-    });
+  const goToBridge = () => navigate(WALLET_ROUTES_MAP.WALLET_BRIDGE);
+
+  const goToTokenDetail = tok => {
+    if (tok.type !== 'native') {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
+    }
+  };
 
   return (
     activeWallet && (
@@ -95,9 +109,9 @@ const WalletOverviewPage = ({ t }) => {
               }
               {...{
                 [`${getLabelValue(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 )}Total`]: showPercentage(
-                  get(totalBalance, 'last24HoursChage.perc', 0),
+                  get(totalBalance, 'last24HoursChange.perc', 0),
                 ),
               }}
               messages={[]}
@@ -107,13 +121,18 @@ const WalletOverviewPage = ({ t }) => {
                 <GlobalSendReceive
                   goToSend={goToSend}
                   goToReceive={goToReceive}
+                  goToBridge={goToBridge}
                   canSend={configs?.features?.send}
                   canReceive={configs?.features?.receive}
+                  canBridge={configs?.features?.bridge}
                 />
               }
             />
           )}
           <GlobalPadding />
+
+          <PendingTxs activeWallet={activeWallet} translate={t} />
+          <PendingBridgeTxs activeWallet={activeWallet} translate={t} />
 
           <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
             <TokenList

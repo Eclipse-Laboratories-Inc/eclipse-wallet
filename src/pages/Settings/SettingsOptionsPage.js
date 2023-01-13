@@ -49,7 +49,10 @@ const SettingsOptionsPage = ({ t }) => {
   const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
   const { version } = packageInfo;
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SETTINGS);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const { explorer } = useUserConfig(
+    getWalletChain(activeWallet),
+    activeWallet.networkId,
+  );
 
   const toggleSingleDialog = () => {
     setShowSingleDialog(!showSingleDialog);

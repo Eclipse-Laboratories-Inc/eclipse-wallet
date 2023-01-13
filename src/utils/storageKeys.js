@@ -9,6 +9,7 @@ const STORAGE_KEYS = {
   PENDING_TXS: 'pending_txs',
   PENDING_NFTS_BUY: 'pending_nfts_buy',
   PENDING_NFTS_SEND: 'pending_nfts_send',
+  PENDING_BRIDGE_TXS: 'pending_bridge_txs',
 };
 
 export default STORAGE_KEYS;

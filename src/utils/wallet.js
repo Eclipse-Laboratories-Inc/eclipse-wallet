@@ -1,4 +1,5 @@
 import {
+  isDefaultPath as isDefaultPath4m,
   createAccount as createAccount4m,
   restoreAccount,
   restoreDerivedAccounts,
@@ -22,6 +23,8 @@ import IconTransactionResultWarning from '../assets/images/IconTransactionResult
 import IconTransactionResultFail from '../assets/images/IconTransactionResultFail.png';
 import IconTransactionCreating from '../assets/images/IconTransactionCreating.png';
 import IconTransactionSending from '../assets/images/IconTransactionSending.gif';
+import IconSolana from '../assets/images/IconSolana.png';
+import IconNear from '../assets/images/IconNear.png';
 
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
@@ -31,6 +34,8 @@ export const LOGOS = {
   NEAR: 'https://assets-cdn.trustwallet.com/blockchains/near/info/logo.png',
   ETHEREUM:
     'https://assets-cdn.trustwallet.com/blockchains/ethereum/info/logo.png',
+  BITCOIN:
+    'https://assets-cdn.trustwallet.com/blockchains/bitcoin/info/logo.png',
 };
 
 export const createAccount = (chain, endpoint) =>
@@ -60,7 +65,9 @@ export const recoverDerivedAccount = async (
   )[0];
 };
 
-export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM'];
+export const isDefaultPath = path => isDefaultPath4m(path);
+
+export const getChains = () => ['SOLANA', 'NEAR', 'ETHEREUM', 'BITCOIN'];
 
 export const getDefaultChain = () => 'SOLANA';
 
@@ -81,12 +88,16 @@ export const getWalletAvatar = (address, config) =>
     'http://static.salmonwallet.io/avatar/00.png',
   );
 
-export const getWalletChain = wallet => {
-  const type = wallet ? wallet.chain : '';
-  if (type) {
-    return type.toUpperCase();
+export const getWalletChain = wallet =>
+  wallet?.chain?.toUpperCase() || getDefaultChain();
+
+export const getBlockchainIcon = blockchain => {
+  switch (blockchain) {
+    case 'SOLANA':
+      return IconSolana;
+    case 'NEAR':
+      return IconNear;
   }
-  return getDefaultChain();
 };
 
 export const getShortAddress = address =>
@@ -104,6 +115,8 @@ export const TRANSACTION_STATUS = {
   CANCELING_OFFER: 'canceling-offer',
   BUYING: 'buying',
   SWAPPING: 'swapping',
+  BRIDGING: 'bridging',
+  BRIDGE_SUCCESS: 'bridge_success',
 };
 
 export const getTransactionImage = transaction => {
@@ -130,6 +143,8 @@ export const getTransactionImage = transaction => {
     case 'creating':
       return IconTransactionCreating;
     case 'sending':
+      return IconTransactionSending;
+    case 'inProgress':
       return IconTransactionSending;
     case 'swapping':
       return IconTransactionSending;

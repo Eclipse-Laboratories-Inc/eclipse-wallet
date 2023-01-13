@@ -19,6 +19,7 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
 import NftOffersMade from './components/NftOffersMade';
+import { retriveConfig } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,13 @@ const NftsListPage = ({ t }) => {
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [configs, setConfigs] = useState(null);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs =>
+      setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
+    );
+  });
 
   useEffect(() => {
     if (activeWallet) {
@@ -43,12 +51,14 @@ const NftsListPage = ({ t }) => {
         () => activeWallet.getAllNftsGrouped(),
       ).then(async nfts => {
         setNftsGroup(await updatePendingNfts(nfts));
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed);
+        if (configs?.list_in_marketplace?.active) {
+          const listed = await activeWallet.getListedNfts();
+          setListedInfo(listed);
+        }
         setLoaded(true);
       });
     }
-  }, [activeWallet]);
+  }, [activeWallet, configs?.list_in_marketplace?.active]);
 
   const onClick = nft => {
     if (!nft.pending) {
@@ -73,7 +83,7 @@ const NftsListPage = ({ t }) => {
                 {t(`wallet.nfts`)}
               </GlobalText>
             </View>
-            <NftCollections t />
+            {configs?.list_in_marketplace?.active && <NftCollections t />}
             <View>
               <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>

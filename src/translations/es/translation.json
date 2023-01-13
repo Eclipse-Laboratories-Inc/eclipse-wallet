@@ -36,7 +36,8 @@
     "logout": "Cerrar sesión",
     "view_more": "Ver más",
     "continue": "Cotinuar",
-    "follow_us": "¡Síguenos!"
+    "follow_us": "¡Síguenos!",
+    "bridge": "Bridge"
   },
   "settings": {
     "title": "Configuración",
@@ -93,7 +94,8 @@
       "select": "Seleccionar"
     },
     "receive": {
-      "title": "Recibir"
+      "title": "Recibir",
+      "warning": "Esta dirección es para tokens en la block chain {{chain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
     },
     "send": {
       "address": {
@@ -110,12 +112,14 @@
       "from": "De: {{name}}",
       "transaction_creating": "Creando transacción...",
       "transaction_sending": "Enviando...",
+      "transaction_bridging": "Swapping...",
       "transaction_listing": "Listando...",
       "transaction_unlisting": "Deslistando...",
       "transaction_creating-offer": "Creando Oferta...",
       "transaction_canceling-offer": "Cancelando Oferta...",
       "transaction_buying": "Comprando...",
       "transaction_success": "Transacción Exitosa",
+      "transaction_bridge_success": "Transacción pendiente, ésto puede demorarse unos minutos. Dirígete a la sección Wallet Overview para seguir su status",
       "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
       "swap_step": "paso {{current}} de {{total}}",
@@ -137,6 +141,8 @@
     "buttonUnlock": "Desbloquear"
   },
   "wallet": {
+    "transactions_in_progress": "Transacciones en progreso",
+    "swaps_in_progress": "Swaps en progreso",
     "my_tokens": "Mis Tokens",
     "non_listed_tokens": "Tokens no-listados",
     "my_nfts": "Mis NFTs",
@@ -191,6 +197,11 @@
       "titleWelcome": "Bienvenidx",
       "select_blockchain": "Seleccionar Blockchain",
       "select_blockchain_text": "Ten en cuenta que la Wallet que estás por crear funcionará únicamente en este blockchain.\nPodrás agregar Wallets de otros blockchains más tarde."
+    },
+    "pending_txs": {
+      "inProgress": "En Curso",
+      "fail": "Falló",
+      "success": "Exitosa"
     }
   },
   "adapter": {
@@ -234,7 +245,23 @@
     "view_transaction": "Ver transacción",
     "today": "Hoy",
     "yesterday": "Ayer",
-    "empty": "No se encontraron transacciones"
+    "empty": "No se encontraron transacciones",
+    "send": "Enviado",
+    "receive": "Recibido",
+    "swap": "Swap",
+    "interaction": "Interacción",
+    "unknown": "Desconocido",
+    "fromAddress": "De: {{address}}",
+    "toAddress": "Para: {{address}}",
+    "date": "Fecha",
+    "type": "Tipo",
+    "id": "ID de transacción",
+    "status": "Estado",
+    "completed": "Realizado",
+    "failed": "Fallido",
+    "from": "De",
+    "to": "Para",
+    "fee": "Comisión"
   },
   "nft": {
     "description": "Descripción",
@@ -291,6 +318,10 @@
     "refresh_quote": "Refrescar cotización",
     "total_fee": "Tarifa total",
     "go_to_explorer": "Ir al Explorer"
+  },
+  "bridge": {
+    "preview": "Confirmar Bridge",
+    "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}"
   },
   "header": {
     "connected": "Conectado a {{hostname}}",

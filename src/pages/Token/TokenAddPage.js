@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -23,11 +24,19 @@ const TokenAddPage = ({ params, t }) => {
   const [loaded, setloaded] = useState(false);
   const [token, setToken] = useState({});
 
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeWallet, config }] = useContext(AppContext);
 
   const [tokenMintAddress, setTokenMintAddress] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
+
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
 
   useEffect(() => {
     if (activeWallet) {
@@ -35,7 +44,7 @@ const TokenAddPage = ({ params, t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         const tokenSelected = (balance.items || []).find(
@@ -45,7 +54,7 @@ const TokenAddPage = ({ params, t }) => {
         setloaded(true);
       });
     }
-  }, [activeWallet, params]);
+  }, [activeWallet, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: params.action });

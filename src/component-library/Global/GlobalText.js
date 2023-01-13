@@ -124,6 +124,9 @@ const styles = StyleSheet.create({
   bgLight: {
     color: theme.colors.bgLight,
   },
+  actionMsg: {
+    color: theme.colors.actionMsg,
+  },
 });
 
 const GlobalText = ({
@@ -161,6 +164,7 @@ const GlobalText = ({
       color === 'warning' && styles.warning,
       color === 'warningBright' && styles.warningBright,
       color === 'bgLight' && styles.bgLight,
+      color === 'actionMsg' && styles.actionMsg,
       inverse && styles.inverse,
       center && styles.center,
       bold && styles.bold,

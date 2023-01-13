@@ -1,8 +1,9 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
+import { getTopTokensByPlatform } from '4m-wallet-adapter/services/price-service';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation } from '../../routes/hooks';
+import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
@@ -19,14 +20,11 @@ import Logo from './components/Logo';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
-import {
-  getDefaultChain,
-  recoverAccount,
-  validateSeedPhrase,
-} from '../../utils/wallet';
+import { recoverAccount, validateSeedPhrase } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
 import clipboard from '../../utils/clipboard.native';
+import PLATFORMS from '../../config/platforms';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
@@ -93,21 +91,22 @@ const Form = ({ onComplete, onBack, t }) => {
   );
 };
 
-const RecoverWalletPage = ({ t }) => {
+const RecoverWalletPage = ({ params, t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
     { selectedEndpoints, requiredLock, isAdapter },
-    { addWallet, checkPassword },
+    { addWallet, checkPassword, importTokens },
   ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
+  const { chainCode } = params;
   const handleRecover = async seedPhrase => {
     const a = await recoverAccount(
-      getDefaultChain(),
+      chainCode,
       seedPhrase.trim(),
-      selectedEndpoints[getDefaultChain()],
+      selectedEndpoints[params.chainCode],
     );
     setAccount(a);
     trackEvent(EVENTS_MAP.SECRET_RECOVERED);
@@ -115,10 +114,19 @@ const RecoverWalletPage = ({ t }) => {
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addWallet(account, password, getDefaultChain());
+    await addWallet(account, password, chainCode);
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
+
+    try {
+      if (account.useExplicitTokens()) {
+        const tokens = await getTopTokensByPlatform(PLATFORMS[chainCode]);
+        await importTokens(account.getReceiveAddress(), tokens);
+      }
+    } catch (e) {
+      console.error('Could not import tokens', e);
+    }
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
@@ -169,4 +177,4 @@ const RecoverWalletPage = ({ t }) => {
   );
 };
 
-export default withTranslation()(RecoverWalletPage);
+export default withParams(withTranslation()(RecoverWalletPage));

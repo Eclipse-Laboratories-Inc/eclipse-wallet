@@ -1,32 +1,47 @@
+const SOLANA_EXPLORERS = {
+  SOLSCAN: {
+    name: 'Solscan',
+    url: 'https://solscan.io/tx',
+  },
+  SOLANA_FM: {
+    name: 'Solana FM',
+    url: 'https://solana.fm/tx',
+  },
+  SOLANA_EXPLORER: {
+    name: 'Solana Explorer',
+    url: 'https://explorer.solana.com/tx',
+  },
+  SOLANA_BEACH: {
+    name: 'Solana Beach',
+    url: 'https://solanabeach.io/transaction',
+  },
+};
+
 const EXPLORERS = {
   SOLANA: {
-    SOLSCAN: {
-      name: 'Solscan',
-      url: 'https://solscan.io',
-    },
-    SOLANA_FM: {
-      name: 'Solana FM',
-      url: 'https://solana.fm',
-    },
-    SOLANA_EXPLORER: {
-      name: 'Solana Explorer',
-      url: 'https://explorer.solana.com',
-    },
-    SOLANA_BEACH: {
-      name: 'Solana Beach',
-      url: 'https://solanabeach.io',
-    },
+    mainnet: SOLANA_EXPLORERS,
+    'mainnet-beta': SOLANA_EXPLORERS,
+    testnet: SOLANA_EXPLORERS,
+    devnet: SOLANA_EXPLORERS,
   },
   NEAR: {
-    NEAR_EXPLORER: {
-      name: 'Near Explorer',
-      url: 'https://explorer.near.org',
+    mainnet: {
+      NEAR_EXPLORER: {
+        name: 'Near Explorer',
+        url: 'https://explorer.near.org/transactions',
+      },
+    },
+    testnet: {
+      NEAR_EXPLORER: {
+        name: 'Near Explorer',
+        url: 'https://explorer.testnet.near.org/transactions',
+      },
     },
   },
-  ETHEREUM: {
-    ETHERSCAN: {
-      name: 'Etherscan',
-      url: 'https://etherscan.io',
+  BITCOIN: {
+    BLOCKCYPHER: {
+      name: 'Blockcypher',
+      url: 'https://live.blockcypher.com/btc-testnet/tx',
     },
   },
 };
@@ -35,6 +50,7 @@ const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   NEAR: 'NEAR_EXPLORER',
   ETHEREUM: 'ETHERSCAN',
+  BITCOIN: 'ETHERSCAN',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };

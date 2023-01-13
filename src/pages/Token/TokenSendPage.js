@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import pick from 'lodash/pick';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -7,14 +8,12 @@ import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import {
-  LOGOS,
   getTransactionImage,
   TRANSACTION_STATUS,
   getWalletName,
 } from '../../utils/wallet';
-import { getMediaRemoteUrl } from '../../utils/media';
 import useToken from '../../hooks/useToken';
-import { TOKEN_DECIMALS } from '../Transactions/constants';
+import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -39,6 +38,8 @@ import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -84,7 +85,12 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const current_blockchain = getWalletChain(activeWallet);
+  const isBitcoin = current_blockchain === 'BITCOIN';
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -112,6 +118,7 @@ const TokenSendPage = ({ params, t }) => {
           recipientAddress,
           token.address,
           recipientAmount,
+          { ...pick(token, 'decimals') },
         );
         setFee(feeSend);
       }
@@ -123,15 +130,20 @@ const TokenSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(4);
-      const txId = await activeWallet.createTransferTransaction(
-        recipientAddress,
-        token.address,
-        recipientAmount,
-      );
+      const { txId, executableTx } =
+        await activeWallet.createTransferTransaction(
+          recipientAddress,
+          token.address,
+          recipientAmount,
+          { ...pick(token, 'decimals') },
+        );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeWallet.confirmTransferTransaction(
+        isBitcoin ? executableTx : txId,
+      );
       setStatus(TRANSACTION_STATUS.SUCCESS);
+      isBitcoin && savePendingTx(txId, token.symbol, recipientAmount);
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
@@ -154,12 +166,34 @@ const TokenSendPage = ({ params, t }) => {
   const recipient = recipientName ? recipientName : recipientAddress;
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
     } else {
       console.log(`UNSUPPORTED LINK ${url}`);
+    }
+  };
+
+  const savePendingTx = async (txId, tokenSymbol, amount) => {
+    console.log(activeWallet.chain);
+    if (activeWallet.chain === 'bitcoin') {
+      const lastStatus = new Date().getTime();
+      const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
+      let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
+      if (transactions === null) transactions = [];
+      transactions.push({
+        account: activeWallet.publicKey,
+        chain: activeWallet.chain,
+        txId,
+        recipient,
+        tokenSymbol,
+        amount,
+        status: 'inProgress',
+        lastStatus,
+        expires,
+      });
+      storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
     }
   };
 
@@ -393,7 +427,8 @@ const TokenSendPage = ({ params, t }) => {
                     </GlobalText>
 
                     <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS.SOLANA} SOL
+                      {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
+                      {DEFAULT_SYMBOL[current_blockchain]}
                     </GlobalText>
                   </View>
                 )}
