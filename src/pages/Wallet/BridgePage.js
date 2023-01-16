@@ -117,6 +117,7 @@ const BridgePage = ({ t }) => {
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
+  const [providerError, setProviderError] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [availableTokens, setAvailableTokens] = useState([]);
   const [featuredTokens, setFeaturedTokens] = useState([]);
@@ -143,7 +144,7 @@ const BridgePage = ({ t }) => {
 
   useEffect(() => {
     if (activeWallet) {
-      invalidate(CACHE_TYPES.AVAILABLE_TOKENS);
+      invalidate(CACHE_TYPES.BRIDGE_SUPPORTED);
       Promise.all([
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
@@ -157,18 +158,20 @@ const BridgePage = ({ t }) => {
         ),
         activeWallet.getBridgeFeaturedTokens('sol'),
         activeWallet.getBridgeAvailableTokens('sol'),
-      ]).then(([balance, bsupp, ftks, avtks]) => {
-        const tks = balance.items || [];
-        const tksSupp = mergeStealthExTokenData(bsupp, tks);
-        setTokens(tksSupp);
-        setInToken(tks.length ? tks[0] : null);
-        setOutToken(ftks.length ? ftks[0] : null);
-        setFeaturedTokens(ftks);
-        setAvailableTokens(avtks);
-        setReady(true);
-      });
+      ])
+        .then(([balance, bsupp, ftks, avtks]) => {
+          const tks = balance.items || [];
+          const tksSupp = mergeStealthExTokenData(bsupp, tks);
+          setTokens(tksSupp);
+          setInToken(tks.length ? tks[0] : null);
+          setOutToken(ftks.length ? ftks[0] : null);
+          setFeaturedTokens(ftks);
+          setAvailableTokens(avtks);
+          setReady(true);
+        })
+        .catch(e => setProviderError(true));
     }
-  }, [activeWallet, tokensAddresses]);
+  }, [activeWallet, tokensAddresses, providerError]);
 
   const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
@@ -337,104 +340,126 @@ const BridgePage = ({ t }) => {
 
   return (
     <GlobalLayout>
-      {step === 1 && (
-        <>
+      {step === 1 &&
+        (providerError ? (
           <GlobalLayout.Header>
             <Header activeWallet={activeWallet} config={config} t={t} />
             <GlobalBackTitle title={t('actions.bridge')} />
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="4xl" />
+            <GlobalPadding size="xl" />
 
+            <GlobalText type="body3" color="secondary" center>
+              {t('bridge.provider_error')}
+            </GlobalText>
             <GlobalPadding />
-            {ready && tokens.length && (
-              <>
-                <View style={globalStyles.inlineFlexButtons}>
-                  <GlobalText type="body2">{t('swap.you_send')}</GlobalText>
-                  <GlobalText type="body1">
-                    Max. {inToken.uiAmount} {inToken.symbol}
-                  </GlobalText>
-                </View>
 
-                <GlobalPadding size="xs" />
+            <GlobalButton
+              type="secondary"
+              size="medium"
+              title={t('actions.retry')}
+              onPress={() => setProviderError(false)}
+            />
+          </GlobalLayout.Header>
+        ) : (
+          <>
+            <GlobalLayout.Header>
+              <Header activeWallet={activeWallet} config={config} t={t} />
+              <GlobalBackTitle title={t('actions.bridge')} />
+              <GlobalPadding />
+              {ready && tokens.length && (
+                <>
+                  <View style={globalStyles.inlineFlexButtons}>
+                    <GlobalText type="body2">{t('swap.you_send')}</GlobalText>
+                    <GlobalText type="body1">
+                      Max. {inToken.uiAmount} {inToken.symbol}
+                    </GlobalText>
+                  </View>
 
-                <InputWithTokenSelector
-                  value={inAmount}
-                  setValue={setInAmount}
-                  placeholder={t('swap.enter_amount')}
-                  title={inToken.symbol.toUpperCase()}
-                  tokens={tokens}
-                  hiddenValue={hiddenValue}
-                  image={getMediaRemoteUrl(inToken.logo)}
-                  onChange={onChangeInToken}
-                  invalid={!validAmount && !!inAmount}
-                  number
-                />
-                {zeroAmount ? (
-                  <GlobalText type="body1" center color="negative">
-                    {t(`token.send.amount.invalid`)}
-                  </GlobalText>
-                ) : !isMinimalAmount && !!inAmount ? (
-                  <GlobalText type="body1" center color="negative">
-                    {t(`bridge.less_than_minimal`, {
-                      min: minimalAmount || '-',
-                      symbol: inToken.symbol,
-                    })}
-                  </GlobalText>
-                ) : (
-                  !validAmount &&
-                  !!inAmount && (
+                  <GlobalPadding size="xs" />
+
+                  <InputWithTokenSelector
+                    value={inAmount}
+                    setValue={setInAmount}
+                    placeholder={t('swap.enter_amount')}
+                    title={inToken.symbol.toUpperCase()}
+                    tokens={tokens}
+                    hiddenValue={hiddenValue}
+                    image={getMediaRemoteUrl(inToken.logo)}
+                    onChange={onChangeInToken}
+                    invalid={!validAmount && !!inAmount}
+                    number
+                  />
+                  {zeroAmount ? (
                     <GlobalText type="body1" center color="negative">
-                      {t(`token.send.amount.insufficient`, {
-                        max: inToken.uiAmount,
+                      {t(`token.send.amount.invalid`)}
+                    </GlobalText>
+                  ) : !isMinimalAmount && !!inAmount ? (
+                    <GlobalText type="body1" center color="negative">
+                      {t(`bridge.less_than_minimal`, {
+                        min: minimalAmount || '-',
+                        symbol: inToken.symbol,
                       })}
                     </GlobalText>
-                  )
-                )}
-                <GlobalPadding size="xs" />
+                  ) : (
+                    !validAmount &&
+                    !!inAmount && (
+                      <GlobalText type="body1" center color="negative">
+                        {t(`token.send.amount.insufficient`, {
+                          max: inToken.uiAmount,
+                        })}
+                      </GlobalText>
+                    )
+                  )}
+                  <GlobalPadding size="xs" />
 
-                <GlobalText type="body1" color="tertiary">
-                  {showValue(inAmount * inToken.usdPrice, 6)} {t('general.usd')}
-                </GlobalText>
-
-                <GlobalPadding size="md" />
-                <GlobalText type="body2">{t('swap.you_receive')}</GlobalText>
-                <GlobalPadding size="xs" />
-
-                <InputWithTokenSelector
-                  value={outAmount}
-                  setValue={setOutAmount}
-                  title={outToken ? outToken.symbol.toUpperCase() : '-'}
-                  tokens={availableTokens}
-                  featuredTokens={featuredTokens}
-                  image={
-                    outToken ? getMediaRemoteUrl(outToken.logo) : undefined
-                  }
-                  onChange={setOutToken}
-                  disabled
-                  chips
-                />
-
-                <GlobalPadding size="xs" />
-
-                {error && (
-                  <GlobalText type="body1" color="negative">
-                    {t('general.error')}
+                  <GlobalText type="body1" color="tertiary">
+                    {showValue(inAmount * inToken.usdPrice, 6)}{' '}
+                    {t('general.usd')}
                   </GlobalText>
-                )}
-              </>
-            )}
-            {!ready && <GlobalSkeleton type="Swap" />}
-          </GlobalLayout.Header>
 
-          <GlobalLayout.Footer>
-            <GlobalButton
-              type="primary"
-              wideSmall
-              title={t('actions.next')}
-              disabled={!validAmount || !outToken || processing || !outAmount}
-              onPress={() => setStep(2)}
-            />
-          </GlobalLayout.Footer>
-        </>
-      )}
+                  <GlobalPadding size="md" />
+                  <GlobalText type="body2">{t('swap.you_receive')}</GlobalText>
+                  <GlobalPadding size="xs" />
+
+                  <InputWithTokenSelector
+                    value={outAmount}
+                    setValue={setOutAmount}
+                    title={outToken ? outToken.symbol.toUpperCase() : '-'}
+                    tokens={availableTokens}
+                    featuredTokens={featuredTokens}
+                    image={
+                      outToken ? getMediaRemoteUrl(outToken.logo) : undefined
+                    }
+                    onChange={setOutToken}
+                    disabled
+                    chips
+                  />
+
+                  <GlobalPadding size="xs" />
+
+                  {error && (
+                    <GlobalText type="body1" color="negative">
+                      {t('general.error')}
+                    </GlobalText>
+                  )}
+                </>
+              )}
+              {!ready && <GlobalSkeleton type="Swap" />}
+            </GlobalLayout.Header>
+
+            <GlobalLayout.Footer>
+              <GlobalButton
+                type="primary"
+                wideSmall
+                title={t('actions.next')}
+                disabled={!validAmount || !outToken || processing || !outAmount}
+                onPress={() => setStep(2)}
+              />
+            </GlobalLayout.Footer>
+          </>
+        ))}
       {step === 2 && (
         <>
           <GlobalLayout.Header>

@@ -37,7 +37,8 @@
     "view_more": "Ver más",
     "continue": "Cotinuar",
     "follow_us": "¡Síguenos!",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "retry": "Reintentar"
   },
   "settings": {
     "title": "Configuración",
@@ -321,7 +322,8 @@
   },
   "bridge": {
     "preview": "Confirmar Bridge",
-    "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}"
+    "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}",
+    "provider_error": "Actualmente el proveedor de Bridge no está respondiendo.\nPor favor vuelve a intentar más tarde."
   },
   "header": {
     "connected": "Conectado a {{hostname}}",

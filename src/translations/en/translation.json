@@ -51,7 +51,8 @@
     "view_more": "View more",
     "continue": "Continue",
     "follow_us": "Follow us",
-    "bridge": "Bridge"
+    "bridge": "Bridge",
+    "retry": "Retry"
   },
   "settings": {
     "title": "Settings",
@@ -351,7 +352,8 @@
   },
   "bridge": {
     "preview": "Bridge Preview",
-    "less_than_minimal": "Minimun amount: {{min}} {{symbol}}"
+    "less_than_minimal": "Minimun amount: {{min}} {{symbol}}",
+    "provider_error": "Bridge provider not available.\nPlease try again later."
   },
   "header": {
     "connected": "Connected to {{hostname}}",
