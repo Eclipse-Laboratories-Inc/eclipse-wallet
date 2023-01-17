@@ -352,7 +352,7 @@
   },
   "bridge": {
     "preview": "Bridge Preview",
-    "less_than_minimal": "Minimun amount: {{min}} {{symbol}}",
+    "less_than_minimal": "Minimum amount: {{min}} {{symbol}}",
     "provider_error": "Bridge provider not available.\nPlease try again later."
   },
   "header": {
