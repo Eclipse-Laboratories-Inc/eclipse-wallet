@@ -96,7 +96,9 @@ const GlobalButtonTimer = React.memo(function ({
 
 const mergeStealthExTokenData = (bsupp, tks) => {
   const isMatch = (tok1, tok2) =>
-    tok1.symbol.slice(0, 3) === tok2.symbol.toLowerCase().slice(0, 3);
+    tok1.symbol === tok2.symbol.toLowerCase() ||
+    tok1.symbol === tok2.symbol.slice(0, 3).concat('sol').toLowerCase() ||
+    tok1.symbol === tok2.symbol.slice(0, 4).concat('sol').toLowerCase();
   return bsupp
     .filter(el => {
       return tks.find(element => {
@@ -161,7 +163,10 @@ const BridgePage = ({ t }) => {
       ])
         .then(([balance, bsupp, ftks, avtks]) => {
           const tks = balance.items || [];
+          console.log('bsupp', bsupp, 'my tokens', tks);
+
           const tksSupp = mergeStealthExTokenData(bsupp, tks);
+          console.log('rksSupp', tksSupp);
           setTokens(tksSupp);
           setInToken(tks.length ? tks[0] : null);
           setOutToken(ftks.length ? ftks[0] : null);
@@ -399,7 +404,7 @@ const BridgePage = ({ t }) => {
                     <GlobalText type="body1" center color="negative">
                       {t(`bridge.less_than_minimal`, {
                         min: minimalAmount || '-',
-                        symbol: inToken.symbol,
+                        symbol: inToken.name,
                       })}
                     </GlobalText>
                   ) : (
