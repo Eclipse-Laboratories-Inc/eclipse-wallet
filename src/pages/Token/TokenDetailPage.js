@@ -37,7 +37,7 @@ const TokenDetailPage = ({ params, t }) => {
     retriveConfig().then(chainConfigs =>
       setConfigs(chainConfigs[activeWallet.chain].sections.token_detail),
     );
-  });
+  }, [activeWallet]);
 
   const tokensAddresses = useMemo(
     () =>

@@ -22,12 +22,10 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import { MyNfts } from './components/MyNfts';
-import { retriveConfig } from '../../utils/wallet';
 import { PendingTxs } from './components/PendingTxs';
 import { PendingBridgeTxs } from './components/PendingBridgeTxs';
 
-const WalletOverviewPage = ({ t }) => {
-  console.log(process.env.REACT_APP_SALMON_ENV);
+const WalletOverviewPage = ({ cfgs, t }) => {
   const navigate = useNavigation();
   const [
     { activeWallet, config, selectedEndpoints, hiddenBalance },
@@ -38,13 +36,6 @@ const WalletOverviewPage = ({ t }) => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState(null);
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
-  const [configs, setConfigs] = useState(null);
-
-  useEffect(() => {
-    retriveConfig().then(chainConfigs =>
-      setConfigs(chainConfigs[activeWallet.chain].sections.overview),
-    );
-  });
 
   const tokensAddresses = useMemo(
     () =>
@@ -122,9 +113,9 @@ const WalletOverviewPage = ({ t }) => {
                   goToSend={goToSend}
                   goToReceive={goToReceive}
                   goToBridge={goToBridge}
-                  canSend={configs?.features?.send}
-                  canReceive={configs?.features?.receive}
-                  canBridge={configs?.features?.bridge}
+                  canSend={cfgs?.overview?.features?.send}
+                  canReceive={cfgs?.overview?.features?.receive}
+                  canBridge={cfgs?.overview?.features?.bridge}
                 />
               }
             />
@@ -151,7 +142,7 @@ const WalletOverviewPage = ({ t }) => {
             </GlobalCollapse>
           ) : null}
 
-          {configs?.features.nfts && (
+          {cfgs?.overview?.features.nfts && (
             <>
               <GlobalPadding />
               <MyNfts

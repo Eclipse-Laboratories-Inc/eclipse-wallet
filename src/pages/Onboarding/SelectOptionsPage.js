@@ -158,7 +158,7 @@ const SelectOptionsPage = ({ t }) => {
 
   useEffect(() => {
     retriveConfig().then(chainConfigs => setConfigs(chainConfigs));
-  });
+  }, []);
 
   const onSelectAction = action => {
     setActionRoute(action);

@@ -35,7 +35,8 @@ const WalletPage = () => {
         }
       }
     });
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWallet]);
 
   return (
     <GlobalTabBarLayout
@@ -47,7 +48,11 @@ const WalletPage = () => {
           icon: r.icon,
           route: r.route,
         }))}>
-      <RoutesBuilder routes={routes} type={ROUTES_TYPES.TABS} />
+      <RoutesBuilder
+        routes={routes}
+        type={ROUTES_TYPES.TABS}
+        configs={configs}
+      />
     </GlobalTabBarLayout>
   );
 };

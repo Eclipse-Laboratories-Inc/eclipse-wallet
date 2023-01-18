@@ -79,10 +79,7 @@ export const PendingBridgeTxs = ({ activeWallet, translate }) => {
                       circle
                       style={{ marginRight: 5 }}
                     />
-                    <GlobalText
-                      key={'amount-action'}
-                      type="caption"
-                      color="actionMsg">
+                    <GlobalText key={'amount-action'} type="caption">
                       {translate(`wallet.pending_txs.${transaction.status}`)}
                     </GlobalText>
                   </View>

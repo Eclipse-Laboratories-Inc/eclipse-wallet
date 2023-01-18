@@ -76,7 +76,7 @@ const NftsDetailPage = ({ params, t }) => {
     retriveConfig().then(chainConfigs =>
       setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
     );
-  });
+  }, [activeWallet]);
 
   useEffect(() => {
     if (activeWallet) {
