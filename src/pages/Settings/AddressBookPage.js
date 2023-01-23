@@ -28,11 +28,11 @@ const AddressBookPage = ({ t }) => {
   const onEditAddressBook = ({ address }) =>
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK_EDIT, { address });
 
-  const toggleRemoveDialog = ({ address }) => {
-    setToRemove(address);
+  const toggleRemoveDialog = item => {
+    setToRemove(item);
     setShowRemoveDialog(!showRemoveDialog);
   };
-  const handleRemoveWallet = async address => {
+  const handleRemoveWallet = async ({ address }) => {
     await removeAddress(address);
     setShowRemoveDialog(!showRemoveDialog);
   };
