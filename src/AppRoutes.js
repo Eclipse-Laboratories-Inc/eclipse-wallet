@@ -4,12 +4,12 @@ import routes, { ROUTES_MAP } from './routes/app-routes';
 import RoutesBuilder from './routes/RoutesBuilder';
 
 const AppRoutes = () => {
-  const [{ isAdapter, wallets }] = useContext(AppContext);
+  const [{ isAdapter, accounts }] = useContext(AppContext);
 
   let entry;
   if (isAdapter) {
     entry = ROUTES_MAP.ADAPTER;
-  } else if (wallets.length) {
+  } else if (accounts.length) {
     entry = ROUTES_MAP.WALLET;
   } else {
     entry = ROUTES_MAP.WELCOME;

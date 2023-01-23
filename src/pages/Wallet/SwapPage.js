@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
-import get from 'lodash/get';
-import { formatAmount } from '4m-wallet-adapter/services/format';
+import { formatAmount } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -14,18 +13,13 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
-import {
-  getAvailableTokens,
-  getFeaturedTokens,
-  getTransactionImage,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
+import { getBlockchainIcon } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -182,8 +176,10 @@ const linkForTransaction = (title, id, status, explorer) => {
 
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, hiddenValue, config }, { importTokens }] =
-    useContext(AppContext);
+  const [
+    { activeBlockchainAccount, hiddenValue, activeTokens },
+    { importTokens },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
@@ -199,34 +195,36 @@ const SwapPage = ({ t }) => {
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
-  );
+  const current_blockchain = useMemo(() => {
+    activeBlockchainAccount.network.blockchain.toUpperCase();
+  }, [activeBlockchainAccount]);
+  const { explorer } = useUserConfig();
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       invalidate(CACHE_TYPES.AVAILABLE_TOKENS);
       Promise.all([
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
+          () => activeBlockchainAccount.getBalance(tokensAddresses),
         ),
-        cache(`${activeWallet.chain}`, CACHE_TYPES.AVAILABLE_TOKENS, () =>
-          getAvailableTokens(activeWallet.chain, activeWallet.networkId),
+        cache(
+          `${activeBlockchainAccount.network.id}`,
+          CACHE_TYPES.AVAILABLE_TOKENS,
+          () => activeBlockchainAccount.getAvailableTokens(),
         ),
-        cache(`${activeWallet.chain}`, CACHE_TYPES.FEATURED_TOKENS, () =>
-          getFeaturedTokens(activeWallet.chain, activeWallet.networkId),
+        cache(
+          `${activeBlockchainAccount.network.id}`,
+          CACHE_TYPES.FEATURED_TOKENS,
+          () => activeBlockchainAccount.getFeaturedTokens(),
         ),
       ]).then(([balance, atks, ftks]) => {
         const tks = balance.items || [];
@@ -237,7 +235,7 @@ const SwapPage = ({ t }) => {
         setReady(true);
       });
     }
-  }, [activeWallet, tokensAddresses]);
+  }, [activeBlockchainAccount, tokensAddresses]);
 
   const [inAmount, setInAmount] = useState(null);
 
@@ -302,7 +300,7 @@ const SwapPage = ({ t }) => {
     setError(false);
     setProcessing(true);
     try {
-      const q = await activeWallet.getBestSwapQuote(
+      const q = await activeBlockchainAccount.getBestSwapQuote(
         inToken.mint || inToken.address,
         outToken.address,
         parseFloat(inAmount),
@@ -323,7 +321,7 @@ const SwapPage = ({ t }) => {
 
     setStatus(TRANSACTION_STATUS.CREATING);
     setStep(3);
-    activeWallet
+    activeBlockchainAccount
       .createSwapTransaction(
         quote,
         inToken.mint || inToken.address,
@@ -337,12 +335,10 @@ const SwapPage = ({ t }) => {
         setProcessing(false);
         setTotalTransactions(txs.length);
 
-        if (activeWallet.useExplicitTokens()) {
-          importTokens(activeWallet.getReceiveAddress(), [outToken]).catch(
-            e => {
-              console.error('Could not import token:', outToken, e);
-            },
-          );
+        if (activeBlockchainAccount.useExplicitTokens()) {
+          importTokens([outToken]).catch(e => {
+            console.error('Could not import token:', outToken, e);
+          });
         }
 
         if (txs.length > 1) {
@@ -370,7 +366,7 @@ const SwapPage = ({ t }) => {
       {step === 1 && (
         <>
           <GlobalLayout.Header>
-            <Header activeWallet={activeWallet} config={config} t={t} />
+            <Header />
             <GlobalBackTitle title={t('swap.swap_tokens')} />
 
             <GlobalPadding />

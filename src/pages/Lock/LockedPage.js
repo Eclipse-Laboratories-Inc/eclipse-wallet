@@ -16,7 +16,7 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
 const LockedPage = ({ t }) => {
-  const [, { unlockWallets, logout }] = useContext(AppContext);
+  const [, { unlockAccounts, logout }] = useContext(AppContext);
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
@@ -31,7 +31,7 @@ const LockedPage = ({ t }) => {
   const unlock = async () => {
     setError(false);
     setUnlocking(true);
-    const result = await unlockWallets(pass);
+    const result = await unlockAccounts(pass);
     if (!result) {
       setError(true);
       setUnlocking(false);

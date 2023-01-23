@@ -43,6 +43,7 @@
     "address_book": "Contactos",
     "display_language": "Idioma",
     "change_network": "Cambiar Network",
+    "change_path_index": "Cambiar Cuenta Derivada",
     "select_explorer": "Seleccionar Explorador",
     "security": "Seguridad",
     "notifications": "Notificaciones",
@@ -59,6 +60,8 @@
       "edit_name": "Editar nombre",
       "edit_name_disclaimer": "Ten en cuenta que el nombre funciona únicamente para identificar tu wallet localmente. Esta información no se guarda en el blockchain.",
       "edit_address": "Editar Wallet",
+      "show_seed_phrase_description": "",
+      "show_private_key_description": "",
       "tap_to_reveal": "Toca para ver",
       "set_profile_picture": "Utilizar como imagen de perfil",
       "select_nft": "Seleccionar NFT",
@@ -75,7 +78,9 @@
       "addnew": "Agregar nueva dirección",
       "edit": "Editar dirección",
       "save": "Guardar dirección",
-      "label": "Etiqueta"
+      "label": "Etiqueta",
+      "empty": "Parece vacío aquí.\nAgrega tu primer contacto haciendo clic en el botón.",
+      "remove_confirmation": ""
     },
     "languages": {
       "title": "Idioma",
@@ -94,7 +99,7 @@
     },
     "receive": {
       "title": "Recibir",
-      "warning": "Esta dirección es para tokens en la block chain {{chain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
+      "warning": "Esta dirección es para tokens en la block chain {{blockchain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
     },
     "send": {
       "address": {
@@ -135,6 +140,7 @@
     "buttonUnlock": "Desbloquear"
   },
   "wallet": {
+    "name_template": "Cuenta Nro {{number}}",
     "transactions_in_progress": "Transacciones en progreso",
     "my_tokens": "Mis Tokens",
     "non_listed_tokens": "Tokens no-listados",

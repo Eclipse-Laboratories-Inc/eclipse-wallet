@@ -41,7 +41,9 @@ const styles = StyleSheet.create({
 const AccountEditPrivateKeyPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [{ wallets, mnemonics, selectedEndpoints }] = useContext(AppContext);
+  const [step, setStep] = useState(1);
   const [wallet, setWallet] = useState();
+
   useEffect(() => {
     const w = wallets.find(f => f.address === params.address);
     if (w) {
@@ -55,10 +57,13 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
 
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
-  const onBack = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
-    });
+  const onBack = () => {
+    if (step === 1) {
+      navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, { id: params.id });
+    } else {
+      setStep(1);
+    }
+  };
 
   const goToCopy = () => clipboard.copy(wallet.retrieveSecurePrivateKey());
 
@@ -72,8 +77,7 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
         <GlobalBackTitle onBack={onBack} title={t(`general.private_key`)} />
 
         <GlobalText type="body1" center>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          {t('settings.wallets.show_private_key_description')}
         </GlobalText>
 
         <GlobalPadding size="lg" />

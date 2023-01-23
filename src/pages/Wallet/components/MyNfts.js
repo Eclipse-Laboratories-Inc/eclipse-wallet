@@ -1,31 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { AppContext } from '../../../AppProvider';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import GlobalNftList from '../../../component-library/Global/GlobalNftList';
 import { useNavigation } from '../../../routes/hooks';
+import { withTranslation } from '../../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../../utils/cache';
 import { isMoreThanOne } from '../../../utils/nfts';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
 
-export const MyNfts = ({ activeWallet, whenLoading, translate }) => {
+const MyNfts = ({ whenLoading, t }) => {
   const navigate = useNavigation();
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [nftsList, setNftsList] = useState(null);
   const [listedInfo, setListedInfo] = useState([]);
+
+  const networkId = useMemo(
+    () => activeBlockchainAccount.network.id,
+    [activeBlockchainAccount],
+  );
 
   useEffect(() => {
     Promise.resolve(
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
-        () => activeWallet.getAllNftsGrouped(),
+        () => activeBlockchainAccount.getAllNftsGrouped(),
       ),
     ).then(async nfts => {
       setNftsList(nfts);
       whenLoading(false);
-      const listed = await activeWallet.getListedNfts();
+      const listed = await activeBlockchainAccount.getListedNfts();
       setListedInfo(listed);
     });
-  }, [activeWallet, whenLoading]);
+  }, [networkId, activeBlockchainAccount, whenLoading]);
 
   const goToNFTs = token =>
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: token.address });
@@ -43,16 +51,17 @@ export const MyNfts = ({ activeWallet, whenLoading, translate }) => {
   return (
     <>
       <GlobalCollapse
-        title={translate('wallet.my_nfts')}
+        title={t('wallet.my_nfts')}
         viewAllAction={goToNFTs}
         isOpen>
         <GlobalNftList
           nonFungibleTokens={nftsList}
           listedInfo={listedInfo}
           onClick={onNftClick}
-          t={translate}
         />
       </GlobalCollapse>
     </>
   );
 };
+
+export default withTranslation()(MyNfts);

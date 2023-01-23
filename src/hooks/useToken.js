@@ -1,38 +1,43 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import get from 'lodash/get';
 import { AppContext } from '../AppProvider';
 import { cache, CACHE_TYPES } from '../utils/cache';
 
 const useToken = ({ tokenId }) => {
   const [loaded, setloaded] = useState(false);
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, activeTokens }] = useContext(AppContext);
   const [token, setToken] = useState({});
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
+  );
+
+  const networkId = useMemo(
+    () => activeBlockchainAccount.network.id,
+    [activeBlockchainAccount],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
+          () => activeBlockchainAccount.getBalance(tokensAddresses),
         ),
-      ]).then(([balance]) => {
-        const tokenSelected = (balance.items || []).find(
-          i => i.address === tokenId,
-        );
-        setToken(tokenSelected || {});
-        setloaded(true);
-      });
+      ])
+        .then(([balance]) => {
+          const tokenSelected = (balance.items || []).find(
+            i => i.address === tokenId,
+          );
+          setToken(tokenSelected || {});
+          setloaded(true);
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
-  }, [activeWallet, tokenId, tokensAddresses]);
+  }, [activeBlockchainAccount, networkId, tokenId, tokensAddresses]);
 
   return { loaded, token };
 };

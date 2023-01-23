@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -13,17 +13,16 @@ import { AppContext } from '../../AppProvider';
 
 const AccountEditProfileAvatarsPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet }, { editWalletAvatar }] = useContext(AppContext);
+  const [{}, { editAccount }] = useContext(AppContext);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
-      address: params.address,
+      id: params.id,
     });
   const onClick = id => {
-    editWalletAvatar(
-      activeWallet.getReceiveAddress(),
-      `http://static.salmonwallet.io/avatar/${id}.png`,
-    );
+    editAccount(params.id, {
+      avatar: `http://static.salmonwallet.io/avatar/${id}.png`,
+    });
     navigate(ROUTES_WALLET_MAP.WALLET_OVERVIEW);
   };
   return (

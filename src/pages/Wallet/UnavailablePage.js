@@ -1,19 +1,15 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../../AppProvider';
-import { withTranslation } from '../../hooks/useTranslations';
+import React from 'react';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import Header from '../../component-library/Layout/Header';
 
-const UnavailablePage = ({ t }) => {
-  const [{ activeWallet, config }] = useContext(AppContext);
-
+const UnavailablePage = () => {
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <Header activeWallet={activeWallet} config={config} t={t} />
+        <Header />
         <GlobalBackTitle title="Not available" />
 
         <GlobalPadding />
@@ -25,4 +21,4 @@ const UnavailablePage = ({ t }) => {
   );
 };
 
-export default withTranslation()(UnavailablePage);
+export default UnavailablePage;

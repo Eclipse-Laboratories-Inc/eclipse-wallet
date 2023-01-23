@@ -4,7 +4,6 @@ import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
@@ -30,7 +29,6 @@ import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 import { showValue } from '../../utils/amount';
 
-import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 
@@ -74,10 +72,7 @@ const NftsListingPage = ({ params, t }) => {
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
   const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(
-    getWalletChain(activeWallet),
-    activeWallet.networkId,
-  );
+  const { explorer } = useUserConfig();
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   const tokensAddresses = useMemo(

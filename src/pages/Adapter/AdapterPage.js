@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { SOLANA } from '4m-wallet-adapter/constants/chains';
+const SOLANA = 'solana';
 import { AppContext } from '../../AppProvider';
 import AdapterSelect from './components/AdapterSelect';
 import AdapterDetail from './components/AdapterDetail';

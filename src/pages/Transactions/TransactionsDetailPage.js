@@ -22,11 +22,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import clipboard from '../../utils/clipboard.native';
 import { SECTIONS_MAP } from '../../utils/tracking';
-import {
-  getWalletChain,
-  getShortAddress,
-  getTransactionImage,
-} from '../../utils/wallet';
+import { getShortAddress, getTransactionImage } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
@@ -344,7 +340,7 @@ const TransactionsDetailPage = ({ t, params }) => {
   const [transaction, setTransaction] = useState();
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const { explorer } = useUserConfig();
 
   useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 

@@ -1,9 +1,10 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
+import { AccountFactory, PLATFORMS } from '4m-wallet-adapter';
 import { getTopTokensByPlatform } from '4m-wallet-adapter/services/price-service';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
@@ -20,11 +21,10 @@ import Logo from './components/Logo';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
-import { recoverAccount, validateSeedPhrase } from '../../utils/wallet';
+import { validateSeedPhrase } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
 import clipboard from '../../utils/clipboard.native';
-import PLATFORMS from '../../config/platforms';
 
 const Form = ({ onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
@@ -91,39 +91,39 @@ const Form = ({ onComplete, onBack, t }) => {
   );
 };
 
-const RecoverWalletPage = ({ params, t }) => {
+const RecoverWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
-    { selectedEndpoints, requiredLock, isAdapter },
-    { addWallet, checkPassword, importTokens },
+    { accounts, requiredLock, isAdapter },
+    { addAccount, checkPassword, importTokens },
   ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
-  const { chainCode } = params;
+
   const handleRecover = async seedPhrase => {
-    const a = await recoverAccount(
-      chainCode,
-      seedPhrase.trim(),
-      selectedEndpoints[params.chainCode],
-    );
-    setAccount(a);
+    const name = t('wallet.name_template', { number: accounts.length + 1 }); // TODO use last number
+    const mnemonic = seedPhrase.trim();
+    const newAccount = await AccountFactory.create({ name, mnemonic });
+    setAccount(newAccount);
     trackEvent(EVENTS_MAP.SECRET_RECOVERED);
     setStep(2);
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addWallet(account, password, chainCode);
+    await addAccount(account, password);
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
 
     try {
+      /* TODO
       if (account.useExplicitTokens()) {
         const tokens = await getTopTokensByPlatform(PLATFORMS[chainCode]);
-        await importTokens(account.getReceiveAddress(), tokens);
+        await importTokens(tokens);
       }
+      */
     } catch (e) {
       console.error('Could not import tokens', e);
     }
@@ -136,7 +136,6 @@ const RecoverWalletPage = ({ params, t }) => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
     navigate(ROUTES_MAP.ADAPTER);
   };
-  const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
   return (
     <GlobalLayout fullscreen>
@@ -168,7 +167,6 @@ const RecoverWalletPage = ({ params, t }) => {
         <Success
           goToWallet={!isAdapter ? goToWallet : undefined}
           goToAdapter={isAdapter ? goToAdapter : undefined}
-          goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
         />
@@ -177,4 +175,4 @@ const RecoverWalletPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(RecoverWalletPage));
+export default withTranslation()(RecoverWalletPage);

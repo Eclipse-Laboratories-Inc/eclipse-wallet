@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
+import { getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import RoutesBuilder from '../../routes/RoutesBuilder';
 import routes from './routes';
 import { ROUTES_TYPES } from '../../routes/constants';
-import { retriveConfig } from '../../utils/wallet';
 import SwapPage from './SwapPage';
 import NftsSection from '../Nfts';
 import UnavailablePage from './UnavailablePage';
@@ -14,28 +14,37 @@ import GlobalTabBarLayout from '../../component-library/Global/GlobalTabBarLayou
 
 const WalletPage = () => {
   const navigate = useNavigation();
-  const [{ activeWallet }] = useContext(AppContext);
-  const [configs, setConfigs] = useState(null);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [switches, setSwitches] = useState(null);
+
+  const networkId = useMemo(
+    () => activeBlockchainAccount.network.id,
+    [activeBlockchainAccount],
+  );
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs => {
-      setConfigs(chainConfigs[activeWallet.chain].sections);
+    getSwitches().then(allSwitches => {
+      setSwitches(allSwitches[networkId].sections);
+    });
+  }, [networkId]);
+
+  useEffect(() => {
+    if (switches) {
       const nftsRoute = routes.find(r => r.name === 'NFT');
       const swapRoute = routes.find(r => r.name === 'Swap');
-      if (configs) {
-        if (!configs?.nfts?.active) {
-          nftsRoute.Component = UnavailablePage;
-        } else {
-          nftsRoute.Component = NftsSection;
-        }
-        if (!configs?.swap?.active) {
-          swapRoute.Component = UnavailablePage;
-        } else {
-          swapRoute.Component = SwapPage;
-        }
+
+      if (!switches.nfts?.active) {
+        nftsRoute.Component = UnavailablePage;
+      } else {
+        nftsRoute.Component = NftsSection;
       }
-    });
-  });
+      if (!switches.swap?.active) {
+        swapRoute.Component = UnavailablePage;
+      } else {
+        swapRoute.Component = SwapPage;
+      }
+    }
+  }, [switches]);
 
   return (
     <GlobalTabBarLayout

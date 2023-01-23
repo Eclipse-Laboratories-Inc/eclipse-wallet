@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { getNetworks, getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
-import { getWalletChain } from '../../utils/wallet';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -12,33 +12,36 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 
 const ChangeNetworkPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, selectedEndpoints }, { changeEndpoint }] =
-    useContext(AppContext);
-  const onSelect = value => {
-    changeEndpoint(getWalletChain(activeWallet), value);
-  };
+  const [{ networkId }, { changeNetwork }] = useContext(AppContext);
+  const onSelect = targetId => changeNetwork(targetId);
+
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+  const [switches, setSwitches] = useState([]);
   const [networks, setNetworks] = useState([]);
+
   useEffect(() => {
-    activeWallet.getNetworks().then(nwks => {
-      if (nwks?.length > 0) {
-        setNetworks(nwks);
-      }
-    });
-  }, [activeWallet]);
+    const load = async () => {
+      setSwitches(await getSwitches());
+      setNetworks(await getNetworks());
+    };
+
+    load();
+  }, []);
 
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
         <GlobalBackTitle onBack={onBack} title={t(`settings.change_network`)} />
 
-        {networks.map(({ id: label, description }) => (
+        {networks.map(({ id, name, icon }) => (
           <CardButton
-            key={label}
-            active={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            complete={label === selectedEndpoints[getWalletChain(activeWallet)]}
-            title={label}
-            onPress={() => onSelect(label)}
+            key={id}
+            active={id === networkId}
+            complete={id === networkId}
+            title={name}
+            image={icon}
+            disabled={!switches[id]?.enable}
+            onPress={() => onSelect(id)}
           />
         ))}
       </GlobalLayout.Header>

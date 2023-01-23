@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
 import pick from 'lodash/pick';
 
@@ -7,11 +7,7 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import {
-  getTransactionImage,
-  TRANSACTION_STATUS,
-  getWalletName,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import useToken from '../../hooks/useToken';
 import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
@@ -33,7 +29,6 @@ import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
 import { showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
-import { getWalletChain } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
@@ -70,7 +65,7 @@ const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(params.toAddress ? 2 : 1);
-  const [{ activeWallet, wallets, addressBook, config }] =
+  const [{ accounts, activeBlockchainAccount, addressBook }] =
     useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
@@ -85,12 +80,11 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const current_blockchain = getWalletChain(activeWallet);
+  const current_blockchain = useMemo(() => {
+    activeBlockchainAccount.network.blockchain.toUpperCase();
+  }, [activeBlockchainAccount]);
   const isBitcoin = current_blockchain === 'BITCOIN';
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
-  );
+  const { explorer } = useUserConfig();
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -114,7 +108,7 @@ const TokenSendPage = ({ params, t }) => {
   const onNext = async () => {
     if (step === 2) {
       if (!addressEmpty) {
-        const feeSend = await activeWallet.estimateTransferFee(
+        const feeSend = await activeBlockchainAccount.estimateTransferFee(
           recipientAddress,
           token.address,
           recipientAmount,
@@ -131,7 +125,7 @@ const TokenSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(4);
       const { txId, executableTx } =
-        await activeWallet.createTransferTransaction(
+        await activeBlockchainAccount.createTransferTransaction(
           recipientAddress,
           token.address,
           recipientAmount,
@@ -139,7 +133,7 @@ const TokenSendPage = ({ params, t }) => {
         );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(
+      await activeBlockchainAccount.confirmTransferTransaction(
         isBitcoin ? executableTx : txId,
       );
       setStatus(TRANSACTION_STATUS.SUCCESS);
@@ -176,15 +170,14 @@ const TokenSendPage = ({ params, t }) => {
   };
 
   const savePendingTx = async (txId, tokenSymbol, amount) => {
-    console.log(activeWallet.chain);
-    if (activeWallet.chain === 'bitcoin') {
+    if (current_blockchain === 'BITCOIN') {
       const lastStatus = new Date().getTime();
       const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
       let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
       if (transactions === null) transactions = [];
       transactions.push({
-        account: activeWallet.publicKey,
-        chain: activeWallet.chain,
+        account: activeBlockchainAccount.publicKey,
+        chain: activeBlockchainAccount.network.blockchain,
         txId,
         recipient,
         tokenSymbol,
@@ -196,6 +189,18 @@ const TokenSendPage = ({ params, t }) => {
       storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
     }
   };
+
+  const targets = useMemo(
+    () =>
+      accounts.flatMap(account =>
+        Object.values(account.networksAccounts).flatMap(blockchainAccount => ({
+          name: account.name,
+          address: blockchainAccount.getReceiveAddress(),
+          blockchain: blockchainAccount.network.blockchain,
+        })),
+      ),
+    [accounts],
+  );
 
   return (
     loaded && (
@@ -211,7 +216,7 @@ const TokenSendPage = ({ params, t }) => {
 
               <CardButtonWallet
                 title={t('token.send.from', { name: token.name })}
-                address={activeWallet.getReceiveAddress()}
+                address={activeBlockchainAccount.getReceiveAddress()}
                 image={token.logo}
                 imageSize="md"
                 buttonStyle={styles.buttonStyle}
@@ -234,7 +239,7 @@ const TokenSendPage = ({ params, t }) => {
                 onQR={toggleScan}
               />
 
-              {wallets.length > 0 && (
+              {targets.length > 0 && (
                 <>
                   <GlobalPadding />
 
@@ -243,14 +248,14 @@ const TokenSendPage = ({ params, t }) => {
                     titleStyle={styles.titleStyle}
                     isOpen
                     hideCollapse>
-                    {wallets.map(wallet => (
+                    {targets.map(({ name, address, blokchain }) => (
                       <CardButtonWallet
-                        key={wallet.address}
-                        title={getWalletName(wallet.address, config)}
-                        address={wallet.address}
-                        chain={wallet.chain}
+                        key={address}
+                        title={name}
+                        address={address}
+                        chain={blokchain}
                         imageSize="md"
-                        onPress={() => setInputAddress(wallet.address)}
+                        onPress={() => setInputAddress(address)}
                         buttonStyle={globalStyles.addressBookItem}
                         touchableStyles={globalStyles.addressBookTouchable}
                         transparent

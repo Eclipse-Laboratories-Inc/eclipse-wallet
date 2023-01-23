@@ -153,8 +153,7 @@ const useWallets = () => {
       storage.getItem(STORAGE_KEYS.WALLETS),
       storage.getItem(STORAGE_KEYS.ACTIVE),
       storage.getItem(STORAGE_KEYS.ENDPOINTS),
-      storage.getItem(STORAGE_KEYS.EXPLORERS),
-    ]).then(async ([storedWallets, activeIndex, endpoints, explorers]) => {
+    ]).then(async ([storedWallets, activeIndex, endpoints]) => {
       const activeEndpoints = endpoints || buildEndpoints();
       setSelectedEndpoints(activeEndpoints);
       if (storedWallets && storedWallets.wallets) {

@@ -43,7 +43,7 @@ const TransactionsListPage = ({ t }) => {
   const navigate = useNavigation();
   const onDetail = id => navigate(ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
 
-  const [{ activeWallet, selectedEndpoints, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [transactions, setTransactions] = useState([]);
   const [paging, setPaging] = useState({});
   const [loaded, setLoaded] = useState(false);
@@ -53,26 +53,30 @@ const TransactionsListPage = ({ t }) => {
 
   useEffect(() => {
     cache(
-      `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+      `${
+        activeBlockchainAccount.network.id
+      }-${activeBlockchainAccount.getReceiveAddress()}`,
       CACHE_TYPES.TRANSACTIONS,
-      () => activeWallet.getRecentTransactions({ pageSize }),
+      () => activeBlockchainAccount.getRecentTransactions({ pageSize }),
     )
       .then(({ data, meta }) => {
         setTransactions(data);
         setPaging(meta);
       })
       .finally(() => setLoaded(true));
-  }, [activeWallet, selectedEndpoints]);
+  }, [activeBlockchainAccount]);
 
   const onLoadMore = useCallback(() => {
     setLoading(true);
 
-    activeWallet
+    activeBlockchainAccount
       .getRecentTransactions({ ...paging, pageSize })
       .then(({ data, meta }) => {
         invalidate(CACHE_TYPES.TRANSACTIONS);
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.TRANSACTIONS,
           () => ({
             data: transactions.concat(data),
@@ -83,7 +87,7 @@ const TransactionsListPage = ({ t }) => {
         setTransactions(transactions.concat(data));
       })
       .finally(() => setLoading(false));
-  }, [activeWallet, transactions, paging]);
+  }, [activeBlockchainAccount, transactions, paging]);
 
   const showDate = (recTrans, i) => {
     let lastTransDate;
@@ -111,7 +115,7 @@ const TransactionsListPage = ({ t }) => {
   return (
     <>
       <View style={styles.titleStyle}>
-        <Header activeWallet={activeWallet} config={config} t={t} />
+        <Header />
         <GlobalBackTitle title={t('transactions.your_transactions')} />
       </View>
       <GlobalLayout>

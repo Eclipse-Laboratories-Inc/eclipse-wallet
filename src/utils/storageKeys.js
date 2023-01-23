@@ -1,12 +1,21 @@
 const STORAGE_KEYS = {
-  ADDRESS: 'address',
+  ADDRESS_BOOK: 'address_book',
   LANGUAGE: 'lang',
   USER_CONFIG: 'user_config',
+  ACCOUNTS: 'accounts',
+  MNEMONICS: 'mnemonics',
+  ACCOUNT_ID: 'account_id',
+  NETWORK_ID: 'network_id',
+  PATH_INDEX: 'path_index',
+  TRUSTED_APPS: 'trusted_apps',
+  TOKENS: 'tokens',
+  PENDING_TXS: 'pending_txs',
+
+  /* deprecated keys */
+  ADDRESS: 'address',
   WALLETS: 'wallets',
   ENDPOINTS: 'endpoints',
-  EXPLORERS: 'explorers',
   ACTIVE: 'active',
-  PENDING_TXS: 'pending_txs',
 };
 
 export default STORAGE_KEYS;

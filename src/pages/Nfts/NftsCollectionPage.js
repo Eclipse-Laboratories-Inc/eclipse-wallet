@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { withTranslation } from '../../hooks/useTranslations';
 
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -15,13 +13,13 @@ import Header from '../../component-library/Layout/Header';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 
-const NftsCollectionPage = ({ params, t }) => {
+const NftsCollectionPage = ({ params }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_COLLECTION);
   const navigate = useNavigation();
   const [loaded, setLoaded] = useState(false);
   const [nftsCollection, setNftsCollection] = useState([]);
   const [listedInfo, setListedInfo] = useState([]);
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeWallet }] = useContext(AppContext);
   useEffect(() => {
     if (activeWallet) {
       cache(
@@ -52,7 +50,7 @@ const NftsCollectionPage = ({ params, t }) => {
     (loaded && (
       <GlobalLayout fullscreen>
         <GlobalLayout.Header>
-          <Header activeWallet={activeWallet} config={config} t={t} />
+          <Header />
           <GlobalBackTitle
             onBack={goToBack}
             inlineTitle={
@@ -73,4 +71,4 @@ const NftsCollectionPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(NftsCollectionPage));
+export default withParams(NftsCollectionPage);

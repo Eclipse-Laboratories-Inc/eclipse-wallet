@@ -21,16 +21,16 @@ const AccountEditProfilePage = ({ params, t }) => {
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
+      id: params.id,
     });
   const onSelectNft = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS, {
-      address: params.address,
+      id: params.id,
     });
 
   const onSelectAvatar = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS, {
-      address: params.address,
+      id: params.id,
     });
 
   return (

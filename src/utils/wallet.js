@@ -7,7 +7,12 @@ import {
   getFeaturedTokens as getFeaturedTokens4m,
   retriveConfig as retrieveConfig4m,
 } from '4m-wallet-adapter';
-import chains from '4m-wallet-adapter/constants/chains';
+const chains = {
+  SOLANA: 'solana',
+  NEAR: 'near',
+  BITCOIN: 'bitcoin',
+  ETHEREUM: 'ethereum',
+};
 import get from 'lodash/get';
 
 import ENDPOINTS from '../config/endpoints';

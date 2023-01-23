@@ -68,7 +68,7 @@ const NftsDetailPage = ({ params, t }) => {
   const [listedLoaded, setListedLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
   const [listedInfo, setListedInfo] = useState([]);
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeWallet }] = useContext(AppContext);
   const [configs, setConfigs] = useState(null);
   const current_blockchain = getWalletChain(activeWallet);
 
@@ -167,7 +167,7 @@ const NftsDetailPage = ({ params, t }) => {
     (loaded && (
       <GlobalLayout fullscreen>
         <GlobalLayout.Header>
-          <Header activeWallet={activeWallet} config={config} t={t} />
+          <Header />
           <GlobalBackTitle
             onBack={goToBack}
             inlineTitle={

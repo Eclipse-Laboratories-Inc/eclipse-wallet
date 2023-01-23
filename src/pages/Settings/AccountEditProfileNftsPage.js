@@ -12,31 +12,33 @@ import { cache, CACHE_TYPES } from '../../utils/cache';
 import { AppContext } from '../../AppProvider';
 
 const AccountEditProfileNftsPage = ({ params, t }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [nfts, setNfts] = useState(null);
 
   const navigate = useNavigation();
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${
+          activeBlockchainAccount.network.id
+        }-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS_ALL,
-        () => activeWallet.getAllNfts(),
+        () => activeBlockchainAccount.getAllNfts(),
       ).then(result => {
         console.log(result);
         setNfts(result);
       });
     }
-  }, [activeWallet]);
+  }, [activeBlockchainAccount]);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
-      address: params.address,
+      id: params.id,
     });
   const onClick = nft =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL, {
-      address: nft.mint,
-      id: nft.mint,
+      id: params.id,
+      mint: nft.mint,
     });
   return (
     <GlobalLayout>

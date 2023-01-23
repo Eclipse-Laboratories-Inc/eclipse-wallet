@@ -3,7 +3,6 @@ import isNil from 'lodash/isNil';
 import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';
-import useWallets from './hooks/useWallets';
 import LockedPage from './pages/Lock/LockedPage';
 import InactivityCheck from './features/InactivityCheck/InactivityCheck';
 import GlobalSkeleton from './component-library/Global/GlobalSkeleton';
@@ -11,6 +10,7 @@ import GlobalError from './features/ErrorHandler/GlobalError';
 import useTranslations from './hooks/useTranslations';
 import useAddressbook from './hooks/useAddressbook';
 import useRuntime from './hooks/useRuntime';
+import useAccounts from './hooks/useAccounts';
 
 export const AppContext = createContext([]);
 
@@ -46,10 +46,9 @@ const reducer = (state, action) => {
 };
 
 const AppProvider = ({ children }) => {
-  const [
-    { ready: walletReady, active: walletActive, ...walletState },
-    walletActions,
-  ] = useWallets();
+  const [{ ready: accountsReady, ...accountsState }, accountsActions] =
+    useAccounts();
+
   const [{ ready: addressReady, ...addressBookState }, addressBookActions] =
     useAddressbook();
   const {
@@ -62,7 +61,7 @@ const AppProvider = ({ children }) => {
   const [appState, dispatch] = useReducer(reducer, initialState);
   useEffect(() => {
     if (
-      walletReady &&
+      accountsReady &&
       !appState.ready &&
       translationsLoaded &&
       addressReady &&
@@ -71,19 +70,19 @@ const AppProvider = ({ children }) => {
       splash.hide();
       dispatch({
         type: ACTIONS.INITIATE_DONE,
-        value: { isLogged: !isNil(walletActive) },
+        value: { isLogged: !isNil(accountsState.activeAccount) },
       });
     }
   }, [
-    walletReady,
-    walletActive,
+    accountsReady,
+    accountsState.activeAccount,
     appState.ready,
     translationsLoaded,
     addressReady,
     runtimeReady,
   ]);
   const logout = async () => {
-    await walletActions.removeAllWallets();
+    await accountsActions.removeAllWallets();
     dispatch({
       type: ACTIONS.LOGOUT,
     });
@@ -96,15 +95,15 @@ const AppProvider = ({ children }) => {
     });
   };
   const appActions = {
-    ...walletActions,
+    ...accountsActions,
     ...addressBookActions,
     changeLanguage,
     logout,
     toggleHideBalance,
   };
   const onAppIdle = () => {
-    if (walletState.requiredLock) {
-      walletActions.lockWallets();
+    if (accountsState.requiredLock) {
+      accountsActions.lockWallets();
     }
   };
 
@@ -113,7 +112,7 @@ const AppProvider = ({ children }) => {
       value={[
         {
           ...appState,
-          ...walletState,
+          ...accountsState,
           ...addressBookState,
           ...runtimeState,
           languages,
@@ -122,12 +121,12 @@ const AppProvider = ({ children }) => {
         appActions,
       ]}>
       <GlobalError>
-        {!appState.ready && !walletState.locked && (
+        {!appState.ready && !accountsState.locked && (
           <ThemeProvider>
             <GlobalSkeleton type="Generic" />
           </ThemeProvider>
         )}
-        {appState.ready && !walletState.locked && (
+        {appState.ready && !accountsState.locked && (
           <RoutesProvider>
             <ThemeProvider>
               <InactivityCheck onIdle={onAppIdle} active>
@@ -136,7 +135,7 @@ const AppProvider = ({ children }) => {
             </ThemeProvider>
           </RoutesProvider>
         )}
-        {walletState.locked && (
+        {accountsState.locked && (
           <ThemeProvider>
             <LockedPage />
           </ThemeProvider>

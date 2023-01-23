@@ -179,7 +179,7 @@ const AdapterDetail = () => {
     // Approve the parent page to connect to this wallet.
     const connect = async () => {
       setConnected(true);
-      await addTrustedApp(address, origin, { name, icon });
+      await addTrustedApp(origin, { name, icon });
 
       postMessage({
         method: 'connected',

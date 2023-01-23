@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -17,34 +18,38 @@ import Header from '../../component-library/Layout/Header';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
-import { retriveConfig } from '../../utils/wallet';
 
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
   const navigate = useNavigation();
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [loaded, setLoaded] = useState(false);
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
-  const [configs, setConfigs] = useState(null);
+  const [switches, setSwitches] = useState(null);
+
+  const networkId = useMemo(
+    () => activeBlockchainAccount.network.id,
+    [activeBlockchainAccount],
+  );
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs =>
-      setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
+    getSwitches().then(allSwitches =>
+      setSwitches(allSwitches[networkId].sections.nfts),
     );
-  });
+  }, [networkId]);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
-        () => activeWallet.getAllNftsGrouped(),
+        () => activeBlockchainAccount.getAllNftsGrouped(),
       )
         .then(async nfts => {
           setNftsGroup(nfts);
-          if (configs?.list_in_marketplace?.active) {
-            const listed = await activeWallet.getListedNfts();
+          if (switches?.list_in_marketplace?.active) {
+            const listed = await activeBlockchainAccount.getListedNfts();
             setListedInfo(listed);
           }
         })
@@ -52,7 +57,7 @@ const NftsListPage = ({ t }) => {
           setLoaded(true);
         });
     }
-  }, [activeWallet, configs?.list_in_marketplace?.active]);
+  }, [activeBlockchainAccount, networkId, switches]);
 
   const onClick = nft => {
     if (isMoreThanOne(nft)) {
@@ -69,13 +74,13 @@ const NftsListPage = ({ t }) => {
       <GlobalLayout>
         {loaded && (
           <GlobalLayout.Header>
-            <Header activeWallet={activeWallet} config={config} t={t} />
+            <Header />
             <View>
               <GlobalText center type="headline2">
                 {t(`wallet.nfts`)}
               </GlobalText>
             </View>
-            {configs?.list_in_marketplace?.active && <NftCollections t />}
+            {switches?.list_in_marketplace?.active && <NftCollections t />}
             <View>
               <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>

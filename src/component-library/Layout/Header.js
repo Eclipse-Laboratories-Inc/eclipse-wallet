@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from '../../pages/Settings/routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import AvatarImage from '../../component-library/Image/AvatarImage';
-import {
-  getWalletName,
-  getShortAddress,
-  getWalletAvatar,
-} from '../../utils/wallet';
+import { getShortAddress } from '../../utils/wallet';
 import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import GlobalButton from '../../component-library/Global/GlobalButton';
@@ -75,7 +72,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Header = ({ activeWallet, config, t }) => {
+const Header = ({ t }) => {
+  const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
+
   const [showToast, setShowToast] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [isConnected, setIsConnected] = useState(null);
@@ -122,7 +121,7 @@ const Header = ({ activeWallet, config, t }) => {
   };
 
   const onCopyAddress = () => {
-    clipboard.copy(activeWallet.getReceiveAddress());
+    clipboard.copy(activeBlockchainAccount.getReceiveAddress());
     setShowToast(true);
   };
 
@@ -132,9 +131,7 @@ const Header = ({ activeWallet, config, t }) => {
         <View style={styles.avatarWalletAddress}>
           <TouchableOpacity onPress={onClickAvatar}>
             <AvatarImage
-              src={getMediaRemoteUrl(
-                getWalletAvatar(activeWallet.getReceiveAddress(), config),
-              )}
+              src={getMediaRemoteUrl(activeAccount.avatar)}
               size={42}
             />
           </TouchableOpacity>
@@ -143,7 +140,7 @@ const Header = ({ activeWallet, config, t }) => {
               type="body2"
               style={styles.walletName}
               numberOfLines={1}>
-              {getWalletName(activeWallet.getReceiveAddress(), config)}
+              {activeAccount.name}
             </GlobalText>
             <TouchableOpacity onPress={onCopyAddress}>
               <GlobalText
@@ -151,7 +148,7 @@ const Header = ({ activeWallet, config, t }) => {
                 color="tertiary"
                 style={styles.walletAddress}
                 numberOfLines={1}>
-                ({getShortAddress(activeWallet.getReceiveAddress())})
+                ({getShortAddress(activeBlockchainAccount.getReceiveAddress())})
                 <GlobalImage
                   source={IconCopy}
                   style={styles.addressCopyIcon}

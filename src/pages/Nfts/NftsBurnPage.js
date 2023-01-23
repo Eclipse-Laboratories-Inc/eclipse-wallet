@@ -20,7 +20,6 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
-import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP } from '../../utils/tracking';
@@ -57,10 +56,8 @@ const NftsBurnPage = ({ params, t }) => {
   const [transactionId, setTransactionId] = useState(null);
   const [burnFee, setBurnFee] = useState(null);
   const [{ activeWallet, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(
-    getWalletChain(activeWallet, activeWallet.networkId),
-  );
-  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
+  const { explorer } = useUserConfig();
+  useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   const openTransaction = async () => {
     const url = `${explorer.url}/tx/${transactionId}`;

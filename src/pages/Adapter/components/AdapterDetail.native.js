@@ -23,10 +23,6 @@ const AdapterDetail = () => {
     [request],
   );
   const cluster = useMemo(() => request?.cluster, [request]);
-  const address = useMemo(
-    () => activeWallet.getReceiveAddress(),
-    [activeWallet],
-  );
 
   useEffect(() => {
     const emitter = new NativeEventEmitter(AdapterModule);
@@ -44,7 +40,7 @@ const AdapterDetail = () => {
 
   if (request?.type === 'AuthorizeRequest') {
     const onApprove = async () => {
-      await addTrustedApp(address, origin, { name, icon });
+      await addTrustedApp(origin, { name, icon });
     };
 
     const onReject = () => AdapterModule.completeWithDecline();

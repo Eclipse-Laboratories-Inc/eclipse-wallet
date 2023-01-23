@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
@@ -7,7 +7,7 @@ import useDomain from '../../hooks/useDomain';
 
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { getShortAddress, getWalletName } from '../../utils/wallet';
+import { getShortAddress } from '../../utils/wallet';
 import clipboard from '../../utils/clipboard.native';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -31,72 +31,75 @@ const styles = StyleSheet.create({
 const TokenReceivePage = ({ t }) => {
   const navigate = useNavigation();
   const { domain } = useDomain();
-  console.log(domain);
 
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
+
+  const address = useMemo(
+    () => activeBlockchainAccount.getReceiveAddress(),
+    [activeBlockchainAccount],
+  );
 
   const goToBack = () => {
     navigate(ROUTES_MAP.WALLET);
   };
 
-  const onCopyAlias = () => clipboard.copy(activeWallet.getReceiveAddress());
+  const onCopyAlias = () => clipboard.copy(address);
 
-  const onCopyAddress = () => clipboard.copy(activeWallet.getReceiveAddress());
-
-  const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
+  const onCopyAddress = () => clipboard.copy(address);
 
   return (
-    activeWallet && (
-      <GlobalLayout fullscreen>
-        <GlobalLayout.Header>
-          <GlobalBackTitle onBack={goToBack} secondaryTitle={walletName} />
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={goToBack}
+          secondaryTitle={activeAccount.name}
+        />
 
-          <View style={globalStyles.centered}>
-            <View style={styles.qrBox}>
-              <QRImage address={activeWallet.getReceiveAddress()} size={225} />
-            </View>
+        <View style={globalStyles.centered}>
+          <View style={styles.qrBox}>
+            <QRImage address={address} size={225} />
+          </View>
 
-            <GlobalPadding size="2xl" />
-            {domain != null && (
-              <View style={globalStyles.inlineWell}>
-                <GlobalText type="body2">{JSON.stringify(domain)}</GlobalText>
-
-                <GlobalButton onPress={onCopyAlias} size="medium">
-                  <GlobalImage source={IconCopy} size="xs" />
-                  <GlobalText type="button">Copy</GlobalText>
-                </GlobalButton>
-              </View>
-            )}
-
+          <GlobalPadding size="2xl" />
+          {domain != null && (
             <View style={globalStyles.inlineWell}>
-              <GlobalText type="body2">
-                {getShortAddress(activeWallet.getReceiveAddress())}
-              </GlobalText>
+              <GlobalText type="body2">{JSON.stringify(domain)}</GlobalText>
 
-              <GlobalButton onPress={onCopyAddress} size="medium">
+              <GlobalButton onPress={onCopyAlias} size="medium">
                 <GlobalImage source={IconCopy} size="xs" />
                 <GlobalText type="button">Copy</GlobalText>
               </GlobalButton>
             </View>
+          )}
 
-            <GlobalPadding size="md" />
+          <View style={globalStyles.inlineWell}>
+            <GlobalText type="body2">{getShortAddress(address)}</GlobalText>
 
-            <GlobalText type="body1" center>
-              {t('token.receive.warning', { chain: activeWallet.chain })}
-            </GlobalText>
+            <GlobalButton onPress={onCopyAddress} size="medium">
+              <GlobalImage source={IconCopy} size="xs" />
+              <GlobalText type="button">Copy</GlobalText>
+            </GlobalButton>
           </View>
-        </GlobalLayout.Header>
 
-        <GlobalLayout.Footer>
-          <GlobalButton
-            type="secondary"
-            wideSmall
-            title={t('actions.close')}
-            onPress={goToBack}
-          />
-        </GlobalLayout.Footer>
-      </GlobalLayout>
-    )
+          <GlobalPadding size="md" />
+
+          <GlobalText type="body1" center>
+            {t('token.receive.warning', {
+              blockchain: activeBlockchainAccount.network.blockchain,
+            })}
+          </GlobalText>
+        </View>
+      </GlobalLayout.Header>
+
+      <GlobalLayout.Footer>
+        <GlobalButton
+          type="secondary"
+          wideSmall
+          title={t('actions.close')}
+          onPress={goToBack}
+        />
+      </GlobalLayout.Footer>
+    </GlobalLayout>
   );
 };
 

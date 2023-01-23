@@ -57,6 +57,7 @@
     "address_book": "Address Book",
     "display_language": "Display Language",
     "change_network": "Change Network",
+    "change_path_index": "Change Derived Account",
     "select_explorer": "Select Explorer",
     "security": "Security",
     "notifications": "Notifications",
@@ -75,6 +76,8 @@
       "edit_name": "Edit Name",
       "edit_name_disclaimer": "Keep in mind that this name works locally for you to easily identify your wallet. None of this data is reflected on the blockchain.",
       "edit_address": "Edit Wallet",
+      "show_seed_phrase_description": "",
+      "show_private_key_description": "",
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
       "select_nft": "Select NFT",
@@ -91,7 +94,8 @@
       "edit": "Edit Address",
       "save": "Save Address",
       "label": "Label",
-      "empty": "Looks empty in here.\nAdd your first contact clicking the button."
+      "empty": "Looks empty in here.\nAdd your first contact clicking the button.",
+      "remove_confirmation": ""
     },
     "languages": {
       "title": "Language",
@@ -110,7 +114,7 @@
     },
     "receive": {
       "title": "Receive",
-      "warning": "This address is for tokens on the {{chain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
+      "warning": "This address is for tokens on the {{blockchain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
     },
     "send": {
       "address": {
@@ -155,6 +159,7 @@
     "buttonUnlock": "Unlock"
   },
   "wallet": {
+    "name_template": "Account #{{number}}",
     "transactions_in_progress": "Transactions In Progress",
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
