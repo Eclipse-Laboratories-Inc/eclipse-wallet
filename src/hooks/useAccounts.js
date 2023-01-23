@@ -11,10 +11,34 @@ import stash from '../utils/stash';
 import storage from '../utils/storage';
 import STORAGE_KEYS from '../utils/storageKeys';
 
+const getDefaultPathIndex = (account, networkId) => {
+  return account.networksAccounts[networkId]?.findIndex(Boolean) || 0;
+};
+
+const formatAccount = account => {
+  const { id, name, avatar, networksAccounts } = account;
+
+  const getPathIndexes = networkAccounts => {
+    const mapIndex = index => {
+      return networkAccounts[index] ? parseInt(index, 10) : null;
+    };
+
+    return Object.keys(networkAccounts).map(mapIndex);
+  };
+
+  return {
+    id,
+    name,
+    avatar,
+    pathIndexes: mapValues(networksAccounts, getPathIndexes),
+  };
+};
+
 const useAccounts = () => {
   const [ready, setReady] = useState(false);
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
+  const [counter, setCounter] = useState(0);
   const [accounts, setAccounts] = useState([]);
   const [mnemonics, setMnemonics] = useState({});
   const [accountId, setAccounId] = useState(null);
@@ -22,29 +46,6 @@ const useAccounts = () => {
   const [pathIndex, setPathIndex] = useState(0);
   const [trustedApps, setTrustedApps] = useState({});
   const [tokens, setTokens] = useState({});
-
-  const getDefaultPathIndex = (account, netId) => {
-    return account.networksAccounts[netId]?.findIndex(Boolean) || 0;
-  };
-
-  const formatAccount = account => {
-    const { id, name, avatar, networksAccounts } = account;
-
-    const getPathIndexes = networkAccounts => {
-      const mapIndex = index => {
-        return networkAccounts[index] ? parseInt(index, 10) : null;
-      };
-
-      return Object.keys(networkAccounts).map(mapIndex);
-    };
-
-    return {
-      id,
-      name,
-      avatar,
-      pathIndexes: mapValues(networksAccounts, getPathIndexes),
-    };
-  };
 
   const runUpgrades = useCallback(async password => {
     const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
@@ -82,6 +83,7 @@ const useAccounts = () => {
       const activeWallet = storedWallets.wallets[storedIndex];
       const storedEndpoints = await storage.getItem(STORAGE_KEYS.ENDPOINTS);
 
+      let newCounter = storedWallets.lastNumber || 0;
       let newAccounts = [];
       let newMnemonics = {};
       let newAccountId;
@@ -178,6 +180,7 @@ const useAccounts = () => {
       if (storedWallets.passwordRequired) {
         newMnemonics = await lock(newMnemonics, password);
       }
+      await storage.setItem(STORAGE_KEYS.COUNTER, newCounter);
       await storage.setItem(STORAGE_KEYS.MNEMONICS, newMnemonics);
       await storage.setItem(STORAGE_KEYS.ACCOUNTS, newAccounts);
       await storage.setItem(STORAGE_KEYS.ACCOUNT_ID, newAccountId);
@@ -241,6 +244,7 @@ const useAccounts = () => {
       if (storedMnemonics) {
         const storedAccounts = await storage.getItem(STORAGE_KEYS.ACCOUNTS);
 
+        setCounter((await storage.getItem(STORAGE_KEYS.COUNTER)) || 0);
         setAccounts(await AccountFactory.createMany(storedAccounts));
         setAccounId(await storage.getItem(STORAGE_KEYS.ACCOUNT_ID));
         setNetworkId(await storage.getItem(STORAGE_KEYS.NETWORK_ID));
@@ -297,6 +301,7 @@ const useAccounts = () => {
   );
 
   const {
+    COUNTER,
     ACCOUNTS,
     MNEMONICS,
     ACCOUNT_ID,
@@ -344,16 +349,19 @@ const useAccounts = () => {
   };
 
   const addAccount = async (account, password) => {
+    const newCounter = counter + 1;
     const newAccounts = [...accounts, account];
     const newMnemonics = { ...mnemonics, [account.id]: account.mnemonics };
     const newNetworkId = networkId || Object.keys(account.networksAccounts)[0];
 
+    setCounter(newCounter);
     setAccounts(newAccounts);
     setMnemonics(newMnemonics);
     setAccounId(account.id);
     setNetworkId(newNetworkId);
     setPathIndex(getDefaultPathIndex(account, newNetworkId));
 
+    await storage.setItem(COUNTER, newCounter);
     await storage.setItem(MNEMONICS, await lock(newMnemonics, password));
     await storage.setItem(ACCOUNTS, newAccounts.map(formatAccount));
     await storage.setItem(ACCOUNT_ID, account.Id);
@@ -403,6 +411,7 @@ const useAccounts = () => {
   };
 
   const removeAllAccounts = async () => {
+    await storage.removeItem(COUNTER);
     await storage.removeItem(ACCOUNTS);
     await storage.removeItem(MNEMONICS);
     await storage.removeItem(ACCOUNT_ID);
@@ -413,6 +422,7 @@ const useAccounts = () => {
 
     setLocked(false);
     setRequiredLock(false);
+    setCounter(0);
     setAccounts([]);
     setMnemonics({});
     setAccounId(null);
@@ -454,6 +464,7 @@ const useAccounts = () => {
       ready,
       locked,
       requiredLock,
+      counter,
       accounts,
       accountId,
       networkId,

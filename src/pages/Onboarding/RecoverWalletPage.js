@@ -95,7 +95,7 @@ const RecoverWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
-    { accounts, requiredLock, isAdapter },
+    { counter, requiredLock, isAdapter },
     { addAccount, checkPassword, importTokens },
   ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
@@ -103,7 +103,7 @@ const RecoverWalletPage = ({ t }) => {
   const [waiting, setWaiting] = useState(false);
 
   const handleRecover = async seedPhrase => {
-    const name = t('wallet.name_template', { number: accounts.length + 1 }); // TODO use last number
+    const name = t('wallet.name_template', { number: counter + 1 });
     const mnemonic = seedPhrase.trim();
     const newAccount = await AccountFactory.create({ name, mnemonic });
     setAccount(newAccount);

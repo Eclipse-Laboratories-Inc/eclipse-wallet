@@ -206,7 +206,7 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
 const CreateWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.CREATE_WALLET);
   const navigate = useNavigation();
-  const [{ accounts, requiredLock, isAdapter }, { addAccount, checkPassword }] =
+  const [{ counter, requiredLock, isAdapter }, { addAccount, checkPassword }] =
     useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
@@ -215,7 +215,7 @@ const CreateWalletPage = ({ t }) => {
   const onAddAccount = () => {
     setWaiting(true);
     if (!account) {
-      const name = t('wallet.name_template', { number: accounts.length + 1 }); // TODO use last number
+      const name = t('wallet.name_template', { number: counter + 1 });
       AccountFactory.create({ name }).then(newAccount => {
         setAccount(newAccount);
         setStep(2);
