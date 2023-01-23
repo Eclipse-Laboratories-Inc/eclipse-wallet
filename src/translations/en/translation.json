@@ -78,6 +78,7 @@
       "edit_address": "Edit Wallet",
       "show_seed_phrase_description": "",
       "show_private_key_description": "",
+      "select_network": "Select Network",
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
       "select_nft": "Select NFT",

@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { getNetworks } from '4m-wallet-adapter';
 
+import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -12,9 +14,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import { AppContext } from '../../AppProvider';
-import clipboard from '../../utils/clipboard.native';
-import { recoverAccount } from '../../utils/wallet';
+import CardButton from '../../component-library/CardButton/CardButton';
 
 const styles = StyleSheet.create({
   positionRelative: {
@@ -36,26 +36,71 @@ const styles = StyleSheet.create({
     width: 265,
     height: 265,
   },
+  sectionTitle: {
+    flexDirection: 'row',
+    marginBottom: theme.gutters.paddingSM,
+  },
 });
+
+const PrivateKeyCard = ({ blockchainAccount, t }) => {
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
+
+  const onReveal = () => {
+    setShowPrivateKey(!showPrivateKey);
+  };
+
+  return (
+    <>
+      <GlobalPadding size="lg" />
+      <View style={styles.sectionTitle}>
+        <GlobalText type="body1" color="secondary">
+          {`${blockchainAccount.path}:`}
+        </GlobalText>
+      </View>
+      <View style={[globalStyles.centered, styles.positionRelative]}>
+        {!showPrivateKey && (
+          <GlobalButton
+            type="text"
+            title={t(`settings.wallets.tap_to_reveal`)}
+            onPress={onReveal}
+            style={styles.floatingButton}
+            touchableStyles={globalStyles.buttonTouchable}
+            transparent
+          />
+        )}
+        <GlobalInput
+          value={
+            showPrivateKey ? blockchainAccount.retrieveSecurePrivateKey() : ''
+          }
+          setValue={() => {}}
+          seedphrase
+          multiline
+          numberOfLines={3}
+          invalid={false}
+          editable={false}
+          inputGroupStyles={styles.inputGroupStyles}
+          style={styles.textareaStyle}
+        />
+      </View>
+      <GlobalPadding size="lg" />
+    </>
+  );
+};
 
 const AccountEditPrivateKeyPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ wallets, mnemonics, selectedEndpoints }] = useContext(AppContext);
+  const [{ activeAccount }] = useContext(AppContext);
   const [step, setStep] = useState(1);
-  const [wallet, setWallet] = useState();
+  const [networks, setNetworks] = useState([]);
+  const [networkId, setNetworkId] = useState();
 
   useEffect(() => {
-    const w = wallets.find(f => f.address === params.address);
-    if (w) {
-      recoverAccount(
-        w.chain,
-        mnemonics[w.address],
-        selectedEndpoints[w.chain],
-      ).then(account => setWallet(account));
-    }
-  }, [params.address, wallets, mnemonics, selectedEndpoints]);
+    const load = async () => {
+      setNetworks(await getNetworks());
+    };
 
-  const [showSeedPhrase, setShowSeedPhrase] = useState(false);
+    load();
+  }, []);
 
   const onBack = () => {
     if (step === 1) {
@@ -65,11 +110,37 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
     }
   };
 
-  const goToCopy = () => clipboard.copy(wallet.retrieveSecurePrivateKey());
-
-  const onReveal = () => {
-    setShowSeedPhrase(!showSeedPhrase);
+  const onDone = () => {
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, { id: params.id });
   };
+
+  const onSelect = id => {
+    setNetworkId(id);
+    setStep(2);
+  };
+
+  if (step === 1) {
+    return (
+      <GlobalLayout>
+        <GlobalLayout.Header>
+          <GlobalBackTitle
+            onBack={onBack}
+            title={t(`settings.wallets.select_network`)}
+          />
+          {networks
+            .filter(({ id }) => activeAccount.networksAccounts[id])
+            .map(({ id, name, icon }) => (
+              <CardButton
+                key={id}
+                title={name}
+                image={icon}
+                onPress={() => onSelect(id)}
+              />
+            ))}
+        </GlobalLayout.Header>
+      </GlobalLayout>
+    );
+  }
 
   return (
     <GlobalLayout>
@@ -79,57 +150,21 @@ const AccountEditPrivateKeyPage = ({ params, t }) => {
         <GlobalText type="body1" center>
           {t('settings.wallets.show_private_key_description')}
         </GlobalText>
-
-        <GlobalPadding size="lg" />
-
-        <View style={[globalStyles.centered, styles.positionRelative]}>
-          {!showSeedPhrase && (
-            <GlobalButton
-              type="text"
-              title={
-                !wallet
-                  ? t(`general.loading`)
-                  : t(`settings.wallets.tap_to_reveal`)
-              }
-              onPress={onReveal}
-              style={styles.floatingButton}
-              touchableStyles={globalStyles.buttonTouchable}
-              transparent
-              disabled={!wallet}
-            />
-          )}
-          <GlobalInput
-            value={
-              showSeedPhrase && wallet ? wallet.retrieveSecurePrivateKey() : ''
-            }
-            setValue={() => {}}
-            seedphrase
-            multiline
-            numberOfLines={8}
-            invalid={false}
-            editable={false}
-            inputGroupStyles={styles.inputGroupStyles}
-            style={styles.textareaStyle}
+        {activeAccount.networksAccounts[networkId].map(blockchainAccount => (
+          <PrivateKeyCard
+            key={blockchainAccount.path}
+            blockchainAccount={blockchainAccount}
+            t={t}
           />
-        </View>
+        ))}
       </GlobalLayout.Header>
 
       <GlobalLayout.Footer inlineFlex>
         <GlobalButton
-          type="secondary"
-          flex
-          title={t(`actions.copy`)}
-          onPress={goToCopy}
-          style={[globalStyles.button, globalStyles.buttonLeft]}
-          touchableStyles={globalStyles.buttonTouchable}
-          disabled={!showSeedPhrase}
-        />
-
-        <GlobalButton
           type="primary"
           flex
           title={t(`actions.done`)}
-          onPress={onBack}
+          onPress={onDone}
           style={[globalStyles.button, globalStyles.buttonRight]}
           touchableStyles={globalStyles.buttonTouchable}
         />
