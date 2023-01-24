@@ -13,7 +13,7 @@ import {
   TRANSACTION_STATUS,
 } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS } from '../Transactions/constants';
+import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -31,6 +31,8 @@ import InputAddress from '../../features/InputAddress/InputAddress';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
 import clipboard from '../../utils/clipboard.native';
+import storage from '../../utils/storage';
+import STORAGE_KEYS from '../../utils/storageKeys';
 
 import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -76,7 +78,11 @@ const NftsSendPage = ({ params, t }) => {
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const current_blockchain = getWalletChain(activeWallet);
+  const { explorer } = useUserConfig(
+    current_blockchain,
+    activeWallet.networkId,
+  );
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
@@ -97,8 +103,8 @@ const NftsSendPage = ({ params, t }) => {
   }, [activeWallet, params.id]);
 
   const goToBack = () => {
-    if (step === 1) {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    if (step === 3) {
+      navigate(APP_ROUTES_MAP.WALLET);
     } else {
       setStep(step - 1);
     }
@@ -130,14 +136,16 @@ const NftsSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      const txId = await activeWallet.createTransferTransaction(
+      const { txId } = await activeWallet.createTransferTransaction(
         recipientAddress,
         nftDetail.mint,
         1,
+        { isNft: true, contractId: nftDetail.contractId },
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
       await activeWallet.confirmTransferTransaction(txId);
+      savePendingNftSend();
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);
@@ -149,6 +157,17 @@ const NftsSendPage = ({ params, t }) => {
       setSending(false);
     }
   };
+
+  const savePendingNftSend = async () => {
+    let pendingNfts = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_SEND);
+    if (pendingNfts === null) pendingNfts = [];
+    pendingNfts.push({
+      ...nftDetail,
+      pending: true,
+    });
+    storage.setItem(STORAGE_KEYS.PENDING_NFTS_SEND, pendingNfts);
+  };
+
   const toggleScan = () => {
     setShowScan(!showScan);
   };
@@ -159,7 +178,7 @@ const NftsSendPage = ({ params, t }) => {
   };
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -333,7 +352,9 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="md" />
 
               <View style={globalStyles.inlineWell}>
-                <GlobalText type="caption">{recipientAddress}</GlobalText>
+                <GlobalText type="caption" style={{ fontSize: 8 }}>
+                  {recipientAddress}
+                </GlobalText>
 
                 <GlobalButton
                   onPress={() => clipboard.copy(recipientAddress)}
@@ -347,7 +368,8 @@ const NftsSendPage = ({ params, t }) => {
                     Network Fee
                   </GlobalText>
                   <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS.SOLANA} SOL
+                    {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
+                    {DEFAULT_SYMBOL[current_blockchain]}
                   </GlobalText>
                 </View>
               )}

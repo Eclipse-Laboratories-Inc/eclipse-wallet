@@ -1,4 +1,5 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react';
+import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -19,7 +20,7 @@ import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
-import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import { SECTIONS_MAP } from '../../utils/tracking';
 import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgroundImage';
 
 const MAX_PAG = 20;
@@ -32,7 +33,7 @@ const TokenSelectPage = ({ params, t }) => {
   const [loaded, setloaded] = useState(false);
 
   const [tokens, setTokens] = useState({});
-  const [{ activeWallet, hiddenBalance }] = useContext(AppContext);
+  const [{ activeWallet, hiddenBalance, config }] = useContext(AppContext);
 
   const [searchToken, setSearchToken] = useState('');
   const [drawedList, setDrawedList] = useState([]);
@@ -52,12 +53,23 @@ const TokenSelectPage = ({ params, t }) => {
   );
 
   useEffect(() => {
-    if (filteredTokens.length > MAX_PAG) {
+    if (filteredTokens.length === 1) {
+      onSelect(filteredTokens[0]);
+    } else if (filteredTokens.length > MAX_PAG) {
       setDrawedList(filteredTokens.slice(0, MAX_PAG));
     } else {
       setDrawedList(filteredTokens);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredTokens]);
+
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
 
   useEffect(() => {
     if (activeWallet) {
@@ -65,14 +77,14 @@ const TokenSelectPage = ({ params, t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         setTokens(balance.items || []);
         setloaded(true);
       });
     }
-  }, [activeWallet, params]);
+  }, [activeWallet, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);

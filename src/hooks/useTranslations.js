@@ -3,12 +3,9 @@ import { withTranslation as withTranslationHOC } from 'react-i18next';
 
 import i18n, { LANGUAGES, resources } from '../translations';
 import storage from '../utils/storage';
+import STORAGE_KEYS from '../utils/storageKeys';
 
 const DEFAULT_LANGUAGE = 'en';
-
-const STORAGE_KEYS = {
-  LANGUAGE: 'lang',
-};
 
 export const withTranslation = withTranslationHOC;
 

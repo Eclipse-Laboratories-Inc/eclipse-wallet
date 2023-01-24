@@ -5,7 +5,13 @@ import { getRouteComponent } from './utils';
 import { ROUTES_MAP } from './app-routes';
 import { useNavigation } from './hooks';
 
-const RoutesBuilder = ({ routes, entry, requireOnboarding = true, ..._ }) => {
+const RoutesBuilder = ({
+  routes,
+  configs,
+  entry,
+  requireOnboarding = true,
+  ..._
+}) => {
   const navigate = useNavigation();
   const [{ wallets }] = useContext(AppContext);
   useEffect(() => {
@@ -15,12 +21,15 @@ const RoutesBuilder = ({ routes, entry, requireOnboarding = true, ..._ }) => {
   }, [requireOnboarding, navigate, wallets]);
 
   const EntryComponent = entry ? getRouteComponent(routes, entry) : null;
-
   return !requireOnboarding || (requireOnboarding && wallets.length > 0) ? (
     <Routes>
       {EntryComponent && <Route path="/" element={<EntryComponent />} />}
       {routes.map(({ key, name, path, Component }) => (
-        <Route key={`route-${key}`} path={path} element={<Component />} />
+        <Route
+          key={`route-${key}`}
+          path={path}
+          element={<Component cfgs={configs} />}
+        />
       ))}
     </Routes>
   ) : null;

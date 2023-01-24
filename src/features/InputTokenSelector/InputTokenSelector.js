@@ -43,6 +43,7 @@ const InputWithTokenSelector = ({
   hiddenBalance,
   tokens,
   featuredTokens,
+  chips,
   onChange = () => {},
   ...props
 }) => {
@@ -123,7 +124,7 @@ const InputWithTokenSelector = ({
                       onPress={() => onSelect(token)}
                       size="sm"
                       icon={<GlobalImage url={token.logo} size="xs" circle />}
-                      caption={token.symbol || token.name}
+                      caption={token.symbol.toUpperCase() || token.name}
                       buttonStyle={{ width: 112, marginRight: 10 }}
                     />
                   </View>
@@ -146,6 +147,7 @@ const InputWithTokenSelector = ({
                       }`
                     : token.symbol
                 }
+                chip={chips && token.network}
               />
             ))}
           </GlobalLayout.Header>

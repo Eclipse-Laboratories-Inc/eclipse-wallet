@@ -50,7 +50,9 @@
     "logout": "Logout",
     "view_more": "View more",
     "continue": "Continue",
-    "follow_us": "Follow us"
+    "follow_us": "Follow us",
+    "bridge": "Bridge",
+    "retry": "Retry"
   },
   "settings": {
     "title": "Settings",
@@ -110,8 +112,7 @@
     },
     "receive": {
       "title": "Receive",
-      "solana_warning": "This address is for receive SOL and SPL tokens only on Solana",
-      "warning": "This address is for receive SOL and SPL tokens only on Solana"
+      "warning": "This address is for tokens on the {{chain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
     },
     "send": {
       "address": {
@@ -127,6 +128,7 @@
       "validate": "Validate",
       "from": "From: {{name}}",
       "transaction_creating": "Creating Transaction...",
+      "transaction_bridging": "Swapping...",
       "transaction_sending": "Sending...",
       "transaction_listing": "Listing...",
       "transaction_unlisting": "Unlisting...",
@@ -134,6 +136,7 @@
       "transaction_canceling-offer": "Canceling Offer...",
       "transaction_buying": "Buying...",
       "transaction_success": "Transaction Completed",
+      "transaction_bridge_success": "Transaction pending, this could take a few minutes.\nHead to your Wallet Overview section to keep track of the status.",
       "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",
@@ -159,6 +162,8 @@
     "buttonUnlock": "Unlock"
   },
   "wallet": {
+    "transactions_in_progress": "Transactions In Progress",
+    "swaps_in_progress": "Swaps In Progress",
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
@@ -220,6 +225,11 @@
       "title3": "Stay tuned",
       "content3": "Follow us at ",
       "content3b": "@salmonwallet"
+    },
+    "pending_txs": {
+      "inProgress": "In Progress",
+      "fail": "Failed",
+      "success": "Succeded"
     }
   },
   "adapter": {
@@ -264,7 +274,23 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "empty": "No transactions found",
-    "detail_back": "Back to Wallet"
+    "detail_back": "Back to Wallet",
+    "send": "Sent",
+    "receive": "Received",
+    "swap": "Swap",
+    "interaction": "Interaction",
+    "unknown": "Unknown",
+    "fromAddress": "From: {{address}}",
+    "toAddress": "To: {{address}}",
+    "date": "Date",
+    "type": "Type",
+    "id": "Transaction ID",
+    "status": "Status",
+    "completed": "Completed",
+    "failed": "Failed",
+    "from": "From",
+    "to": "To",
+    "fee": "Fee"
   },
   "nft": {
     "description": "Description",
@@ -308,7 +334,8 @@
     "offer_amount": "Offer amount:",
     "trending_collections": "Trending collections",
     "new_collections": "New collections",
-    "update": "UPDATE"
+    "update": "UPDATE",
+    "status_pending": "Waiting confirmation"
   },
   "swap": {
     "swap": "Swap",
@@ -322,6 +349,11 @@
     "refresh_quote": "Refresh Quote",
     "total_fee": "Total fee",
     "go_to_explorer": "Go to Explorer"
+  },
+  "bridge": {
+    "preview": "Bridge Preview",
+    "less_than_minimal": "Minimum amount: {{min}} {{symbol}}",
+    "provider_error": "Bridge provider not available.\nPlease try again later."
   },
   "header": {
     "connected": "Connected to {{hostname}}",

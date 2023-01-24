@@ -1,0 +1,15 @@
+import {
+  BITCOIN_PLATFORM,
+  ETHEREUM_PLATFORM,
+  NEAR_PLATFORM,
+  SOLANA_PLATFORM,
+} from '4m-wallet-adapter/services/price-service';
+
+const PLATFORMS = {
+  SOLANA: SOLANA_PLATFORM,
+  NEAR: NEAR_PLATFORM,
+  ETHEREUM: ETHEREUM_PLATFORM,
+  BITCOIN: BITCOIN_PLATFORM,
+};
+
+export default PLATFORMS;

@@ -140,7 +140,7 @@ const SelectChain = ({
         chain={chain}
         onNext={onNext}
         onComingSoon={onComingSoon}
-        enabled={configurations[chain.toLowerCase()].enable}
+        enabled={true}
       />
     ))}
   </GlobalLayout.Header>
@@ -158,7 +158,7 @@ const SelectOptionsPage = ({ t }) => {
 
   useEffect(() => {
     retriveConfig().then(chainConfigs => setConfigs(chainConfigs));
-  });
+  }, []);
 
   const onSelectAction = action => {
     setActionRoute(action);

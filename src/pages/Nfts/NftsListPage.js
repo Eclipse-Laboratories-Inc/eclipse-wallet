@@ -6,7 +6,7 @@ import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
-import { isMoreThanOne } from '../../utils/nfts';
+import { isMoreThanOne, updatePendingNfts } from '../../utils/nfts';
 
 import theme from '../../component-library/Global/theme';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
@@ -19,6 +19,7 @@ import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import NftCollections from './components/NftCollections';
 import NftOffersMade from './components/NftOffersMade';
+import { retriveConfig } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,13 @@ const NftsListPage = ({ t }) => {
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [configs, setConfigs] = useState(null);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs =>
+      setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
+    );
+  }, [activeWallet]);
 
   useEffect(() => {
     if (activeWallet) {
@@ -42,21 +50,25 @@ const NftsListPage = ({ t }) => {
         CACHE_TYPES.NFTS,
         () => activeWallet.getAllNftsGrouped(),
       ).then(async nfts => {
-        setNftsGroup(nfts);
-        const listed = await activeWallet.getListedNfts();
-        setListedInfo(listed);
+        setNftsGroup(await updatePendingNfts(nfts));
+        if (configs?.list_in_marketplace?.active) {
+          const listed = await activeWallet.getListedNfts();
+          setListedInfo(listed);
+        }
         setLoaded(true);
       });
     }
-  }, [activeWallet]);
+  }, [activeWallet, configs?.list_in_marketplace?.active]);
 
   const onClick = nft => {
-    if (isMoreThanOne(nft)) {
-      navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
-    } else {
-      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, {
-        id: nft.mint || nft.items[0].mint,
-      });
+    if (!nft.pending) {
+      if (isMoreThanOne(nft)) {
+        navigate(NFTS_ROUTES_MAP.NFTS_COLLECTION, { id: nft.collection });
+      } else {
+        navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, {
+          id: nft.mint || nft.items[0].mint,
+        });
+      }
     }
   };
 
@@ -71,7 +83,7 @@ const NftsListPage = ({ t }) => {
                 {t(`wallet.nfts`)}
               </GlobalText>
             </View>
-            <NftCollections t />
+            {configs?.list_in_marketplace?.active && <NftCollections t />}
             <View>
               <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
             </View>

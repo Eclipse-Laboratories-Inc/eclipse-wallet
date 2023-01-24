@@ -9,21 +9,14 @@ import { lock, unlock } from '../utils/password';
 import {
   getChains,
   getDefaultEndpoint,
+  isDefaultPath,
   recoverAccount,
   recoverDerivedAccount,
 } from '../utils/wallet';
-
-const STORAGE_KEYS = {
-  WALLETS: 'wallets',
-  ENDPOINTS: 'endpoints',
-  EXPLORERS: 'explorers',
-  ACTIVE: 'active',
-};
+import STORAGE_KEYS from '../utils/storageKeys';
 
 const WALLET_PLACEHOLDER = 'Wallet NRO';
 const WALLET_DERIVED_PLACEHOLDER = 'Wallet Derived NRO';
-
-const DEFAULT_PATH = "m/44'/501'/0'/0'";
 
 const noIndex = idx => idx === -1;
 
@@ -44,8 +37,7 @@ const getWalletAccount = async (
   explorers,
 ) => {
   const walletInfo = wallets[index];
-  const isDerived = walletInfo.path !== DEFAULT_PATH;
-  if (isDerived) {
+  if (!isDefaultPath(walletInfo.path)) {
     return await recoverDerivedAccount(
       walletInfo.chain,
       mnemonics[walletInfo.address],
@@ -459,6 +451,29 @@ const useWallets = () => {
     });
     setConfig(_config);
   };
+  const importTokens = async (address, tokens) => {
+    const _config = {
+      ...config,
+      [address]: {
+        ...get(config, address, {}),
+        tokens: (tokens || [])
+          .filter(token => !!token?.address)
+          .reduce(
+            (obj, token) => ({
+              ...obj,
+              [token.address]: omit(token, 'address'),
+            }),
+            get(config, `${address}.tokens`, {}),
+          ),
+      },
+    };
+    const _storageWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
+    await storage.setItem(STORAGE_KEYS.WALLETS, {
+      ..._storageWallets,
+      config: _config,
+    });
+    setConfig(_config);
+  };
   const editWalletAvatar = async (address, avatar) => {
     const _config = {
       ...config,
@@ -499,6 +514,7 @@ const useWallets = () => {
       editWalletAvatar,
       addTrustedApp,
       removeTrustedApp,
+      importTokens,
     },
   ];
 };

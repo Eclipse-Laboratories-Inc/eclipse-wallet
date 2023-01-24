@@ -1,15 +1,42 @@
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
+import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import RoutesBuilder from '../../routes/RoutesBuilder';
 import routes from './routes';
 import { ROUTES_TYPES } from '../../routes/constants';
+import { retriveConfig } from '../../utils/wallet';
+import SwapPage from './SwapPage';
+import NftsSection from '../Nfts';
+import UnavailablePage from './UnavailablePage';
 
 import GlobalTabBarLayout from '../../component-library/Global/GlobalTabBarLayout';
 
 const WalletPage = () => {
   const navigate = useNavigation();
-  // const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeWallet }] = useContext(AppContext);
+  const [configs, setConfigs] = useState(null);
+
+  useEffect(() => {
+    retriveConfig().then(chainConfigs => {
+      setConfigs(chainConfigs[activeWallet.chain].sections);
+      const nftsRoute = routes.find(r => r.name === 'NFT');
+      const swapRoute = routes.find(r => r.name === 'Swap');
+      if (configs) {
+        if (!configs?.nfts?.active) {
+          nftsRoute.Component = UnavailablePage;
+        } else {
+          nftsRoute.Component = NftsSection;
+        }
+        if (!configs?.swap?.active) {
+          swapRoute.Component = UnavailablePage;
+        } else {
+          swapRoute.Component = SwapPage;
+        }
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWallet]);
 
   return (
     <GlobalTabBarLayout
@@ -21,7 +48,11 @@ const WalletPage = () => {
           icon: r.icon,
           route: r.route,
         }))}>
-      <RoutesBuilder routes={routes} type={ROUTES_TYPES.TABS} />
+      <RoutesBuilder
+        routes={routes}
+        type={ROUTES_TYPES.TABS}
+        configs={configs}
+      />
     </GlobalTabBarLayout>
   );
 };

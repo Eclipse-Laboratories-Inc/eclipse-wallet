@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -28,7 +28,7 @@ const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setloaded] = useState(false);
   const [token, setToken] = useState({});
-  const [{ activeWallet, hiddenBalance }, { toggleHideBalance }] =
+  const [{ activeWallet, hiddenBalance, config }, { toggleHideBalance }] =
     useContext(AppContext);
 
   const [configs, setConfigs] = useState(null);
@@ -37,7 +37,15 @@ const TokenDetailPage = ({ params, t }) => {
     retriveConfig().then(chainConfigs =>
       setConfigs(chainConfigs[activeWallet.chain].sections.token_detail),
     );
-  });
+  }, [activeWallet]);
+
+  const tokensAddresses = useMemo(
+    () =>
+      Object.keys(
+        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      ),
+    [activeWallet, config],
+  );
 
   useEffect(() => {
     if (activeWallet) {
@@ -45,7 +53,7 @@ const TokenDetailPage = ({ params, t }) => {
         cache(
           `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(),
+          () => activeWallet.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         const tk = (balance.items || []).find(
@@ -55,7 +63,7 @@ const TokenDetailPage = ({ params, t }) => {
         setloaded(true);
       });
     }
-  }, [activeWallet, params]);
+  }, [activeWallet, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
