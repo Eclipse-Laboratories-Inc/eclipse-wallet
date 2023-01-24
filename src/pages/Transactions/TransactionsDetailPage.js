@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native';
-import { formatAmount } from '4m-wallet-adapter/services/format';
+import { formatAmount } from '4m-wallet-adapter';
 import moment from 'moment';
 
 import theme from '../../component-library/Global/theme';
@@ -336,7 +336,7 @@ const TransactionDetail = ({
 
 const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [transaction, setTransaction] = useState();
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -359,14 +359,16 @@ const TransactionsDetailPage = ({ t, params }) => {
   useEffect(() => {
     const load = async () => {
       const { data } = await cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${
+          activeBlockchainAccount.network.id
+        }-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.TRANSACTIONS,
-        () => activeWallet.getRecentTransactions({ pageSize: 8 }),
+        () => activeBlockchainAccount.getRecentTransactions({ pageSize: 8 }),
       );
 
       let tx = data.find(({ id }) => id === params.id);
       if (!tx) {
-        tx = await activeWallet.getTransaction(params.id);
+        tx = await activeBlockchainAccount.getTransaction(params.id);
       }
       if (tx) {
         setTransaction(tx);
@@ -377,7 +379,7 @@ const TransactionsDetailPage = ({ t, params }) => {
     };
 
     load();
-  }, [activeWallet, onBack, params]);
+  }, [activeBlockchainAccount, onBack, params]);
 
   return (
     <GlobalLayout fullscreen>

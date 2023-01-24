@@ -196,7 +196,7 @@ const TokenSendPage = ({ params, t }) => {
         Object.values(account.networksAccounts).flatMap(blockchainAccount => ({
           name: account.name,
           address: blockchainAccount.getReceiveAddress(),
-          blockchain: blockchainAccount.network.blockchain,
+          network: blockchainAccount.network,
         })),
       ),
     [accounts],
@@ -248,12 +248,12 @@ const TokenSendPage = ({ params, t }) => {
                     titleStyle={styles.titleStyle}
                     isOpen
                     hideCollapse>
-                    {targets.map(({ name, address, blokchain }) => (
+                    {targets.map(({ name, address, network }) => (
                       <CardButtonWallet
                         key={address}
                         title={name}
                         address={address}
-                        chain={blokchain}
+                        image={network.icon}
                         imageSize="md"
                         onPress={() => setInputAddress(address)}
                         buttonStyle={globalStyles.addressBookItem}
@@ -279,7 +279,7 @@ const TokenSendPage = ({ params, t }) => {
                         key={addressBookItem.address}
                         title={addressBookItem.name}
                         address={addressBookItem.address}
-                        chain={addressBookItem.chain}
+                        image={addressBookItem.network.icon}
                         imageSize="md"
                         onPress={() => setInputAddress(addressBookItem.address)}
                         buttonStyle={globalStyles.addressBookItem}

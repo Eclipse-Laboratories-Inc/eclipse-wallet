@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { formatAmount } from '4m-wallet-adapter';
 
 import theme from '../Global/theme';
 import GlobalImage from '../Global/GlobalImage';
@@ -13,7 +14,6 @@ import {
 import { getTransactionImage, getShortAddress } from '../../utils/wallet';
 import IconFailed from '../../assets/images/IconFailed.png';
 import { withTranslation } from '../../hooks/useTranslations';
-import { formatAmount } from '4m-wallet-adapter/services/format';
 
 const styles = StyleSheet.create({
   imageStyle: {

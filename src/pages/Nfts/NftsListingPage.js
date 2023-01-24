@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
-import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import {
-  getTransactionImage,
-  getWalletName,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS, SOL_ICON } from '../Transactions/constants';
+import {
+  TOKEN_DECIMALS,
+  SOL_ICON,
+  DEFAULT_SYMBOL,
+} from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -71,30 +70,38 @@ const NftsListingPage = ({ params, t }) => {
   const [solBalance, setSolBalance] = useState(null);
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
-  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
+  const [
+    { activeAccount, activeBlockchainAccount, hiddenValue, activeTokens },
+  ] = useContext(AppContext);
   const { explorer } = useUserConfig();
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
+  const current_blockchain = useMemo(
+    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
+    [activeBlockchainAccount],
+  );
+
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
+          () => activeBlockchainAccount.getBalance(tokensAddresses),
         ),
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.NFTS_ALL,
-          () => activeWallet.getAllNfts(),
+          () => activeBlockchainAccount.getAllNfts(),
         ),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
@@ -103,7 +110,7 @@ const NftsListingPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
-        const listed = await activeWallet.getListedNfts();
+        const listed = await activeBlockchainAccount.getListedNfts();
         setPrice(
           listed.find(l => l.token_address === params.id)?.market_place_state
             ?.price || null,
@@ -112,7 +119,7 @@ const NftsListingPage = ({ params, t }) => {
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id, tokensAddresses]);
+  }, [activeBlockchainAccount, params.id, tokensAddresses]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
@@ -139,13 +146,13 @@ const NftsListingPage = ({ params, t }) => {
       setStep(3);
       let txId;
       isListed
-        ? (txId = await activeWallet.unlistNft(nftDetail.mint))
-        : (txId = await activeWallet.listNft(nftDetail.mint, price));
+        ? (txId = await activeBlockchainAccount.unlistNft(nftDetail.mint))
+        : (txId = await activeBlockchainAccount.listNft(nftDetail.mint, price));
       setTransactionId(txId);
       setStatus(
         isListed ? TRANSACTION_STATUS.UNLISTING : TRANSACTION_STATUS.LISTING,
       );
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_LIST_COMPLETED);
       setSending(false);
@@ -169,7 +176,7 @@ const NftsListingPage = ({ params, t }) => {
   };
 
   const openMarketplace = async () => {
-    const url = `https://hyperspace.xyz/account/${activeWallet.getReceiveAddress()}`;
+    const url = `https://hyperspace.xyz/account/${activeBlockchainAccount.getReceiveAddress()}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -185,11 +192,8 @@ const NftsListingPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -335,11 +339,8 @@ const NftsListingPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -440,7 +441,9 @@ const NftsListingPage = ({ params, t }) => {
                     {t('adapter.detail.transaction.fee')}
                   </GlobalText>
                   <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS.SOLANA} SOL
+                    {`${fee / TOKEN_DECIMALS[current_blockchain]} ${
+                      DEFAULT_SYMBOL[current_blockchain]
+                    }`}
                   </GlobalText>
                 </View>
               )}

@@ -23,6 +23,7 @@ const DEFAULT_SYMBOL = {
   SOLANA: 'SOL',
   NEAR: 'NEAR',
   ETHEREUM: 'ETH',
+  BITCOIN: 'BTC',
 };
 
 const SOL_ICON =

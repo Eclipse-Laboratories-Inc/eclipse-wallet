@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
-import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -24,27 +23,26 @@ const TokenAddPage = ({ params, t }) => {
   const [loaded, setloaded] = useState(false);
   const [token, setToken] = useState({});
 
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, activeTokens }] = useContext(AppContext);
 
   const [tokenMintAddress, setTokenMintAddress] = useState('');
   const [tokenName, setTokenName] = useState('');
   const [tokenSymbol, setTokenSymbol] = useState('');
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
+          () => activeBlockchainAccount.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         const tokenSelected = (balance.items || []).find(
@@ -54,7 +52,7 @@ const TokenAddPage = ({ params, t }) => {
         setloaded(true);
       });
     }
-  }, [activeWallet, params, tokensAddresses]);
+  }, [activeBlockchainAccount, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: params.action });
@@ -71,7 +69,7 @@ const TokenAddPage = ({ params, t }) => {
           <GlobalBackTitle
             onBack={goToBack}
             inlineTitle="Wallet Name"
-            inlineAddress={activeWallet.getReceiveAddress()}
+            inlineAddress={activeBlockchainAccount.getReceiveAddress()}
           />
 
           <View style={globalStyles.centered}>

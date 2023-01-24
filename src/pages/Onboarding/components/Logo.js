@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import AppIcon from '../../../assets/images/AppIcon.png';
-import { style } from '@mui/system';
 
 const styles = StyleSheet.create({
   appLogo: {

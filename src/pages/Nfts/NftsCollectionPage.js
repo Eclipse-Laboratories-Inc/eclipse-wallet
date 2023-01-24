@@ -19,27 +19,29 @@ const NftsCollectionPage = ({ params }) => {
   const [loaded, setLoaded] = useState(false);
   const [nftsCollection, setNftsCollection] = useState([]);
   const [listedInfo, setListedInfo] = useState([]);
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${
+          activeBlockchainAccount.network.id
+        }-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS,
-        () => activeWallet.getAllNftsGrouped(),
+        () => activeBlockchainAccount.getAllNftsGrouped(),
       )
         .then(async nfts => {
           const collection = nfts.find(n => n.collection === params.id);
           if (collection) {
             setNftsCollection(collection.items);
           }
-          const listed = await activeWallet.getListedNfts();
+          const listed = await activeBlockchainAccount.getListedNfts();
           setListedInfo(listed);
         })
         .finally(() => {
           setLoaded(true);
         });
     }
-  }, [activeWallet, params.id]);
+  }, [activeBlockchainAccount, params.id]);
   const goToBack = () => {
     navigate(ROUTES_MAP.NFTS_LIST);
   };

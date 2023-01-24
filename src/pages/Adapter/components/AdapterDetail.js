@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 
 import get from 'lodash/get';
-import { getMetadata } from '4m-wallet-adapter/services/dapp-service';
+import { getMetadata } from '4m-wallet-adapter';
 
 import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 

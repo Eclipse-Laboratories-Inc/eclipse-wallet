@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
-import { formatAmount } from '4m-wallet-adapter';
+import { BLOCKCHAINS, formatAmount } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -19,7 +19,6 @@ import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import { getBlockchainIcon } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
@@ -335,7 +334,9 @@ const SwapPage = ({ t }) => {
         setProcessing(false);
         setTotalTransactions(txs.length);
 
-        if (activeBlockchainAccount.useExplicitTokens()) {
+        if (
+          activeBlockchainAccount.network.blockchain === BLOCKCHAINS.ETHEREUM
+        ) {
           importTokens([outToken]).catch(e => {
             console.error('Could not import token:', outToken, e);
           });
@@ -504,7 +505,7 @@ const SwapPage = ({ t }) => {
             <View style={globalStyles.centeredSmall}>
               <View style={styles.symbolContainer}>
                 <GlobalImage
-                  source={inToken.logo || getBlockchainIcon(current_blockchain)}
+                  source={inToken.logo || activeBlockchainAccount.network.icon}
                   size="xl"
                   circle
                 />
@@ -515,9 +516,7 @@ const SwapPage = ({ t }) => {
                   circle
                 />
                 <GlobalImage
-                  source={
-                    outToken.logo || getBlockchainIcon(current_blockchain)
-                  }
+                  source={outToken.logo || activeBlockchainAccount.network.icon}
                   size="xl"
                   circle
                 />

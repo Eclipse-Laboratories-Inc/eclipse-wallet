@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react';
+import { getSwitches } from '4m-wallet-adapter';
 import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
@@ -22,38 +23,40 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-import { retriveConfig } from '../../utils/wallet';
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [loaded, setloaded] = useState(false);
   const [token, setToken] = useState({});
-  const [{ activeWallet, hiddenBalance, config }, { toggleHideBalance }] =
-    useContext(AppContext);
+  const [
+    { activeBlockchainAccount, hiddenBalance, activeTokens },
+    { toggleHideBalance },
+  ] = useContext(AppContext);
 
-  const [configs, setConfigs] = useState(null);
+  const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs =>
-      setConfigs(chainConfigs[activeWallet.chain].sections.token_detail),
+    getSwitches().then(allSwitches =>
+      setSwitches(
+        allSwitches[activeBlockchainAccount.network.id].sections.token_detail,
+      ),
     );
   });
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
         cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+          `${
+            activeBlockchainAccount.network.id
+          }-${activeBlockchainAccount.getReceiveAddress()}`,
           CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
+          () => activeBlockchainAccount.getBalance(tokensAddresses),
         ),
       ]).then(([balance]) => {
         const tk = (balance.items || []).find(
@@ -63,7 +66,7 @@ const TokenDetailPage = ({ params, t }) => {
         setloaded(true);
       });
     }
-  }, [activeWallet, params, tokensAddresses]);
+  }, [activeBlockchainAccount, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
@@ -108,8 +111,8 @@ const TokenDetailPage = ({ params, t }) => {
               <GlobalSendReceive
                 goToSend={goToSend}
                 goToReceive={goToReceive}
-                canSend={configs?.features?.send}
-                canReceive={configs?.features?.receive}
+                canSend={switches?.features?.send}
+                canReceive={switches?.features?.receive}
               />
             }
           />

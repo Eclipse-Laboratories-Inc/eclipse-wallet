@@ -7,11 +7,7 @@ import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import useUserConfig from '../../hooks/useUserConfig';
-import {
-  getWalletChain,
-  getWalletName,
-  getWalletAvatar,
-} from '../../utils/wallet';
+
 import packageInfo from '../../../package.json';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -20,7 +16,6 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 import SecureDialog from '../../component-library/Dialog/SecureDialog';
 

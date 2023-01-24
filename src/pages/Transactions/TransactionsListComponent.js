@@ -23,21 +23,23 @@ const TransactionsListComponent = ({ t }) => {
   const onDetail = id => navigate(ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
   const onViewAll = () => navigate(ROUTES_MAP.TRANSACTIONS_LIST);
 
-  const [{ activeWallet, selectedEndpoints }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [transactions, setTransactions] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     cache(
-      `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+      `${
+        activeBlockchainAccount.network.id
+      }-${activeBlockchainAccount.getReceiveAddress()}`,
       CACHE_TYPES.TRANSACTIONS,
-      () => activeWallet.getRecentTransactions({ pageSize }),
+      () => activeBlockchainAccount.getRecentTransactions({ pageSize }),
     )
       .then(({ data }) => {
         setTransactions(data);
       })
       .finally(() => setLoaded(true));
-  }, [activeWallet, selectedEndpoints]);
+  }, [activeBlockchainAccount]);
 
   return (
     <GlobalCollapse

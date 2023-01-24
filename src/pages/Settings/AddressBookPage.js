@@ -57,7 +57,7 @@ const AddressBookPage = ({ t }) => {
                   : null
               }
               address={addressBookItem.address}
-              chain={addressBookItem.chain}
+              image={addressBookItem.network.icon}
               imageSize="md"
               onPress={() => onEditAddressBook(addressBookItem)}
               onTertiaryPress={() => toggleRemoveDialog(addressBookItem)}

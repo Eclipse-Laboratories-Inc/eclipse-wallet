@@ -22,12 +22,12 @@ import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive'
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import MyNfts from './components/MyNfts';
-import { PendingTxs } from './components/PendingTxs';
+import PendingTxs from './components/PendingTxs';
 
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeBlockchainAccount, activeTokens, hiddenBalance },
+    { activeBlockchainAccount, networkId, activeTokens, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [reload, setReload] = useState(false);
@@ -36,11 +36,6 @@ const WalletOverviewPage = ({ t }) => {
   const [tokenList, setTokenList] = useState(null);
   const [nonListedTokenList, setNonListedTokenList] = useState(null);
   const [switches, setSwitches] = useState(null);
-
-  const networkId = useMemo(
-    () => activeBlockchainAccount.network.id,
-    [activeBlockchainAccount],
-  );
 
   useEffect(() => {
     getSwitches().then(allSwitches =>
@@ -124,7 +119,7 @@ const WalletOverviewPage = ({ t }) => {
         )}
         <GlobalPadding />
 
-        {/* TODO <PendingTxs activeWallet={activeWallet} translate={t} />*/}
+        <PendingTxs />
 
         <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
           <TokenList

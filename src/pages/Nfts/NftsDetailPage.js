@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import get from 'lodash/get';
+import { BLOCKCHAINS, getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { cache, CACHE_TYPES } from '../../utils/cache';
-import { getWalletChain } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
-import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
@@ -27,7 +26,6 @@ import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP } from '../../utils/tracking';
-import { retriveConfig } from '../../utils/wallet';
 
 const styles = StyleSheet.create({
   renderItemStyle: {
@@ -68,36 +66,37 @@ const NftsDetailPage = ({ params, t }) => {
   const [listedLoaded, setListedLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
   const [listedInfo, setListedInfo] = useState([]);
-  const [{ activeWallet }] = useContext(AppContext);
-  const [configs, setConfigs] = useState(null);
-  const current_blockchain = getWalletChain(activeWallet);
+  const [{ activeBlockchainAccount, networkId }] = useContext(AppContext);
+  const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs =>
-      setConfigs(chainConfigs[activeWallet.chain].sections.nfts),
+    getSwitches().then(allSwitches =>
+      setSwitches(allSwitches[networkId].sections.nfts),
     );
-  });
+  }, [networkId]);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${
+          activeBlockchainAccount.network.id
+        }-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS_ALL,
-        () => activeWallet.getAllNfts(),
+        () => activeBlockchainAccount.getAllNfts(),
       ).then(async nfts => {
         const nft = nfts.find(n => n.mint === params.id);
         if (nft) {
           setNftDetail(nft);
         }
-        if (current_blockchain === 'SOLANA') {
-          const listed = await activeWallet.getListedNfts();
+        if (activeBlockchainAccount.network.blockchain === BLOCKCHAINS.SOLANA) {
+          const listed = await activeBlockchainAccount.getListedNfts();
           setListedInfo(listed.find(l => l.token_address === params.id));
           setListedLoaded(true);
         }
         setLoaded(true);
       });
     }
-  }, [activeWallet, current_blockchain, params.id]);
+  }, [activeBlockchainAccount, params.id]);
 
   const getListBtnTitle = () =>
     !listedLoaded ? (
@@ -236,13 +235,13 @@ const NftsDetailPage = ({ params, t }) => {
           <View style={globalStyles.inlineFlexButtons}>
             <GlobalSendReceive
               goToSend={goToSend}
-              canSend={configs?.send}
+              canSend={switches?.send}
               goToList={goToListing}
-              canList={configs?.list_in_marketplace?.active}
+              canList={switches?.list_in_marketplace?.active}
               titleList={getListBtnTitle()}
               listedLoaded
               goToBurn={goToBurn}
-              canBurn={configs?.burn}
+              canBurn={switches?.burn}
             />
           </View>
 

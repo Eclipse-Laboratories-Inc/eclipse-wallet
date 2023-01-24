@@ -193,8 +193,6 @@ const useAccounts = () => {
       await storage.removeItem(STORAGE_KEYS.ACTIVE);
       await storage.removeItem(STORAGE_KEYS.ENDPOINTS);
     }
-
-    // STORAGE_KEYS.PENDING_TXS
   }, []);
 
   useEffect(() => {

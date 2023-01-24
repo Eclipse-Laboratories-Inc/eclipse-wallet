@@ -18,30 +18,33 @@ import { getMediaRemoteUrl } from '../../utils/media';
 
 const AccountEditProfilePage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet }, { editWalletAvatar }] = useContext(AppContext);
+  const [{ activeAccount, activeBlockchainAccount }, { editAccount }] =
+    useContext(AppContext);
 
   const [saving, setSaving] = useState(false);
   const [currentNft, setCurrentNft] = useState(null);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
+        `${
+          activeBlockchainAccount.network.id
+        }-${activeBlockchainAccount.getReceiveAddress()}`,
         CACHE_TYPES.NFTS_ALL,
-        () => activeWallet.getAllNfts(),
+        () => activeBlockchainAccount.getAllNfts(),
       ).then(result => {
         setCurrentNft(result.find(n => n.mint === params.id));
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeBlockchainAccount, params.id]);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS, {
       address: params.address,
     });
-  const onSave = () => {
+  const onSave = async () => {
     setSaving(true);
-    editWalletAvatar(activeWallet.getReceiveAddress(), currentNft.media);
+    await editAccount(activeAccount.id, { avatar: currentNft.media });
     setSaving(false);
     navigate(ROUTES_WALLET_MAP.WALLET_OVERVIEW);
   };

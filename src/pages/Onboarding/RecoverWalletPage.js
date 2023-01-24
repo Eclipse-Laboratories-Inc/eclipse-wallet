@@ -1,7 +1,10 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
-import { AccountFactory, PLATFORMS } from '4m-wallet-adapter';
-import { getTopTokensByPlatform } from '4m-wallet-adapter/services/price-service';
+import {
+  AccountFactory,
+  getTopTokensByPlatform,
+  PLATFORMS,
+} from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -118,12 +121,8 @@ const RecoverWalletPage = ({ t }) => {
     setStep(3);
 
     try {
-      /* TODO
-      if (account.useExplicitTokens()) {
-        const tokens = await getTopTokensByPlatform(PLATFORMS[chainCode]);
-        await importTokens(tokens);
-      }
-      */
+      const tokens = await getTopTokensByPlatform(PLATFORMS.ETHEREUM);
+      await importTokens(tokens);
     } catch (e) {
       console.error('Could not import tokens', e);
     }
