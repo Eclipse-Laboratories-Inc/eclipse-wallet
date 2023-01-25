@@ -348,12 +348,19 @@
     "quote": "Quote",
     "refresh_quote": "Refresh Quote",
     "total_fee": "Total fee",
-    "go_to_explorer": "Go to Explorer"
+    "go_to_explorer": "Go to Explorer",
+    "choose_type": "Choose an option",
+    "same_blockchain": "To a token on this blockchain",
+    "other_blockchain": "To a token on other blockchain"
   },
   "bridge": {
     "preview": "Bridge Preview",
     "less_than_minimal": "Minimum amount: {{min}} {{symbol}}",
-    "provider_error": "Bridge provider not available.\nPlease try again later."
+    "provider_error": "Bridge provider not available.\nPlease try again later.",
+    "recipient_type": "Recipient wallet:",
+    "you_pay": "You Pay",
+    "own_wallet_alert": "Keep in mind that to see the tokens you will receive, you will have to switch from this {{from}} Wallet to the {{to}} one from the menu.",
+    "other_wallet_alert": "Keep in mind that the tokens you will receive are being sent to a {{to}} Wallet that it’s not configured in Salmon. You will not see the tokens unless you open that wallet."
   },
   "header": {
     "connected": "Connected to {{hostname}}",

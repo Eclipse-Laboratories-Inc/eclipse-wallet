@@ -140,7 +140,7 @@ const SelectChain = ({
         chain={chain}
         onNext={onNext}
         onComingSoon={onComingSoon}
-        enabled={true}
+        enabled={configurations[chain.toLowerCase()].enable}
       />
     ))}
   </GlobalLayout.Header>

@@ -78,8 +78,6 @@ const WalletOverviewPage = ({ cfgs, t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToBridge = () => navigate(WALLET_ROUTES_MAP.WALLET_BRIDGE);
-
   const goToTokenDetail = tok => {
     if (tok.type !== 'native') {
       navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
@@ -112,10 +110,8 @@ const WalletOverviewPage = ({ cfgs, t }) => {
                 <GlobalSendReceive
                   goToSend={goToSend}
                   goToReceive={goToReceive}
-                  goToBridge={goToBridge}
                   canSend={cfgs?.overview?.features?.send}
                   canReceive={cfgs?.overview?.features?.receive}
-                  canBridge={cfgs?.overview?.features?.bridge}
                 />
               }
             />
