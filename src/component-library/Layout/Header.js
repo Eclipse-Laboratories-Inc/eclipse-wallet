@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { getNetworks } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from '../../pages/Settings/routes';
@@ -20,6 +21,7 @@ import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
 import Tooltip from '../Tooltip/Tooltip';
+import NetworkSelector from '../../pages/Wallet/components/NetworkSelector';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -70,15 +72,23 @@ const styles = StyleSheet.create({
   appDisconnectedStatus: {
     backgroundColor: theme.colors.negativeBright,
   },
+  networkSelector: {
+    marginRight: theme.gutters.paddingXS,
+    minWidth: 120,
+  },
 });
 
-const Header = ({ t }) => {
-  const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
+const Header = ({ isHome, t }) => {
+  const [
+    { activeAccount, activeBlockchainAccount, networkId },
+    { changeNetwork },
+  ] = useContext(AppContext);
 
   const [showToast, setShowToast] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [isConnected, setIsConnected] = useState(null);
   const [hostname, setHostname] = useState(null);
+  const [networks, setNetworks] = useState([]);
 
   const navigate = useNavigation();
 
@@ -99,7 +109,16 @@ const Header = ({ t }) => {
         setIsConnected(tabsIds?.includes(tabs?.[0]?.id));
       }
     };
+    const load = async () => {
+      setNetworks(
+        (await getNetworks()).map(({ name: label, id: value }) => ({
+          label,
+          value,
+        })),
+      );
+    };
 
+    load();
     checkConnection();
   }, []);
 
@@ -160,6 +179,15 @@ const Header = ({ t }) => {
         </View>
 
         <View style={styles.walletActions}>
+          {isHome && (
+            <View style={styles.networkSelector}>
+              <NetworkSelector
+                options={networks}
+                setValue={changeNetwork}
+                value={networkId}
+              />
+            </View>
+          )}
           {/* <GlobalButton
                   type="icon"
                   transparent

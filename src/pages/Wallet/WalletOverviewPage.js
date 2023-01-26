@@ -89,7 +89,7 @@ const WalletOverviewPage = ({ t }) => {
   return (
     <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
       <GlobalLayout.Header>
-        <Header />
+        <Header isHome />
         {totalBalance && (
           <WalletBalanceCard
             total={

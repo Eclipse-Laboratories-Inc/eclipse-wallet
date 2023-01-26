@@ -74,9 +74,6 @@ const SettingsOptionsPage = ({ t }) => {
   const goToLanguages = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
 
-  const goToNetwork = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
-
   const goToPathIndex = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGEPATHINDEX);
 
@@ -123,14 +120,6 @@ const SettingsOptionsPage = ({ t }) => {
           onPress={goToLanguages}>
           <GlobalText type="caption">
             {t(`settings.languages.${selectedLanguage}`)}
-          </GlobalText>
-        </CardButton>
-        <CardButton
-          title={t(`settings.change_network`)}
-          actionIcon="right"
-          onPress={goToNetwork}>
-          <GlobalText type="caption">
-            {activeBlockchainAccount.network.name}
           </GlobalText>
         </CardButton>
         <CardButton
