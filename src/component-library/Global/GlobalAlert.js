@@ -59,7 +59,7 @@ const warningStyles = StyleSheet.create({
   },
 });
 
-const GlobalAlert = ({ type, children, text }) => {
+const GlobalAlert = ({ type, children, text, noIcon }) => {
   const resolveIcon = () => {
     switch (type) {
       case 'error':
@@ -91,7 +91,7 @@ const GlobalAlert = ({ type, children, text }) => {
 
   return (
     <View style={[styles.container, typeStyles.container]}>
-      <GlobalImage style={styles.image} size="xs" source={icon} />
+      {!noIcon && <GlobalImage style={styles.image} size="xs" source={icon} />}
       {children && <View>{children}</View>}
       {text && <GlobalAlertText text={text} type={type} />}
     </View>

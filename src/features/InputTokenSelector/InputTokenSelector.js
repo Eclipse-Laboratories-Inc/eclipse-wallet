@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
   ddToken: {
     flex: isNative() ? 0.7 : undefined,
   },
+  chipsToken: {
+    flex: isNative() ? 0.7 : undefined,
+    marginVertical: theme.gutters.paddingXS,
+  },
 });
 
 const InputWithTokenSelector = ({
@@ -39,6 +43,7 @@ const InputWithTokenSelector = ({
   placeholder,
   image,
   title,
+  description,
   t,
   hiddenBalance,
   tokens,
@@ -77,17 +82,19 @@ const InputWithTokenSelector = ({
         value={value}
         setValue={setValue}
         placeholder={placeholder}
-        inputStyle={styles.ddToken}
+        inputStyle={chips ? styles.chipsToken : styles.ddToken}
         action={
           <CardButton
             type="secondary"
             size="sm"
             title={title}
+            description={description}
             image={image}
             imageSize="xs"
             actionIcon="disclose"
             onPress={() => setIsVisible(true)}
             buttonStyle={{ paddingRight: 0, paddingLeft: 6 }}
+            imageStyle={description && { marginTop: theme.gutters.paddingXS }}
             keyboardType="numeric"
             nospace
           />

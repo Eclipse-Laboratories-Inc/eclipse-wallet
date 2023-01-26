@@ -8,13 +8,16 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
-import { globalStyles } from '../../component-library/Global/theme';
+import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
+import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
+import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
+import GlobalAlert from '../../component-library/Global/GlobalAlert';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
@@ -22,7 +25,15 @@ import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
+import BasicRadios from '../../component-library/Radios/BasicRadios';
+import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
+import IconSpinner from '../../assets/images/IconTransactionSending.gif';
+
+import {
+  getWalletChain,
+  getBlockchainIcon,
+  getWalletName,
+} from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
@@ -42,9 +53,14 @@ const styles = StyleSheet.create({
     right: 55,
     bottom: -5,
   },
+  previewLogos: {
+    marginLeft: theme.gutters.paddingNormal,
+    marginRight: theme.gutters.paddingXS,
+    marginTop: theme.gutters.paddingXXS,
+  },
 });
 
-const BigDetailItem = ({ title, value, t }) => (
+const BigDetailItem = ({ title, amount, symbol, logo, t }) => (
   <View
     style={[
       globalStyles.inlineWell,
@@ -53,16 +69,28 @@ const BigDetailItem = ({ title, value, t }) => (
     <GlobalText type="body1" color="secondary">
       {title}
     </GlobalText>
-
-    <GlobalText type="headline2" nospace>
-      {value}
-    </GlobalText>
+    <View style={[globalStyles.inline]}>
+      <GlobalText type="headline2" nospace>
+        {amount}
+      </GlobalText>
+      <GlobalImage
+        style={[styles.previewLogos]}
+        source={logo}
+        size="xs"
+        circle
+      />
+      <GlobalText type="headline2" nospace>
+        {symbol}
+      </GlobalText>
+    </View>
   </View>
 );
 
 const GlobalButtonTimer = React.memo(function ({
   onConfirm,
   onQuote,
+  processing,
+  validAddress,
   t,
   ...props
 }) {
@@ -79,6 +107,8 @@ const GlobalButtonTimer = React.memo(function ({
       return onQuote();
     }
   };
+  const getConfirmBtnStatus = () =>
+    countdown > 0 ? processing || !validAddress : processing;
   useEffect(() => setCountdown(10), []);
   useEffect(() => {
     const timer =
@@ -89,6 +119,7 @@ const GlobalButtonTimer = React.memo(function ({
     <GlobalButton
       title={getConfirmBtnTitle()}
       onPress={getConfirmBtnAction}
+      disabled={getConfirmBtnStatus()}
       {...props}
     />
   );
@@ -113,7 +144,7 @@ const mergeStealthExTokenData = (bsupp, tks) => {
 
 const BridgePage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, hiddenValue, config }, { importTokens }] =
+  const [{ activeWallet, wallets, hiddenValue, config }, { importTokens }] =
     useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
@@ -127,6 +158,7 @@ const BridgePage = ({ t }) => {
   const [outToken, setOutToken] = useState(null);
   const [status, setStatus] = useState();
   const [recipientAddress, setRecipientAddress] = useState('');
+  const [recipientType, setRecipientType] = useState('');
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [checkingAddress, setCheckingAddress] = useState(false);
@@ -143,6 +175,11 @@ const BridgePage = ({ t }) => {
       ),
     [activeWallet, config],
   );
+
+  const RECIPIENT_OPTIONS = [
+    { label: 'My Wallets', value: 'own' },
+    { label: 'Other Wallet', value: 'other' },
+  ];
 
   useEffect(() => {
     if (activeWallet) {
@@ -163,10 +200,7 @@ const BridgePage = ({ t }) => {
       ])
         .then(([balance, bsupp, ftks, avtks]) => {
           const tks = balance.items || [];
-          console.log('bsupp', bsupp, 'my tokens', tks);
-
           const tksSupp = mergeStealthExTokenData(bsupp, tks);
-          console.log('rksSupp', tksSupp);
           setTokens(tksSupp);
           setInToken(tks.length ? tks[0] : null);
           setOutToken(ftks.length ? ftks[0] : null);
@@ -180,6 +214,8 @@ const BridgePage = ({ t }) => {
 
   const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
+  const [processingOutAmount, setProcessingOutAmount] = useState(false);
+
   const isMinimalAmount =
     minimalAmount && parseFloat(inAmount) >= minimalAmount;
 
@@ -210,26 +246,38 @@ const BridgePage = ({ t }) => {
     }
   };
 
+  const debounceIn = useMemo(
+    () =>
+      debounce((inAmount, inToken, outToken) => {
+        Promise.all([
+          activeWallet.getBridgeEstimatedAmount(
+            inToken.symbol.toLowerCase(),
+            outToken.symbol,
+            inAmount,
+          ),
+          activeWallet.getBridgeMinimalAmount(
+            inToken.symbol.toLowerCase(),
+            outToken.symbol,
+          ),
+        ]).then(([estAmount, minAmount]) => {
+          setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
+          setMinimalAmount(minAmount);
+          setProcessingOutAmount(false);
+        });
+      }, 500),
+    [activeWallet],
+  );
+
   useEffect(() => {
+    setProcessingOutAmount(true);
     if (Number(inAmount) > 0 && outToken) {
-      Promise.all([
-        activeWallet.getBridgeEstimatedAmount(
-          inToken.symbol.toLowerCase(),
-          outToken.symbol,
-          inAmount,
-        ),
-        activeWallet.getBridgeMinimalAmount(
-          inToken.symbol.toLowerCase(),
-          outToken.symbol,
-        ),
-      ]).then(([estAmount, minAmount]) => {
-        setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
-        setMinimalAmount(minAmount);
-      });
+      setOutAmount('--');
+      debounceIn(inAmount, inToken, outToken);
     } else {
       setOutAmount('--');
+      setProcessingOutAmount(false);
     }
-  }, [activeWallet, inAmount, inToken, outToken]);
+  }, [activeWallet, debounceIn, inAmount, inToken, outToken]);
 
   useEffect(() => {
     setError(false);
@@ -376,7 +424,7 @@ const BridgePage = ({ t }) => {
               {ready && tokens.length && (
                 <>
                   <View style={globalStyles.inlineFlexButtons}>
-                    <GlobalText type="body2">{t('swap.you_send')}</GlobalText>
+                    <GlobalText type="body2">{t('bridge.you_pay')}</GlobalText>
                     <GlobalText type="body1">
                       Max. {inToken.uiAmount} {inToken.symbol}
                     </GlobalText>
@@ -389,24 +437,28 @@ const BridgePage = ({ t }) => {
                     setValue={setInAmount}
                     placeholder={t('swap.enter_amount')}
                     title={inToken.symbol.toUpperCase()}
+                    description={inToken.network || inToken.name}
                     tokens={tokens}
                     hiddenValue={hiddenValue}
                     image={getMediaRemoteUrl(inToken.logo)}
                     onChange={onChangeInToken}
                     invalid={!validAmount && !!inAmount}
                     number
+                    chips
                   />
                   {zeroAmount ? (
                     <GlobalText type="body1" center color="negative">
                       {t(`token.send.amount.invalid`)}
                     </GlobalText>
                   ) : !isMinimalAmount && !!inAmount ? (
-                    <GlobalText type="body1" center color="negative">
-                      {t(`bridge.less_than_minimal`, {
-                        min: minimalAmount || '-',
-                        symbol: inToken.name,
-                      })}
-                    </GlobalText>
+                    minimalAmount && (
+                      <GlobalText type="body1" center color="negative">
+                        {t(`bridge.less_than_minimal`, {
+                          min: minimalAmount,
+                          symbol: inToken.name,
+                        })}
+                      </GlobalText>
+                    )
                   ) : (
                     !validAmount &&
                     !!inAmount && (
@@ -423,15 +475,32 @@ const BridgePage = ({ t }) => {
                     {showValue(inAmount * inToken.usdPrice, 6)}{' '}
                     {t('general.usd')}
                   </GlobalText>
+                  <GlobalPadding size="sm" />
 
-                  <GlobalPadding size="md" />
+                  {processingOutAmount ? (
+                    <GlobalImage
+                      source={IconSpinner}
+                      size="normal"
+                      style={globalStyles.centeredSmall}
+                      circle
+                    />
+                  ) : (
+                    <GlobalImage
+                      source={IconSwapAccent1}
+                      size="normal"
+                      style={globalStyles.centeredSmall}
+                      circle
+                    />
+                  )}
+                  <GlobalPadding size="sm" />
                   <GlobalText type="body2">{t('swap.you_receive')}</GlobalText>
                   <GlobalPadding size="xs" />
 
                   <InputWithTokenSelector
                     value={outAmount}
                     setValue={setOutAmount}
-                    title={outToken ? outToken.symbol.toUpperCase() : '-'}
+                    title={outToken ? outToken.symbol.toUpperCase() : '--'}
+                    description={outToken.network || outToken.name}
                     tokens={availableTokens}
                     featuredTokens={featuredTokens}
                     image={
@@ -459,7 +528,13 @@ const BridgePage = ({ t }) => {
                 type="primary"
                 wideSmall
                 title={t('actions.next')}
-                disabled={!validAmount || !outToken || processing || !outAmount}
+                disabled={
+                  !validAmount ||
+                  !outToken ||
+                  processing ||
+                  processingOutAmount ||
+                  outAmount === '--'
+                }
                 onPress={() => setStep(2)}
               />
             </GlobalLayout.Footer>
@@ -471,29 +546,93 @@ const BridgePage = ({ t }) => {
             <GlobalBackTitle title={t('bridge.preview')} />
             <GlobalPadding />
             <BigDetailItem
-              title={t('swap.you_send')}
-              value={`${inAmount} ${inToken.symbol}`}
+              title={t('bridge.you_pay')}
+              amount={inAmount}
+              symbol={inToken.symbol.toUpperCase()}
+              logo={inToken.logo || getBlockchainIcon(current_blockchain)}
             />
             <BigDetailItem
               title={t('swap.you_receive')}
-              value={`${outAmount} ${outToken.symbol}`}
+              amount={outAmount}
+              symbol={outToken.symbol.toUpperCase()}
+              logo={outToken.logo || getBlockchainIcon(current_blockchain)}
             />
-            <GlobalPadding size="2xl" />
-            <GlobalInputWithButton
-              startLabel={t('general.to')}
-              placeholder={t('general.recipient_s_address', {
-                token: outToken.symbol.toUpperCase(),
-              })}
-              value={recipientAddress}
-              setValue={setRecipientAddress}
-              onActionPress={() => {}}
-              editable={!checkingAddress}
-              validating={checkingAddress}
-              complete={validAddress}
-              inputStyle={
-                result && result.type !== 'SUCCESS' ? styles[result.type] : {}
-              }
+            <GlobalPadding size="lg" />
+            <BasicRadios
+              label={t('bridge.recipient_type')}
+              value={recipientType}
+              setValue={setRecipientType}
+              options={RECIPIENT_OPTIONS}
             />
+            {recipientType === 'other' && (
+              <>
+                <GlobalPadding size="lg" />
+                <GlobalInputWithButton
+                  startLabel={t('general.to')}
+                  placeholder={t('general.recipient_s_address', {
+                    token: outToken.symbol.toUpperCase(),
+                  })}
+                  value={recipientAddress}
+                  setValue={setRecipientAddress}
+                  onActionPress={() => {}}
+                  editable={!checkingAddress}
+                  validating={checkingAddress}
+                  complete={validAddress}
+                  inputStyle={
+                    result && result.type !== 'SUCCESS'
+                      ? styles[result.type]
+                      : {}
+                  }
+                  style={{ paddingHorizontal: theme.gutters.paddingSM }}
+                />
+                <GlobalPadding size="xl" />
+                <GlobalAlert
+                  type="warning"
+                  noIcon
+                  text={t('bridge.other_wallet_alert', {
+                    to: outToken.network || outToken.name,
+                  })}
+                />
+              </>
+            )}
+            {wallets.length > 0 && recipientType === 'own' && (
+              <>
+                <GlobalPadding size="xxs" />
+                <GlobalCollapse
+                  title={t('settings.wallets.my_wallets')}
+                  titleStyle={styles.titleStyle}
+                  isOpen
+                  hideCollapse>
+                  {wallets.map(
+                    wallet =>
+                      (wallet.chain === outToken.network.toUpperCase() ||
+                        wallet.chain ===
+                          outToken.name.toUpperCase().split(' ')[0]) && (
+                        <CardButtonWallet
+                          key={wallet.address}
+                          title={getWalletName(wallet.address, config)}
+                          address={wallet.address}
+                          chain={wallet.chain}
+                          imageSize="md"
+                          onPress={() => setRecipientAddress(wallet.address)}
+                          buttonStyle={globalStyles.addressBookItem}
+                          touchableStyles={globalStyles.addressBookTouchable}
+                          transparent
+                        />
+                      ),
+                  )}
+                </GlobalCollapse>
+                <GlobalPadding size="md" />
+                <GlobalAlert
+                  type="warning"
+                  noIcon
+                  text={t('bridge.own_wallet_alert', {
+                    from: inToken.network || inToken.name,
+                    to: outToken.network || outToken.name,
+                  })}
+                />
+              </>
+            )}
             {result && result.type !== 'SUCCESS' && (
               <>
                 <GlobalPadding size="sm" />
@@ -518,11 +657,12 @@ const BridgePage = ({ t }) => {
             <GlobalButtonTimer
               type="primary"
               flex
-              disabled={processing || !validAddress}
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
               onConfirm={onConfirm}
               onQuote={onRefreshEstimate}
+              processing={processing}
+              validAddress={validAddress}
               t={t}
             />
           </GlobalLayout.Footer>

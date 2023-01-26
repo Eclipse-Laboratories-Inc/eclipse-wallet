@@ -318,12 +318,19 @@
     "quote": "Cotizar",
     "refresh_quote": "Refrescar cotización",
     "total_fee": "Tarifa total",
-    "go_to_explorer": "Ir al Explorer"
+    "go_to_explorer": "Ir al Explorer",
+    "choose_type": "Elige una opción",
+    "same_blockchain": "Hacia un token de ésta blockchain",
+    "other_blockchain": "Hacia un token de otra blockchain"
   },
   "bridge": {
     "preview": "Confirmar Bridge",
     "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}",
-    "provider_error": "Actualmente el proveedor de Bridge no está respondiendo.\nPor favor vuelve a intentar más tarde."
+    "provider_error": "Actualmente el proveedor de Bridge no está respondiendo.\nPor favor vuelve a intentar más tarde.",
+    "recipient_type": "Wallet de destino:",
+    "you_pay": "Pagas",
+    "own_wallet_alert": "Keep in mind that to see the tokens you will receive, you will have to switch from this {{from}} Wallet to the {{to}} one from the menu.",
+    "other_wallet_alert": "Keep in mind that the tokens you will receive are being sent to a {{to}} Wallet that it’s not configured in Salmon. You will not see the tokens unless you open that wallet."
   },
   "header": {
     "connected": "Conectado a {{hostname}}",
