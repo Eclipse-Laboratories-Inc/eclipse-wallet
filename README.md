@@ -35,3 +35,7 @@ Create extensions builds for:
 - Chrome & Brave: /build-extension
 - Firefox: /build-extension-mozilla
 
+## License
+
+The project adopts the license [GNU GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
+

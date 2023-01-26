@@ -1,7 +1,8 @@
 {
   "name": "salmon-app",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "private": true,
+  "license": "GPL-3.0-only",
   "dependencies": {
     "4m-wallet-adapter": "^0.0.90",
     "@emotion/react": "^11.10.4",
