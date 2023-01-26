@@ -326,11 +326,15 @@ const useAccounts = () => {
     if (networkId !== targetId) {
       const { networksAccounts } = activeAccount;
       if (Object.keys(networksAccounts).includes(targetId)) {
+        const targetIndex = networksAccounts[targetId][pathIndex]
+          ? pathIndex
+          : getDefaultPathIndex(activeAccount, targetId);
+
         setNetworkId(targetId);
-        setPathIndex(getDefaultPathIndex(activeAccount, targetId));
+        setPathIndex(targetIndex);
 
         await storage.setItem(NETWORK_ID, targetId);
-        await storage.setItem(PATH_INDEX, 0);
+        await storage.setItem(PATH_INDEX, targetIndex);
       }
     }
   };
