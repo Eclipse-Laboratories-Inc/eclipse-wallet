@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
@@ -14,13 +14,8 @@ import GlobalTabBarLayout from '../../component-library/Global/GlobalTabBarLayou
 
 const WalletPage = () => {
   const navigate = useNavigation();
-  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [{ networkId }] = useContext(AppContext);
   const [switches, setSwitches] = useState(null);
-
-  const networkId = useMemo(
-    () => activeBlockchainAccount.network.id,
-    [activeBlockchainAccount],
-  );
 
   useEffect(() => {
     getSwitches().then(allSwitches => {

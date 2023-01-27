@@ -1,7 +1,3 @@
-import get from 'lodash/get';
-
-import ENDPOINTS from '../config/endpoints';
-
 import IconTransactionSent from '../assets/images/IconTransactionSent.png';
 import IconTransactionReceived from '../assets/images/IconTransactionReceived.png';
 import IconTransactionSwap from '../assets/images/IconTransactionSwap.png';
@@ -17,15 +13,10 @@ import IconTransactionSending from '../assets/images/IconTransactionSending.gif'
 const QTY_WORDS = [12, 24];
 const MIN_WORD = 3;
 
-export const getDefaultEndpoint = chain => ENDPOINTS[chain].MAIN;
-
 export const validateSeedPhrase = seedPhrase =>
   seedPhrase.length &&
   QTY_WORDS.includes(seedPhrase.split(' ').length) &&
   seedPhrase.split(' ').every(word => word.length >= MIN_WORD);
-
-export const getWalletName = (address, config) =>
-  get(config, `${address}.name`, 'Wallet Unknown');
 
 export const getShortAddress = address =>
   `${address.substr(0, 4)}...${address.substr(-4)}`;

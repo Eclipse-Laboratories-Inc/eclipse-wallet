@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../../AppProvider';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import GlobalNftList from '../../../component-library/Global/GlobalNftList';
@@ -11,14 +11,9 @@ import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
 
 const MyNfts = ({ whenLoading, t }) => {
   const navigate = useNavigation();
-  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, networkId }] = useContext(AppContext);
   const [nftsList, setNftsList] = useState(null);
   const [listedInfo, setListedInfo] = useState([]);
-
-  const networkId = useMemo(
-    () => activeBlockchainAccount.network.id,
-    [activeBlockchainAccount],
-  );
 
   useEffect(() => {
     Promise.resolve(

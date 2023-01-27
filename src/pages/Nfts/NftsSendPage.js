@@ -232,13 +232,15 @@ const NftsSendPage = ({ params, t }) => {
                     account.networksAccounts[networkId].map(
                       blockchainAccount => (
                         <CardButtonWallet
-                          key={blockchainAccount.address}
+                          key={blockchainAccount.getReceiveAddress()}
                           title={account.name}
-                          address={blockchainAccount.address}
+                          address={blockchainAccount.getReceiveAddress()}
                           image={blockchainAccount.network.icon}
                           imageSize="md"
                           onPress={() =>
-                            setInputAddress(blockchainAccount.address)
+                            setInputAddress(
+                              blockchainAccount.getReceiveAddress(),
+                            )
                           }
                           buttonStyle={globalStyles.addressBookItem}
                           touchableStyles={globalStyles.addressBookTouchable}

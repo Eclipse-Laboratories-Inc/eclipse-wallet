@@ -16,7 +16,7 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import { AppContext } from '../../AppProvider';
 import { getMediaRemoteUrl } from '../../utils/media';
 
-const AccountEditProfilePage = ({ params, t }) => {
+const AccountEditProfileNftsDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
   const [{ activeAccount, activeBlockchainAccount }, { editAccount }] =
     useContext(AppContext);
@@ -40,7 +40,7 @@ const AccountEditProfilePage = ({ params, t }) => {
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS, {
-      address: params.address,
+      id: params.id,
     });
   const onSave = async () => {
     setSaving(true);
@@ -105,4 +105,4 @@ const AccountEditProfilePage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(AccountEditProfilePage));
+export default withParams(withTranslation()(AccountEditProfileNftsDetailPage));

@@ -65,7 +65,7 @@ const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(params.toAddress ? 2 : 1);
-  const [{ accounts, activeBlockchainAccount, addressBook }] =
+  const [{ accounts, activeBlockchainAccount, networkId, addressBook }] =
     useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
@@ -190,18 +190,6 @@ const TokenSendPage = ({ params, t }) => {
     }
   };
 
-  const targets = useMemo(
-    () =>
-      accounts.flatMap(account =>
-        Object.values(account.networksAccounts).flatMap(blockchainAccount => ({
-          name: account.name,
-          address: blockchainAccount.getReceiveAddress(),
-          network: blockchainAccount.network,
-        })),
-      ),
-    [accounts],
-  );
-
   return (
     loaded && (
       <GlobalLayout fullscreen>
@@ -239,7 +227,7 @@ const TokenSendPage = ({ params, t }) => {
                 onQR={toggleScan}
               />
 
-              {targets.length > 0 && (
+              {accounts.length > 0 && (
                 <>
                   <GlobalPadding />
 
@@ -248,19 +236,27 @@ const TokenSendPage = ({ params, t }) => {
                     titleStyle={styles.titleStyle}
                     isOpen
                     hideCollapse>
-                    {targets.map(({ name, address, network }) => (
-                      <CardButtonWallet
-                        key={address}
-                        title={name}
-                        address={address}
-                        image={network.icon}
-                        imageSize="md"
-                        onPress={() => setInputAddress(address)}
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
+                    {accounts.flatMap(account =>
+                      account.networksAccounts[networkId].map(
+                        blockchainAccount => (
+                          <CardButtonWallet
+                            key={blockchainAccount.getReceiveAddress()}
+                            title={account.name}
+                            address={blockchainAccount.getReceiveAddress()}
+                            image={blockchainAccount.network.icon}
+                            imageSize="md"
+                            onPress={() =>
+                              setInputAddress(
+                                blockchainAccount.getReceiveAddress(),
+                              )
+                            }
+                            buttonStyle={globalStyles.addressBookItem}
+                            touchableStyles={globalStyles.addressBookTouchable}
+                            transparent
+                          />
+                        ),
+                      ),
+                    )}
                   </GlobalCollapse>
                 </>
               )}

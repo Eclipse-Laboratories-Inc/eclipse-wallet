@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
 
 const AdapterSelect = ({ t }) => {
   const navigate = useNavigation();
-  const chainCode = 'SOLANA';
 
   return (
     <GlobalLayout fullscreen>
@@ -46,7 +45,7 @@ const AdapterSelect = ({ t }) => {
           type="primary"
           wide
           title={t('wallet.create_wallet')}
-          onPress={() => navigate(ROUTES_MAP.ONBOARDING_CREATE, { chainCode })}
+          onPress={() => navigate(ROUTES_MAP.ONBOARDING_CREATE)}
         />
 
         <GlobalPadding size="md" />
@@ -55,7 +54,7 @@ const AdapterSelect = ({ t }) => {
           type="secondary"
           wide
           title={t('wallet.recover_wallet')}
-          onPress={() => navigate(ROUTES_MAP.ONBOARDING_RECOVER, { chainCode })}
+          onPress={() => navigate(ROUTES_MAP.ONBOARDING_RECOVER)}
         />
       </GlobalLayout.Footer>
     </GlobalLayout>

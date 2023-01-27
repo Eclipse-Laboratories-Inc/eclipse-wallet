@@ -34,7 +34,7 @@ const NonSimulatedTransactions = ({
 }) => (
   <GlobalLayout fullscreen>
     <GlobalLayout.Header>
-      <ActiveWalletCard showNetwork />
+      <ActiveWalletCard showEnvironment />
       <GlobalBackTitle title={t('adapter.detail.transaction.title')} nospace />
     </GlobalLayout.Header>
     <GlobalLayout.Inner>

@@ -159,7 +159,7 @@ const useAccounts = () => {
             return (
               path === activeWallet.path &&
               address === activeWallet.address &&
-              environment === storedEndpoints[blockchain.toUpperCase()]
+              environment === storedEndpoints?.[blockchain.toUpperCase()]
             );
           });
         if (current) {
@@ -247,8 +247,10 @@ const useAccounts = () => {
         setAccounId(await storage.getItem(STORAGE_KEYS.ACCOUNT_ID));
         setNetworkId(await storage.getItem(STORAGE_KEYS.NETWORK_ID));
         setPathIndex(await storage.getItem(STORAGE_KEYS.PATH_INDEX));
-        setTrustedApps(await storage.getItem(STORAGE_KEYS.TRUSTED_APPS));
-        setTokens(await storage.getItem(STORAGE_KEYS.TOKENS));
+        setTrustedApps(
+          (await storage.getItem(STORAGE_KEYS.TRUSTED_APPS)) || {},
+        );
+        setTokens((await storage.getItem(STORAGE_KEYS.TOKENS)) || {});
 
         if (!storedMnemonics.encrypted) {
           setMnemonics(storedMnemonics);
@@ -297,6 +299,19 @@ const useAccounts = () => {
     () => tokens[networkId] || {},
     [tokens, networkId],
   );
+
+  useEffect(() => {
+    if (activeBlockchainAccount) {
+      const { blockchain, environment } = activeBlockchainAccount.network;
+      storage.setItem(STORAGE_KEYS.CONNECTION, {
+        blockchain,
+        environment,
+        address: activeBlockchainAccount.getReceiveAddress(),
+      });
+    } else {
+      storage.removeItem(STORAGE_KEYS.CONNECTION);
+    }
+  }, [activeBlockchainAccount]);
 
   const {
     COUNTER,
@@ -354,19 +369,20 @@ const useAccounts = () => {
     const newCounter = counter + 1;
     const newAccounts = [...accounts, account];
     const newMnemonics = { ...mnemonics, [account.id]: account.mnemonics };
+    const newAccountId = account.id;
     const newNetworkId = networkId || Object.keys(account.networksAccounts)[0];
 
     setCounter(newCounter);
     setAccounts(newAccounts);
     setMnemonics(newMnemonics);
-    setAccounId(account.id);
+    setAccounId(newAccountId);
     setNetworkId(newNetworkId);
     setPathIndex(getDefaultPathIndex(account, newNetworkId));
 
     await storage.setItem(COUNTER, newCounter);
     await storage.setItem(MNEMONICS, await lock(newMnemonics, password));
     await storage.setItem(ACCOUNTS, newAccounts.map(formatAccount));
-    await storage.setItem(ACCOUNT_ID, account.Id);
+    await storage.setItem(ACCOUNT_ID, newAccountId);
     await storage.setItem(NETWORK_ID, newNetworkId);
     await storage.setItem(PATH_INDEX, 0);
   };

@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import theme from '../../../component-library/Global/theme';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import { AppContext } from '../../../AppProvider';
-import { getShortAddress, getWalletName } from '../../../utils/wallet';
+import { getShortAddress } from '../../../utils/wallet';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   wallet: {
     flexDirection: 'column',
   },
-  network: {
+  environment: {
     padding: theme.gutters.paddingXXS,
     borderWidth: 1,
     borderColor: theme.colors.labelPrimary,
@@ -23,28 +23,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ActiveWalletCard = ({ showNetwork = false }) => {
-  const [{ activeWallet, config, context }] = useContext(AppContext);
-  const address = useMemo(
-    () => activeWallet.getReceiveAddress(),
-    [activeWallet],
-  );
-  const network = useMemo(
-    () => context.get('network') || activeWallet.networkId,
-    [context, activeWallet.networkId],
+export const ActiveWalletCard = ({ showEnvironment = false }) => {
+  const [{ activeAccount, activeBlockchainAccount, context }] =
+    useContext(AppContext);
+
+  const environment = useMemo(
+    () => context.get('network') || activeBlockchainAccount.network.environment,
+    [context, activeBlockchainAccount],
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.wallet}>
-        <GlobalText color="primary">
-          {getWalletName(address, config)}
+        <GlobalText color="primary">{activeAccount.name}</GlobalText>
+        <GlobalText type="caption">
+          {getShortAddress(activeBlockchainAccount.getReceiveAddress())}
         </GlobalText>
-        <GlobalText type="caption">{getShortAddress(address)}</GlobalText>
       </View>
-      {showNetwork && (
-        <GlobalText style={styles.network} type="caption" center uppercase>
-          {network}
+      {showEnvironment && (
+        <GlobalText style={styles.environment} type="caption" center uppercase>
+          {environment}
         </GlobalText>
       )}
     </View>

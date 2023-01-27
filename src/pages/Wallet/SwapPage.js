@@ -194,9 +194,6 @@ const SwapPage = ({ t }) => {
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const current_blockchain = useMemo(() => {
-    activeBlockchainAccount.network.blockchain.toUpperCase();
-  }, [activeBlockchainAccount]);
   const { explorer } = useUserConfig();
 
   const tokensAddresses = useMemo(

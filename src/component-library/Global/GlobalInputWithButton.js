@@ -67,8 +67,6 @@ const GlobalInputWithButton = ({
   validating,
   ...props
 }) => {
-  // console.log('Test');
-
   return (
     <View style={styles.inputGroup}>
       <GlobalInput

@@ -4,17 +4,13 @@ import { cache, CACHE_TYPES } from '../utils/cache';
 
 const useToken = ({ tokenId }) => {
   const [loaded, setloaded] = useState(false);
-  const [{ activeBlockchainAccount, activeTokens }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, networkId, activeTokens }] =
+    useContext(AppContext);
   const [token, setToken] = useState({});
 
   const tokensAddresses = useMemo(
     () => Object.keys(activeTokens),
     [activeTokens],
-  );
-
-  const networkId = useMemo(
-    () => activeBlockchainAccount.network.id,
-    [activeBlockchainAccount],
   );
 
   useEffect(() => {

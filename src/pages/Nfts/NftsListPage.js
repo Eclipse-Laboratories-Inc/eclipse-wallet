@@ -22,16 +22,11 @@ import NftCollections from './components/NftCollections';
 const NftsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_LIST);
   const navigate = useNavigation();
-  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, networkId }] = useContext(AppContext);
   const [loaded, setLoaded] = useState(false);
   const [listedInfo, setListedInfo] = useState([]);
   const [nftsGroup, setNftsGroup] = useState([]);
   const [switches, setSwitches] = useState(null);
-
-  const networkId = useMemo(
-    () => activeBlockchainAccount.network.id,
-    [activeBlockchainAccount],
-  );
 
   useEffect(() => {
     getSwitches().then(allSwitches =>
