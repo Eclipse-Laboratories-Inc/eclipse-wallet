@@ -417,10 +417,10 @@ const useAccounts = () => {
       if (accountId === targetId) {
         const account = accounts.find(({ id }) => id !== targetId);
 
-        setAccounId(account.Id);
+        setAccounId(account.id);
         setPathIndex(getDefaultPathIndex(account, networkId));
 
-        await storage.setItem(ACCOUNT_ID, account.Id);
+        await storage.setItem(ACCOUNT_ID, account.id);
         await storage.setItem(PATH_INDEX, 0);
       }
 
