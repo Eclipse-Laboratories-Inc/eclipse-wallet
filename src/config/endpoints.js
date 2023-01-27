@@ -1,7 +1,6 @@
 const ENDPOINTS = {
   SOLANA: {
-    MAIN: 'mainnet',
-    MAINBETA: 'mainnet-beta',
+    MAIN: 'mainnet-beta',
     TEST: 'testnet',
     DEV: 'devnet',
   },
