@@ -82,7 +82,7 @@ const AppProvider = ({ children }) => {
     runtimeReady,
   ]);
   const logout = async () => {
-    await accountsActions.removeAllWallets();
+    await accountsActions.removeAllAccounts();
     dispatch({
       type: ACTIONS.LOGOUT,
     });
@@ -103,7 +103,7 @@ const AppProvider = ({ children }) => {
   };
   const onAppIdle = () => {
     if (accountsState.requiredLock) {
-      accountsActions.lockWallets();
+      accountsActions.lockAccounts();
     }
   };
 
