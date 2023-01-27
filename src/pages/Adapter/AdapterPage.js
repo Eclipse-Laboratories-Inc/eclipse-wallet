@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { BLOCKCHAINS, getNetworks } from '4m-wallet-adapter';
+import { BLOCKCHAINS, getNetworks, getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import AdapterSelect from './components/AdapterSelect';
@@ -17,8 +17,12 @@ const AdapterPage = () => {
   useEffect(() => {
     const load = async () => {
       if (loading) {
+        const switches = await getSwitches();
+        const isEnabled = ({ id }) => switches[id]?.enable;
         const isSolana = ({ blockchain }) => blockchain === BLOCKCHAINS.SOLANA;
-        const solanaNetworks = (await getNetworks()).filter(isSolana);
+        const solanaNetworks = (await getNetworks())
+          .filter(isSolana)
+          .filter(isEnabled);
         setNetworks(solanaNetworks);
 
         if (activeBlockchainAccount) {
