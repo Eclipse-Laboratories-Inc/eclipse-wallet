@@ -2,6 +2,7 @@ import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
 import {
   AccountFactory,
+  NetworkAccountFactory,
   BLOCKCHAINS,
   getNetworks,
   getTopTokensByPlatform,
@@ -31,7 +32,7 @@ import Password from './components/Password';
 import Success from './components/Success';
 import clipboard from '../../utils/clipboard.native';
 
-const Form = ({ onComplete, onBack, t }) => {
+const Form = ({ waiting, onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
 
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
@@ -71,6 +72,7 @@ const Form = ({ onComplete, onBack, t }) => {
           numberOfLines={4}
           autoFocus={true}
           invalid={false}
+          editable={!waiting}
           onEnter={() => isValid && onComplete(seedPhrase)}
         />
       </GlobalLayout.Header>
@@ -81,6 +83,7 @@ const Form = ({ onComplete, onBack, t }) => {
           wide
           title={t('wallet.recover.pasteSeed')}
           onPress={onPaste}
+          disabled={waiting}
         />
         <GlobalPadding size="md" />
         {!!isValid && (
@@ -89,6 +92,7 @@ const Form = ({ onComplete, onBack, t }) => {
             wide
             title={t('actions.next')}
             onPress={() => onComplete(seedPhrase)}
+            disabled={waiting}
           />
         )}
       </GlobalLayout.Footer>
@@ -108,9 +112,30 @@ const RecoverWalletPage = ({ t }) => {
   const [waiting, setWaiting] = useState(false);
 
   const handleRecover = async seedPhrase => {
+    setWaiting(true);
     const name = t('wallet.name_template', { number: counter + 1 });
     const mnemonic = seedPhrase.trim();
     const newAccount = await AccountFactory.create({ name, mnemonic });
+    // add any derived account with credit
+    const blockchainAccounts = Object.values(
+      newAccount.networksAccounts,
+    ).flat();
+    for (const blockchainAccount of blockchainAccounts) {
+      const { network } = blockchainAccount;
+      for (let index = 1; index < 10; index++) {
+        try {
+          const params = { network, mnemonic, index };
+          const derivedAccount = await NetworkAccountFactory.create(params);
+          const credit = await derivedAccount.getCredit();
+          if (credit > 0) {
+            newAccount.networksAccounts[network.id][index] = derivedAccount;
+          }
+        } catch (err) {
+          console.warn(err.message);
+        }
+      }
+    }
+    setWaiting(false);
     setAccount(newAccount);
     trackEvent(EVENTS_MAP.SECRET_RECOVERED);
     setStep(2);
@@ -118,10 +143,6 @@ const RecoverWalletPage = ({ t }) => {
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
     await addAccount(account, password);
-    setWaiting(false);
-    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
-    setStep(3);
-
     try {
       const networks = (await getNetworks()).filter(
         ({ blockchain, environment }) =>
@@ -136,6 +157,9 @@ const RecoverWalletPage = ({ t }) => {
     } catch (e) {
       console.error('Could not import tokens', e);
     }
+    setWaiting(false);
+    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
+    setStep(3);
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
@@ -150,6 +174,7 @@ const RecoverWalletPage = ({ t }) => {
     <GlobalLayout fullscreen>
       {step === 1 && (
         <Form
+          waiting={waiting}
           onComplete={handleRecover}
           onBack={() =>
             navigate(
