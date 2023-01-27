@@ -322,6 +322,7 @@ const useAccounts = () => {
     PATH_INDEX,
     TRUSTED_APPS,
     TOKENS,
+    CONNECTION,
   } = STORAGE_KEYS;
 
   const changeAccount = async targetId => {
@@ -437,6 +438,7 @@ const useAccounts = () => {
     await storage.removeItem(PATH_INDEX);
     await storage.removeItem(TRUSTED_APPS);
     await storage.removeItem(TOKENS);
+    await storage.removeItem(CONNECTION);
 
     setLocked(false);
     setRequiredLock(false);
@@ -463,7 +465,7 @@ const useAccounts = () => {
     setTrustedApps(newTrustedApps);
   };
 
-  const importTokens = async (tokenList = []) => {
+  const importTokens = async (targetNetworkId, tokenList = []) => {
     const importedTokens = tokenList
       .filter(({ address }) => address)
       .reduce(
@@ -472,7 +474,7 @@ const useAccounts = () => {
       );
 
     const newTokens = { ...tokens };
-    merge(newTokens, { [networkId]: importedTokens });
+    merge(newTokens, { [targetNetworkId]: importedTokens });
     await storage.setItem(TOKENS, newTokens);
     setTokens(newTokens);
   };

@@ -2,6 +2,8 @@ import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
 import {
   AccountFactory,
+  BLOCKCHAINS,
+  getNetworks,
   getTopTokensByPlatform,
   PLATFORMS,
 } from '4m-wallet-adapter';
@@ -121,8 +123,16 @@ const RecoverWalletPage = ({ t }) => {
     setStep(3);
 
     try {
-      const tokens = await getTopTokensByPlatform(PLATFORMS.ETHEREUM);
-      await importTokens(tokens);
+      const networks = (await getNetworks()).filter(
+        ({ blockchain, environment }) =>
+          blockchain === BLOCKCHAINS.ETHEREUM && environment === 'mainnet',
+      );
+      if (networks.length > 0) {
+        const tokens = await getTopTokensByPlatform(PLATFORMS.ETHEREUM);
+        for (const network of networks) {
+          await importTokens(network.id, tokens);
+        }
+      }
     } catch (e) {
       console.error('Could not import tokens', e);
     }

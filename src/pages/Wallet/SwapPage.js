@@ -176,7 +176,7 @@ const linkForTransaction = (title, id, status, explorer) => {
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeBlockchainAccount, hiddenValue, activeTokens },
+    { activeBlockchainAccount, networkId, hiddenValue, activeTokens },
     { importTokens },
   ] = useContext(AppContext);
   const [step, setStep] = useState(1);
@@ -334,7 +334,7 @@ const SwapPage = ({ t }) => {
         if (
           activeBlockchainAccount.network.blockchain === BLOCKCHAINS.ETHEREUM
         ) {
-          importTokens([outToken]).catch(e => {
+          importTokens(networkId, [outToken]).catch(e => {
             console.error('Could not import token:', outToken, e);
           });
         }
