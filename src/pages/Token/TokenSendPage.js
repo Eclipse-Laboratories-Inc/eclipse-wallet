@@ -80,9 +80,10 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const current_blockchain = useMemo(() => {
-    activeBlockchainAccount.network.blockchain.toUpperCase();
-  }, [activeBlockchainAccount]);
+  const current_blockchain = useMemo(
+    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
+    [activeBlockchainAccount],
+  );
   const isBitcoin = current_blockchain === 'BITCOIN';
   const { explorer } = useUserConfig();
 
