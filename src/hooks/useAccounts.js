@@ -37,11 +37,11 @@ const formatAccount = account => {
 
 const useAccounts = () => {
   const [ready, setReady] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [locked, setLocked] = useState(false);
   const [requiredLock, setRequiredLock] = useState(false);
   const [counter, setCounter] = useState(0);
   const [accounts, setAccounts] = useState([]);
-  const [mnemonics, setMnemonics] = useState({});
   const [accountId, setAccounId] = useState(null);
   const [networkId, setNetworkId] = useState(null);
   const [pathIndex, setPathIndex] = useState(0);
@@ -54,7 +54,7 @@ const useAccounts = () => {
       if (storedWallets.passwordRequired) {
         if (!password) {
           setLocked(true);
-          return;
+          return false;
         }
         if (!('mnemonics' in storedWallets)) {
           storedWallets.wallets = await unlock(storedWallets.wallets, password);
@@ -194,6 +194,8 @@ const useAccounts = () => {
       await storage.removeItem(STORAGE_KEYS.ACTIVE);
       await storage.removeItem(STORAGE_KEYS.ENDPOINTS);
     }
+
+    return true;
   }, []);
 
   useEffect(() => {
@@ -210,6 +212,23 @@ const useAccounts = () => {
     }
   };
 
+  const load = async mnemonics => {
+    const storedAccounts = await storage.getItem(STORAGE_KEYS.ACCOUNTS);
+    const data = storedAccounts.map(account => ({
+      ...account,
+      mnemonic: mnemonics[account.id],
+    }));
+
+    setCounter((await storage.getItem(STORAGE_KEYS.COUNTER)) || 0);
+    setAccounts(await AccountFactory.createMany(data));
+    setAccounId(await storage.getItem(STORAGE_KEYS.ACCOUNT_ID));
+    setNetworkId(await storage.getItem(STORAGE_KEYS.NETWORK_ID));
+    setPathIndex(await storage.getItem(STORAGE_KEYS.PATH_INDEX));
+    setTrustedApps((await storage.getItem(STORAGE_KEYS.TRUSTED_APPS)) || {});
+    setTokens((await storage.getItem(STORAGE_KEYS.TOKENS)) || {});
+    setLoaded(true);
+  };
+
   const lockAccounts = async () => {
     setLocked(true);
     await stash.removeItem('password');
@@ -221,7 +240,10 @@ const useAccounts = () => {
         await runUpgrades(password);
 
         const storedMnemonics = await storage.getItem(STORAGE_KEYS.MNEMONICS);
-        setMnemonics(await unlock(storedMnemonics, password));
+        const mnemonics = await unlock(storedMnemonics, password);
+        if (!loaded) {
+          await load(mnemonics);
+        }
         setLocked(false);
 
         await stash.setItem('password', password);
@@ -232,29 +254,17 @@ const useAccounts = () => {
         return false;
       }
     },
-    [runUpgrades],
+    [runUpgrades, loaded],
   );
 
   useEffect(() => {
-    const load = async () => {
-      await runUpgrades();
+    const init = async () => {
+      const upgraded = await runUpgrades();
 
       const storedMnemonics = await storage.getItem(STORAGE_KEYS.MNEMONICS);
       if (storedMnemonics) {
-        const storedAccounts = await storage.getItem(STORAGE_KEYS.ACCOUNTS);
-
-        setCounter((await storage.getItem(STORAGE_KEYS.COUNTER)) || 0);
-        setAccounts(await AccountFactory.createMany(storedAccounts));
-        setAccounId(await storage.getItem(STORAGE_KEYS.ACCOUNT_ID));
-        setNetworkId(await storage.getItem(STORAGE_KEYS.NETWORK_ID));
-        setPathIndex(await storage.getItem(STORAGE_KEYS.PATH_INDEX));
-        setTrustedApps(
-          (await storage.getItem(STORAGE_KEYS.TRUSTED_APPS)) || {},
-        );
-        setTokens((await storage.getItem(STORAGE_KEYS.TOKENS)) || {});
-
         if (!storedMnemonics.encrypted) {
-          setMnemonics(storedMnemonics);
+          await load(storedMnemonics);
           setRequiredLock(false);
         } else {
           setRequiredLock(true);
@@ -268,12 +278,14 @@ const useAccounts = () => {
             setLocked(true);
           }
         }
+      } else if (upgraded) {
+        setLoaded(true);
       }
 
       setReady(true);
     };
 
-    load();
+    init();
   }, [runUpgrades, unlockAccounts]);
 
   const findAccount = useCallback(
@@ -370,13 +382,15 @@ const useAccounts = () => {
   const addAccount = async (account, password) => {
     const newCounter = counter + 1;
     const newAccounts = [...accounts, account];
-    const newMnemonics = { ...mnemonics, [account.id]: account.mnemonics };
     const newAccountId = account.id;
     const newNetworkId = networkId || Object.keys(account.networksAccounts)[0];
+    const newMnemonics = newAccounts.reduce((mnemonics, { id, mnemonic }) => {
+      mnemonics[id] = mnemonic;
+      return mnemonics;
+    }, {});
 
     setCounter(newCounter);
     setAccounts(newAccounts);
-    setMnemonics(newMnemonics);
     setAccounId(newAccountId);
     setNetworkId(newNetworkId);
     setPathIndex(getDefaultPathIndex(account, newNetworkId));
@@ -411,9 +425,11 @@ const useAccounts = () => {
     if (newAccounts.length === 0) {
       await removeAllAccounts();
     } else {
-      const newMnemonics = omit(mnemonics, targetId);
-      setMnemonics(newMnemonics);
       setAccounts(newAccounts);
+      const newMnemonics = newAccounts.reduce((mnemonics, { id, mnemonic }) => {
+        mnemonics[id] = mnemonic;
+        return mnemonics;
+      }, {});
 
       if (accountId === targetId) {
         const account = accounts.find(({ id }) => id !== targetId);
@@ -445,7 +461,6 @@ const useAccounts = () => {
     setRequiredLock(false);
     setCounter(0);
     setAccounts([]);
-    setMnemonics({});
     setAccounId(null);
     setNetworkId(null);
     setPathIndex(0);
