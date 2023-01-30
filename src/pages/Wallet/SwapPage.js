@@ -14,7 +14,7 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
-import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
+import { CACHE_TYPES, invalidate } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
@@ -205,23 +205,9 @@ const SwapPage = ({ t }) => {
     if (activeBlockchainAccount) {
       invalidate(CACHE_TYPES.AVAILABLE_TOKENS);
       Promise.all([
-        cache(
-          `${
-            activeBlockchainAccount.network.id
-          }-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeBlockchainAccount.getBalance(tokensAddresses),
-        ),
-        cache(
-          `${activeBlockchainAccount.network.id}`,
-          CACHE_TYPES.AVAILABLE_TOKENS,
-          () => activeBlockchainAccount.getAvailableTokens(),
-        ),
-        cache(
-          `${activeBlockchainAccount.network.id}`,
-          CACHE_TYPES.FEATURED_TOKENS,
-          () => activeBlockchainAccount.getFeaturedTokens(),
-        ),
+        activeBlockchainAccount.getBalance(tokensAddresses),
+        activeBlockchainAccount.getAvailableTokens(),
+        activeBlockchainAccount.getFeaturedTokens(),
       ]).then(([balance, atks, ftks]) => {
         const tks = balance.items || [];
         setTokens(tks);

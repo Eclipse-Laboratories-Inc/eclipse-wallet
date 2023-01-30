@@ -4,7 +4,6 @@ import { View } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { withTranslation } from '../../hooks/useTranslations';
 
 import { globalStyles } from '../../component-library/Global/theme';
@@ -36,15 +35,7 @@ const TokenAddPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      Promise.all([
-        cache(
-          `${
-            activeBlockchainAccount.network.id
-          }-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeBlockchainAccount.getBalance(tokensAddresses),
-        ),
-      ]).then(([balance]) => {
+      activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
         const tokenSelected = (balance.items || []).find(
           i => i.address === params.tokenId,
         );

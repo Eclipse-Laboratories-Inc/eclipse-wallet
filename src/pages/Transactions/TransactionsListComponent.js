@@ -6,7 +6,6 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import theme from '../../component-library/Global/theme';
 import { AppContext } from '../../AppProvider';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 
@@ -28,13 +27,8 @@ const TransactionsListComponent = ({ t }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    cache(
-      `${
-        activeBlockchainAccount.network.id
-      }-${activeBlockchainAccount.getReceiveAddress()}`,
-      CACHE_TYPES.TRANSACTIONS,
-      () => activeBlockchainAccount.getRecentTransactions({ pageSize }),
-    )
+    activeBlockchainAccount
+      .getRecentTransactions({ pageSize })
       .then(({ data }) => {
         setTransactions(data);
       })

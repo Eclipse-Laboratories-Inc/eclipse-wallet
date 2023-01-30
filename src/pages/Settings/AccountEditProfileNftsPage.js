@@ -7,7 +7,6 @@ import { withTranslation } from '../../hooks/useTranslations';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 
 import { AppContext } from '../../AppProvider';
 
@@ -18,13 +17,7 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
   const navigate = useNavigation();
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeBlockchainAccount.getAllNfts(),
-      ).then(result => {
+      activeBlockchainAccount.getAllNfts().then(result => {
         console.log(result);
         setNfts(result);
       });

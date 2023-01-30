@@ -7,7 +7,6 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   hiddenValue,
   showAmount,
@@ -50,15 +49,7 @@ const TokenDetailPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      Promise.all([
-        cache(
-          `${
-            activeBlockchainAccount.network.id
-          }-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeBlockchainAccount.getBalance(tokensAddresses),
-        ),
-      ]).then(([balance]) => {
+      activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
         const tk = (balance.items || []).find(
           i => i.address === params.tokenId,
         );

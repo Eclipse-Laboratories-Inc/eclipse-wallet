@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -22,13 +21,8 @@ const NftsCollectionPage = ({ params }) => {
   const [{ activeBlockchainAccount }] = useContext(AppContext);
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS,
-        () => activeBlockchainAccount.getAllNftsGrouped(),
-      )
+      activeBlockchainAccount
+        .getAllNftsGrouped()
         .then(async nfts => {
           const collection = nfts.find(n => n.collection === params.id);
           if (collection) {

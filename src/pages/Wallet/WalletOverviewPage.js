@@ -7,7 +7,7 @@ import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { getListedTokens, getNonListedTokens } from '../../utils/wallet';
-import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
+import { CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
   hiddenValue,
   getLabelValue,
@@ -51,13 +51,7 @@ const WalletOverviewPage = ({ t }) => {
   useEffect(() => {
     setLoading(true);
 
-    Promise.resolve(
-      cache(
-        `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.BALANCE,
-        () => activeBlockchainAccount.getBalance(tokensAddresses),
-      ),
-    ).then(async balance => {
+    activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
       setTotalBalance(balance);
       setTokenList(getListedTokens(balance));
       setNonListedTokenList(getNonListedTokens(balance, []));

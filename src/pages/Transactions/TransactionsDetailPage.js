@@ -19,7 +19,6 @@ import { ROUTES_MAP } from './routes';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import clipboard from '../../utils/clipboard.native';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import { getShortAddress, getTransactionImage } from '../../utils/wallet';
@@ -358,13 +357,9 @@ const TransactionsDetailPage = ({ t, params }) => {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.TRANSACTIONS,
-        () => activeBlockchainAccount.getRecentTransactions({ pageSize: 8 }),
-      );
+      const { data } = await activeBlockchainAccount.getRecentTransactions({
+        pageSize: 8,
+      });
 
       let tx = data.find(({ id }) => id === params.id);
       if (!tx) {

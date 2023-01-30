@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
@@ -36,11 +35,8 @@ const NftsListPage = ({ t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS,
-        () => activeBlockchainAccount.getAllNftsGrouped(),
-      )
+      activeBlockchainAccount
+        .getAllNftsGrouped()
         .then(async nfts => {
           setNftsGroup(nfts);
           if (switches?.list_in_marketplace?.active) {

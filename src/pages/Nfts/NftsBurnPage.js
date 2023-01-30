@@ -6,7 +6,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getTransactionImage } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { DEFAULT_SYMBOL, TOKEN_DECIMALS } from '../Transactions/constants';
@@ -76,13 +75,7 @@ const NftsBurnPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}-${params.id}`,
-        CACHE_TYPES.SINGLE_NFT,
-        () => activeBlockchainAccount.getNft(params.id),
-      ).then(nft => {
+      activeBlockchainAccount.getNft(params.id).then(nft => {
         if (nft) {
           setNftDetail(nft ?? {});
         } else {

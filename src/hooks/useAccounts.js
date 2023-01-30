@@ -5,6 +5,7 @@ import mapValues from 'lodash/mapValues';
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
 
+import CachedBlockchainAccount from '../accounts/CachedBlockchainAccount';
 import { invertBy } from '../utils/object';
 import { lock, unlock } from '../utils/password';
 import stash from '../utils/stash';
@@ -285,10 +286,10 @@ const useAccounts = () => {
     [findAccount, accountId],
   );
 
-  const activeBlockchainAccount = useMemo(
-    () => activeAccount?.networksAccounts?.[networkId]?.[pathIndex],
-    [activeAccount, networkId, pathIndex],
-  );
+  const activeBlockchainAccount = useMemo(() => {
+    const base = activeAccount?.networksAccounts?.[networkId]?.[pathIndex];
+    return base ? new CachedBlockchainAccount(base) : undefined;
+  }, [activeAccount, networkId, pathIndex]);
 
   const activeTrustedApps = useMemo(
     () => trustedApps[networkId] || {},

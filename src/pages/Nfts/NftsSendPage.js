@@ -6,7 +6,6 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
@@ -88,13 +87,7 @@ const NftsSendPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeBlockchainAccount.getAllNfts(),
-      ).then(nfts => {
+      activeBlockchainAccount.getAllNfts().then(nfts => {
         const nft = nfts.find(n => n.mint === params.id);
         if (nft) {
           setNftDetail(nft);

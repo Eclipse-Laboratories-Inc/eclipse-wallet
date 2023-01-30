@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import get from 'lodash/get';
 import { BLOCKCHAINS, getSwitches } from '4m-wallet-adapter';
 
@@ -7,7 +7,6 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
@@ -77,13 +76,7 @@ const NftsDetailPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeBlockchainAccount.getAllNfts(),
-      ).then(async nfts => {
+      activeBlockchainAccount.getAllNfts().then(async nfts => {
         const nft = nfts.find(n => n.mint === params.id);
         if (nft) {
           setNftDetail(nft);

@@ -52,13 +52,8 @@ const TransactionsListPage = ({ t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
   useEffect(() => {
-    cache(
-      `${
-        activeBlockchainAccount.network.id
-      }-${activeBlockchainAccount.getReceiveAddress()}`,
-      CACHE_TYPES.TRANSACTIONS,
-      () => activeBlockchainAccount.getRecentTransactions({ pageSize }),
-    )
+    activeBlockchainAccount
+      .getRecentTransactions({ pageSize })
       .then(({ data, meta }) => {
         setTransactions(data);
         setPaging(meta);
@@ -69,20 +64,17 @@ const TransactionsListPage = ({ t }) => {
   const onLoadMore = useCallback(() => {
     setLoading(true);
 
-    activeBlockchainAccount
+    const cacheKey = `${
+      activeBlockchainAccount.network.id
+    }-${activeBlockchainAccount.getReceiveAddress()}`;
+    activeBlockchainAccount.base
       .getRecentTransactions({ ...paging, pageSize })
       .then(({ data, meta }) => {
         invalidate(CACHE_TYPES.TRANSACTIONS);
-        cache(
-          `${
-            activeBlockchainAccount.network.id
-          }-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.TRANSACTIONS,
-          () => ({
-            data: transactions.concat(data),
-            meta,
-          }),
-        );
+        cache(cacheKey, CACHE_TYPES.TRANSACTIONS, () => ({
+          data: transactions.concat(data),
+          meta,
+        }));
         setPaging(meta);
         setTransactions(transactions.concat(data));
       })

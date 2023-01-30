@@ -1,6 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AppContext } from '../AppProvider';
-import { cache, CACHE_TYPES } from '../utils/cache';
 
 const useToken = ({ tokenId }) => {
   const [loaded, setloaded] = useState(false);
@@ -15,14 +14,9 @@ const useToken = ({ tokenId }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      Promise.all([
-        cache(
-          `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeBlockchainAccount.getBalance(tokensAddresses),
-        ),
-      ])
-        .then(([balance]) => {
+      activeBlockchainAccount
+        .getBalance(tokensAddresses)
+        .then(balance => {
           const tokenSelected = (balance.items || []).find(
             i => i.address === tokenId,
           );

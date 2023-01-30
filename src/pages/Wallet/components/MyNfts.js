@@ -4,7 +4,6 @@ import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import GlobalNftList from '../../../component-library/Global/GlobalNftList';
 import { useNavigation } from '../../../routes/hooks';
 import { withTranslation } from '../../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../../utils/cache';
 import { isMoreThanOne } from '../../../utils/nfts';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
@@ -16,13 +15,7 @@ const MyNfts = ({ whenLoading, t }) => {
   const [listedInfo, setListedInfo] = useState([]);
 
   useEffect(() => {
-    Promise.resolve(
-      cache(
-        `${networkId}-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS,
-        () => activeBlockchainAccount.getAllNftsGrouped(),
-      ),
-    ).then(async nfts => {
+    activeBlockchainAccount.getAllNftsGrouped().then(async nfts => {
       setNftsList(nfts);
       whenLoading(false);
       const listed = await activeBlockchainAccount.getListedNfts();

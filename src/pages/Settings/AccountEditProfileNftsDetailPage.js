@@ -5,7 +5,6 @@ import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { ROUTES_MAP as ROUTES_WALLET_MAP } from '../Wallet/routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 
 import { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -26,13 +25,7 @@ const AccountEditProfileNftsDetailPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      cache(
-        `${
-          activeBlockchainAccount.network.id
-        }-${activeBlockchainAccount.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeBlockchainAccount.getAllNfts(),
-      ).then(result => {
+      activeBlockchainAccount.getAllNfts().then(result => {
         setCurrentNft(result.find(n => n.mint === params.id));
       });
     }

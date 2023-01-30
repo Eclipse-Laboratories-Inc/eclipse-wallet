@@ -5,7 +5,6 @@ import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { hiddenValue, showAmount } from '../../utils/amount';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -68,15 +67,7 @@ const TokenSelectPage = ({ params, t }) => {
 
   useEffect(() => {
     if (activeBlockchainAccount) {
-      Promise.all([
-        cache(
-          `${
-            activeBlockchainAccount.network.id
-          }-${activeBlockchainAccount.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeBlockchainAccount.getBalance(tokensAddresses),
-        ),
-      ]).then(([balance]) => {
+      activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
         setTokens(balance.items || []);
         setLoaded(true);
       });
