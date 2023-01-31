@@ -25,7 +25,7 @@ const List = ({ tokens, onDetail, hiddenBalance }) => (
   <>
     {tokens.map(t => (
       <CardButton
-        key={t.mint}
+        key={t.address}
         onPress={() => onDetail(t)}
         icon={<AvatarImage url={t.logo} size={48} />}
         title={t.name}

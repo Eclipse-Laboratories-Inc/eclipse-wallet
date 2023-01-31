@@ -7,11 +7,6 @@ import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import {
-  TOKEN_DECIMALS,
-  SOL_ICON,
-  DEFAULT_SYMBOL,
-} from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -25,7 +20,7 @@ import GlobalInputWithButton from '../../component-library/Global/GlobalInputWit
 import CardButton from '../../component-library/CardButton/CardButton';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
-import { showValue } from '../../utils/amount';
+import { formatCurrency, showValue } from '../../utils/amount';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
@@ -74,11 +69,6 @@ const NftsListingPage = ({ params, t }) => {
   ] = useContext(AppContext);
   const { explorer } = useUserConfig();
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
-
-  const current_blockchain = useMemo(
-    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
-    [activeBlockchainAccount],
-  );
 
   const tokensAddresses = useMemo(
     () => Object.keys(activeTokens),
@@ -220,8 +210,8 @@ const NftsListingPage = ({ params, t }) => {
                 <CardButton
                   type="secondary"
                   size="sm"
-                  title="SOL"
-                  image={SOL_ICON}
+                  title={activeBlockchainAccount.network.currency.symbol}
+                  image={activeBlockchainAccount.network.icon}
                   imageSize="xs"
                   onPress={() => {}}
                   buttonStyle={{ paddingRight: 6, paddingLeft: 6 }}
@@ -428,9 +418,10 @@ const NftsListingPage = ({ params, t }) => {
                     {t('adapter.detail.transaction.fee')}
                   </GlobalText>
                   <GlobalText type="body2">
-                    {`${fee / TOKEN_DECIMALS[current_blockchain]} ${
-                      DEFAULT_SYMBOL[current_blockchain]
-                    }`}
+                    {formatCurrency(
+                      fee,
+                      activeBlockchainAccount.network.currency,
+                    )}
                   </GlobalText>
                 </View>
               )}

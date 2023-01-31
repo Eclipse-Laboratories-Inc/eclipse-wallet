@@ -2,10 +2,9 @@ import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
 import {
   AccountFactory,
-  NetworkAccountFactory,
-  BLOCKCHAINS,
   getNetworks,
   getTopTokensByPlatform,
+  BLOCKCHAINS,
   PLATFORMS,
 } from '4m-wallet-adapter';
 
@@ -116,25 +115,6 @@ const RecoverWalletPage = ({ t }) => {
     const name = t('wallet.name_template', { number: counter + 1 });
     const mnemonic = seedPhrase.trim();
     const newAccount = await AccountFactory.create({ name, mnemonic });
-    // add any derived account with credit
-    const blockchainAccounts = Object.values(
-      newAccount.networksAccounts,
-    ).flat();
-    for (const blockchainAccount of blockchainAccounts) {
-      const { network } = blockchainAccount;
-      for (let index = 1; index < 10; index++) {
-        try {
-          const params = { network, mnemonic, index };
-          const derivedAccount = await NetworkAccountFactory.create(params);
-          const credit = await derivedAccount.getCredit();
-          if (credit > 0) {
-            newAccount.networksAccounts[network.id][index] = derivedAccount;
-          }
-        } catch (err) {
-          console.warn(err.message);
-        }
-      }
-    }
     setWaiting(false);
     setAccount(newAccount);
     trackEvent(EVENTS_MAP.SECRET_RECOVERED);
@@ -169,6 +149,7 @@ const RecoverWalletPage = ({ t }) => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
     navigate(ROUTES_MAP.ADAPTER);
   };
+  const goToDerived = () => navigate(ROUTES_ONBOARDING.ONBOARDING_DERIVED);
 
   return (
     <GlobalLayout fullscreen>
@@ -201,6 +182,7 @@ const RecoverWalletPage = ({ t }) => {
         <Success
           goToWallet={!isAdapter ? goToWallet : undefined}
           goToAdapter={isAdapter ? goToAdapter : undefined}
+          goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
         />

@@ -1,4 +1,5 @@
 import CreateWalletPage from './CreateWalletPage';
+import DerivedAccountsPage from './DerivedAccountsPage';
 import RecoverWalletPage from './RecoverWalletPage';
 import SelectOptionsPage from './SelectOptionsPage';
 
@@ -30,6 +31,13 @@ const routes = [
     path: 'recover',
     route: '/onboarding/recover',
     Component: RecoverWalletPage,
+  },
+  {
+    key: ROUTES_MAP.ONBOARDING_DERIVED,
+    name: 'onboardingDerived',
+    path: 'derived',
+    route: '/onboarding/derived',
+    Component: DerivedAccountsPage,
   },
 ];
 

@@ -24,6 +24,8 @@ const GlobalSkeleton = ({ type }) => {
       return <TransactionSimulation />;
     case 'Swap':
       return <Swap />;
+    case 'DerivedAccounts':
+      return <DerivedAccounts />;
     case 'Generic':
       return <Generic />;
   }
@@ -157,6 +159,18 @@ const Swap = () => (
     <rect x="0" y={25} rx="3" ry="3" width="100" height="23" />
     <rect x="0" y={25 * 2} rx="3" ry="3" width="100" height="23" />
     <rect x="0" y={25 * 3} rx="3" ry="3" width="100" height="23" />
+  </ContentLoader>
+);
+
+const DerivedAccounts = () => (
+  <ContentLoader
+    foregroundColor={theme.colors.cards}
+    backgroundColor={theme.colors.bgLight}
+    viewBox="0 0 100 100">
+    <rect x="0" y="0" rx="3" ry="3" width="100" height="15" />
+    <rect x="0" y={18} rx="3" ry="3" width="100" height="15" />
+    <rect x="0" y={18 * 2} rx="3" ry="3" width="100" height="15" />
+    <rect x="0" y={18 * 3} rx="3" ry="3" width="100" height="15" />
   </ContentLoader>
 );
 

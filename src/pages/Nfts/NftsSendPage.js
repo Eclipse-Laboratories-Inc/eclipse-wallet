@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
 
 import { AppContext } from '../../AppProvider';
@@ -8,7 +8,6 @@ import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -30,6 +29,7 @@ import clipboard from '../../utils/clipboard.native';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import { formatCurrency } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -77,10 +77,6 @@ const NftsSendPage = ({ params, t }) => {
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
-  const current_blockchain = useMemo(
-    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
-    [activeBlockchainAccount],
-  );
   const { explorer } = useUserConfig();
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
@@ -353,8 +349,10 @@ const NftsSendPage = ({ params, t }) => {
                     Network Fee
                   </GlobalText>
                   <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
-                    {DEFAULT_SYMBOL[current_blockchain]}
+                    {formatCurrency(
+                      fee,
+                      activeBlockchainAccount.network.currency,
+                    )}
                   </GlobalText>
                 </View>
               )}

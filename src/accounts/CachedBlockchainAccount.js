@@ -6,6 +6,7 @@ class CachedBlockchainAccount {
   constructor(base) {
     this.base = base;
     this.network = base.network;
+    this.index = base.index;
     this.path = base.path;
     this.keyPair = base.keyPair;
     this.publicKey = base.publicKey;

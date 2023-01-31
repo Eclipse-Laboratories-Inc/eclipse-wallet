@@ -9,7 +9,6 @@ import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import useToken from '../../hooks/useToken';
-import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -27,7 +26,7 @@ import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png
 import InputAddress from '../../features/InputAddress/InputAddress';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
-import { showValue } from '../../utils/amount';
+import { formatCurrency, showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -35,6 +34,7 @@ import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import storage from '../../utils/storage';
 import STORAGE_KEYS from '../../utils/storageKeys';
+import { BITCOIN } from '4m-wallet-adapter/constants/blockchains';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -80,11 +80,10 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const current_blockchain = useMemo(
-    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
+  const isBitcoin = useMemo(
+    () => activeBlockchainAccount.network.blockchain === BITCOIN,
     [activeBlockchainAccount],
   );
-  const isBitcoin = current_blockchain === 'BITCOIN';
   const { explorer } = useUserConfig();
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
@@ -171,7 +170,7 @@ const TokenSendPage = ({ params, t }) => {
   };
 
   const savePendingTx = async (txId, tokenSymbol, amount) => {
-    if (current_blockchain === 'BITCOIN') {
+    if (isBitcoin) {
       const lastStatus = new Date().getTime();
       const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
       let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
@@ -429,8 +428,10 @@ const TokenSendPage = ({ params, t }) => {
                     </GlobalText>
 
                     <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
-                      {DEFAULT_SYMBOL[current_blockchain]}
+                      {formatCurrency(
+                        fee,
+                        activeBlockchainAccount.network.currency,
+                      )}
                     </GlobalText>
                   </View>
                 )}

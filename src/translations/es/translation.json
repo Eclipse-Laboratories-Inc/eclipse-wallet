@@ -177,6 +177,12 @@
       "success_message": "¡Felicitaciones!",
       "success_message_body": "Tu Cuenta ya está lista.",
       "go_to_my_wallet": "Ir a mi Cuenta!",
+      "check_derivables": "Comprobar Derivables",
+      "derivable_accounts": "Cuentas derivables",
+      "no_derivable_accounts": "No se encontraron cuentas de derivables con saldo",
+      "derivable_info_icon": "ⓘ  Qué es una cuenta derivable?",
+      "derivable_info": "Qué es una cuenta derivable?",
+      "derivable_description": "Las Derivables son \"sub cuentas\" que nacen del mismo seed-phrase. Usando criptografía, se combina la seed-phrase con un patrón de derivación que genera estas diferentes cuentas. Permite así la generación de tantas cuentas como se quieran crear bajo la misma seed-phrase.",
       "info_icon": "ⓘ",
       "recover": "Recuperar",
       "skip": "Omitir"

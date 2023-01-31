@@ -403,18 +403,27 @@ const useAccounts = () => {
     await storage.setItem(PATH_INDEX, 0);
   };
 
-  const editAccount = async (targetId, { name, avatar }) => {
-    const index = accounts.findIndex(({ id }) => id === targetId);
-    if (index >= 0) {
+  const editAccount = async (
+    targetId,
+    { name, avatar, newDerivedAccounts },
+  ) => {
+    const i = accounts.findIndex(({ id }) => id === targetId);
+    if (i >= 0) {
       const newAccounts = [...accounts];
-      const newAccount = { ...accounts[index] };
+      const newAccount = { ...accounts[i] };
       if (name) {
         newAccount.name = name;
       }
       if (avatar) {
         newAccount.avatar = avatar;
       }
-      newAccounts[index] = newAccount;
+      if (newDerivedAccounts) {
+        for (const derivedAccount of newDerivedAccounts) {
+          const { network, index } = derivedAccount;
+          newAccount.networksAccounts[network.id][index] = derivedAccount;
+        }
+      }
+      newAccounts[i] = newAccount;
       setAccounts(newAccounts);
       await storage.setItem(ACCOUNTS, newAccounts.map(formatAccount));
     }

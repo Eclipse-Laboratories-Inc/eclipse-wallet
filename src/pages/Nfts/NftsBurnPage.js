@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
 import { Message } from '@solana/web3.js';
 
@@ -8,7 +8,6 @@ import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { DEFAULT_SYMBOL, TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -22,6 +21,7 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP } from '../../utils/tracking';
+import { formatCurrency } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -57,11 +57,6 @@ const NftsBurnPage = ({ params, t }) => {
   const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
   const { explorer } = useUserConfig();
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
-
-  const current_blockchain = useMemo(
-    () => activeBlockchainAccount.network.blockchain.toUpperCase(),
-    [activeBlockchainAccount],
-  );
 
   const openTransaction = async () => {
     const url = `${explorer.url}/tx/${transactionId}`;
@@ -176,9 +171,10 @@ const NftsBurnPage = ({ params, t }) => {
                 Network Fee
               </GlobalText>
               <GlobalText type="body2">
-                {`${burnFee / TOKEN_DECIMALS[current_blockchain]} ${
-                  DEFAULT_SYMBOL[current_blockchain]
-                }`}
+                {formatCurrency(
+                  burnFee,
+                  activeBlockchainAccount.network.currency,
+                )}
               </GlobalText>
             </View>
           )}
@@ -233,9 +229,10 @@ const NftsBurnPage = ({ params, t }) => {
                     Network Fee
                   </GlobalText>
                   <GlobalText type="body2">
-                    {`${burnFee / TOKEN_DECIMALS[current_blockchain]} ${
-                      DEFAULT_SYMBOL[current_blockchain]
-                    }`}
+                    {formatCurrency(
+                      burnFee,
+                      activeBlockchainAccount.network.currency,
+                    )}
                   </GlobalText>
                 </View>
               )}

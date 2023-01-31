@@ -194,6 +194,12 @@
       "success_message": "Congratulations!",
       "success_message_body": "Your account is now ready",
       "go_to_my_wallet": "Go to my Account!",
+      "check_derivables": "Check Derivables",
+      "derivable_accounts": "Derivable Accounts",
+      "no_derivable_accounts": "No derivable accounts with balance found",
+      "derivable_info_icon": "ⓘ  What is a derivable?",
+      "derivable_info": "What is a derivable?",
+      "derivable_description": "Derivables are \"sub accounts\" that are born from the same seed phrase. Using cryptography, the seed phrase it combined with a derivation path to create these different accounts. It allows the generation of as many accounts as you wish to have under the same seed phrase.",
       "info_icon": "ⓘ",
       "recover": "Recover",
       "skip": "Skip"
