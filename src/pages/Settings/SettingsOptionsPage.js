@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeAccount, activeBlockchainAccount, selectedLanguage, requiredLock },
+    { activeAccount, selectedLanguage, requiredLock },
     { logout, removeAccount, checkPassword },
   ] = useContext(AppContext);
   const [showSingleDialog, setShowSingleDialog] = useState(false);
@@ -73,9 +73,6 @@ const SettingsOptionsPage = ({ t }) => {
 
   const goToLanguages = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
-
-  const goToPathIndex = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGEPATHINDEX);
 
   const goToExplorer = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGEEXPLORER);
@@ -121,12 +118,6 @@ const SettingsOptionsPage = ({ t }) => {
           <GlobalText type="caption">
             {t(`settings.languages.${selectedLanguage}`)}
           </GlobalText>
-        </CardButton>
-        <CardButton
-          title={t(`settings.change_path_index`)}
-          actionIcon="right"
-          onPress={goToPathIndex}>
-          <GlobalText type="caption">{activeBlockchainAccount.path}</GlobalText>
         </CardButton>
         <CardButton
           title={t(`settings.select_explorer`)}

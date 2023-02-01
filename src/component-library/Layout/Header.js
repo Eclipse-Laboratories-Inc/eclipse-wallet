@@ -4,16 +4,18 @@ import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { getNetworks } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP as ROUTES_WALLET_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from '../../pages/Settings/routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import { getShortAddress } from '../../utils/wallet';
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
+import IconChangeWallet from '../../assets/images/IconChangeWallet.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isExtension, isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard.native';
@@ -45,6 +47,9 @@ const styles = StyleSheet.create({
   walletName: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
   },
+  walletAddressActions: {
+    flexDirection: 'row',
+  },
   walletAddress: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
   },
@@ -55,10 +60,9 @@ const styles = StyleSheet.create({
   narrowBtn: {
     paddingHorizontal: theme.gutters.paddingSM,
   },
-  addressCopyIcon: {
+  addressIcon: {
     marginLeft: theme.gutters.margin,
     marginTop: 1,
-    position: 'absolute',
   },
   appStatus: {
     marginRight: theme.gutters.paddingNormal,
@@ -144,6 +148,10 @@ const Header = ({ isHome, t }) => {
     setShowToast(true);
   };
 
+  const onSelectPathIndex = () => {
+    navigate(ROUTES_WALLET_MAP.WALLET_INDEX_PATH);
+  };
+
   return (
     <SafeAreaView edges={['top']}>
       <View style={styles.avatarWalletAddressActions}>
@@ -161,20 +169,31 @@ const Header = ({ isHome, t }) => {
               numberOfLines={1}>
               {activeAccount.name}
             </GlobalText>
-            <TouchableOpacity onPress={onCopyAddress}>
+            <View style={styles.walletAddressActions}>
               <GlobalText
                 type="body1"
                 color="tertiary"
                 style={styles.walletAddress}
                 numberOfLines={1}>
                 ({getShortAddress(activeBlockchainAccount.getReceiveAddress())})
+              </GlobalText>
+              <TouchableOpacity onPress={onCopyAddress}>
                 <GlobalImage
                   source={IconCopy}
-                  style={styles.addressCopyIcon}
+                  style={styles.addressIcon}
                   size="xxs"
                 />
-              </GlobalText>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              {isHome && activeAccount.networksAccounts[networkId].length > 1 && (
+                <TouchableOpacity onPress={onSelectPathIndex}>
+                  <GlobalImage
+                    source={IconChangeWallet}
+                    style={styles.addressIcon}
+                    size="xxs"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
 

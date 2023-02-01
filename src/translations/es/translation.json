@@ -43,7 +43,6 @@
     "address_book": "Contactos",
     "display_language": "Idioma",
     "change_network": "Cambiar Network",
-    "change_path_index": "Cambiar Cuenta Derivada",
     "select_explorer": "Seleccionar Explorador",
     "security": "Seguridad",
     "notifications": "Notificaciones",
@@ -153,6 +152,7 @@
     "select_token": "Seleccionar Token",
     "new_token": "Agregar token",
     "is_coming_soon": "próximamente",
+    "select_derivable_account": "Seleccionar cuenta derivable",
     "create": {
       "messageTitle": "¡Guarda tu seed-phrase!",
       "messageBody": "Necesitarás estas palabras para restaurar tu Cuenta si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Cuenta. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",

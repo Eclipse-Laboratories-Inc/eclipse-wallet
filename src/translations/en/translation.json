@@ -57,7 +57,6 @@
     "address_book": "Address Book",
     "display_language": "Display Language",
     "change_network": "Change Network",
-    "change_path_index": "Change Derived Account",
     "select_explorer": "Select Explorer",
     "security": "Security",
     "notifications": "Notifications",
@@ -170,6 +169,7 @@
     "select_token": "Select Token",
     "new_token": "Add custom token",
     "is_coming_soon": "is coming soon",
+    "select_derivable_account": "Select derivable account",
     "create": {
       "messageTitle": "Keep your seed phrase safe!",
       "messageBody": "You will need these words to restore your account if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your account. \n\n Salmon Team will never ask for your recovery phrase or private keys.",

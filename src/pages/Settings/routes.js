@@ -12,7 +12,6 @@ import AddressBookAddPage from './AddressBookAddPage';
 import AddressBookEditPage from './AddressBookEditPage';
 
 import ChangeNetworkPage from './ChangeNetworkPage';
-import ChangePathIndexPage from './ChangePathIndexPage';
 import ChangeExplorerPage from './ChangeExplorerPage';
 import ChangeLanguagePage from './ChangeLanguagePage';
 import SecurityPage from './SecurityPage';
@@ -44,7 +43,6 @@ export const ROUTES_MAP = {
   SETTINGS_ADDRESSBOOK_EDIT: 'SETTINGS_ADDRESSBOOK_EDIT',
   SETTINGS_CHANGELANGUAGE: 'SETTINGS_CHANGELANGUAGE',
   SETTINGS_CHANGENETWORK: 'SETTINGS_CHANGENETWORK',
-  SETTINGS_CHANGEPATHINDEX: 'SETTINGS_CHANGEPATHINDEX',
   SETTINGS_CHANGEEXPLORER: 'SETTINGS_CHANGEEXPLORER',
   SETTINGS_NOTIFICATIONS: 'SETTINGS_NOTIFICATIONS',
   SETTINGS_SECURITY: 'SETTINGS_SECURITY',
@@ -171,14 +169,6 @@ const routes = [
     path: 'networks/change',
     route: '/wallet/settings/networks/change',
     Component: ChangeNetworkPage,
-    default: false,
-  },
-  {
-    key: ROUTES_MAP.SETTINGS_CHANGEPATHINDEX,
-    name: 'settingsChangePathIndex',
-    path: 'pathindex/change',
-    route: '/wallet/settings/pathindex/change',
-    Component: ChangePathIndexPage,
     default: false,
   },
   {

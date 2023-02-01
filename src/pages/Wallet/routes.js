@@ -10,9 +10,11 @@ import IconSwap from '../../assets/images/IconSwap.png';
 import IconBalance from '../../assets/images/IconBalance.png';
 import IconSettings from '../../assets/images/IconSettings.png';
 import { getDefaultRouteKey, getRoutesWithParent } from '../../routes/utils';
+import ChangePathIndexPage from './ChangePathIndexPage';
 
 export const ROUTES_MAP = {
   WALLET_OVERVIEW: 'WALLET_OVERVIEW',
+  WALLET_INDEX_PATH: 'WALLET_INDEX_PATH',
   WALLET_NFTS: 'WALLET_NFTS',
   WALLET_SWAP: 'WALLET_SWAP',
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
@@ -31,6 +33,14 @@ const routes = [
     Component: WalletOverview,
     default: true,
     icon: IconWallet,
+  },
+  {
+    key: ROUTES_MAP.WALLET_INDEX_PATH,
+    name: 'ChangePathIndex',
+    path: 'pathindex',
+    route: '/wallet/pathindex',
+    Component: ChangePathIndexPage,
+    default: false,
   },
   {
     key: ROUTES_MAP.WALLET_NFTS,

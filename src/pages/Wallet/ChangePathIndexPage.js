@@ -9,22 +9,25 @@ import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import { getShortAddress } from '../../utils/wallet';
+import GlobalText from '../../component-library/Global/GlobalText';
 
 const ChangePathIndexPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeAccount, networkId, pathIndex }, { changePathIndex }] =
     useContext(AppContext);
-  const onSelect = targetIndex => changePathIndex(targetIndex);
+  const onSelect = async targetIndex => {
+    await changePathIndex(targetIndex);
+  };
 
-  const onBack = () => navigate(ROUTES_MAP.SETTINGS_OPTIONS);
+  const onBack = () => navigate(ROUTES_MAP.WALLET_OVERVIEW);
 
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <GlobalBackTitle
-          onBack={onBack}
-          title={t(`settings.change_path_index`)}
-        />
+        <GlobalBackTitle onBack={onBack} title={activeAccount.name} />
+        <GlobalText type="headline3" color="tertiary" center>
+          {t('wallet.select_derivable_account')}
+        </GlobalText>
 
         {activeAccount.networksAccounts[networkId].map(
           (account, index) =>
