@@ -65,7 +65,7 @@ const DerivedAccountsPage = ({ t }) => {
             return { derivedAccount, credit };
           }),
       );
-      setItems(data.filter(({ credit }, i) => credit > 0));
+      setItems(data.filter(({ credit }) => credit > 0));
       setLoading(false);
     };
 
