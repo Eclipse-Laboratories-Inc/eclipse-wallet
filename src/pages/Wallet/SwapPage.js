@@ -519,14 +519,15 @@ const SwapPage = ({ t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === TRANSACTION_STATUS.SWAPPING && totalTransactions > 0 && (
-                <GlobalText type={'body1'} color={statusColor} center>
-                  {t(`token.send.swap_step`, {
-                    current: currentTransaction,
-                    total: totalTransactions,
-                  })}
-                </GlobalText>
-              )}
+              {status === TRANSACTION_STATUS.SWAPPING &&
+                totalTransactions > 0 && (
+                  <GlobalText type={'body1'} color={statusColor} center>
+                    {t(`token.send.swap_step`, {
+                      current: currentTransaction,
+                      total: totalTransactions,
+                    })}
+                  </GlobalText>
+                )}
               <GlobalPadding size="sm" />
               {linkForTransaction(
                 `Transaction Swap`,
