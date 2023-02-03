@@ -15,8 +15,10 @@ const ChangePathIndexPage = ({ t }) => {
   const navigate = useNavigation();
   const [{ activeAccount, networkId, pathIndex }, { changePathIndex }] =
     useContext(AppContext);
+
   const onSelect = async targetIndex => {
     await changePathIndex(targetIndex);
+    navigate(ROUTES_MAP.WALLET_OVERVIEW);
   };
 
   const onBack = () => navigate(ROUTES_MAP.WALLET_OVERVIEW);
