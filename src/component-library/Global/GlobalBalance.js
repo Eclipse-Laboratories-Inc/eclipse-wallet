@@ -12,9 +12,12 @@ import IconVisibilityHidden from '../../assets/images/IconVisibilityHidden.png';
 import IconVisibilityShow from '../../assets/images/IconVisibilityShow.png';
 import IconBalanceUp from '../../assets/images/IconBalancetUp.png';
 import IconBalanceDown from '../../assets/images/IconBalanceDown.png';
+import GlobalSkeleton from './GlobalSkeleton';
 
 const styles = StyleSheet.create({
-  container: {},
+  numbers: {
+    height: 110,
+  },
   bigTotal: {
     marginRight: -52,
     justifyContent: 'center',
@@ -51,12 +54,12 @@ const styles = StyleSheet.create({
 });
 
 const WalletBalanceCard = ({
+  loading,
   total,
   totalType = 'headline1',
   neutralTotal,
   negativeTotal,
   positiveTotal,
-  messages,
   actions,
   showBalance,
   onToggleShow,
@@ -67,66 +70,78 @@ const WalletBalanceCard = ({
     setShowDialog(!showDialog);
   };
   return (
-    <View style={styles.container}>
-      <View style={styles.bigTotal}>
-        <GlobalText type={totalType} center nospace>
-          {total}
-
-          <GlobalButton
-            type="icon"
-            transparent
-            icon={showBalance ? IconVisibilityShow : IconVisibilityHidden}
-            onPress={onToggleShow}
-          />
-        </GlobalText>
-      </View>
-
-      <View style={styles.inline}>
-        {neutralTotal && (
-          <GlobalText type="body2" style={styles.upDownTotals}>
-            {neutralTotal}
-          </GlobalText>
-        )}
-
-        {negativeTotal && (
+    <View>
+      <View style={styles.numbers}>
+        {loading && <GlobalSkeleton type="Balance" />}
+        {!loading && (
           <>
-            <GlobalImage source={IconBalanceDown} style={styles.iconUpDown} />
-            <GlobalText
-              type="body2"
-              color="negative"
-              style={styles.upDownTotals}>
-              {negativeTotal}
-            </GlobalText>
+            <View style={styles.bigTotal}>
+              <GlobalText type={totalType} center nospace>
+                {total}
+
+                <GlobalButton
+                  type="icon"
+                  transparent
+                  icon={showBalance ? IconVisibilityShow : IconVisibilityHidden}
+                  onPress={onToggleShow}
+                />
+              </GlobalText>
+            </View>
+
+            <View style={styles.inline}>
+              {neutralTotal && (
+                <GlobalText type="body2" style={styles.upDownTotals}>
+                  {neutralTotal}
+                </GlobalText>
+              )}
+
+              {negativeTotal && (
+                <>
+                  <GlobalImage
+                    source={IconBalanceDown}
+                    style={styles.iconUpDown}
+                  />
+                  <GlobalText
+                    type="body2"
+                    color="negative"
+                    style={styles.upDownTotals}>
+                    {negativeTotal}
+                  </GlobalText>
+                </>
+              )}
+
+              {positiveTotal && (
+                <>
+                  <GlobalImage
+                    source={IconBalanceUp}
+                    style={styles.iconUpDown}
+                  />
+                  <GlobalText
+                    type="body2"
+                    color="positive"
+                    style={styles.upDownTotals}>
+                    {positiveTotal}
+                  </GlobalText>
+                </>
+              )}
+              <TouchableOpacity onPress={toggleDialog}>
+                <GlobalText type="body2" style={styles.infoLink}>
+                  {t(`wallet.create.info_icon`)}
+                </GlobalText>
+              </TouchableOpacity>
+            </View>
+            <SimpleDialog
+              onClose={toggleDialog}
+              isOpen={showDialog}
+              text={
+                <GlobalText center type="body1">
+                  {t(`token.balance.percentage_info`)}
+                </GlobalText>
+              }
+            />
           </>
         )}
-
-        {positiveTotal && (
-          <>
-            <GlobalImage source={IconBalanceUp} style={styles.iconUpDown} />
-            <GlobalText
-              type="body2"
-              color="positive"
-              style={styles.upDownTotals}>
-              {positiveTotal}
-            </GlobalText>
-          </>
-        )}
-        <TouchableOpacity onPress={toggleDialog}>
-          <GlobalText type="body2" style={styles.infoLink}>
-            {t(`wallet.create.info_icon`)}
-          </GlobalText>
-        </TouchableOpacity>
       </View>
-      <SimpleDialog
-        onClose={toggleDialog}
-        isOpen={showDialog}
-        text={
-          <GlobalText center type="body1">
-            {t(`token.balance.percentage_info`)}
-          </GlobalText>
-        }
-      />
-
       {actions}
     </View>
   );

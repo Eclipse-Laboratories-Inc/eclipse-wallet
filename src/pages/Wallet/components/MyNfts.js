@@ -8,23 +8,34 @@ import { isMoreThanOne } from '../../../utils/nfts';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
 
-const MyNfts = ({ whenLoading, t }) => {
+const MyNfts = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeBlockchainAccount, networkId }] = useContext(AppContext);
-  const [nftsList, setNftsList] = useState(null);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+  const [nftsList, setNftsList] = useState([]);
   const [listedInfo, setListedInfo] = useState([]);
 
   useEffect(() => {
-    activeBlockchainAccount.getAllNftsGrouped().then(async nfts => {
-      setNftsList(nfts);
-      whenLoading(false);
-      const listed = await activeBlockchainAccount.getListedNfts();
-      setListedInfo(listed);
-    });
-  }, [networkId, activeBlockchainAccount, whenLoading]);
+    const load = async () => {
+      try {
+        setLoading(true);
+        const nfts = await activeBlockchainAccount.getAllNftsGrouped();
+        setNftsList(nfts);
+        const listed = await activeBlockchainAccount.getListedNfts();
+        setListedInfo(listed);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const goToNFTs = token =>
+    load();
+  }, [activeBlockchainAccount]);
+
+  const goToNFTs = token => {
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: token.address });
+  };
 
   const onNftClick = nft => {
     if (isMoreThanOne(nft)) {
@@ -37,18 +48,14 @@ const MyNfts = ({ whenLoading, t }) => {
   };
 
   return (
-    <>
-      <GlobalCollapse
-        title={t('wallet.my_nfts')}
-        viewAllAction={goToNFTs}
-        isOpen>
-        <GlobalNftList
-          nonFungibleTokens={nftsList}
-          listedInfo={listedInfo}
-          onClick={onNftClick}
-        />
-      </GlobalCollapse>
-    </>
+    <GlobalCollapse title={t('wallet.my_nfts')} viewAllAction={goToNFTs} isOpen>
+      <GlobalNftList
+        loading={loading}
+        nonFungibleTokens={nftsList}
+        listedInfo={listedInfo}
+        onClick={onNftClick}
+      />
+    </GlobalCollapse>
   );
 };
 

@@ -20,21 +20,22 @@ const NftsCollectionPage = ({ params }) => {
   const [listedInfo, setListedInfo] = useState([]);
   const [{ activeBlockchainAccount }] = useContext(AppContext);
   useEffect(() => {
-    if (activeBlockchainAccount) {
-      activeBlockchainAccount
-        .getAllNftsGrouped()
-        .then(async nfts => {
-          const collection = nfts.find(n => n.collection === params.id);
-          if (collection) {
-            setNftsCollection(collection.items);
-          }
-          const listed = await activeBlockchainAccount.getListedNfts();
-          setListedInfo(listed);
-        })
-        .finally(() => {
-          setLoaded(true);
-        });
-    }
+    const load = async () => {
+      try {
+        setLoaded(false);
+        const nfts = await activeBlockchainAccount.getAllNftsGrouped();
+        const collection = nfts.find(n => n.collection === params.id);
+        if (collection) {
+          setNftsCollection(collection.items);
+        }
+        const listed = await activeBlockchainAccount.getListedNfts();
+        setListedInfo(listed);
+      } finally {
+        setLoaded(true);
+      }
+    };
+
+    load();
   }, [activeBlockchainAccount, params.id]);
   const goToBack = () => {
     navigate(ROUTES_MAP.NFTS_LIST);
@@ -43,27 +44,25 @@ const NftsCollectionPage = ({ params }) => {
     navigate(ROUTES_MAP.NFTS_DETAIL, { id: nft.mint });
   };
   return (
-    (loaded && (
-      <GlobalLayout fullscreen>
-        <GlobalLayout.Header>
-          <Header />
-          <GlobalBackTitle
-            onBack={goToBack}
-            inlineTitle={
-              <GlobalText type="headline2" center>
-                {params.id}
-              </GlobalText>
-            }
-          />
-          <GlobalNftList
-            nonFungibleTokens={nftsCollection}
-            listedInfo={listedInfo}
-            onClick={onClick}
-          />
-        </GlobalLayout.Header>
-      </GlobalLayout>
-    )) ||
-    null
+    <GlobalLayout fullscreen>
+      <GlobalLayout.Header>
+        <Header />
+        <GlobalBackTitle
+          onBack={goToBack}
+          inlineTitle={
+            <GlobalText type="headline2" center>
+              {params.id}
+            </GlobalText>
+          }
+        />
+        <GlobalNftList
+          loading={!loaded}
+          nonFungibleTokens={nftsCollection}
+          listedInfo={listedInfo}
+          onClick={onClick}
+        />
+      </GlobalLayout.Header>
+    </GlobalLayout>
   );
 };
 

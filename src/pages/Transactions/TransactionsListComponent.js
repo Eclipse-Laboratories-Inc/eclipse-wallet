@@ -27,12 +27,19 @@ const TransactionsListComponent = ({ t }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    activeBlockchainAccount
-      .getRecentTransactions({ pageSize })
-      .then(({ data }) => {
+    const load = async () => {
+      try {
+        setLoaded(false);
+        const { data } = await activeBlockchainAccount.getRecentTransactions({
+          pageSize,
+        });
         setTransactions(data);
-      })
-      .finally(() => setLoaded(true));
+      } finally {
+        setLoaded(true);
+      }
+    };
+
+    load();
   }, [activeBlockchainAccount]);
 
   return (

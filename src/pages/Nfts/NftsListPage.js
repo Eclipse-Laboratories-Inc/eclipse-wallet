@@ -8,7 +8,6 @@ import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { isMoreThanOne } from '../../utils/nfts';
 
-import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
 import GlobalText from '../../component-library/Global/GlobalText';
@@ -34,21 +33,24 @@ const NftsListPage = ({ t }) => {
   }, [networkId]);
 
   useEffect(() => {
-    if (activeBlockchainAccount) {
-      activeBlockchainAccount
-        .getAllNftsGrouped()
-        .then(async nfts => {
+    const load = async () => {
+      if (activeBlockchainAccount) {
+        try {
+          setLoaded(false);
+          const nfts = await activeBlockchainAccount.getAllNftsGrouped();
           setNftsGroup(nfts);
           if (switches?.list_in_marketplace?.active) {
             const listed = await activeBlockchainAccount.getListedNfts();
             setListedInfo(listed);
           }
-        })
-        .finally(() => {
+        } finally {
           setLoaded(true);
-        });
-    }
-  }, [activeBlockchainAccount, networkId, switches]);
+        }
+      }
+    };
+
+    load();
+  }, [activeBlockchainAccount, switches]);
 
   const onClick = nft => {
     if (isMoreThanOne(nft)) {
@@ -61,30 +63,26 @@ const NftsListPage = ({ t }) => {
   };
 
   return (
-    (
-      <GlobalLayout>
-        {loaded && (
-          <GlobalLayout.Header>
-            <Header />
-            <View>
-              <GlobalText center type="headline2">
-                {t(`wallet.nfts`)}
-              </GlobalText>
-            </View>
-            {switches?.list_in_marketplace?.active && <NftCollections t />}
-            <View>
-              <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
-            </View>
-            <GlobalNftList
-              nonFungibleTokens={nftsGroup}
-              listedInfo={listedInfo}
-              onClick={onClick}
-            />
-          </GlobalLayout.Header>
-        )}
-        {!loaded && <GlobalSkeleton type="NftListScreen" />}
-      </GlobalLayout>
-    ) || null
+    <GlobalLayout>
+      <GlobalLayout.Header>
+        <Header />
+        <View>
+          <GlobalText center type="headline2">
+            {t(`wallet.nfts`)}
+          </GlobalText>
+        </View>
+        {switches?.list_in_marketplace?.active && <NftCollections t />}
+        <View>
+          <GlobalText type="headline3">{t(`wallet.my_nfts`)}</GlobalText>
+        </View>
+        <GlobalNftList
+          loading={!loaded}
+          nonFungibleTokens={nftsGroup}
+          listedInfo={listedInfo}
+          onClick={onClick}
+        />
+      </GlobalLayout.Header>
+    </GlobalLayout>
   );
 };
 

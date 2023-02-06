@@ -12,16 +12,24 @@ import { AppContext } from '../../AppProvider';
 
 const AccountEditProfileNftsPage = ({ params, t }) => {
   const [{ activeBlockchainAccount }] = useContext(AppContext);
-  const [nfts, setNfts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [nfts, setNfts] = useState([]);
 
   const navigate = useNavigation();
   useEffect(() => {
-    if (activeBlockchainAccount) {
-      activeBlockchainAccount.getAllNfts().then(result => {
-        console.log(result);
-        setNfts(result);
-      });
-    }
+    const load = async () => {
+      if (activeBlockchainAccount) {
+        try {
+          setLoading(true);
+          const result = await activeBlockchainAccount.getAllNfts();
+          setNfts(result);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
   }, [activeBlockchainAccount]);
 
   const onBack = () =>
@@ -40,7 +48,11 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
           onBack={onBack}
           title={t(`settings.wallets.set_profile_picture`)}
         />
-        <GlobalNftList nonFungibleTokens={nfts} onClick={onClick} />
+        <GlobalNftList
+          loading={loading}
+          nonFungibleTokens={nfts}
+          onClick={onClick}
+        />
       </GlobalLayout.Header>
     </GlobalLayout>
   );

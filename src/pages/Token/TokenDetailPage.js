@@ -70,48 +70,43 @@ const TokenDetailPage = ({ params, t }) => {
 
   return (
     <GlobalLayout fullscreen>
-      {!loaded && <GlobalSkeleton type="TokenDetail" />}
-      {loaded && (
-        <GlobalLayout.Header>
-          <GlobalBackTitle
-            onBack={goToBack}
-            inlineTitle={token.name}
-            inlineAddress={params.tokenId}
-          />
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={goToBack}
+          inlineTitle={token.name}
+          inlineAddress={params.tokenId}
+        />
 
-          <WalletBalanceCard
-            total={
-              !hiddenBalance
-                ? `${showValue(token.uiAmount, 6)} ${token.symbol}`
-                : `${hiddenValue} ${token.symbol}`
-            }
-            totalType="headline2"
-            {...{
-              [`${getLabelValue(
-                get(token, 'last24HoursChange.perc', 0),
-              )}Total`]: `${
-                !hiddenBalance
-                  ? showAmount(token.usdBalance)
-                  : `$ ${hiddenValue}`
-              } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
-            }}
-            showBalance={!hiddenBalance}
-            onToggleShow={toggleHideBalance}
-            messages={[]}
-            actions={
-              <GlobalSendReceive
-                goToSend={goToSend}
-                goToReceive={goToReceive}
-                canSend={switches?.features?.send}
-                canReceive={switches?.features?.receive}
-              />
-            }
-          />
-
-          <GlobalPadding size="lg" />
-        </GlobalLayout.Header>
-      )}
-      <TransactionsListComponent t={t} />
+        <WalletBalanceCard
+          loading={!loaded}
+          total={
+            !hiddenBalance
+              ? `${showValue(token.uiAmount, 6)} ${token.symbol}`
+              : `${hiddenValue} ${token.symbol}`
+          }
+          totalType="headline2"
+          {...{
+            [`${getLabelValue(
+              get(token, 'last24HoursChange.perc', 0),
+            )}Total`]: `${
+              !hiddenBalance ? showAmount(token.usdBalance) : `$ ${hiddenValue}`
+            } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
+          }}
+          showBalance={!hiddenBalance}
+          onToggleShow={toggleHideBalance}
+          messages={[]}
+          actions={
+            <GlobalSendReceive
+              goToSend={goToSend}
+              goToReceive={goToReceive}
+              canSend={switches?.features?.send}
+              canReceive={switches?.features?.receive}
+            />
+          }
+        />
+        <GlobalPadding size="lg" />
+        <TransactionsListComponent t={t} />
+      </GlobalLayout.Header>
     </GlobalLayout>
   );
 };

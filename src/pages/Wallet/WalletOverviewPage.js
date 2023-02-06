@@ -31,10 +31,10 @@ const WalletOverviewPage = ({ t }) => {
     { toggleHideBalance },
   ] = useContext(AppContext);
   const [reload, setReload] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [totalBalance, setTotalBalance] = useState({});
-  const [tokenList, setTokenList] = useState(null);
-  const [nonListedTokenList, setNonListedTokenList] = useState(null);
+  const [tokenList, setTokenList] = useState([]);
+  const [nonListedTokenList, setNonListedTokenList] = useState([]);
   const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
@@ -43,99 +43,96 @@ const WalletOverviewPage = ({ t }) => {
     );
   }, [networkId]);
 
-  const tokensAddresses = useMemo(
-    () => Object.keys(activeTokens),
-    [activeTokens],
-  );
-
   useEffect(() => {
-    setLoading(true);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const tokensAddresses = Object.keys(activeTokens);
+        const balance = await activeBlockchainAccount.getBalance(
+          tokensAddresses,
+        );
+        setTotalBalance(balance);
+        setTokenList(getListedTokens(balance));
+        setNonListedTokenList(getNonListedTokens(balance, []));
+      } catch (e) {
+        console.log(e); // TODO handle error
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
-      setTotalBalance(balance);
-      setTokenList(getListedTokens(balance));
-      setNonListedTokenList(getNonListedTokens(balance, []));
-      setLoading(false);
-    });
-  }, [activeBlockchainAccount, networkId, reload, tokensAddresses]);
+    load();
+  }, [activeBlockchainAccount, networkId, reload, activeTokens]);
 
   const onRefresh = () => {
     invalidate(CACHE_TYPES.BALANCE);
     invalidate(CACHE_TYPES.NFTS);
-    setTotalBalance({});
-    setTokenList(null);
     setReload(!reload);
   };
 
-  const goToSend = () =>
-    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, {
-      action: 'send',
-    });
+  const goToSend = () => {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: 'send' });
+  };
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = tok => {
-    if (tok.type !== 'native') {
-      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: tok.address });
+  const goToTokenDetail = ({ type, address }) => {
+    if (type !== 'native') {
+      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: address });
     }
   };
+
+  const percent = useMemo(
+    () => get(totalBalance, 'last24HoursChange.perc', 0),
+    [totalBalance],
+  );
 
   return (
     <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
       <GlobalLayout.Header>
         <Header isHome />
-        {totalBalance && (
-          <WalletBalanceCard
-            total={
-              !hiddenBalance
-                ? showAmount(totalBalance.usdTotal)
-                : `$ ${hiddenValue}`
-            }
-            {...{
-              [`${getLabelValue(
-                get(totalBalance, 'last24HoursChange.perc', 0),
-              )}Total`]: showPercentage(
-                get(totalBalance, 'last24HoursChange.perc', 0),
-              ),
-            }}
-            messages={[]}
-            showBalance={!hiddenBalance}
-            onToggleShow={toggleHideBalance}
-            actions={
-              <GlobalSendReceive
-                goToSend={goToSend}
-                goToReceive={goToReceive}
-                canSend={switches?.features?.send}
-                canReceive={switches?.features?.receive}
-              />
-            }
-          />
-        )}
+        <WalletBalanceCard
+          loading={loading}
+          total={
+            !hiddenBalance
+              ? showAmount(totalBalance.usdTotal)
+              : `$ ${hiddenValue}`
+          }
+          {...{ [`${getLabelValue(percent)}Total`]: showPercentage(percent) }}
+          showBalance={!hiddenBalance}
+          onToggleShow={toggleHideBalance}
+          actions={
+            <GlobalSendReceive
+              goToSend={goToSend}
+              goToReceive={goToReceive}
+              canSend={switches?.features?.send}
+              canReceive={switches?.features?.receive}
+            />
+          }
+        />
         <GlobalPadding />
-
         <PendingTxs />
-
         <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
           <TokenList
+            loading={loading}
             tokens={tokenList}
             onDetail={goToTokenDetail}
             hiddenBalance={hiddenBalance}
           />
         </GlobalCollapse>
-
-        {nonListedTokenList?.length ? (
+        {loading || nonListedTokenList?.length ? (
           <GlobalCollapse title={t('wallet.non_listed_tokens')} isOpen>
             <TokenList
+              loading={loading}
               tokens={nonListedTokenList}
               hiddenBalance={hiddenBalance}
             />
           </GlobalCollapse>
         ) : null}
-
         {switches?.features.nfts && (
           <>
             <GlobalPadding />
-            <MyNfts whenLoading={setLoading} />
+            <MyNfts />
           </>
         )}
       </GlobalLayout.Header>

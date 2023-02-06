@@ -11,15 +11,14 @@ import {
   getLabelValue,
 } from '../../utils/amount';
 
-const TokenList = ({ tokens, onDetail, hiddenBalance }) => (
-  <>
-    {tokens ? (
-      <List tokens={tokens} onDetail={onDetail} hiddenBalance={hiddenBalance} />
-    ) : (
-      <GlobalSkeleton type="TokenList" />
-    )}
-  </>
-);
+const TokenList = ({ loading, tokens, onDetail, hiddenBalance }) => {
+  if (loading) {
+    return <GlobalSkeleton type="TokenList" />;
+  }
+  return (
+    <List tokens={tokens} onDetail={onDetail} hiddenBalance={hiddenBalance} />
+  );
+};
 
 const List = ({ tokens, onDetail, hiddenBalance }) => (
   <>

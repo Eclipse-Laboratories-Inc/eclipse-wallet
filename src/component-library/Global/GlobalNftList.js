@@ -7,8 +7,14 @@ import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import Grid from '../../component-library/Grid/Grid';
 import { getNftListedInfo } from '../../utils/nfts';
 
-const GlobalNftList = ({ nonFungibleTokens, listedInfo, onClick, t }) => {
-  if (nonFungibleTokens === null) return <GlobalSkeleton type="NftList" />;
+const GlobalNftList = ({
+  loading,
+  nonFungibleTokens,
+  listedInfo,
+  onClick,
+  t,
+}) => {
+  if (loading) return <GlobalSkeleton type="NftList" />;
   if (nonFungibleTokens.length === 0) return <Empty t={t} />;
   return (
     <List
