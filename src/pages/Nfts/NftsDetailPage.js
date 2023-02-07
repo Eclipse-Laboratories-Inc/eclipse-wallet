@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
-import get from 'lodash/get';
+import { get } from 'lodash';
 import { BLOCKCHAINS, getSwitches } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';

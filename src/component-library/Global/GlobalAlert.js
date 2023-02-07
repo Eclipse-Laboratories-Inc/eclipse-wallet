@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import GlobalAlertText from './GlobalAlertText';
 import GlobalImage from './GlobalImage';
+import GlobalPadding from './GlobalPadding';
+
 import IconSuccessGreen from '../../assets/images/IconSuccessGreen.png';
 import IconAlertWarningYellow from '../../assets/images/IconAlertWarningYellow.png';
 import IconAlertWarningRed from '../../assets/images/IconAlertWarningRed.png';
-import GlobalAlertText from './GlobalAlertText';
 import theme from './theme';
 
 const styles = StyleSheet.create({
@@ -15,11 +17,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
   },
-  image: {
-    marginBottom: 10,
+  vertical: {
+    flexDirection: 'column',
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
@@ -59,7 +64,7 @@ const warningStyles = StyleSheet.create({
   },
 });
 
-const GlobalAlert = ({ type, children, text, noIcon }) => {
+const GlobalAlert = ({ type, layout, text, noIcon, children }) => {
   const resolveIcon = () => {
     switch (type) {
       case 'error':
@@ -90,10 +95,20 @@ const GlobalAlert = ({ type, children, text, noIcon }) => {
   const typeStyles = resolveStyle(type);
 
   return (
-    <View style={[styles.container, typeStyles.container]}>
-      {!noIcon && <GlobalImage style={styles.image} size="xs" source={icon} />}
-      {children && <View>{children}</View>}
+    <View
+      style={[
+        styles.container,
+        typeStyles.container,
+        layout === 'horizontal' ? styles.horizontal : styles.vertical,
+      ]}>
+      {!noIcon && (
+        <>
+          <GlobalImage size="xs" source={icon} />
+          <GlobalPadding size="sm" />
+        </>
+      )}
       {text && <GlobalAlertText text={text} type={type} />}
+      {children}
     </View>
   );
 };

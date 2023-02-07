@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
 import { AccountFactory, getNetworks, getPathIndex } from '4m-wallet-adapter';
-import mapValues from 'lodash/mapValues';
-import merge from 'lodash/merge';
-import omit from 'lodash/omit';
+import { mapValues, merge, omit } from 'lodash';
 
 import CachedBlockchainAccount from '../accounts/CachedBlockchainAccount';
 import { invertBy } from '../utils/object';

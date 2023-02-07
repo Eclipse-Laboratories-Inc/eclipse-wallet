@@ -1,6 +1,12 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { getSwitches } from '4m-wallet-adapter';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -14,8 +20,8 @@ import {
   showPercentage,
   showValue,
 } from '../../utils/amount';
+import { CACHE_TYPES, invalidate } from '../../utils/cache';
 
-import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -25,13 +31,12 @@ import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
+  const [loading, setloading] = useState(true);
   const [token, setToken] = useState({});
   const [
     { activeBlockchainAccount, hiddenBalance, activeTokens },
     { toggleHideBalance },
   ] = useContext(AppContext);
-
   const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
@@ -47,17 +52,24 @@ const TokenDetailPage = ({ params, t }) => {
     [activeTokens],
   );
 
-  useEffect(() => {
-    if (activeBlockchainAccount) {
-      activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
-        const tk = (balance.items || []).find(
-          i => i.address === params.tokenId,
-        );
-        setToken(tk || {});
-        setloaded(true);
-      });
+  const load = useCallback(async () => {
+    try {
+      setloading(true);
+      const balance = await activeBlockchainAccount.getBalance(tokensAddresses);
+      setToken(balance?.items?.find(i => i.address === params.tokenId) || {});
+    } finally {
+      setloading(false);
     }
-  }, [activeBlockchainAccount, params, tokensAddresses]);
+  }, [activeBlockchainAccount, params.tokenId, tokensAddresses]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const onRefresh = async () => {
+    invalidate(CACHE_TYPES.BALANCE);
+    await load();
+  };
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
@@ -67,6 +79,18 @@ const TokenDetailPage = ({ params, t }) => {
     navigate(ROUTES_MAP.TOKEN_SEND, { tokenId: params.tokenId });
 
   const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
+
+  const total = useMemo(() => {
+    if (hiddenBalance) {
+      return `${hiddenValue} ${token.symbol}`;
+    }
+    return `${showValue(token.uiAmount, 6)} ${token.symbol}`;
+  }, [token, hiddenBalance]);
+
+  const percent = useMemo(
+    () => get(token, 'last24HoursChange.perc', 0),
+    [token],
+  );
 
   return (
     <GlobalLayout fullscreen>
@@ -78,23 +102,21 @@ const TokenDetailPage = ({ params, t }) => {
         />
 
         <WalletBalanceCard
-          loading={!loaded}
-          total={
-            !hiddenBalance
-              ? `${showValue(token.uiAmount, 6)} ${token.symbol}`
-              : `${hiddenValue} ${token.symbol}`
-          }
+          loading={loading}
+          total={total}
           totalType="headline2"
           {...{
-            [`${getLabelValue(
-              get(token, 'last24HoursChange.perc', 0),
-            )}Total`]: `${
-              !hiddenBalance ? showAmount(token.usdBalance) : `$ ${hiddenValue}`
-            } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
+            [`${getLabelValue(percent)}Total`]: token.usdBalance
+              ? `${
+                  !hiddenBalance
+                    ? showAmount(token.usdBalance)
+                    : `$ ${hiddenValue}`
+                } ${showPercentage(percent)}`
+              : undefined,
           }}
           showBalance={!hiddenBalance}
           onToggleShow={toggleHideBalance}
-          messages={[]}
+          onRefresh={onRefresh}
           actions={
             <GlobalSendReceive
               goToSend={goToSend}

@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react';
-import isNil from 'lodash/isNil';
+import { isNil } from 'lodash';
 import ThemeProvider from './component-library/Theme/ThemeProvider';
 import RoutesProvider from './routes/RoutesProvider';
 import * as splash from './utils/splash';

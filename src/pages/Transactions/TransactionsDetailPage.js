@@ -19,6 +19,7 @@ import { ROUTES_MAP } from './routes';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 
+import { hiddenValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
 import { SECTIONS_MAP } from '../../utils/tracking';
 import { getShortAddress, getTransactionImage } from '../../utils/wallet';
@@ -205,8 +206,16 @@ const TransactionDetail = ({
 }) => {
   const { id, type, timestamp, status, fee, inputs, outputs } = transaction;
 
-  const mapAmount = (sign, { amount, decimals, symbol, name }) =>
-    `${sign} ${formatAmount(amount, decimals)} ${symbol || name || ''}`;
+  const [{ hiddenBalance }] = useContext(AppContext);
+
+  const mapAmount = (sign, { amount, decimals, symbol, name }) => {
+    const unit = symbol || name || '';
+    if (hiddenBalance) {
+      return `${hiddenValue} ${unit}`;
+    } else {
+      return `${sign} ${formatAmount(amount, decimals)} ${unit}`;
+    }
+  };
 
   const outputAmounts = outputs.map(output => mapAmount('-', output));
   const inputAmounts = inputs.map(input => mapAmount('+', input));

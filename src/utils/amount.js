@@ -1,5 +1,4 @@
-import round from 'lodash/round';
-import isNil from 'lodash/isNil';
+import { round, isNil } from 'lodash';
 import { formatAmount } from '4m-wallet-adapter';
 
 export const showAmount = (amount, decimals = 2) =>

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import moment from 'moment';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 
 import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';

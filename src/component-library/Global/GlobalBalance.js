@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { isNil } from 'lodash';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import theme from './theme';
+import GlobalAlert from './GlobalAlert';
 import GlobalButton from './GlobalButton';
 import GlobalImage from './GlobalImage';
+import GlobalSkeleton from './GlobalSkeleton';
 import GlobalText from './GlobalText';
 import SimpleDialog from '../Dialog/SimpleDialog';
 
@@ -12,7 +15,7 @@ import IconVisibilityHidden from '../../assets/images/IconVisibilityHidden.png';
 import IconVisibilityShow from '../../assets/images/IconVisibilityShow.png';
 import IconBalanceUp from '../../assets/images/IconBalancetUp.png';
 import IconBalanceDown from '../../assets/images/IconBalanceDown.png';
-import GlobalSkeleton from './GlobalSkeleton';
+import IconReset from '../../assets/images/IconReset.png';
 
 const styles = StyleSheet.create({
   numbers: {
@@ -63,6 +66,7 @@ const WalletBalanceCard = ({
   actions,
   showBalance,
   onToggleShow,
+  onRefresh,
   t,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -73,7 +77,7 @@ const WalletBalanceCard = ({
     <View>
       <View style={styles.numbers}>
         {loading && <GlobalSkeleton type="Balance" />}
-        {!loading && (
+        {!loading && !isNil(total) && (
           <>
             <View style={styles.bigTotal}>
               <GlobalText type={totalType} center nospace>
@@ -124,11 +128,13 @@ const WalletBalanceCard = ({
                   </GlobalText>
                 </>
               )}
-              <TouchableOpacity onPress={toggleDialog}>
-                <GlobalText type="body2" style={styles.infoLink}>
-                  {t(`wallet.create.info_icon`)}
-                </GlobalText>
-              </TouchableOpacity>
+              {(neutralTotal || negativeTotal || positiveTotal) && (
+                <TouchableOpacity onPress={toggleDialog}>
+                  <GlobalText type="body2" style={styles.infoLink}>
+                    {t(`wallet.create.info_icon`)}
+                  </GlobalText>
+                </TouchableOpacity>
+              )}
             </View>
             <SimpleDialog
               onClose={toggleDialog}
@@ -140,6 +146,21 @@ const WalletBalanceCard = ({
               }
             />
           </>
+        )}
+        {!loading && isNil(total) && (
+          <GlobalAlert
+            type="warning"
+            layout="horizontal"
+            text={t('wallet.prices_issue')}>
+            {onRefresh && (
+              <GlobalButton
+                type="icon"
+                icon={IconReset}
+                onPress={onRefresh}
+                transparent
+              />
+            )}
+          </GlobalAlert>
         )}
       </View>
       {actions}

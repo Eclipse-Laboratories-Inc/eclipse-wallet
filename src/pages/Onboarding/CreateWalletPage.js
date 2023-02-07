@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import randomNumber from 'lodash/random';
+import { random as randomNumber } from 'lodash';
 import { AccountFactory } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';

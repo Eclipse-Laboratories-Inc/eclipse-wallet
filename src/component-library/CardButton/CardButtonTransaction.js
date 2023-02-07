@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { formatAmount } from '4m-wallet-adapter';
 
@@ -11,6 +11,8 @@ import {
   TRANSACTION_TYPE,
   TRANSACTION_STATUS,
 } from '../../pages/Transactions/constants';
+import { AppContext } from '../../AppProvider';
+import { hiddenValue } from '../../utils/amount';
 import { getTransactionImage, getShortAddress } from '../../utils/wallet';
 import IconFailed from '../../assets/images/IconFailed.png';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -28,6 +30,8 @@ const styles = StyleSheet.create({
 
 const CardButtonTransaction = ({ t, transaction, onPress }) => {
   const { id, type, status, inputs, outputs } = transaction;
+
+  const [{ hiddenBalance }] = useContext(AppContext);
 
   let image, description, tokenImg1, tokenImg2;
 
@@ -66,7 +70,12 @@ const CardButtonTransaction = ({ t, transaction, onPress }) => {
   if (status === TRANSACTION_STATUS.COMPLETED) {
     const mapAction = (sign, { amount, decimals, symbol, name }, i) => {
       const unit = symbol || name || '';
-      const amountUi = `${sign} ${formatAmount(amount, decimals)} ${unit}`;
+      let amountUi;
+      if (hiddenBalance) {
+        amountUi = `${hiddenValue} ${unit}`;
+      } else {
+        amountUi = `${sign} ${formatAmount(amount, decimals)} ${unit}`;
+      }
       const color = sign === '-' ? 'negativeLight' : 'positive';
       const kind = sign === '-' ? 'output' : 'input';
 

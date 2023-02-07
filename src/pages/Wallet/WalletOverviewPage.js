@@ -1,6 +1,12 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { getSwitches } from '4m-wallet-adapter';
-import get from 'lodash/get';
+import { get, isNil } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import TokenList from '../../features/TokenList/TokenList';
@@ -31,7 +37,6 @@ const WalletOverviewPage = ({ t }) => {
     { activeBlockchainAccount, networkId, activeTokens, hiddenBalance },
     { toggleHideBalance },
   ] = useContext(AppContext);
-  const [reload, setReload] = useState(false);
   const [loading, setLoading] = useState(true);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
@@ -44,31 +49,29 @@ const WalletOverviewPage = ({ t }) => {
     );
   }, [networkId]);
 
-  useEffect(() => {
-    const load = async () => {
+  const load = useCallback(async () => {
+    try {
       setLoading(true);
-      try {
-        const tokensAddresses = Object.keys(activeTokens);
-        const balance = await activeBlockchainAccount.getBalance(
-          tokensAddresses,
-        );
-        setTotalBalance(balance);
-        setTokenList(getListedTokens(balance));
-        setNonListedTokenList(getNonListedTokens(balance, []));
-      } catch (e) {
-        console.log(e); // TODO handle error
-      } finally {
-        setLoading(false);
-      }
-    };
+      const tokensAddresses = Object.keys(activeTokens);
+      const balance = await activeBlockchainAccount.getBalance(tokensAddresses);
+      setTotalBalance(balance);
+      setTokenList(getListedTokens(balance));
+      setNonListedTokenList(getNonListedTokens(balance, []));
+    } catch (e) {
+      console.log(e); // TODO handle error
+    } finally {
+      setLoading(false);
+    }
+  }, [activeBlockchainAccount, activeTokens]);
 
+  useEffect(() => {
     load();
-  }, [activeBlockchainAccount, networkId, reload, activeTokens]);
+  }, [load]);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     invalidate(CACHE_TYPES.BALANCE);
     invalidate(CACHE_TYPES.NFTS);
-    setReload(!reload);
+    await load();
   };
 
   const goToSend = () => {
@@ -83,6 +86,16 @@ const WalletOverviewPage = ({ t }) => {
     }
   };
 
+  const total = useMemo(() => {
+    if (isNil(totalBalance?.usdTotal)) {
+      return null;
+    }
+    if (hiddenBalance) {
+      return `$ ${hiddenValue}`;
+    }
+    return showAmount(totalBalance.usdTotal);
+  }, [totalBalance, hiddenBalance]);
+
   const percent = useMemo(
     () => get(totalBalance, 'last24HoursChange.perc', 0),
     [totalBalance],
@@ -94,14 +107,11 @@ const WalletOverviewPage = ({ t }) => {
         <Header isHome />
         <WalletBalanceCard
           loading={loading}
-          total={
-            !hiddenBalance
-              ? showAmount(totalBalance.usdTotal)
-              : `$ ${hiddenValue}`
-          }
+          total={total}
           {...{ [`${getLabelValue(percent)}Total`]: showPercentage(percent) }}
           showBalance={!hiddenBalance}
           onToggleShow={toggleHideBalance}
+          onRefresh={onRefresh}
           actions={
             <GlobalSendReceive
               goToSend={goToSend}

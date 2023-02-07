@@ -155,6 +155,7 @@
     "new_token": "Agregar token",
     "is_coming_soon": "próximamente",
     "select_derivable_account": "Seleccionar cuenta derivable",
+    "prices_issue": "Estamos teniendo problemas para recuperar los precios",
     "create": {
       "messageTitle": "¡Guarda tu seed-phrase!",
       "messageBody": "Necesitarás estas palabras para restaurar tu Cuenta si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Cuenta. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",

@@ -1,5 +1,5 @@
 import React from 'react';
-import get from 'lodash/get';
+import { get, isNil } from 'lodash';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
@@ -32,9 +32,11 @@ const List = ({ tokens, onDetail, hiddenBalance }) => (
           t.symbol || ''
         }`}
         actions={[
-          <GlobalText key={'amount-action'} type="body2">
-            {hiddenBalance ? hiddenValue : showAmount(t.usdBalance)}
-          </GlobalText>,
+          !isNil(t.usdBalance) && (
+            <GlobalText key={'amount-action'} type="body2">
+              {hiddenBalance ? hiddenValue : showAmount(t.usdBalance)}
+            </GlobalText>
+          ),
           t.last24HoursChange && (
             <GlobalText
               key={'perc-action'}
