@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   TRUSTED_APPS: 'trusted_apps',
   TOKENS: 'tokens',
   PENDING_TXS: 'pending_txs',
+  PENDING_BRIDGE_TXS: 'pending_bridge_txs',
   CONNECTION: 'connection',
 
   /* deprecated keys */

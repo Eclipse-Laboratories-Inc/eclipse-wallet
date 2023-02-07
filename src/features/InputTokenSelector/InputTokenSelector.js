@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
   ddToken: {
     flex: isNative() ? 0.7 : undefined,
   },
+  chipsToken: {
+    flex: isNative() ? 0.7 : undefined,
+    marginVertical: theme.gutters.paddingXS,
+  },
 });
 
 const InputWithTokenSelector = ({
@@ -39,10 +43,12 @@ const InputWithTokenSelector = ({
   placeholder,
   image,
   title,
+  description,
   t,
   hiddenBalance,
   tokens,
   featuredTokens,
+  chips,
   onChange = () => {},
   ...props
 }) => {
@@ -76,17 +82,19 @@ const InputWithTokenSelector = ({
         value={value}
         setValue={setValue}
         placeholder={placeholder}
-        inputStyle={styles.ddToken}
+        inputStyle={chips ? styles.chipsToken : styles.ddToken}
         action={
           <CardButton
             type="secondary"
             size="sm"
             title={title}
+            description={description}
             image={image}
             imageSize="xs"
             actionIcon="disclose"
             onPress={() => setIsVisible(true)}
             buttonStyle={{ paddingRight: 0, paddingLeft: 6 }}
+            imageStyle={description && { marginTop: theme.gutters.paddingXS }}
             keyboardType="numeric"
             nospace
           />
@@ -116,14 +124,14 @@ const InputWithTokenSelector = ({
             <GlobalPadding />
             {featuredTokens && (
               <View style={theme.globalStyles.inline}>
-                {featuredTokens?.map((token, i) => (
-                  <View key={`featured-token-${i}`}>
+                {featuredTokens?.map(token => (
+                  <View>
                     <CardButton
                       key={token.mint || token.address}
                       onPress={() => onSelect(token)}
                       size="sm"
                       icon={<GlobalImage url={token.logo} size="xs" circle />}
-                      caption={token.symbol || token.name}
+                      caption={token.symbol.toUpperCase() || token.name}
                       buttonStyle={{ width: 112, marginRight: 10 }}
                     />
                   </View>
@@ -146,6 +154,7 @@ const InputWithTokenSelector = ({
                       }`
                     : token.symbol
                 }
+                chip={chips && token.network.toUpperCase()}
               />
             ))}
           </GlobalLayout.Header>

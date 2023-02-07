@@ -36,7 +36,8 @@
     "logout": "Cerrar sesión",
     "view_more": "Ver más",
     "continue": "Cotinuar",
-    "follow_us": "¡Síguenos!"
+    "follow_us": "¡Síguenos!",
+    "retry": "Reintentar"
   },
   "settings": {
     "title": "Configuración",
@@ -120,7 +121,8 @@
       "transaction_unlisting": "Deslistando...",
       "transaction_success": "Transacción Exitosa",
       "transaction_swapping": "Swapping",
-      "transaction_warning": "Warning",
+      "transaction_bridging": "Swapping...",
+      "transaction_bridge_success": "Transacción pendiente, ésto puede demorarse unos minutos. Dirígete a la sección Wallet Overview para seguir su status",      "transaction_warning": "Warning",
       "swap_step": "paso {{current}} de {{total}}",
       "transaction_fail": "Error",
       "goto_explorer": "Ir al Explorer",
@@ -301,7 +303,20 @@
     "quote": "Cotizar",
     "refresh_quote": "Refrescar cotización",
     "total_fee": "Tarifa total",
-    "go_to_explorer": "Ir al Explorer"
+    "go_to_explorer": "Ir al Explorer",
+    "choose_type": "Elige una opción",
+    "same_blockchain": "Hacia un token de ésta blockchain",
+    "other_blockchain": "Hacia un token de otra blockchain"
+  },
+  "bridge": {
+    "bridge": "Bridge",
+    "preview": "Confirmar Bridge",
+    "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}",
+    "provider_error": "Actualmente el proveedor de Bridge no está respondiendo.\nPor favor vuelve a intentar más tarde.",
+    "recipient_type": "Wallet de destino:",
+    "you_pay": "Pagas",
+    "own_wallet_alert": "Keep in mind that to see the tokens you will receive, you will have to switch from this {{from}} Wallet to the {{to}} one from the menu.",
+    "other_wallet_alert": "Keep in mind that the tokens you will receive are being sent to a {{to}} Wallet that it’s not configured in Salmon. You will not see the tokens unless you open that wallet."
   },
   "header": {
     "connected": "Conectado a {{hostname}}",

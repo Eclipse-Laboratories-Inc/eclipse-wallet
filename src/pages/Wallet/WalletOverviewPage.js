@@ -23,6 +23,7 @@ import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
 import Header from '../../component-library/Layout/Header';
 import MyNfts from './components/MyNfts';
 import PendingTxs from './components/PendingTxs';
+import PendingBridgeTxs from './components/PendingBridgeTxs';
 
 const WalletOverviewPage = ({ t }) => {
   const navigate = useNavigation();
@@ -112,6 +113,8 @@ const WalletOverviewPage = ({ t }) => {
         />
         <GlobalPadding />
         <PendingTxs />
+        <PendingBridgeTxs />
+
         <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
           <TokenList
             loading={loading}

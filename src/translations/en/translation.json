@@ -50,7 +50,8 @@
     "logout": "Logout",
     "view_more": "View more",
     "continue": "Continue",
-    "follow_us": "Follow us"
+    "follow_us": "Follow us",
+    "retry": "Retry"
   },
   "settings": {
     "title": "Settings",
@@ -133,6 +134,8 @@
       "transaction_unlisting": "Unlisting...",
       "transaction_success": "Transaction Completed",
       "transaction_swapping": "Swapping",
+      "transaction_bridging": "Swapping...",
+      "transaction_bridge_success": "Transaction pending, this could take a few minutes.\nHead to your Wallet Overview section to keep track of the status.",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",
       "swap_step": "step {{current}} of {{total}}",
@@ -159,6 +162,7 @@
   "wallet": {
     "name_template": "Account #{{number}}",
     "transactions_in_progress": "Transactions In Progress",
+    "swaps_in_progress": "Swaps In Progress",
     "my_tokens": "My Tokens",
     "non_listed_tokens": "Non-Listed Tokens",
     "my_nfts": "My NFTs",
@@ -321,7 +325,21 @@
     "quote": "Quote",
     "refresh_quote": "Refresh Quote",
     "total_fee": "Total fee",
-    "go_to_explorer": "Go to Explorer"
+    "go_to_explorer": "Go to Explorer",
+    "choose_type": "Choose an option",
+    "same_blockchain": "To a token on this blockchain",
+    "other_blockchain": "To a token on other blockchain"
+  },
+  "bridge": {
+    "bridge": "Bridge",
+    "preview": "Bridge Preview",
+    "less_than_minimal": "Minimum amount: {{min}} {{symbol}}",
+    "no_wallet_found": "No wallet found for {{chain}} blockchain",
+    "provider_error": "Bridge provider not available.\nPlease try again later.",
+    "recipient_type": "Recipient wallet:",
+    "you_pay": "You Pay",
+    "own_wallet_alert": "Keep in mind that to see the tokens you will receive, you will have to switch from this {{from}} Wallet to the {{to}} one from the menu.",
+    "other_wallet_alert": "Keep in mind that the tokens you will receive are being sent to a {{to}} Wallet that it’s not configured in Salmon. You will not see the tokens unless you open that wallet."
   },
   "header": {
     "connected": "Connected to {{hostname}}",
