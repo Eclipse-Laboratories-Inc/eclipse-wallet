@@ -41,24 +41,35 @@ const WalletOverviewPage = ({ t }) => {
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [nonListedTokenList, setNonListedTokenList] = useState([]);
+  const [error, setError] = useState(null);
   const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
-    getSwitches().then(allSwitches =>
-      setSwitches(allSwitches[networkId].sections.overview),
-    );
+    const loadSwitches = async () => {
+      try {
+        const allSwitches = await getSwitches();
+        setSwitches(allSwitches[networkId].sections.overview);
+      } catch (e) {
+        console.log(e);
+        setError(e);
+      }
+    };
+
+    loadSwitches();
   }, [networkId]);
 
   const load = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const tokensAddresses = Object.keys(activeTokens);
       const balance = await activeBlockchainAccount.getBalance(tokensAddresses);
       setTotalBalance(balance);
       setTokenList(getListedTokens(balance));
       setNonListedTokenList(getNonListedTokens(balance, []));
     } catch (e) {
-      console.log(e); // TODO handle error
+      console.log(e);
+      setError(e);
     } finally {
       setLoading(false);
     }
@@ -68,11 +79,11 @@ const WalletOverviewPage = ({ t }) => {
     load();
   }, [load]);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     invalidate(CACHE_TYPES.BALANCE);
     invalidate(CACHE_TYPES.NFTS);
     await load();
-  };
+  }, [load]);
 
   const goToSend = () => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: 'send' });
@@ -86,20 +97,34 @@ const WalletOverviewPage = ({ t }) => {
     }
   };
 
-  const total = useMemo(() => {
-    if (isNil(totalBalance?.usdTotal)) {
-      return null;
-    }
-    if (hiddenBalance) {
-      return `$ ${hiddenValue}`;
-    }
-    return showAmount(totalBalance.usdTotal);
-  }, [totalBalance, hiddenBalance]);
+  const total = useMemo(
+    () =>
+      hiddenBalance ? `$ ${hiddenValue}` : showAmount(totalBalance.usdTotal),
+    [totalBalance, hiddenBalance],
+  );
 
   const percent = useMemo(
     () => get(totalBalance, 'last24HoursChange.perc', 0),
     [totalBalance],
   );
+
+  const alert = useMemo(() => {
+    if (error) {
+      return {
+        text: t('wallet.load_error'),
+        type: 'error',
+        onPress: onRefresh,
+      };
+    }
+    if (isNil(totalBalance?.usdTotal)) {
+      return {
+        text: t('wallet.prices_issue'),
+        type: 'warning',
+        onPress: onRefresh,
+      };
+    }
+    return null;
+  }, [error, totalBalance, onRefresh, t]);
 
   return (
     <GlobalLayout onRefresh={onRefresh} refreshing={loading}>
@@ -112,6 +137,7 @@ const WalletOverviewPage = ({ t }) => {
           showBalance={!hiddenBalance}
           onToggleShow={toggleHideBalance}
           onRefresh={onRefresh}
+          alert={alert}
           actions={
             <GlobalSendReceive
               goToSend={goToSend}
@@ -125,15 +151,17 @@ const WalletOverviewPage = ({ t }) => {
         <PendingTxs />
         <PendingBridgeTxs />
 
-        <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
-          <TokenList
-            loading={loading}
-            tokens={tokenList}
-            onDetail={goToTokenDetail}
-            hiddenBalance={hiddenBalance}
-          />
-        </GlobalCollapse>
-        {loading || nonListedTokenList?.length ? (
+        {!error && (
+          <GlobalCollapse title={t('wallet.my_tokens')} isOpen>
+            <TokenList
+              loading={loading}
+              tokens={tokenList}
+              onDetail={goToTokenDetail}
+              hiddenBalance={hiddenBalance}
+            />
+          </GlobalCollapse>
+        )}
+        {!error && (loading || nonListedTokenList?.length) ? (
           <GlobalCollapse title={t('wallet.non_listed_tokens')} isOpen>
             <TokenList
               loading={loading}

@@ -20,7 +20,6 @@ import {
   showPercentage,
   showValue,
 } from '../../utils/amount';
-import { CACHE_TYPES, invalidate } from '../../utils/cache';
 
 import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -66,11 +65,6 @@ const TokenDetailPage = ({ params, t }) => {
     load();
   }, [load]);
 
-  const onRefresh = async () => {
-    invalidate(CACHE_TYPES.BALANCE);
-    await load();
-  };
-
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
@@ -80,12 +74,13 @@ const TokenDetailPage = ({ params, t }) => {
 
   const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
 
-  const total = useMemo(() => {
-    if (hiddenBalance) {
-      return `${hiddenValue} ${token.symbol}`;
-    }
-    return `${showValue(token.uiAmount, 6)} ${token.symbol}`;
-  }, [token, hiddenBalance]);
+  const total = useMemo(
+    () =>
+      hiddenBalance
+        ? `${hiddenValue} ${token.symbol}`
+        : `${showValue(token.uiAmount, 6)} ${token.symbol}`,
+    [token, hiddenBalance],
+  );
 
   const percent = useMemo(
     () => get(token, 'last24HoursChange.perc', 0),
@@ -116,7 +111,6 @@ const TokenDetailPage = ({ params, t }) => {
           }}
           showBalance={!hiddenBalance}
           onToggleShow={toggleHideBalance}
-          onRefresh={onRefresh}
           actions={
             <GlobalSendReceive
               goToSend={goToSend}

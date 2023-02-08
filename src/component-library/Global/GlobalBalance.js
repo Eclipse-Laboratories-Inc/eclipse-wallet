@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { isNil } from 'lodash';
 
 import { withTranslation } from '../../hooks/useTranslations';
 import theme from './theme';
@@ -63,10 +62,10 @@ const WalletBalanceCard = ({
   neutralTotal,
   negativeTotal,
   positiveTotal,
+  alert,
   actions,
   showBalance,
   onToggleShow,
-  onRefresh,
   t,
 }) => {
   const [showDialog, setShowDialog] = useState(false);
@@ -77,7 +76,7 @@ const WalletBalanceCard = ({
     <View>
       <View style={styles.numbers}>
         {loading && <GlobalSkeleton type="Balance" />}
-        {!loading && !isNil(total) && (
+        {!loading && !alert && (
           <>
             <View style={styles.bigTotal}>
               <GlobalText type={totalType} center nospace>
@@ -147,16 +146,13 @@ const WalletBalanceCard = ({
             />
           </>
         )}
-        {!loading && isNil(total) && (
-          <GlobalAlert
-            type="warning"
-            layout="horizontal"
-            text={t('wallet.prices_issue')}>
-            {onRefresh && (
+        {!loading && alert && (
+          <GlobalAlert type={alert.type} text={alert.text} layout="horizontal">
+            {alert.onPress && (
               <GlobalButton
                 type="icon"
                 icon={IconReset}
-                onPress={onRefresh}
+                onPress={alert.onPress}
                 transparent
               />
             )}
