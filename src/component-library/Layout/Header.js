@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import { getNetworks } from '4m-wallet-adapter';
+import { getNetworks, getSwitches } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as ROUTES_WALLET_MAP } from '../../pages/Wallet/routes';
@@ -113,17 +113,22 @@ const Header = ({ isHome, t }) => {
         setIsConnected(tabsIds?.includes(tabs?.[0]?.id));
       }
     };
+
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
     const load = async () => {
+      const switches = await getSwitches();
+      const allNetworks = await getNetworks();
       setNetworks(
-        (await getNetworks()).map(({ name: label, id: value }) => ({
-          label,
-          value,
-        })),
+        allNetworks
+          .filter(({ id }) => switches[id]?.enable)
+          .map(({ name: label, id: value }) => ({ label, value })),
       );
     };
 
     load();
-    checkConnection();
   }, []);
 
   const toggleScan = () => {
@@ -198,7 +203,7 @@ const Header = ({ isHome, t }) => {
         </View>
 
         <View style={styles.walletActions}>
-          {isHome && (
+          {isHome && networks.length > 1 && (
             <View style={styles.networkSelector}>
               <NetworkSelector
                 options={networks}
