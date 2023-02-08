@@ -23,7 +23,7 @@ const PendingBridgeTxs = ({ t }) => {
   useEffect(() => {
     const updateStatus = async txs => {
       const dateNow = new Date().getTime();
-      await txs.forEach(async tx => {
+      await txs?.forEach(async tx => {
         const { id, lastStatus } = tx;
         const newCheck = lastStatus + 5 * 60 * 1000;
         if (newCheck < dateNow && tx.status === 'inProgress') {
@@ -37,7 +37,7 @@ const PendingBridgeTxs = ({ t }) => {
     };
     storage.getItem(STORAGE_KEYS.PENDING_BRIDGE_TXS).then(async txs => {
       const dateNow = new Date().getTime();
-      const nonExpiredTxs = txs.filter(tx => tx.expires > dateNow);
+      const nonExpiredTxs = txs?.filter(tx => tx.expires > dateNow);
       setInterval(async () => {
         await updateStatus(nonExpiredTxs);
         setTransactions(nonExpiredTxs);
