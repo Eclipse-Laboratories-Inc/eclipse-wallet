@@ -1,5 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import { BLOCKCHAINS } from '4m-wallet-adapter';
 import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
@@ -34,7 +35,6 @@ import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import storage from '../../utils/storage';
 import STORAGE_KEYS from '../../utils/storageKeys';
-import { BITCOIN } from '4m-wallet-adapter/constants/blockchains';
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -81,7 +81,7 @@ const TokenSendPage = ({ params, t }) => {
   );
   const [recipientAmount, setRecipientAmount] = useState('');
   const isBitcoin = useMemo(
-    () => activeBlockchainAccount.network.blockchain === BITCOIN,
+    () => activeBlockchainAccount.network.blockchain === BLOCKCHAINS.BITCOIN,
     [activeBlockchainAccount],
   );
   const { explorer } = useUserConfig();
@@ -137,7 +137,9 @@ const TokenSendPage = ({ params, t }) => {
         isBitcoin ? executableTx : txId,
       );
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      isBitcoin && savePendingTx(txId, token.symbol, recipientAmount);
+      if (isBitcoin) {
+        savePendingTx(txId, token.symbol, recipientAmount);
+      }
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
@@ -157,7 +159,7 @@ const TokenSendPage = ({ params, t }) => {
     setShowScan(false);
   };
 
-  const recipient = recipientName ? recipientName : recipientAddress;
+  const recipient = recipientName || recipientAddress;
 
   const openTransaction = async () => {
     const url = `${explorer.url}/${transactionId}`;
