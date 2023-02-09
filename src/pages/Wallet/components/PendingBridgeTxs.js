@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { getBridgeTransaction } from '4m-wallet-adapter';
+import { withTranslation } from '../../../hooks/useTranslations';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import CardButtonPendingTx from '../../../component-library/CardButton/CardButtonPendingTx';
 import GlobalText from '../../../component-library/Global/GlobalText';
@@ -16,17 +18,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export const PendingBridgeTxs = ({ activeWallet, translate }) => {
+const PendingBridgeTxs = ({ t }) => {
   const [transactions, setTransactions] = useState(null);
   useEffect(() => {
     const updateStatus = async txs => {
       const dateNow = new Date().getTime();
-      await txs.forEach(async tx => {
+      await txs?.forEach(async tx => {
         const { id, lastStatus } = tx;
         const newCheck = lastStatus + 5 * 60 * 1000;
         if (newCheck < dateNow && tx.status === 'inProgress') {
           tx.lastStatus = dateNow;
-          const { status } = await activeWallet.getBridgeTransaction(id);
+          const { status } = await getBridgeTransaction(id);
           if (status) {
             tx.status = status;
           }
@@ -35,7 +37,7 @@ export const PendingBridgeTxs = ({ activeWallet, translate }) => {
     };
     storage.getItem(STORAGE_KEYS.PENDING_BRIDGE_TXS).then(async txs => {
       const dateNow = new Date().getTime();
-      const nonExpiredTxs = txs.filter(tx => tx.expires > dateNow);
+      const nonExpiredTxs = txs?.filter(tx => tx.expires > dateNow);
       setInterval(async () => {
         await updateStatus(nonExpiredTxs);
         setTransactions(nonExpiredTxs);
@@ -50,7 +52,7 @@ export const PendingBridgeTxs = ({ activeWallet, translate }) => {
 
   return transactions && transactions.length > 0 ? (
     <>
-      <GlobalCollapse title={translate('wallet.swaps_in_progress')} isOpen>
+      <GlobalCollapse title={t('wallet.swaps_in_progress')} isOpen>
         {transactions.map((transaction, i) => {
           const tokensInfo = Object.values(transaction.currencies);
           return (
@@ -79,8 +81,11 @@ export const PendingBridgeTxs = ({ activeWallet, translate }) => {
                       circle
                       style={{ marginRight: 5 }}
                     />
-                    <GlobalText key={'amount-action'} type="caption">
-                      {translate(`wallet.pending_txs.${transaction.status}`)}
+                    <GlobalText
+                      key={'amount-action'}
+                      type="caption"
+                      color="secondary">
+                      {t(`wallet.pending_txs.${transaction.status}`)}
                     </GlobalText>
                   </View>
                 </View>
@@ -92,3 +97,5 @@ export const PendingBridgeTxs = ({ activeWallet, translate }) => {
     </>
   ) : null;
 };
+
+export default withTranslation()(PendingBridgeTxs);

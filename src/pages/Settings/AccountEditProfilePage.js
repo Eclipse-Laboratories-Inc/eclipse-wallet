@@ -11,26 +11,24 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalButton from '../../component-library/Global/GlobalButton';
-import { getWalletAvatar } from '../../utils/wallet';
 import { AppContext } from '../../AppProvider';
-import { getMediaRemoteUrl } from '../../utils/media';
 
 const AccountEditProfilePage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ config }] = useContext(AppContext);
+  const [{ activeAccount }] = useContext(AppContext);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
+      id: params.id,
     });
   const onSelectNft = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS, {
-      address: params.address,
+      id: params.id,
     });
 
   const onSelectAvatar = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_AVATARS, {
-      address: params.address,
+      id: params.id,
     });
 
   return (
@@ -44,7 +42,7 @@ const AccountEditProfilePage = ({ params, t }) => {
         <GlobalPadding size="4xl" />
         <View style={globalStyles.centered}>
           <GlobalImage
-            source={getMediaRemoteUrl(getWalletAvatar(params.address, config))}
+            source={activeAccount.avatar}
             size="3xl"
             style={globalStyles.bigImage}
             circle

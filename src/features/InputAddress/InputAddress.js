@@ -1,6 +1,6 @@
 import React, { useContext, useState, useMemo, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -34,7 +34,7 @@ const InputAddress = ({
   recipient = true,
   onQR = () => {},
 }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [checkingAddress, setCheckingAddress] = useState(false);
   const [result, setResult] = useState(false);
   const [isDomain, setIsDomain] = useState(false);
@@ -43,7 +43,7 @@ const InputAddress = ({
     setDomain('');
     setPublicKey('');
     if (address && validAddress) {
-      activeWallet.getPublicKeyFromDomain(address).then(
+      activeBlockchainAccount.getPublicKeyFromDomain(address).then(
         value => {
           setPublicKey(value);
           setDomain(address);
@@ -58,7 +58,7 @@ const InputAddress = ({
   }, [
     address,
     validAddress,
-    activeWallet,
+    activeBlockchainAccount,
     setDomain,
     setPublicKey,
     setIsDomain,
@@ -71,7 +71,9 @@ const InputAddress = ({
         setValidAddress(null);
         if (a) {
           try {
-            const r = await activeWallet.validateDestinationAccount(a);
+            const r = await activeBlockchainAccount.validateDestinationAccount(
+              a,
+            );
             setCheckingAddress(false);
             setValidAddress(r.type !== 'ERROR');
             setAddressEmpty(r.code === 'EMPTY_ACCOUNT');
@@ -85,7 +87,7 @@ const InputAddress = ({
         }
       }, 500),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeWallet],
+    [activeBlockchainAccount],
   );
   useEffect(() => {
     setResult();
@@ -104,7 +106,7 @@ const InputAddress = ({
         placeholder={
           recipient
             ? t('general.recipient_s_address', {
-                token: activeWallet.chain,
+                token: activeBlockchainAccount.network.blockchain,
               })
             : t('general.address')
         }

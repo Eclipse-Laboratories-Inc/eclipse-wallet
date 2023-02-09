@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, Linking, TouchableOpacity } from 'react-native';
-import { formatAmount } from '4m-wallet-adapter/services/format';
+import { formatAmount } from '4m-wallet-adapter';
 import moment from 'moment';
 
 import theme from '../../component-library/Global/theme';
@@ -19,14 +19,10 @@ import { ROUTES_MAP } from './routes';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { useNavigation, withParams } from '../../routes/hooks';
 
-import { cache, CACHE_TYPES } from '../../utils/cache';
+import { hiddenValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
 import { SECTIONS_MAP } from '../../utils/tracking';
-import {
-  getWalletChain,
-  getShortAddress,
-  getTransactionImage,
-} from '../../utils/wallet';
+import { getShortAddress, getTransactionImage } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
@@ -210,8 +206,16 @@ const TransactionDetail = ({
 }) => {
   const { id, type, timestamp, status, fee, inputs, outputs } = transaction;
 
-  const mapAmount = (sign, { amount, decimals, symbol, name }) =>
-    `${sign} ${formatAmount(amount, decimals)} ${symbol || name || ''}`;
+  const [{ hiddenBalance }] = useContext(AppContext);
+
+  const mapAmount = (sign, { amount, decimals, symbol, name }) => {
+    const unit = symbol || name || '';
+    if (hiddenBalance) {
+      return `${hiddenValue} ${unit}`;
+    } else {
+      return `${sign} ${formatAmount(amount, decimals)} ${unit}`;
+    }
+  };
 
   const outputAmounts = outputs.map(output => mapAmount('-', output));
   const inputAmounts = inputs.map(input => mapAmount('+', input));
@@ -340,11 +344,11 @@ const TransactionDetail = ({
 
 const TransactionsDetailPage = ({ t, params }) => {
   const navigate = useNavigation();
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [transaction, setTransaction] = useState();
   const [loaded, setLoaded] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const { explorer } = useUserConfig(getWalletChain(activeWallet));
+  const { explorer } = useUserConfig();
 
   useAnalyticsEventTracker(SECTIONS_MAP.TRANSACTIONS_LIST);
 
@@ -362,15 +366,13 @@ const TransactionsDetailPage = ({ t, params }) => {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-        CACHE_TYPES.TRANSACTIONS,
-        () => activeWallet.getRecentTransactions({ pageSize: 8 }),
-      );
+      const { data } = await activeBlockchainAccount.getRecentTransactions({
+        pageSize: 8,
+      });
 
       let tx = data.find(({ id }) => id === params.id);
       if (!tx) {
-        tx = await activeWallet.getTransaction(params.id);
+        tx = await activeBlockchainAccount.getTransaction(params.id);
       }
       if (tx) {
         setTransaction(tx);
@@ -381,7 +383,7 @@ const TransactionsDetailPage = ({ t, params }) => {
     };
 
     load();
-  }, [activeWallet, onBack, params]);
+  }, [activeBlockchainAccount, onBack, params]);
 
   return (
     <GlobalLayout fullscreen>

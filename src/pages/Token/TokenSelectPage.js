@@ -1,12 +1,10 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react';
-import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { hiddenValue, showAmount } from '../../utils/amount';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -26,14 +24,13 @@ import GlobalBackgroundImage from '../../component-library/Global/GlobalBackgrou
 const MAX_PAG = 20;
 
 const TokenSelectPage = ({ params, t }) => {
-  const { trackEvent } = useAnalyticsEventTracker(
-    SECTIONS_MAP.SEND_SELECT_TOKEN,
-  );
+  useAnalyticsEventTracker(SECTIONS_MAP.SEND_SELECT_TOKEN);
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const [tokens, setTokens] = useState({});
-  const [{ activeWallet, hiddenBalance, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, hiddenBalance, activeTokens }] =
+    useContext(AppContext);
 
   const [searchToken, setSearchToken] = useState('');
   const [drawedList, setDrawedList] = useState([]);
@@ -64,27 +61,18 @@ const TokenSelectPage = ({ params, t }) => {
   }, [filteredTokens]);
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
-      Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
-        ),
-      ]).then(([balance]) => {
+    if (activeBlockchainAccount) {
+      activeBlockchainAccount.getBalance(tokensAddresses).then(balance => {
         setTokens(balance.items || []);
-        setloaded(true);
+        setLoaded(true);
       });
     }
-  }, [activeWallet, params, tokensAddresses]);
+  }, [activeBlockchainAccount, params, tokensAddresses]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
@@ -108,7 +96,7 @@ const TokenSelectPage = ({ params, t }) => {
   const goToAddToken = () => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_ADD, {
       action: params.action,
-      walletAddress: activeWallet.getReceiveAddress(),
+      walletAddress: activeBlockchainAccount.getReceiveAddress(),
     });
   };
 

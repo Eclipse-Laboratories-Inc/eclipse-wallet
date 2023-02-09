@@ -1,9 +1,15 @@
 import React, { useContext, useState, useMemo } from 'react';
 import { View } from 'react-native';
-import { getTopTokensByPlatform } from '4m-wallet-adapter/services/price-service';
+import {
+  AccountFactory,
+  getNetworks,
+  getTopTokensByPlatform,
+  BLOCKCHAINS,
+  PLATFORMS,
+} from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ROUTES_ONBOARDING } from './routes';
@@ -20,13 +26,12 @@ import Logo from './components/Logo';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 
-import { recoverAccount, validateSeedPhrase } from '../../utils/wallet';
+import { validateSeedPhrase } from '../../utils/wallet';
 import Password from './components/Password';
 import Success from './components/Success';
 import clipboard from '../../utils/clipboard.native';
-import PLATFORMS from '../../config/platforms';
 
-const Form = ({ onComplete, onBack, t }) => {
+const Form = ({ waiting, onComplete, onBack, t }) => {
   const [seedPhrase, setSeedPhrase] = useState('');
 
   const isValid = useMemo(() => validateSeedPhrase(seedPhrase), [seedPhrase]);
@@ -66,6 +71,7 @@ const Form = ({ onComplete, onBack, t }) => {
           numberOfLines={4}
           autoFocus={true}
           invalid={false}
+          editable={!waiting}
           onEnter={() => isValid && onComplete(seedPhrase)}
         />
       </GlobalLayout.Header>
@@ -76,6 +82,7 @@ const Form = ({ onComplete, onBack, t }) => {
           wide
           title={t('wallet.recover.pasteSeed')}
           onPress={onPaste}
+          disabled={waiting}
         />
         <GlobalPadding size="md" />
         {!!isValid && (
@@ -84,6 +91,7 @@ const Form = ({ onComplete, onBack, t }) => {
             wide
             title={t('actions.next')}
             onPress={() => onComplete(seedPhrase)}
+            disabled={waiting}
           />
         )}
       </GlobalLayout.Footer>
@@ -91,42 +99,47 @@ const Form = ({ onComplete, onBack, t }) => {
   );
 };
 
-const RecoverWalletPage = ({ params, t }) => {
+const RecoverWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.RECOVER_WALLET);
   const navigate = useNavigation();
   const [
-    { selectedEndpoints, requiredLock, isAdapter },
-    { addWallet, checkPassword, importTokens },
+    { counter, requiredLock, isAdapter },
+    { addAccount, checkPassword, importTokens },
   ] = useContext(AppContext);
   const [account, setAccount] = useState(null);
   const [step, setStep] = useState(1);
   const [waiting, setWaiting] = useState(false);
-  const { chainCode } = params;
+
   const handleRecover = async seedPhrase => {
-    const a = await recoverAccount(
-      chainCode,
-      seedPhrase.trim(),
-      selectedEndpoints[params.chainCode],
-    );
-    setAccount(a);
+    setWaiting(true);
+    const name = t('wallet.name_template', { number: counter + 1 });
+    const mnemonic = seedPhrase.trim();
+    const newAccount = await AccountFactory.create({ name, mnemonic });
+    setWaiting(false);
+    setAccount(newAccount);
     trackEvent(EVENTS_MAP.SECRET_RECOVERED);
     setStep(2);
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addWallet(account, password, chainCode);
-    setWaiting(false);
-    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
-    setStep(3);
-
+    await addAccount(account, password);
     try {
-      if (account.useExplicitTokens()) {
-        const tokens = await getTopTokensByPlatform(PLATFORMS[chainCode]);
-        await importTokens(account.getReceiveAddress(), tokens);
+      const networks = (await getNetworks()).filter(
+        ({ blockchain, environment }) =>
+          blockchain === BLOCKCHAINS.ETHEREUM && environment === 'mainnet',
+      );
+      if (networks.length > 0) {
+        const tokens = await getTopTokensByPlatform(PLATFORMS.ETHEREUM);
+        for (const network of networks) {
+          await importTokens(network.id, tokens);
+        }
       }
     } catch (e) {
       console.error('Could not import tokens', e);
     }
+    setWaiting(false);
+    trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
+    setStep(3);
   };
   const goToWallet = () => {
     trackEvent(EVENTS_MAP.RECOVER_COMPLETED);
@@ -142,6 +155,7 @@ const RecoverWalletPage = ({ params, t }) => {
     <GlobalLayout fullscreen>
       {step === 1 && (
         <Form
+          waiting={waiting}
           onComplete={handleRecover}
           onBack={() =>
             navigate(
@@ -177,4 +191,4 @@ const RecoverWalletPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(RecoverWalletPage));
+export default withTranslation()(RecoverWalletPage);

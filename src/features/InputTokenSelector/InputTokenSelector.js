@@ -154,7 +154,7 @@ const InputWithTokenSelector = ({
                       }`
                     : token.symbol
                 }
-                chip={chips && token.network}
+                chip={chips && token.network.toUpperCase()}
               />
             ))}
           </GlobalLayout.Header>

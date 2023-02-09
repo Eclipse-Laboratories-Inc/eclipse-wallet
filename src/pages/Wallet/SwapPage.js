@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
-import get from 'lodash/get';
-import { getTokenByAddress } from '4m-wallet-adapter/services/solana/solana-token-list-service';
+import { BLOCKCHAINS, formatAmount } from '4m-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -14,23 +13,15 @@ import GlobalImage from '../../component-library/Global/GlobalImage';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
-import {
-  getAvailableTokens,
-  getFeaturedTokens,
-  getTransactionImage,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
-import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
+import { CACHE_TYPES, invalidate } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
-import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
-import SwapAmounts from '../Transactions/SwapAmounts';
-import { DEFAULT_SYMBOL, TOKEN_DECIMALS } from '../Transactions/constants';
 
 const styles = StyleSheet.create({
   viewTxLink: {
@@ -184,8 +175,10 @@ const linkForTransaction = (title, id, status, explorer) => {
 
 const SwapPage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, hiddenValue, config }, { importTokens }] =
-    useContext(AppContext);
+  const [
+    { activeBlockchainAccount, networkId, hiddenValue, activeTokens },
+    { importTokens },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
@@ -195,43 +188,26 @@ const SwapPage = ({ t }) => {
   const [featuredTokens, setFeaturedTokens] = useState([]);
   const [inToken, setInToken] = useState(null);
   const [outToken, setOutToken] = useState(null);
-  const [quote, setQuote] = useState({});
+  const [quote, setQuote] = useState();
   const [status, setStatus] = useState();
-  const [routesNames, setRoutesNames] = useState('');
-  const [tokenSymbols, setTokenSymbols] = useState('');
   const [currentTransaction, setCurrentTransaction] = useState('');
   const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
-  );
+  const { explorer } = useUserConfig();
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       invalidate(CACHE_TYPES.AVAILABLE_TOKENS);
       Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
-        ),
-        cache(`${activeWallet.chain}`, CACHE_TYPES.AVAILABLE_TOKENS, () =>
-          getAvailableTokens(activeWallet.chain, activeWallet.networkId),
-        ),
-        cache(`${activeWallet.chain}`, CACHE_TYPES.FEATURED_TOKENS, () =>
-          getFeaturedTokens(activeWallet.chain, activeWallet.networkId),
-        ),
+        activeBlockchainAccount.getBalance(tokensAddresses),
+        activeBlockchainAccount.getAvailableTokens(),
+        activeBlockchainAccount.getFeaturedTokens(),
       ]).then(([balance, atks, ftks]) => {
         const tks = balance.items || [];
         setTokens(tks);
@@ -241,7 +217,7 @@ const SwapPage = ({ t }) => {
         setReady(true);
       });
     }
-  }, [activeWallet, tokensAddresses]);
+  }, [activeBlockchainAccount, tokensAddresses]);
 
   const [inAmount, setInAmount] = useState(null);
 
@@ -257,43 +233,61 @@ const SwapPage = ({ t }) => {
     parseFloat(inAmount) <= inToken.uiAmount &&
     parseFloat(inAmount) > 0;
 
+  const tokenSymbols = useMemo(
+    () => quote?.routeSymbols?.join(' → ') || '',
+    [quote],
+  );
+
+  const routesNames = useMemo(
+    () => quote?.routeNames?.join(' x ') || '',
+    [quote],
+  );
+
+  const formattedFee = useMemo(() => {
+    if (!quote?.fee) {
+      return '';
+    }
+    const { amount, decimals, symbol, percent } = quote.fee;
+    return percent
+      ? `${percent}%`
+      : `${formatAmount(amount, decimals)} ${symbol}`;
+  }, [quote]);
+
+  const formattedInput = useMemo(() => {
+    const { amount, decimals, symbol = inToken?.symbol } = quote?.input || {};
+    return `${decimals ? formatAmount(amount, decimals) : inAmount} ${symbol}`;
+  }, [quote, inAmount, inToken]);
+
+  const formattedOutput = useMemo(() => {
+    const { amount, decimals, symbol = outToken?.symbol } = quote?.output || {};
+    return `${decimals ? formatAmount(amount, decimals) : outAmount} ${symbol}`;
+  }, [quote, outAmount, outToken]);
+
+  const statusColor = useMemo(() => {
+    switch (status) {
+      case TRANSACTION_STATUS.SUCCESS:
+        return 'positive';
+      case TRANSACTION_STATUS.FAIL:
+        return 'negative';
+      default:
+        return 'primary';
+    }
+  }, [status]);
+
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
   };
-
-  const getRoutesSymbols = async routes => {
-    const inputs = routes.map(
-      async r =>
-        await getTokenByAddress(r.inputMint).then(info => info[0].symbol),
-    );
-    const outputs = routes.map(
-      async r =>
-        await getTokenByAddress(r.outputMint).then(info => info[0].symbol),
-    );
-    const tokSymb = [...new Set([...inputs, ...outputs])];
-
-    Promise.all(tokSymb).then(data => {
-      setTokenSymbols([...new Set(data)].join(' → '));
-    });
-  };
-
-  const getRoutesNames = routes =>
-    setRoutesNames(routes.map(r => r.label).join(' x '));
 
   const onQuote = async () => {
     setError(false);
     setProcessing(true);
     try {
-      const q = await activeWallet.getBestSwapQuote(
+      const q = await activeBlockchainAccount.getBestSwapQuote(
         inToken.mint || inToken.address,
         outToken.address,
         parseFloat(inAmount),
       );
       setQuote(q);
-      if (current_blockchain === 'SOLANA') {
-        getRoutesNames(q?.route?.marketInfos);
-        await getRoutesSymbols(q?.route?.marketInfos);
-      }
       setProcessing(false);
       trackEvent(EVENTS_MAP.SWAP_QUOTE);
       setStep(2);
@@ -309,7 +303,7 @@ const SwapPage = ({ t }) => {
 
     setStatus(TRANSACTION_STATUS.CREATING);
     setStep(3);
-    activeWallet
+    activeBlockchainAccount
       .createSwapTransaction(
         quote,
         inToken.mint || inToken.address,
@@ -323,12 +317,12 @@ const SwapPage = ({ t }) => {
         setProcessing(false);
         setTotalTransactions(txs.length);
 
-        if (activeWallet.useExplicitTokens()) {
-          importTokens(activeWallet.getReceiveAddress(), [outToken]).catch(
-            e => {
-              console.error('Could not import token:', outToken, e);
-            },
-          );
+        if (
+          activeBlockchainAccount.network.blockchain === BLOCKCHAINS.ETHEREUM
+        ) {
+          importTokens(networkId, [outToken]).catch(e => {
+            console.error('Could not import token:', outToken, e);
+          });
         }
 
         if (txs.length > 1) {
@@ -351,23 +345,12 @@ const SwapPage = ({ t }) => {
     setStatus(TRANSACTION_STATUS.SWAPPING);
   };
 
-  const getStatusColor = status => {
-    switch (status) {
-      case 'success':
-        return 'positive';
-      case 'fail':
-        return 'negative';
-      default:
-        return 'primary';
-    }
-  };
-
   return (
     <GlobalLayout>
       {step === 1 && (
         <>
           <GlobalLayout.Header>
-            <Header activeWallet={activeWallet} config={config} t={t} />
+            <Header />
             <GlobalBackTitle title={t('swap.swap_tokens')} />
 
             <GlobalPadding />
@@ -383,7 +366,7 @@ const SwapPage = ({ t }) => {
                 <GlobalPadding size="xs" />
 
                 <InputWithTokenSelector
-                  value={inAmount}
+                  value={inAmount || ''}
                   setValue={setInAmount}
                   placeholder={t('swap.enter_amount')}
                   title={inToken.symbol}
@@ -459,36 +442,21 @@ const SwapPage = ({ t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle title={t('swap.swap_preview')} />
             <GlobalPadding />
-            <BigDetailItem
-              title={t('swap.you_send')}
-              value={`${get(quote, 'uiInfo.in.uiAmount') || inAmount} ${
-                get(quote, 'uiInfo.in.symbol') || inToken.symbol
-              }`}
-            />
+            <BigDetailItem title={t('swap.you_send')} value={formattedInput} />
             <BigDetailItem
               title={t('swap.you_receive')}
-              value={`${get(quote, 'uiInfo.out.uiAmount') || inAmount} ${
-                get(quote, 'uiInfo.out.symbol') || outToken.symbol
-              }`}
+              value={formattedOutput}
             />
             <GlobalPadding size="2xl" />
-            {quote?.route?.marketInfos && (
+            {quote && (
               <RouteDetailItem
                 names={routesNames}
                 symbols={tokenSymbols}
                 t={t}
               />
             )}
-            {(quote?.fee || quote?.pool?.total_fee) && (
-              <DetailItem
-                key={quote?.fee || quote?.pool?.total_fee}
-                title={t('swap.total_fee')}
-                value={`${
-                  quote?.fee?.toFixed(8) || quote?.pool?.total_fee / 100
-                }${quote?.pool?.total_fee ? '%' : ''} ${
-                  DEFAULT_SYMBOL[current_blockchain]
-                }`}
-              />
+            {formattedFee && (
+              <DetailItem title={t('swap.total_fee')} value={formattedFee} />
             )}
           </GlobalLayout.Header>
           <GlobalLayout.Footer inlineFlex>
@@ -520,7 +488,7 @@ const SwapPage = ({ t }) => {
             <View style={globalStyles.centeredSmall}>
               <View style={styles.symbolContainer}>
                 <GlobalImage
-                  source={inToken.logo || getBlockchainIcon(current_blockchain)}
+                  source={inToken.logo || activeBlockchainAccount.network.icon}
                   size="xl"
                   circle
                 />
@@ -531,41 +499,28 @@ const SwapPage = ({ t }) => {
                   circle
                 />
                 <GlobalImage
-                  source={
-                    outToken.logo || getBlockchainIcon(current_blockchain)
-                  }
+                  source={outToken.logo || activeBlockchainAccount.network.icon}
                   size="xl"
                   circle
                 />
               </View>
               <GlobalPadding size="lg" />
               <View>
-                <SwapAmounts
-                  inAmount={quote?.route?.inAmount || inAmount}
-                  outAmount={
-                    quote?.route?.outAmount ||
-                    get(quote, 'uiInfo.out.uiAmount') ||
-                    inAmount
-                  }
-                  inToken={inToken.symbol}
-                  outToken={outToken.symbol}
-                  blockchain={current_blockchain}
-                />
+                <GlobalText type="headline3" center>
+                  {formattedInput && `-${formattedInput}`}
+                </GlobalText>
+                <GlobalText type="headline3" center>
+                  {formattedOutput && `+${formattedOutput}`}
+                </GlobalText>
               </View>
               <GlobalPadding size="xl" />
-              {status !== 'creating' && (
-                <GlobalText
-                  type={'body2'}
-                  color={getStatusColor(status)}
-                  center>
+              {status !== TRANSACTION_STATUS.CREATING && (
+                <GlobalText type={'body2'} color={statusColor} center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {status === 'swapping' && totalTransactions > 0 && (
-                <GlobalText
-                  type={'body1'}
-                  color={getStatusColor(status)}
-                  center>
+              {status === TRANSACTION_STATUS.SWAPPING && totalTransactions > 0 && (
+                <GlobalText type={'body1'} color={statusColor} center>
                   {t(`token.send.swap_step`, {
                     current: currentTransaction,
                     total: totalTransactions,
@@ -584,7 +539,8 @@ const SwapPage = ({ t }) => {
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
-            {status === 'success' || status === 'fail' ? (
+            {status === TRANSACTION_STATUS.SUCCESS ||
+            status === TRANSACTION_STATUS.FAIL ? (
               <GlobalButton
                 type="secondary"
                 title={t(`general.close`)}
@@ -594,7 +550,7 @@ const SwapPage = ({ t }) => {
                 touchableStyles={globalStyles.buttonTouchable}
               />
             ) : (
-              status === 'creating' && (
+              status === TRANSACTION_STATUS.CREATING && (
                 <GlobalButton
                   type="text"
                   wide

@@ -8,7 +8,7 @@ import { AppContext } from '../../../AppProvider';
 import { withTranslation } from '../../../hooks/useTranslations';
 
 const SignTransactionsForm = ({ t, request, name, icon, origin }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const payloads = useMemo(
     // eslint-disable-next-line no-undef
@@ -19,10 +19,10 @@ const SignTransactionsForm = ({ t, request, name, icon, origin }) => {
   const createSignature = useCallback(
     payload => {
       const transaction = VersionedTransaction.deserialize(payload);
-      transaction.sign([activeWallet.keyPair]);
+      transaction.sign([activeBlockchainAccount.keyPair]);
       return transaction.serialize();
     },
-    [activeWallet],
+    [activeBlockchainAccount],
   );
 
   const onApprove = useCallback(() => {

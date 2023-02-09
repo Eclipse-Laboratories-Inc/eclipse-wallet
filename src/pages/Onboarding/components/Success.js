@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import theme from '../../../component-library/Global/theme';
 import GlobalLayout from '../../../component-library/Global/GlobalLayout';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalButton from '../../../component-library/Global/GlobalButton';
 import GlobalPadding from '../../../component-library/Global/GlobalPadding';
 import SimpleDialog from '../../../component-library/Dialog/SimpleDialog';
+import theme from '../../../component-library/Global/theme';
 
 import Logo from '../components/Logo';
 
 const styles = StyleSheet.create({
-  bigIcon: {
-    width: 120,
-    height: 120,
-  },
   infoLink: {
     fontFamily: theme.fonts.dmSansRegular,
     fontSize: theme.fontSize.fontSizeSM,
@@ -71,35 +67,39 @@ const Success = ({ goToWallet, goToAdapter, goToDerived, t }) => {
           />
         )}
 
-        <GlobalPadding size="md" />
+        {goToDerived && (
+          <>
+            <GlobalPadding size="md" />
 
-        <GlobalButton
-          type="secondary"
-          wide
-          title={t(`wallet.create.select_derivable`)}
-          onPress={goToDerived}
-        />
-        <GlobalButton
-          type="text"
-          wide
-          textStyle={styles.infoLink}
-          title={t(`wallet.create.derivable_info_icon`)}
-          onPress={toggleDialog}
-        />
-        <SimpleDialog
-          title={
-            <GlobalText center type="headline3" numberOfLines={1}>
-              {t(`wallet.create.derivable_info`)}
-            </GlobalText>
-          }
-          onClose={toggleDialog}
-          isOpen={showDialog}
-          text={
-            <GlobalText center type="subtitle1">
-              {t(`wallet.create.derivable_description`)}
-            </GlobalText>
-          }
-        />
+            <GlobalButton
+              type="secondary"
+              wide
+              title={t(`wallet.create.check_derivables`)}
+              onPress={goToDerived}
+            />
+            <GlobalButton
+              type="text"
+              wide
+              textStyle={styles.infoLink}
+              title={t(`wallet.create.derivable_info_icon`)}
+              onPress={toggleDialog}
+            />
+            <SimpleDialog
+              title={
+                <GlobalText center type="headline3" numberOfLines={1}>
+                  {t(`wallet.create.derivable_info`)}
+                </GlobalText>
+              }
+              onClose={toggleDialog}
+              isOpen={showDialog}
+              text={
+                <GlobalText center type="subtitle1">
+                  {t(`wallet.create.derivable_description`)}
+                </GlobalText>
+              }
+            />
+          </>
+        )}
       </GlobalLayout.Footer>
     </>
   );

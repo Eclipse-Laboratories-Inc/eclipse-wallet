@@ -15,24 +15,26 @@ const SignTransactionForm = ({
   onReject,
   onError,
 }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const payload = useMemo(() => bs58.decode(request.params.message), [request]);
 
   const createSignature = useCallback(() => {
-    const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
+    const secretKey = bs58.decode(
+      activeBlockchainAccount.retrieveSecurePrivateKey(),
+    );
     return bs58.encode(nacl.sign.detached(payload, secretKey));
-  }, [activeWallet, payload]);
+  }, [activeBlockchainAccount, payload]);
 
   const getMessage = useCallback(
     () => ({
       result: {
         signature: createSignature(),
-        publicKey: activeWallet.publicKey.toBase58(),
+        publicKey: activeBlockchainAccount.publicKey.toBase58(),
       },
       id: request.id,
     }),
-    [request, activeWallet, createSignature],
+    [request, activeBlockchainAccount, createSignature],
   );
 
   const onAccept = useCallback(() => {

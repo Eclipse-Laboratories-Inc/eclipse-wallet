@@ -11,14 +11,12 @@ import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import InputAddress from '../../features/InputAddress/InputAddress';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import { getWalletChain } from '../../utils/wallet';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
 
 const AddressBookEditPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, addressBook }, { editAddress }] =
-    useContext(AppContext);
+  const [{ networkId, addressBook }, { editAddress }] = useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
   const [currentAddress, setCurrentAddress] = useState('');
@@ -44,15 +42,12 @@ const AddressBookEditPage = ({ params, t }) => {
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
-    await editAddress(
-      { address: currentAddress },
-      {
-        address: recipientAddress,
-        name: addressLabel,
-        domain: recipientName,
-        chain: getWalletChain(activeWallet),
-      },
-    );
+    await editAddress(currentAddress, {
+      address: recipientAddress,
+      name: addressLabel,
+      domain: recipientName,
+      networkId,
+    });
     setSaving(false);
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   };

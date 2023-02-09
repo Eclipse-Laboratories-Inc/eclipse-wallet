@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import randomNumber from 'lodash/random';
+import { random as randomNumber } from 'lodash';
+import { AccountFactory } from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
-import { useNavigation, withParams } from '../../routes/hooks';
+import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from './routes';
 import clipboard from '../../utils/clipboard.native';
-import { createAccount } from '../../utils/wallet';
 import { isExtension } from '../../utils/platform';
 
 import { globalStyles } from '../../component-library/Global/theme';
@@ -203,13 +203,11 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
   );
 };
 
-const CreateWalletPage = ({ params, t }) => {
+const CreateWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.CREATE_WALLET);
   const navigate = useNavigation();
-  const [
-    { selectedEndpoints, requiredLock, isAdapter },
-    { addWallet, checkPassword },
-  ] = useContext(AppContext);
+  const [{ counter, requiredLock, isAdapter }, { addAccount, checkPassword }] =
+    useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
   const [waiting, setWaiting] = useState(false);
@@ -217,13 +215,12 @@ const CreateWalletPage = ({ params, t }) => {
   const onAddAccount = () => {
     setWaiting(true);
     if (!account) {
-      createAccount(params.chainCode, selectedEndpoints[params.chainCode]).then(
-        d => {
-          setAccount(d);
-          setStep(2);
-          setWaiting(false);
-        },
-      );
+      const name = t('wallet.name_template', { number: counter + 1 });
+      AccountFactory.create({ name }).then(newAccount => {
+        setAccount(newAccount);
+        setStep(2);
+        setWaiting(false);
+      });
     } else {
       setStep(2);
       setWaiting(false);
@@ -234,7 +231,7 @@ const CreateWalletPage = ({ params, t }) => {
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
 
-    await addWallet(account, password, params.chainCode);
+    await addAccount(account, password);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(5);
   };
@@ -246,7 +243,6 @@ const CreateWalletPage = ({ params, t }) => {
     trackEvent(EVENTS_MAP.CREATION_COMPLETED);
     navigate(APP_ROUTES_MAP.ADAPTER);
   };
-  const goToDerived = () => navigate(ONBOARDING_ROUTES_MAP.ONBOARDING_DERIVED);
 
   return (
     <GlobalLayout fullscreen>
@@ -295,7 +291,6 @@ const CreateWalletPage = ({ params, t }) => {
         <Success
           goToWallet={!isAdapter ? goToWallet : undefined}
           goToAdapter={isAdapter ? goToAdapter : undefined}
-          goToDerived={goToDerived}
           onBack={() => setStep(2)}
           t={t}
         />
@@ -304,4 +299,4 @@ const CreateWalletPage = ({ params, t }) => {
   );
 };
 
-export default withParams(withTranslation()(CreateWalletPage));
+export default withTranslation()(CreateWalletPage);

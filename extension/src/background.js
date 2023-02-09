@@ -84,55 +84,49 @@ const launchPopup = (message, sender, sendResponse) => {
   responseHandlers.set(message.data.id, sendResponse);
 };
 
-const getConnection = async (origin, { wallets, active }) => {
-  if (!wallets || isNaN(active)) {
+const getConnection = async (
+  origin,
+  { connection, networkId, trustedApps },
+) => {
+  if (connection?.blockchain !== 'solana') {
     return null;
   }
-  const json = JSON.parse(wallets);
-  if (!json.wallets) {
+  if (!networkId || !trustedApps?.[networkId]?.[origin]) {
     return null;
   }
-  if (json.wallets.encrypted) {
-    /* This check is for old versions where wallets info could be encrypted */
-    return null;
-  }
-  if (active < 0 || active >= json.wallets.length) {
-    return null;
-  }
-  const wallet = json.wallets[active];
-  if (wallet.chain !== 'SOLANA') {
-    return null;
-  }
-  const { address } = wallet;
-  const trustedApp = json?.config?.[address]?.trustedApps?.[origin];
-  if (!trustedApp) {
-    return null;
-  }
-  return { address };
+  return connection;
 };
 
 const handleConnect = async (message, sender, sendResponse) => {
-  chrome.storage.local.get(['wallets', 'active'], async result => {
-    const tabId = await getActiveTabId();
+  chrome.storage.local.get(
+    ['connection', 'network_id', 'trusted_apps'],
+    async result => {
+      const tabId = await getActiveTabId();
 
-    const callback = async (data, id) => {
-      await sendResponse(data, id);
-      await addConnectedTabId(tabId);
-    };
+      const callback = async (data, id) => {
+        await sendResponse(data, id);
+        await addConnectedTabId(tabId);
+      };
 
-    const connection = await getConnection(sender.origin, result);
-    if (connection) {
-      await callback({
-        method: 'connected',
-        params: {
-          publicKey: connection.address,
-        },
-        id: message.data.id,
-      });
-    } else {
-      launchPopup(message, sender, callback);
-    }
-  });
+      const data = {
+        connection: JSON.parse(result.connection || null),
+        networkId: JSON.parse(result.network_id || null),
+        trustedApps: JSON.parse(result.trusted_apps || null),
+      };
+      const connection = await getConnection(sender.origin, data);
+      if (connection) {
+        await callback({
+          method: 'connected',
+          params: {
+            publicKey: connection.address,
+          },
+          id: message.data.id,
+        });
+      } else {
+        launchPopup(message, sender, callback);
+      }
+    },
+  );
 };
 
 const handleDisconnect = async (message, sender, sendResponse) => {

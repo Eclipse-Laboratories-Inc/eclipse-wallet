@@ -12,9 +12,11 @@ import IconSwap from '../../assets/images/IconSwap.png';
 import IconBalance from '../../assets/images/IconBalance.png';
 import IconSettings from '../../assets/images/IconSettings.png';
 import { getDefaultRouteKey, getRoutesWithParent } from '../../routes/utils';
+import ChangePathIndexPage from './ChangePathIndexPage';
 
 export const ROUTES_MAP = {
   WALLET_OVERVIEW: 'WALLET_OVERVIEW',
+  WALLET_INDEX_PATH: 'WALLET_INDEX_PATH',
   WALLET_NFTS: 'WALLET_NFTS',
   WALLET_SWAP: 'WALLET_SWAP',
   WALLET_TRANSACTIONS: 'WALLET_TRANSACTIONS',
@@ -37,6 +39,14 @@ const routes = [
     icon: IconWallet,
   },
   {
+    key: ROUTES_MAP.WALLET_INDEX_PATH,
+    name: 'ChangePathIndex',
+    path: 'pathindex',
+    route: '/wallet/pathindex',
+    Component: ChangePathIndexPage,
+    default: false,
+  },
+  {
     key: ROUTES_MAP.WALLET_NFTS,
     defaultScreen: getDefaultRouteKey(NFTS_ROUTES),
     name: 'NFT',
@@ -52,18 +62,17 @@ const routes = [
     path: 'swap',
     route: '/wallet/swap',
     Component: SwapPage,
-    icon: IconSwap,
     default: false,
   },
-  // {
-  //   key: ROUTES_MAP.WALLET_EXCHANGE,
-  //   name: 'Swap',
-  //   path: 'exchange',
-  //   route: '/wallet/exchange',
-  //   Component: ExchangeSection,
-  //   default: false,
-  //   icon: IconSwap,
-  // },
+  {
+    key: ROUTES_MAP.WALLET_EXCHANGE,
+    name: 'Swap',
+    path: 'exchange',
+    route: '/wallet/exchange',
+    Component: ExchangeSection,
+    default: false,
+    icon: IconSwap,
+  },
   {
     key: ROUTES_MAP.WALLET_TRANSACTIONS,
     name: 'Transactions',
@@ -83,14 +92,14 @@ const routes = [
     default: false,
     icon: IconSettings,
   },
-  // {
-  //   key: ROUTES_MAP.WALLET_BRIDGE,
-  //   name: 'Bridge',
-  //   path: 'bridge',
-  //   route: '/wallet/bridge',
-  //   Component: BridgePage,
-  //   default: false,
-  // },
+  {
+    key: ROUTES_MAP.WALLET_BRIDGE,
+    name: 'Bridge',
+    path: 'bridge',
+    route: '/wallet/bridge',
+    Component: BridgePage,
+    default: false,
+  },
   ...getRoutesWithParent(NFTS_ROUTES, ROUTES_MAP.WALLET_NFTS),
   ...getRoutesWithParent(SETTINGS_ROUTES, ROUTES_MAP.WALLET_SETTINGS),
 ];

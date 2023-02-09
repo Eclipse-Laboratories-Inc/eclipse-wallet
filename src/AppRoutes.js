@@ -1,19 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { AppContext } from './AppProvider';
 import routes, { ROUTES_MAP } from './routes/app-routes';
 import RoutesBuilder from './routes/RoutesBuilder';
 
 const AppRoutes = () => {
-  const [{ isAdapter, wallets }] = useContext(AppContext);
+  const [{ isAdapter, accounts }] = useContext(AppContext);
 
-  let entry;
-  if (isAdapter) {
-    entry = ROUTES_MAP.ADAPTER;
-  } else if (wallets.length) {
-    entry = ROUTES_MAP.WALLET;
-  } else {
-    entry = ROUTES_MAP.WELCOME;
-  }
+  const entry = useMemo(() => {
+    if (isAdapter) {
+      return ROUTES_MAP.ADAPTER;
+    } else if (accounts.length) {
+      return ROUTES_MAP.WALLET;
+    } else {
+      return ROUTES_MAP.WELCOME;
+    }
+  }, [isAdapter, accounts.length]);
 
   return (
     <RoutesBuilder routes={routes} entry={entry} requireOnboarding={false} />

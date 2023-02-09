@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
 const NftsCollectionDetailPage = ({ params, t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFT_COLLECTION_DETAIL);
   const navigate = useNavigation();
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [loaded, setLoaded] = useState(false);
   const [collectionDetail, setCollectionDetail] = useState({});
   const [collectionItems, setCollectionItems] = useState({});
@@ -75,10 +75,10 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   );
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
-        activeWallet.getCollection(params.id),
-        activeWallet.getCollectionItems(params.id, 1),
+        activeBlockchainAccount.getCollection(params.id),
+        activeBlockchainAccount.getCollectionItems(params.id, 1),
       ]).then(async ([collDetail, collItems]) => {
         if (collDetail) {
           setCollectionDetail(collDetail?.project_stats[0]);
@@ -95,7 +95,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
         }
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeBlockchainAccount, params.id]);
 
   const { rank } = collectionDetail;
   const listedAmount = collectionDetail.num_of_token_listed;
@@ -157,7 +157,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   const onLoadMore = async () => {
     if (hasNextPage) {
       Promise.resolve(
-        activeWallet.getCollectionItems(params.id, pageNumber + 1),
+        activeBlockchainAccount.getCollectionItems(params.id, pageNumber + 1),
       ).then(
         newItems =>
           setCollectionItems([
@@ -174,7 +174,7 @@ const NftsCollectionDetailPage = ({ params, t }) => {
   return loaded ? (
     <GlobalLayout fullscreen style={isModalOpen && styles.container}>
       <GlobalLayout.Header>
-        <Header activeWallet={activeWallet} config={config} t={t} />
+        <Header />
         <GlobalBackTitle
           onBack={goToBack}
           inlineTitle={

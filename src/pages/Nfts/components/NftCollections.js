@@ -21,13 +21,16 @@ const styles = StyleSheet.create({
 
 const NftCollections = ({ t }) => {
   const [sliderItems, setSliderItems] = useState([]);
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
-    const getTrandingCollections = activeWallet.getCollectionGroup('trending');
-    const getNewCollections = activeWallet.getCollectionGroup('new');
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
+      const getTrandingCollections =
+        activeBlockchainAccount.getCollectionGroup('trending');
+      const getNewCollections =
+        activeBlockchainAccount.getCollectionGroup('new');
+
       Promise.all([getTrandingCollections, getNewCollections]).then(
         ([trendColls, newColls]) => {
           setSliderItems([
@@ -43,7 +46,7 @@ const NftCollections = ({ t }) => {
         },
       );
     }
-  }, [activeWallet, t]);
+  }, [activeBlockchainAccount, t]);
 
   const renderCollection = ({ item }) => {
     const { title, value } = item;

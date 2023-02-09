@@ -52,15 +52,19 @@
     "help_support": "Ayuda & Soporte",
     "app_version": "Versión v{{version}}",
     "wallets": {
-      "your_wallets": "Tus Wallets",
-      "my_wallets": "Mis Wallets",
-      "add_new_wallet": "Agregar Wallet",
-      "remove_wallet": "Remover Wallet",
-      "remove_all_wallets": "Remover todas las Wallets",
-      "edit_wallet": "Editar Wallet",
+      "your_wallets": "Tus Cuentas",
+      "my_wallets": "Mis Cuentas de Blockchain",
+      "add_new_wallet": "Agregar Cuenta",
+      "remove_wallet": "Remover Cuenta",
+      "remove_all_wallets": "Remover todas las Cuentas",
+      "remove_all_wallets_description": "Estás a punto de desconectar todas tus cuentas. Ten en cuenta que necesitarás tus seed-phrases o claves privadas para volver a conectarlas.",
+      "remove_wallet_description": "Estás a punto de eliminar esta cuenta. Ten en cuenta que, para usarlo nuevamente, deberás usar tu seed-phrase.",
+      "edit_wallet": "Editar Cuenta",
       "edit_name": "Editar nombre",
-      "edit_name_disclaimer": "Ten en cuenta que el nombre funciona únicamente para identificar tu wallet localmente. Esta información no se guarda en el blockchain.",
-      "edit_address": "Editar Wallet",
+      "edit_name_disclaimer": "Ten en cuenta que el nombre funciona únicamente para identificar tu cuenta localmente. Esta información no se guarda en el blockchain.",
+      "show_seed_phrase_description": "",
+      "show_private_key_description": "",
+      "select_network": "Seleccionar Red",
       "tap_to_reveal": "Toca para ver",
       "set_profile_picture": "Utilizar como imagen de perfil",
       "select_nft": "Seleccionar NFT",
@@ -69,15 +73,16 @@
       "upload_photo": "Selccionar foto",
       "select_nft_to_profile": "Seleccionar NFT como imagen de perfil",
       "select_avatar_to_profile": "Seleccionar Avatar como imagen de perfil",
-      "full_nft_description": "Descripción completa",
-      "wallet_address": "Información de la Wallet"
+      "full_nft_description": "Descripción completa"
     },
     "addressbook": {
       "add": "Agregar dirección",
       "addnew": "Agregar nueva dirección",
       "edit": "Editar dirección",
       "save": "Guardar dirección",
-      "label": "Etiqueta"
+      "label": "Etiqueta",
+      "empty": "Parece vacío aquí.\nAgrega tu primer contacto haciendo clic en el botón.",
+      "remove_confirmation": ""
     },
     "languages": {
       "title": "Idioma",
@@ -96,7 +101,7 @@
     },
     "receive": {
       "title": "Recibir",
-      "warning": "Esta dirección es para tokens en la block chain {{chain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
+      "warning": "Esta dirección es para tokens en la block chain {{blockchain}}. Por favor, no envíe ningún otro token, ya que puede provocar la pérdida de fondos."
     },
     "send": {
       "address": {
@@ -137,11 +142,12 @@
     "forgotten": "Contraseña olvidada",
     "clear": "Limpiar wallets",
     "clear_confirm": "ENTENDIDO, DESCONECTAR TODO",
-    "forgot_content": "Salmon no almacena ningún tipo de información sobre tu cuenta. Esto incluye tu contraseña. Si la olvidaste, tendrás que desconectar todas tus Wallets. Ten en cuenta que para volver a conectarlas necesitarás tu seedphrase o private key.\n\nEstás seguro que deseas proceder?",
+    "forgot_content": "Salmon no almacena ningún tipo de información sobre tu cuenta. Esto incluye tu contraseña. Si la olvidaste, tendrás que desconectar todas tus cuentas. Ten en cuenta que para volver a conectarlas necesitarás tu seedphrase o private key.\n\nEstás seguro que deseas proceder?",
     "buttonChecking": "Validando...",
     "buttonUnlock": "Desbloquear"
   },
   "wallet": {
+    "name_template": "Cuenta Nro {{number}}",
     "transactions_in_progress": "Transacciones en progreso",
     "swaps_in_progress": "Swaps en progreso",
     "my_tokens": "Mis Tokens",
@@ -149,14 +155,17 @@
     "my_nfts": "Mis NFTs",
     "nfts": "NFTs",
     "copied": "Copiado al portapapeles!",
-    "create_wallet": "Crear Wallet",
-    "recover_wallet": "Recuperar Wallet",
+    "create_wallet": "Crear Cuenta",
+    "recover_wallet": "Recuperar Cuenta",
     "select_token": "Seleccionar Token",
     "new_token": "Agregar token",
     "is_coming_soon": "próximamente",
+    "select_derivable_account": "Seleccionar cuenta derivable",
+    "prices_issue": "Estamos teniendo problemas para recuperar los precios",
+    "load_error": "Estamos teniendo problemas para recuperar los datos",
     "create": {
       "messageTitle": "¡Guarda tu seed-phrase!",
-      "messageBody": "Necesitarás estas palabras para restaurar tu Wallet si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Wallet. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",
+      "messageBody": "Necesitarás estas palabras para restaurar tu Cuenta si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Cuenta. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",
       "your_seed_phrase": "Tu seed-phrase",
       "your_seed_phrase_body": "Asegurate de guardar estas palabras en un lugar seguro. Ten en cuenta que el orden en el que aparecen es importante.",
       "copy_key": "Copiar seed-phrase",
@@ -173,13 +182,14 @@
       "choose_a_password_body": "La necesitarás para desbloquear tu Wallet",
       "passwordNew": "Nueva contraseña",
       "passwordRepeat": "Repetir contraseña",
-      "i_accept_terms_conditions": "Haciendo click en el botón de Crear Wallet \nI aceptas los Términos & Condiciones",
+      "i_accept_terms_conditions": "Haciendo click en el botón de Crear Cuenta \nI aceptas los Términos & Condiciones",
       "passwordChecking": "Chequeando...",
       "success_message": "¡Felicitaciones!",
-      "success_message_body": "Tu Wallet ya está lista.",
-      "go_to_my_wallet": "Ir a mi Wallet!",
-      "select_derivable": "Seleccionar derivables",
+      "success_message_body": "Tu Cuenta ya está lista.",
+      "go_to_my_wallet": "Ir a mi Cuenta!",
+      "check_derivables": "Comprobar Derivables",
       "derivable_accounts": "Cuentas derivables",
+      "no_derivable_accounts": "No se encontraron cuentas de derivables con saldo",
       "derivable_info_icon": "ⓘ  Qué es una cuenta derivable?",
       "derivable_info": "Qué es una cuenta derivable?",
       "derivable_description": "Las Derivables son \"sub cuentas\" que nacen del mismo seed-phrase. Usando criptografía, se combina la seed-phrase con un patrón de derivación que genera estas diferentes cuentas. Permite así la generación de tantas cuentas como se quieran crear bajo la misma seed-phrase.",
@@ -188,16 +198,21 @@
       "skip": "Omitir"
     },
     "recover": {
-      "messageTitle": "Recuperar Wallet existente",
-      "messageBody": "Recuperar tu Wallet usando tu seed-phrase de 12 o 24 palabras",
+      "messageTitle": "Recuperar Cuenta existente",
+      "messageBody": "Recuperar tu Cuenta usando tu seed-phrase de 12 o 24 palabras",
       "pasteSeed": "Pegar seed-phrase",
-      "i_accept_terms_conditions": "Haciendo click en el botón de Recuperar Wallet \nI aceptas los Términos & Condiciones"
+      "i_accept_terms_conditions": "Haciendo click en el botón de Recuperar Cuenta \nI aceptas los Términos & Condiciones"
     },
     "onboarding": {
-      "titleOnboarded": "Nueva Wallet",
+      "titleOnboarded": "Nueva Cuenta",
       "titleWelcome": "Bienvenidx",
-      "select_blockchain": "Seleccionar Blockchain",
-      "select_blockchain_text": "Ten en cuenta que la Wallet que estás por crear funcionará únicamente en este blockchain.\nPodrás agregar Wallets de otros blockchains más tarde."
+      "title1": "Bienvenido a Salmon!",
+      "content1": "Your all-in-one & open-source wallet\nfor the crypto space",
+      "title2": "Keep the control\nof your tokens",
+      "content2": "All your assets, in your hands.\nWe don’t have access to them at all.",
+      "title3": "Stay tuned",
+      "content3": "Follow us at ",
+      "content3b": "@salmonwallet"
     },
     "pending_txs": {
       "inProgress": "En Curso",
@@ -324,6 +339,7 @@
     "other_blockchain": "Hacia un token de otra blockchain"
   },
   "bridge": {
+    "bridge": "Bridge",
     "preview": "Confirmar Bridge",
     "less_than_minimal": "Monto mínimo: {{min}} {{symbol}}",
     "provider_error": "Actualmente el proveedor de Bridge no está respondiendo.\nPor favor vuelve a intentar más tarde.",

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
@@ -39,18 +39,16 @@ const styles = StyleSheet.create({
 
 const AccountEditSeedPhrasePage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ mnemonics }] = useContext(AppContext);
+  const [{ accounts }] = useContext(AppContext);
   const mnemonic = useMemo(
-    () => mnemonics[params.address],
-    [params.address, mnemonics],
+    () => accounts.find(({ id }) => id === params.id).mnemonic,
+    [params.id, accounts],
   );
 
   const [showSeedPhrase, setShowSeedPhrase] = useState(false);
 
   const onBack = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, { id: params.id });
 
   const goToCopy = () => clipboard.copy(mnemonic);
 
@@ -62,8 +60,7 @@ const AccountEditSeedPhrasePage = ({ params, t }) => {
         <GlobalBackTitle onBack={onBack} title={t(`general.seed_phrase`)} />
 
         <GlobalText type="body1" center>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          {t('settings.wallets.show_seed_phrase_description')}
         </GlobalText>
 
         <GlobalPadding size="lg" />

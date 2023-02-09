@@ -11,27 +11,24 @@ import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import { AppContext } from '../../AppProvider';
-import { getWalletName } from '../../utils/wallet';
 
 const AddressBookEditPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ config }, { editWalletName }] = useContext(AppContext);
+  const [{ accounts }, { editAccount }] = useContext(AppContext);
   const [accountName, setAccountName] = useState(
-    getWalletName(params.address, config),
+    accounts.find(({ id }) => id === params.id)?.name,
   );
   const [saving, setSaving] = useState(false);
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
+      id: params.id,
     });
 
   const onSave = async () => {
     setSaving(true);
-    await editWalletName(params.address, accountName);
+    await editAccount(params.id, { name: accountName });
     setSaving(false);
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT, { id: params.id });
   };
   return (
     <GlobalLayout>

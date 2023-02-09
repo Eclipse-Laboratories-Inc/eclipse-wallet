@@ -15,7 +15,7 @@ const SignAndSendTransactionForm = ({
   onReject,
   onError,
 }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const payload = useMemo(() => bs58.decode(request.params.message), [request]);
   const options = useMemo(() => request.params.options, [request]);
@@ -23,21 +23,21 @@ const SignAndSendTransactionForm = ({
   const createSignature = useCallback(async () => {
     const message = VersionedMessage.deserialize(payload);
     const transaction = new VersionedTransaction(message);
-    transaction.sign([activeWallet.keyPair]);
+    transaction.sign([activeBlockchainAccount.keyPair]);
 
-    const connection = await activeWallet.getConnection();
+    const connection = await activeBlockchainAccount.getConnection();
     return connection.sendTransaction(transaction, options);
-  }, [activeWallet, payload, options]);
+  }, [activeBlockchainAccount, payload, options]);
 
   const getMessage = useCallback(
     async () => ({
       result: {
         signature: await createSignature(),
-        publicKey: activeWallet.publicKey.toBase58(),
+        publicKey: activeBlockchainAccount.publicKey.toBase58(),
       },
       id: request.id,
     }),
-    [request, activeWallet, createSignature],
+    [request, activeBlockchainAccount, createSignature],
   );
 
   const onAccept = useCallback(async () => {

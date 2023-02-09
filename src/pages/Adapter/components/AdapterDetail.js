@@ -6,8 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import get from 'lodash/get';
-import { getMetadata } from '4m-wallet-adapter/services/dapp-service';
+import { getMetadata } from '4m-wallet-adapter';
 
 import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 
@@ -19,7 +18,6 @@ import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignTransactionForm from './SignTransactionForm';
 import { isExtension } from '../../../utils/platform';
-import { getDefaultEndpoint } from '../../../utils/wallet';
 
 const AUTHORIZED_METHODS = [
   'signTransaction',
@@ -68,27 +66,30 @@ function focusParent() {
   }
 }
 
-const AdapterDetail = () => {
-  const [{ activeWallet, config, context, opener }, { addTrustedApp }] =
-    useContext(AppContext);
+const AdapterDetail = ({ networks }) => {
+  const [
+    { activeBlockchainAccount, activeTrustedApps, context, opener },
+    { addTrustedApp, changeNetwork },
+  ] = useContext(AppContext);
   const origin = useMemo(() => context.get('origin'), [context]);
-  const endpoint = useMemo(() => context.get('network'), [context]);
+  const environment = useMemo(() => context.get('network'), [context]);
 
   useEffect(() => {
-    if (endpoint) {
-      activeWallet.setNetwork(endpoint);
-    } else if (!activeWallet.networkId) {
-      activeWallet.setNetwork(getDefaultEndpoint('SOLANA'));
+    if (
+      environment &&
+      environment !== activeBlockchainAccount.network.environment
+    ) {
+      const isTarget = network => network.environment === environment;
+      const network = networks.find(isTarget);
+      if (network) {
+        changeNetwork(network.id);
+      }
     }
-  }, [activeWallet, endpoint]);
+  }, [networks, activeBlockchainAccount, environment, changeNetwork]);
 
-  const address = useMemo(
-    () => activeWallet.getReceiveAddress(),
-    [activeWallet],
-  );
   const trustedApp = useMemo(
-    () => get(config, `${address}.trustedApps.${origin}`),
-    [config, address, origin],
+    () => activeTrustedApps[origin],
+    [activeTrustedApps, origin],
   );
 
   const [connected, setConnected] = useState(isExtension() && !!trustedApp);
@@ -179,11 +180,11 @@ const AdapterDetail = () => {
     // Approve the parent page to connect to this wallet.
     const connect = async () => {
       setConnected(true);
-      await addTrustedApp(address, origin, { name, icon });
+      await addTrustedApp(origin, { name, icon });
 
       postMessage({
         method: 'connected',
-        params: { publicKey: activeWallet.getReceiveAddress() },
+        params: { publicKey: activeBlockchainAccount.getReceiveAddress() },
         id: isExtension() ? request.id : undefined,
       });
       if (isExtension()) {

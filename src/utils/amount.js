@@ -1,5 +1,5 @@
-import round from 'lodash/round';
-import isNil from 'lodash/isNil';
+import { round, isNil } from 'lodash';
+import { formatAmount } from '4m-wallet-adapter';
 
 export const showAmount = (amount, decimals = 2) =>
   !isNil(amount) ? `$${round(amount, decimals).toFixed(decimals)}` : '-';
@@ -30,3 +30,8 @@ export const showPercentage = (perc, decimals = 2) => {
 };
 
 export const hiddenValue = '·······';
+
+export const formatCurrency = (amount, currency) => {
+  const { decimals, symbol } = currency;
+  return `${formatAmount(amount, decimals)} ${symbol}`;
+};

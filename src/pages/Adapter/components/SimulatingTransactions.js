@@ -12,7 +12,7 @@ import { withTranslation } from '../../../hooks/useTranslations';
 const SimulatingTransactions = ({ t, origin, name, icon }) => (
   <GlobalLayout fullscreen>
     <GlobalLayout.Header>
-      <ActiveWalletCard showNetwork />
+      <ActiveWalletCard showEnvironment />
       <GlobalBackTitle title={t('adapter.detail.transaction.title')} nospace />
       <GlobalPadding size="xl" />
       <DAppCard name={name} icon={icon} origin={origin} />

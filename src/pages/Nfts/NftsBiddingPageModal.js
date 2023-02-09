@@ -4,13 +4,9 @@ import { StyleSheet, View, Linking } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import { withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import {
-  getTransactionImage,
-  getWalletName,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS, SOL_ICON } from '../Transactions/constants';
+import { hiddenValue } from '../../utils/amount';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -24,6 +20,7 @@ import GlobalInputWithButton from '../../component-library/Global/GlobalInputWit
 import CardButton from '../../component-library/CardButton/CardButton';
 import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png';
 import IconHyperspace from '../../assets/images/IconHyperspace.jpeg';
+import IconSolana from '../../assets/images/IconSolana.png';
 import { showValue } from '../../utils/amount';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
@@ -73,17 +70,17 @@ const NftsBiddingPageModal = ({
   const [solBalance, setSolBalance] = useState(null);
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
-  const [{ activeWallet, hiddenValue, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [bidsLoaded, setBidsLoaded] = useState(false);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_BID);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
-        activeWallet.getBalance(),
-        activeWallet.getCollectionItems(id, pageNumber),
-        activeWallet.getNftsBids(),
+        activeBlockchainAccount.getBalance(),
+        activeBlockchainAccount.getCollectionItems(id, pageNumber),
+        activeBlockchainAccount.getNftsBids(),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -93,7 +90,7 @@ const NftsBiddingPageModal = ({
         if (nft) {
           setNftDetail(nft);
         }
-        const bids = await activeWallet.getNftsBids();
+        const bids = await activeBlockchainAccount.getNftsBids();
         if (isBidded) {
           setNftDetail(bids.find(n => n.token_address === nftId));
         }
@@ -105,13 +102,11 @@ const NftsBiddingPageModal = ({
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, isBidded, id, nftId, pageNumber]);
+  }, [activeBlockchainAccount, isBidded, id, nftId, pageNumber]);
 
   const zeroAmount = parseFloat(price) <= 0;
   const validAmount =
-    parseFloat(price) * 0.01 +
-      parseFloat(price) +
-      fee / TOKEN_DECIMALS.SOLANA <=
+    parseFloat(price) * 0.01 + parseFloat(price) + fee / 1000000000 <=
       solBalance?.uiAmount && parseFloat(price) > 0;
 
   const goToBack = () => {
@@ -129,15 +124,20 @@ const NftsBiddingPageModal = ({
       setStep(3);
       let txId;
       isBidded
-        ? (txId = await activeWallet.cancelBidNft(nftDetail.token_address))
-        : (txId = await activeWallet.bidNft(nftDetail.token_address, price));
+        ? (txId = await activeBlockchainAccount.cancelBidNft(
+            nftDetail.token_address,
+          ))
+        : (txId = await activeBlockchainAccount.bidNft(
+            nftDetail.token_address,
+            price,
+          ));
       setTransactionId(txId);
       setStatus(
         isBidded
           ? TRANSACTION_STATUS.CANCELING_OFFER
           : TRANSACTION_STATUS.CREATING_OFFER,
       );
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_BID_COMPLETED);
       setSending(false);
@@ -161,7 +161,7 @@ const NftsBiddingPageModal = ({
   };
 
   const openMarketplace = async () => {
-    const url = `https://hyperspace.xyz/account/${activeWallet.getReceiveAddress()}`;
+    const url = `https://hyperspace.xyz/account/${activeBlockchainAccount.getReceiveAddress()}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -177,11 +177,8 @@ const NftsBiddingPageModal = ({
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeBlockchainAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -225,7 +222,7 @@ const NftsBiddingPageModal = ({
                   type="secondary"
                   size="sm"
                   title="SOL"
-                  image={SOL_ICON}
+                  image={IconSolana}
                   imageSize="xs"
                   onPress={() => {}}
                   buttonStyle={{ paddingRight: 6, paddingLeft: 6 }}
@@ -331,11 +328,8 @@ const NftsBiddingPageModal = ({
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={() => setIsModalOpen(false)}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeBlockchainAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
               isModal={true}
             />
 
@@ -428,9 +422,7 @@ const NftsBiddingPageModal = ({
                   <GlobalText type="caption" color="tertiary">
                     {t('adapter.detail.transaction.fee')}
                   </GlobalText>
-                  <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS.SOLANA} SOL
-                  </GlobalText>
+                  <GlobalText type="body2">{fee / 1000000000} SOL</GlobalText>
                 </View>
               )}
               {/* {addressEmpty && (

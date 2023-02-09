@@ -99,6 +99,8 @@ const getChipColor = type => {
   switch (type) {
     case 'ETH':
       return 'rgb(145, 165, 240)';
+    case 'BTC':
+      return 'rgb(189, 157, 58)';
     case 'BSC':
       return 'rgb(245, 206, 84)';
     case 'BEP20':
