@@ -191,15 +191,16 @@ const Header = ({ isHome, t }) => {
                   size="xxs"
                 />
               </TouchableOpacity>
-              {isHome && activeAccount.networksAccounts[networkId].length > 1 && (
-                <TouchableOpacity onPress={onSelectPathIndex}>
-                  <GlobalImage
-                    source={IconChangeWallet}
-                    style={styles.addressIcon}
-                    size="xxs"
-                  />
-                </TouchableOpacity>
-              )}
+              {isHome &&
+                activeAccount.networksAccounts[networkId].length > 1 && (
+                  <TouchableOpacity onPress={onSelectPathIndex}>
+                    <GlobalImage
+                      source={IconChangeWallet}
+                      style={styles.addressIcon}
+                      size="xxs"
+                    />
+                  </TouchableOpacity>
+                )}
             </View>
           </View>
         </View>
