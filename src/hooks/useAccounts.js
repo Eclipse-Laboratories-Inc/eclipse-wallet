@@ -393,19 +393,18 @@ const useAccounts = () => {
     setPathIndex(getDefaultPathIndex(account, newNetworkId));
 
     if (password) {
-      setRequiredLock(true);
       await storage.setItem(MNEMONICS, await lock(newMnemonics, password));
       await stash.setItem('password', password);
     } else {
-      setRequiredLock(false);
       await storage.setItem(MNEMONICS, newMnemonics);
     }
-
     await storage.setItem(COUNTER, newCounter);
     await storage.setItem(ACCOUNTS, newAccounts.map(formatAccount));
     await storage.setItem(ACCOUNT_ID, newAccountId);
     await storage.setItem(NETWORK_ID, newNetworkId);
     await storage.setItem(PATH_INDEX, 0);
+
+    setRequiredLock(!!password);
   };
 
   const editAccount = async (
