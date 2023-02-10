@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   },
   walletNameAddress: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'flex-start',
     marginLeft: theme.gutters.paddingSM,
   },
@@ -53,7 +52,6 @@ const styles = StyleSheet.create({
   },
   walletAddress: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
-    marginLeft: theme.gutters.paddingXS,
   },
   walletActions: {
     flexDirection: 'row',
