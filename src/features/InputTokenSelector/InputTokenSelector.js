@@ -125,9 +125,8 @@ const InputWithTokenSelector = ({
             {featuredTokens && (
               <View style={theme.globalStyles.inline}>
                 {featuredTokens?.map(token => (
-                  <View>
+                  <View key={token.mint || token.address}>
                     <CardButton
-                      key={token.mint || token.address}
                       onPress={() => onSelect(token)}
                       size="sm"
                       icon={<GlobalImage url={token.logo} size="xs" circle />}

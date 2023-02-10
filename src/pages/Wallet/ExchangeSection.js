@@ -52,6 +52,7 @@ const ExchangeSection = ({ t }) => {
           active={optSelected === 0}
           actions={[
             <AvatarImage
+              key="network-icon"
               url={activeBlockchainAccount.network.icon}
               size={30}
             />,
@@ -63,7 +64,9 @@ const ExchangeSection = ({ t }) => {
           onPress={() => setOptSelected(1)}
           title={t('swap.other_blockchain')}
           active={optSelected === 1}
-          actions={[<AvatarImage url={IconBridge} size={30} />]}
+          actions={[
+            <AvatarImage key="bridge-icon" url={IconBridge} size={30} />,
+          ]}
         />
       </GlobalLayout.Header>
 

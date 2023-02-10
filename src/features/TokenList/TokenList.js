@@ -39,7 +39,7 @@ const List = ({ tokens, onDetail, hiddenBalance }) => (
           ),
           t.last24HoursChange && (
             <GlobalText
-              key={'perc-action'}
+              key="perc-action"
               type="body2"
               color={getLabelValue(get(t, 'last24HoursChange.perc'))}>
               {showPercentage(get(t, 'last24HoursChange.perc'))}
