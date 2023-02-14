@@ -143,7 +143,7 @@ const NftsListingPage = ({ params, t }) => {
   };
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);

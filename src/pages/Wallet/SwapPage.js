@@ -125,7 +125,7 @@ const GlobalButtonTimer = React.memo(function ({
 
 const linkForTransaction = (title, id, status, explorer) => {
   const openTransaction = async tx => {
-    const url = `${explorer.url}/tx/${tx}`;
+    const url = `${explorer.url}/${tx}`;
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
