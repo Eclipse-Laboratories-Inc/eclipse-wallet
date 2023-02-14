@@ -66,7 +66,7 @@ const routes = [
   },
   {
     key: ROUTES_MAP.WALLET_EXCHANGE,
-    name: 'Swap',
+    name: 'Exchange',
     path: 'exchange',
     route: '/wallet/exchange',
     Component: ExchangeSection,
