@@ -200,8 +200,10 @@ const BridgePage = ({ t }) => {
         account =>
           account.networksAccounts[
             `${
-              outToken?.network?.toLowerCase() ||
-              outToken?.name?.toLowerCase().split(' ')[0]
+              outToken?.network === 'MAINNET'
+                ? outToken?.name?.toLowerCase().split(' ')[0]
+                : outToken?.network?.toLowerCase() ||
+                  outToken?.name?.toLowerCase().split(' ')[0]
             }-mainnet`
           ],
       ),
@@ -655,8 +657,10 @@ const BridgePage = ({ t }) => {
                     {recipientAccounts.flatMap(account =>
                       account.networksAccounts[
                         `${
-                          outToken?.network?.toLowerCase() ||
-                          outToken?.name?.toLowerCase().split(' ')[0]
+                          outToken?.network === 'MAINNET'
+                            ? outToken?.name?.toLowerCase().split(' ')[0]
+                            : outToken?.network?.toLowerCase() ||
+                              outToken?.name?.toLowerCase().split(' ')[0]
                         }-mainnet`
                       ]?.map(blockchainAccount => (
                         <CardButtonWallet
