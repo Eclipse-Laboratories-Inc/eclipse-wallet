@@ -60,14 +60,14 @@ const styles = StyleSheet.create({
     marginRight: theme.gutters.paddingXS,
     marginTop: theme.gutters.paddingXXS,
   },
+  bigDetailItem: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
 });
 
 const BigDetailItem = ({ title, amount, symbol, logo, t }) => (
-  <View
-    style={[
-      globalStyles.inlineWell,
-      { flexDirection: 'column', alignItems: 'flex-start' },
-    ]}>
+  <View style={[globalStyles.inlineWell, styles.bigDetailItem]}>
     <GlobalText type="body1" color="secondary">
       {title}
     </GlobalText>
@@ -141,16 +141,11 @@ const mergeStealthExTokenData = (bsupp, tks, network) => {
         tok.network === smbl ||
         tok.network === smbl.toUpperCase(),
     )
-
-    .filter(el => {
-      return tks?.find(element => {
-        return isMatch(el, element);
-      });
-    })
+    .filter(el => tks?.find(element => isMatch(el, element)))
     .map(el => ({
       ...tks.find(element => isMatch(el, element)),
       ...el,
-      blockchain: network.name.toLowerCase(),
+      blockchain: network.blockchain,
     }));
 };
 
@@ -381,7 +376,7 @@ const BridgePage = ({ t }) => {
     }
   };
 
-  const getStatusColor = status => {
+  const statusColor = useMemo(() => {
     switch (status) {
       case 'success':
         return 'positive';
@@ -390,7 +385,7 @@ const BridgePage = ({ t }) => {
       default:
         return 'primary';
     }
-  };
+  }, [status]);
 
   const validateAddress = useMemo(
     () =>
@@ -768,10 +763,7 @@ const BridgePage = ({ t }) => {
               <GlobalPadding size="lg" />
               <GlobalPadding size="xl" />
               {status !== 'creating' && (
-                <GlobalText
-                  type={'body2'}
-                  color={getStatusColor(status)}
-                  center>
+                <GlobalText type={'body2'} color={statusColor} center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
