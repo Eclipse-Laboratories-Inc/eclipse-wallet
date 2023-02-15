@@ -122,7 +122,6 @@ const RecoverWalletPage = ({ t }) => {
   };
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-    await addAccount(account, password);
     try {
       const networks = (await getNetworks()).filter(
         ({ blockchain, environment }) =>
@@ -137,6 +136,7 @@ const RecoverWalletPage = ({ t }) => {
     } catch (e) {
       console.error('Could not import tokens', e);
     }
+    await addAccount(account, password);
     setWaiting(false);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(3);
