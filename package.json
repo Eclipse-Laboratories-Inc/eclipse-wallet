@@ -45,6 +45,7 @@
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-fast-crypto": "^2.2.0",
     "react-native-paper": "^4.12.4",
+    "react-native-paper-dropdown": "^1.0.7",
     "react-native-permissions": "^3.6.0",
     "react-native-qrcode-scanner": "^1.5.5",
     "react-native-qrcode-svg": "^6.1.2",

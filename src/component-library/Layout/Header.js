@@ -121,11 +121,7 @@ const Header = ({ isHome, t }) => {
     const load = async () => {
       const switches = await getSwitches();
       const allNetworks = await getNetworks();
-      setNetworks(
-        allNetworks
-          .filter(({ id }) => switches[id]?.enable)
-          .map(({ name: label, id: value }) => ({ label, value })),
-      );
+      setNetworks(allNetworks.filter(({ id }) => switches[id]?.enable));
     };
 
     load();
@@ -207,7 +203,7 @@ const Header = ({ isHome, t }) => {
           {isHome && networks.length > 1 && (
             <View style={styles.networkSelector}>
               <NetworkSelector
-                options={networks}
+                networks={networks}
                 setValue={changeNetwork}
                 value={networkId}
               />
