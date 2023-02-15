@@ -128,6 +128,7 @@ const NftsBurnPage = ({ params, t }) => {
       setStatus('success');
     } catch (error) {
       console.log(error);
+      setTransactionId(error.transactionId);
       setStatus('fail');
     }
   };
@@ -254,16 +255,18 @@ const NftsBurnPage = ({ params, t }) => {
               <GlobalPadding />
               <GlobalText type="headline2">Burning</GlobalText>
               <GlobalPadding />
-              <View style={globalStyles.inlineCentered}>
-                <GlobalButton
-                  type="text"
-                  wide
-                  textStyle={styles.viewTxLink}
-                  title={t(`general.open_explorer`)}
-                  readonly={false}
-                  onPress={() => openTransaction(transactionId)}
-                />
-              </View>
+              {transactionId && (
+                <View style={globalStyles.inlineCentered}>
+                  <GlobalButton
+                    type="text"
+                    wide
+                    textStyle={styles.viewTxLink}
+                    title={t(`general.open_explorer`)}
+                    readonly={false}
+                    onPress={() => openTransaction()}
+                  />
+                </View>
+              )}
             </View>
           </GlobalLayout.Header>
           <GlobalLayout.Footer>
