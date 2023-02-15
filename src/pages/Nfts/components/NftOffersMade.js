@@ -45,9 +45,10 @@ const NftOffersMade = ({ isModalOpen, setIsModalOpen, t }) => {
     return (
       <View style={styles.collectionContainer}>
         <GlobalPadding size="xxs" />
-        {value?.slice(0, maxItems).map(item => (
+        {value?.slice(0, maxItems)?.map((collectionItem, i) => (
           <NftOfferMadeItem
-            item={item}
+            key={`offer-collection-item-${i}`}
+            item={collectionItem}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
           />

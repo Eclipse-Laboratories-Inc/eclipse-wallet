@@ -63,8 +63,8 @@ const NftCollections = ({ t }) => {
           />
         </View>
         <GlobalPadding size="sm" />
-        {value?.slice(0, maxItems).map(item => (
-          <NftCollectionItem item={item} />
+        {value?.slice(0, maxItems)?.map((collectionItem, i) => (
+          <NftCollectionItem key={`collection-${i}`} item={collectionItem} />
         ))}
       </View>
     );

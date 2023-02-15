@@ -97,6 +97,7 @@ const GlobalSlider = ({
         <View style={styles.dotsContainer}>
           {items?.map((item, idx) => (
             <TouchableOpacity
+              key={`dots-button-${idx}`}
               onPress={() => {
                 slider.current?.moveToIdx(idx);
               }}
