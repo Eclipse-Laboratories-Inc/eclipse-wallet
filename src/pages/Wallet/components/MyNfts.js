@@ -4,7 +4,7 @@ import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import GlobalNftList from '../../../component-library/Global/GlobalNftList';
 import { useNavigation } from '../../../routes/hooks';
 import { withTranslation } from '../../../hooks/useTranslations';
-import { isMoreThanOne } from '../../../utils/nfts';
+import { isMoreThanOne, updatePendingNfts } from '../../../utils/nfts';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
 
@@ -20,7 +20,7 @@ const MyNfts = ({ t }) => {
       try {
         setLoading(true);
         const nfts = await activeBlockchainAccount.getAllNftsGrouped();
-        setNftsList(nfts);
+        setNftsList(await updatePendingNfts(nfts));
         const listed = await activeBlockchainAccount.getListedNfts();
         setListedInfo(listed);
       } catch (e) {

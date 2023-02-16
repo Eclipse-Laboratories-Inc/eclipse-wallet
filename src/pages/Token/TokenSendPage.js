@@ -100,7 +100,7 @@ const TokenSendPage = ({ params, t }) => {
     if (step === 4) {
       navigate(APP_ROUTES_MAP.WALLET);
     } else if (step === 1) {
-      navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: 'send' });
+      navigate(APP_ROUTES_MAP.WALLET);
     }
     setStep(step - 1);
   };

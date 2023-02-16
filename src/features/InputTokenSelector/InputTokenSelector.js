@@ -125,7 +125,7 @@ const InputWithTokenSelector = ({
             {featuredTokens && (
               <View style={theme.globalStyles.inline}>
                 {featuredTokens?.map(token => (
-                  <View key={token.mint || token.address}>
+                  <View key={token.mint || token.address || token.symbol}>
                     <CardButton
                       onPress={() => onSelect(token)}
                       size="sm"
@@ -140,7 +140,7 @@ const InputWithTokenSelector = ({
             <GlobalPadding />
             {drawedList.map(token => (
               <CardButton
-                key={token.mint || token.address}
+                key={token.mint || token.address || token.symbol}
                 onPress={() => onSelect(token)}
                 icon={<GlobalImage url={token.logo} size="md" circle />}
                 title={

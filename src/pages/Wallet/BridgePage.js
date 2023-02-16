@@ -295,16 +295,16 @@ const BridgePage = ({ t }) => {
 
   const debounceIn = useMemo(
     () =>
-      debounce((inAmount, inToken, outToken) => {
+      debounce((inAmt, inTkn, outTkn) => {
         Promise.all([
           getBridgeEstimatedAmount(
-            inToken.symbol.toLowerCase(),
-            outToken.symbol,
-            inAmount,
+            inTkn.symbol.toLowerCase(),
+            outTkn.symbol,
+            inAmt,
           ),
-          getBridgeMinimalAmount(inToken.symbol.toLowerCase(), outToken.symbol),
+          getBridgeMinimalAmount(inTkn.symbol.toLowerCase(), outTkn.symbol),
         ]).then(([estAmount, minAmount]) => {
-          setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
+          setOutAmount(parseFloat(inAmt) >= minAmount ? estAmount : '--');
           setMinimalAmount(minAmount);
           setProcessingOutAmount(false);
         });
@@ -478,7 +478,7 @@ const BridgePage = ({ t }) => {
                   <GlobalPadding size="xs" />
 
                   <InputWithTokenSelector
-                    value={inAmount}
+                    value={inAmount || ''}
                     setValue={setInAmount}
                     placeholder={t('swap.enter_amount')}
                     title={inToken.symbol.toUpperCase()}
@@ -542,7 +542,7 @@ const BridgePage = ({ t }) => {
                   <GlobalPadding size="xs" />
 
                   <InputWithTokenSelector
-                    value={outAmount}
+                    value={outAmount || '--'}
                     setValue={setOutAmount}
                     title={outToken ? outToken.symbol.toUpperCase() : '--'}
                     description={outToken.network || outToken.name}

@@ -48,7 +48,7 @@ const NftsListPage = ({ t }) => {
         try {
           setLoaded(false);
           const nfts = await activeBlockchainAccount.getAllNftsGrouped();
-          setNftsGroup(nfts);
+          setNftsGroup(await updatePendingNfts(nfts));
           if (switches?.list_in_marketplace?.active) {
             const listed = await activeBlockchainAccount.getListedNfts();
             setListedInfo(listed);
@@ -94,11 +94,13 @@ const NftsListPage = ({ t }) => {
               listedInfo={listedInfo}
               onClick={onClick}
             />
-            <NftOffersMade
-              isModalOpen={isModalOpen}
-              setIsModalOpen={setIsModalOpen}
-              t
-            />
+            {switches?.list_in_marketplace?.active && (
+              <NftOffersMade
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                t
+              />
+            )}
           </GlobalLayout.Header>
         )}
         {!loaded && <GlobalSkeleton type="NftListScreen" />}
