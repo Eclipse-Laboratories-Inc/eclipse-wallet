@@ -47,6 +47,10 @@ const styles = StyleSheet.create({
     right: 55,
     bottom: -5,
   },
+  bigDetail: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
 });
 
 const DetailItem = ({ title, value, color = 'primary', t }) => (
@@ -74,11 +78,7 @@ const RouteDetailItem = ({ names, symbols, t }) => (
 );
 
 const BigDetailItem = ({ title, value, t }) => (
-  <View
-    style={[
-      globalStyles.inlineWell,
-      { flexDirection: 'column', alignItems: 'flex-start' },
-    ]}>
+  <View style={[globalStyles.inlineWell, styles.bigDetail]}>
     <GlobalText type="body1" color="secondary">
       {title}
     </GlobalText>
@@ -393,9 +393,12 @@ const SwapPage = ({ t }) => {
                 )}
                 <GlobalPadding size="xs" />
 
-                <GlobalText type="body1" color="tertiary">
-                  {showValue(inAmount * inToken.usdPrice, 6)} {t('general.usd')}
-                </GlobalText>
+                {inToken.usdPrice && (
+                  <GlobalText type="body1" color="tertiary">
+                    {showValue(inAmount * inToken.usdPrice, 6)}{' '}
+                    {t('general.usd')}
+                  </GlobalText>
+                )}
 
                 <GlobalPadding size="md" />
                 <GlobalText type="body2">{t('swap.you_receive')}</GlobalText>
