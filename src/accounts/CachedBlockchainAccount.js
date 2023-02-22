@@ -12,6 +12,10 @@ class CachedBlockchainAccount {
     this.publicKey = base.publicKey;
   }
 
+  baseKey() {
+    return `${this.network.id}-${this.base.getReceiveAddress()}`;
+  }
+
   retrieveSecurePrivateKey() {
     return this.base.retrieveSecurePrivateKey();
   }
@@ -29,7 +33,7 @@ class CachedBlockchainAccount {
   }
 
   async getBalance(...args) {
-    const key = `${this.network.id}-${this.base.getReceiveAddress()}`;
+    const key = this.baseKey();
     return cache(key, CACHE_TYPES.BALANCE, () => this.base.getBalance(...args));
   }
 
@@ -50,17 +54,17 @@ class CachedBlockchainAccount {
   }
 
   async getAllNfts() {
-    const key = `${this.network.id}-${this.base.getReceiveAddress()}`;
+    const key = this.baseKey();
     return cache(key, CACHE_TYPES.NFTS_ALL, () => this.base.getAllNfts());
   }
 
-  async getNft(id) {
-    const key = `${this.network.id}-${this.base.getReceiveAddress()}-${id}`;
-    return cache(key, CACHE_TYPES.SINGLE_NFT, () => this.base.getNft(id));
+  async getNft(...args) {
+    const key = `${this.baseKey()}-${args.join('-')}`;
+    return cache(key, CACHE_TYPES.SINGLE_NFT, () => this.base.getNft(...args));
   }
 
   async getAllNftsGrouped() {
-    const key = `${this.network.id}-${this.base.getReceiveAddress()}`;
+    const key = this.baseKey();
     return cache(key, CACHE_TYPES.NFTS, () => this.base.getAllNftsGrouped());
   }
 
@@ -141,7 +145,7 @@ class CachedBlockchainAccount {
   }
 
   async getRecentTransactions(...args) {
-    const key = `${this.network.id}-${this.base.getReceiveAddress()}`;
+    const key = this.baseKey();
     return cache(key, CACHE_TYPES.TRANSACTIONS, () =>
       this.base.getRecentTransactions(...args),
     );
