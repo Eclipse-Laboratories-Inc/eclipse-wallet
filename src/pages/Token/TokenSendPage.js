@@ -368,9 +368,11 @@ const TokenSendPage = ({ params, t }) => {
 
               <GlobalPadding />
 
-              <GlobalText type="subtitle2" center>
-                {showValue(recipientAmount * token.usdPrice, 6)} USD
-              </GlobalText>
+              {token.usdPrice && (
+                <GlobalText type="subtitle2" center>
+                  {showValue(recipientAmount * token.usdPrice, 6)} USD
+                </GlobalText>
+              )}
               <GlobalPadding size="md" />
             </GlobalLayout.Header>
 
