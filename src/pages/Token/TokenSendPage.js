@@ -516,14 +516,16 @@ const TokenSendPage = ({ params, t }) => {
             <GlobalLayout.Footer>
               {status === 'success' || status === 'fail' ? (
                 <>
-                  <GlobalButton
-                    type="primary"
-                    wide
-                    title={t(`token.send.goto_explorer`)}
-                    onPress={openTransaction}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
+                  {transactionId && (
+                    <GlobalButton
+                      type="primary"
+                      wide
+                      title={t(`token.send.goto_explorer`)}
+                      onPress={openTransaction}
+                      style={globalStyles.button}
+                      touchableStyles={globalStyles.buttonTouchable}
+                    />
+                  )}
 
                   <GlobalPadding size="md" />
 
