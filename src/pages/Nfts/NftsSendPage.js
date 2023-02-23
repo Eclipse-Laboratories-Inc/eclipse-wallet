@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -115,6 +116,7 @@ const NftsSendPage = ({ params, t }) => {
           recipientAddress,
           nftDetail.mint,
           1,
+          { ...pick(nftDetail, ['contract', 'standard']) },
         );
         setFee(feeSend);
         setLoaded(true);
@@ -133,7 +135,7 @@ const NftsSendPage = ({ params, t }) => {
         recipientAddress,
         nftDetail.mint,
         1,
-        { isNft: true, contractId: nftDetail.contractId },
+        { ...pick(nftDetail, ['contract', 'standard']) },
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
