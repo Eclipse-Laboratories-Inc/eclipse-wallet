@@ -54,7 +54,7 @@ const CardButtonTransaction = ({ t, transaction, onPress }) => {
   } else if (type === TRANSACTION_TYPE.SWAP) {
     image = getTransactionImage('swap');
     if (inputs?.[0]?.name && outputs?.[0]?.name) {
-      description = `${inputs[0].name} → ${outputs[0].name}`;
+      description = `${outputs[0].name} → ${inputs[0].name}`;
     }
     if (inputs?.[0]?.logo && outputs?.[0]?.logo) {
       tokenImg1 = inputs[0].logo;
