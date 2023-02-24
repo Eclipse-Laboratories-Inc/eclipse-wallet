@@ -91,6 +91,7 @@ const BigDetailItem = ({ title, value, t }) => (
 
 const GlobalButtonTimer = React.memo(function ({
   onConfirm,
+  onExpire,
   onQuote,
   t,
   ...props
@@ -110,10 +111,13 @@ const GlobalButtonTimer = React.memo(function ({
   };
   useEffect(() => setCountdown(10), []);
   useEffect(() => {
-    const timer =
-      countdown > 0 && setTimeout(() => setCountdown(countdown - 1), 1000);
-    return () => clearInterval(timer);
-  }, [countdown]);
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearInterval(timer);
+    } else {
+      onExpire();
+    }
+  }, [countdown, onExpire]);
   return (
     <GlobalButton
       title={getConfirmBtnTitle()}
@@ -294,6 +298,11 @@ const SwapPage = ({ t }) => {
     } catch (e) {
       setError(true);
       setProcessing(false);
+    }
+  };
+  const onExpire = async () => {
+    if (quote) {
+      await activeBlockchainAccount.expireSwapQuote(quote);
     }
   };
   const onConfirm = async () => {
@@ -478,6 +487,7 @@ const SwapPage = ({ t }) => {
               style={[globalStyles.button, globalStyles.buttonRight]}
               touchableStyles={globalStyles.buttonTouchable}
               onConfirm={onConfirm}
+              onExpire={onExpire}
               onQuote={onQuote}
               t={t}
             />

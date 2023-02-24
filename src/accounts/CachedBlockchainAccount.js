@@ -100,6 +100,10 @@ class CachedBlockchainAccount {
     return this.base.getBestSwapQuote(...args);
   }
 
+  async expireSwapQuote(...args) {
+    return this.base.expireSwapQuote(...args);
+  }
+
   async estimateTransactionsFee(...args) {
     return this.base.estimateTransactionsFee(...args);
   }
