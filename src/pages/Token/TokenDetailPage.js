@@ -93,7 +93,7 @@ const TokenDetailPage = ({ params, t }) => {
         <GlobalBackTitle
           onBack={goToBack}
           inlineTitle={token.name}
-          inlineAddress={params.tokenId}
+          inlineAddress={token.type !== 'native' ? token.address : undefined}
         />
 
         <WalletBalanceCard

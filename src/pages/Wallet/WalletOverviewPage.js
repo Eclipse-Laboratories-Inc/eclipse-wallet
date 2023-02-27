@@ -92,10 +92,8 @@ const WalletOverviewPage = ({ cfgs, t }) => {
 
   const goToReceive = () => navigate(TOKEN_ROUTES_MAP.TOKEN_RECEIVE);
 
-  const goToTokenDetail = ({ type, address }) => {
-    if (type !== 'native') {
-      navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: address });
-    }
+  const goToTokenDetail = ({ address }) => {
+    navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: address });
   };
 
   const total = useMemo(
