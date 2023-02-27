@@ -4,7 +4,6 @@ import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
-import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
@@ -97,8 +96,8 @@ const NftsSendPage = ({ params, t }) => {
   }, [activeBlockchainAccount, params.id]);
 
   const goToBack = () => {
-    if (step === 3) {
-      navigate(APP_ROUTES_MAP.WALLET);
+    if (step === 1 || step === 3) {
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
     } else {
       setStep(step - 1);
     }
@@ -443,13 +442,6 @@ const NftsSendPage = ({ params, t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {/* {(status === 'success' || status === 'fail') && (
-                  <GlobalText type="body1" center>
-                    3 lines max Excepteur sint occaecat cupidatat non proident,
-                    sunt ?
-                  </GlobalText>
-                )} */}
-
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
@@ -457,14 +449,16 @@ const NftsSendPage = ({ params, t }) => {
           <GlobalLayout.Footer>
             {status === 'success' || status === 'fail' ? (
               <>
-                <GlobalButton
-                  type="primary"
-                  wide
-                  title={t(`token.send.goto_explorer`)}
-                  onPress={openTransaction}
-                  style={globalStyles.button}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
+                {transactionId && (
+                  <GlobalButton
+                    type="primary"
+                    wide
+                    title={t(`token.send.goto_explorer`)}
+                    onPress={openTransaction}
+                    style={globalStyles.button}
+                    touchableStyles={globalStyles.buttonTouchable}
+                  />
+                )}
 
                 <GlobalPadding size="md" />
 
@@ -478,20 +472,24 @@ const NftsSendPage = ({ params, t }) => {
                 />
               </>
             ) : (
-              <GlobalButton
-                type="text"
-                wide
-                textStyle={
-                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
-                }
-                title={
-                  status === 'creating'
-                    ? t(`token.send.transaction_creating`)
-                    : t(`token.send.view_transaction`)
-                }
-                readonly={status === 'creating'}
-                onPress={openTransaction}
-              />
+              transactionId && (
+                <GlobalButton
+                  type="text"
+                  wide
+                  textStyle={
+                    status === 'creating'
+                      ? styles.creatingTx
+                      : styles.viewTxLink
+                  }
+                  title={
+                    status === 'creating'
+                      ? t(`token.send.transaction_creating`)
+                      : t(`token.send.view_transaction`)
+                  }
+                  readonly={status === 'creating'}
+                  onPress={openTransaction}
+                />
+              )
             )}
           </GlobalLayout.Footer>
         </>
