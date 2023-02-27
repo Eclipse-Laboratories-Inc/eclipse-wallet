@@ -65,8 +65,15 @@ const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(params.toAddress ? 2 : 1);
-  const [{ accounts, activeBlockchainAccount, networkId, addressBook }] =
-    useContext(AppContext);
+  const [
+    {
+      accounts,
+      activeAccount,
+      activeBlockchainAccount,
+      networkId,
+      addressBook,
+    },
+  ] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [sending, setSending] = useState(false);
@@ -205,7 +212,7 @@ const TokenSendPage = ({ params, t }) => {
               />
 
               <CardButtonWallet
-                title={t('token.send.from', { name: token.name })}
+                title={t('token.send.from', { name: activeAccount.name })}
                 address={activeBlockchainAccount.getReceiveAddress()}
                 image={token.logo}
                 imageSize="md"
