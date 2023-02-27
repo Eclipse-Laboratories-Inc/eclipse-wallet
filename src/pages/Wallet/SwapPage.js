@@ -195,7 +195,6 @@ const SwapPage = ({ t }) => {
   const [quote, setQuote] = useState();
   const [status, setStatus] = useState();
   const [currentTransaction, setCurrentTransaction] = useState('');
-  const [totalTransactions, setTotalTransactions] = useState(0);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
   const { explorer } = useUserConfig();
@@ -292,11 +291,12 @@ const SwapPage = ({ t }) => {
         parseFloat(inAmount),
       );
       setQuote(q);
-      setProcessing(false);
+
       trackEvent(EVENTS_MAP.SWAP_QUOTE);
       setStep(2);
     } catch (e) {
       setError(true);
+    } finally {
       setProcessing(false);
     }
   };
@@ -309,49 +309,35 @@ const SwapPage = ({ t }) => {
     setError(false);
     setProcessing(true);
     trackEvent(EVENTS_MAP.SWAP_CONFIRMED);
-
-    setStatus(TRANSACTION_STATUS.CREATING);
+    setStatus(TRANSACTION_STATUS.SWAPPING);
     setStep(3);
-    activeBlockchainAccount
-      .createSwapTransaction(
+    try {
+      const txs = await activeBlockchainAccount.createSwapTransaction(
         quote,
         inToken.mint || inToken.address,
         outToken.address,
         parseFloat(inAmount),
-      )
-      .then(txs => {
-        setError(false);
-        trackEvent(EVENTS_MAP.SWAP_COMPLETED);
-        setStatus(TRANSACTION_STATUS.SUCCESS);
-        setProcessing(false);
-        setTotalTransactions(txs.length);
+      );
 
-        if (
-          activeBlockchainAccount.network.blockchain === BLOCKCHAINS.ETHEREUM
-        ) {
-          importTokens(networkId, [outToken]).catch(e => {
-            console.error('Could not import token:', outToken, e);
-          });
+      if (activeBlockchainAccount.network.blockchain === BLOCKCHAINS.ETHEREUM) {
+        try {
+          await importTokens(networkId, [outToken]);
+        } catch (e) {
+          console.error('Could not import token:', outToken, e);
         }
+      }
 
-        if (txs.length > 1) {
-          console.error('Too many transactions.');
-          setError(true);
-          trackEvent(EVENTS_MAP.SWAP_FAILED);
-          setStatus(TRANSACTION_STATUS.FAIL);
-        } else {
-          setCurrentTransaction(txs[0]);
-        }
-      })
-      .catch(ex => {
-        console.error(ex.message);
-        setError(true);
-        trackEvent(EVENTS_MAP.SWAP_FAILED);
-        setStatus(TRANSACTION_STATUS.FAIL);
-        setProcessing(false);
-      });
-
-    setStatus(TRANSACTION_STATUS.SWAPPING);
+      trackEvent(EVENTS_MAP.SWAP_COMPLETED);
+      setStatus(TRANSACTION_STATUS.SUCCESS);
+      setCurrentTransaction(txs[0]);
+    } catch (ex) {
+      console.error(ex);
+      setError(true);
+      trackEvent(EVENTS_MAP.SWAP_FAILED);
+      setStatus(TRANSACTION_STATUS.FAIL);
+    } finally {
+      setProcessing(false);
+    }
   };
 
   return (
@@ -476,7 +462,10 @@ const SwapPage = ({ t }) => {
               type="default"
               flex
               title={t('general.back')}
-              onPress={() => setStep(1)}
+              onPress={() => {
+                setStep(1);
+                onExpire();
+              }}
               style={[globalStyles.button, globalStyles.buttonLeft]}
               touchableStyles={globalStyles.buttonTouchable}
             />
@@ -527,34 +516,25 @@ const SwapPage = ({ t }) => {
                 </GlobalText>
               </View>
               <GlobalPadding size="xl" />
-              {status !== TRANSACTION_STATUS.CREATING && (
-                <GlobalText type={'body2'} color={statusColor} center>
-                  {t(`token.send.transaction_${status}`)}
-                </GlobalText>
-              )}
-              {status === TRANSACTION_STATUS.SWAPPING &&
-                totalTransactions > 0 && (
-                  <GlobalText type={'body1'} color={statusColor} center>
-                    {t(`token.send.swap_step`, {
-                      current: currentTransaction,
-                      total: totalTransactions,
-                    })}
-                  </GlobalText>
-                )}
+              <GlobalText type={'body2'} color={statusColor} center>
+                {t(`token.send.transaction_${status}`)}
+              </GlobalText>
               <GlobalPadding size="sm" />
-              {linkForTransaction(
-                'Transaction Swap',
-                currentTransaction.id,
-                currentTransaction.status,
-                explorer,
-              )}
+              {!processing &&
+                currentTransaction &&
+                linkForTransaction(
+                  'Transaction Swap',
+                  currentTransaction.id,
+                  currentTransaction.status,
+                  explorer,
+                )}
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
 
           <GlobalLayout.Footer>
-            {status === TRANSACTION_STATUS.SUCCESS ||
-            status === TRANSACTION_STATUS.FAIL ? (
+            {(status === TRANSACTION_STATUS.SUCCESS ||
+              status === TRANSACTION_STATUS.FAIL) && (
               <GlobalButton
                 type="secondary"
                 title={t(`general.close`)}
@@ -563,16 +543,6 @@ const SwapPage = ({ t }) => {
                 style={globalStyles.button}
                 touchableStyles={globalStyles.buttonTouchable}
               />
-            ) : (
-              status === TRANSACTION_STATUS.CREATING && (
-                <GlobalButton
-                  type="text"
-                  wide
-                  textStyle={styles.creatingTx}
-                  title={t(`token.send.transaction_creating`)}
-                  readonly
-                />
-              )
             )}
           </GlobalLayout.Footer>
         </>

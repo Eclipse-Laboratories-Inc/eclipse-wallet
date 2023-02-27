@@ -128,7 +128,6 @@
       "transaction_bridge_success": "Transacción pendiente, ésto puede demorarse unos minutos. Dirígete a la sección Wallet Overview para seguir su status",
       "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
-      "swap_step": "paso {{current}} de {{total}}",
       "transaction_fail": "Error",
       "goto_explorer": "Ir al Explorer",
       "view_transaction": "Ver transacción"
