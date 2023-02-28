@@ -58,6 +58,9 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textTransform: 'none',
   },
+  recipientTx: {
+    width: 'inherit',
+  },
 });
 
 const TokenSendPage = ({ params, t }) => {
@@ -436,7 +439,9 @@ const TokenSendPage = ({ params, t }) => {
                 <GlobalPadding size="md" />
 
                 <View style={globalStyles.inlineWell}>
-                  <GlobalText type="caption">{recipient}</GlobalText>
+                  <GlobalText type="caption" style={styles.recipientTx}>
+                    {recipient}
+                  </GlobalText>
 
                   <GlobalButton
                     onPress={() => clipboard.copy(recipient)}
