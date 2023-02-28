@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     textTransform: 'none',
   },
   recipientTx: {
-    width: 'inherit',
+    width: '90%',
   },
 });
 
