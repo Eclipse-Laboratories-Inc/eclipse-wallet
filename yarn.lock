@@ -10,10 +10,10 @@
     d "1"
     es5-ext "^0.10.47"
 
-"4m-wallet-adapter@^0.0.93":
-  version "0.0.93"
-  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.93.tgz#e929839d59401bdb90876d462148b835f5947d80"
-  integrity sha512-9i4EKUQjmAwS8y20Kq5u3xTsQslL+CD5s89C5l0M7nmUOTREvlhHX085jEtOYMzsrx5lUwZaaIF+JX05uCH1zQ==
+"4m-wallet-adapter@^0.0.94":
+  version "0.0.94"
+  resolved "https://registry.yarnpkg.com/4m-wallet-adapter/-/4m-wallet-adapter-0.0.94.tgz#e43bc77803115f05453706f95fa4c9d6bab82c93"
+  integrity sha512-TLQqjEk4wfA/uIEjpVz+0L4qSLdK08+Bgf+wyCO3YPVrYgJ8H9dkVSj4Ew1NEQk3MRsJoSTAlDh5lt3OvXU1Xg==
   dependencies:
     "@bonfida/spl-name-service" "^0.1.40"
     "@solana/spl-token" "^0.2.0"
