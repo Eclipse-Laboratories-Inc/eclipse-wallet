@@ -290,7 +290,8 @@ const TokenSendPage = ({ params, t }) => {
                       .filter(
                         addressBookItem =>
                           addressBookItem.address !==
-                          activeBlockchainAccount.getReceiveAddress(),
+                            activeBlockchainAccount.getReceiveAddress() &&
+                          addressBookItem.network.id === networkId,
                       )
                       .map(addressBookItem => (
                         <CardButtonWallet
