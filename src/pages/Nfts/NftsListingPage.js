@@ -132,12 +132,11 @@ const NftsListingPage = ({ params, t }) => {
       await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_LIST_COMPLETED);
-      setSending(false);
     } catch (e) {
       console.error(e);
       setStatus(TRANSACTION_STATUS.FAIL);
       trackEvent(EVENTS_MAP.NFT_LIST_FAILED);
-      setStep(3);
+    } finally {
       setSending(false);
     }
   };
@@ -534,14 +533,16 @@ const NftsListingPage = ({ params, t }) => {
                   </>
                 )}
 
-                <GlobalButton
-                  type="primary"
-                  wide
-                  title={t(`token.send.goto_explorer`)}
-                  onPress={openTransaction}
-                  style={globalStyles.button}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
+                {transactionId && (
+                  <GlobalButton
+                    type="primary"
+                    wide
+                    title={t(`token.send.goto_explorer`)}
+                    onPress={openTransaction}
+                    style={globalStyles.button}
+                    touchableStyles={globalStyles.buttonTouchable}
+                  />
+                )}
 
                 <GlobalPadding size="md" />
 
