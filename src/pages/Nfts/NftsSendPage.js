@@ -4,6 +4,7 @@ import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
+import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
@@ -100,8 +101,10 @@ const NftsSendPage = ({ params, t }) => {
   }, [activeBlockchainAccount, params.id]);
 
   const goToBack = () => {
-    if (step === 1 || step === 3) {
+    if (step === 1) {
       navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    } else if (step === 3) {
+      navigate(APP_ROUTES_MAP.WALLET);
     } else {
       setStep(step - 1);
     }
