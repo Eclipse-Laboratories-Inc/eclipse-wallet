@@ -107,21 +107,20 @@ const NftsSendPage = ({ params, t }) => {
     navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
 
   const onNext = async () => {
-    if (!addressEmpty) {
-      setLoaded(false);
-      setStep(2);
-      try {
-        const feeSend = await activeBlockchainAccount.estimateTransferFee(
-          recipientAddress,
-          nftDetail.mint,
-          1,
-          { ...pick(nftDetail, ['contract', 'standard']) },
-        );
-        setFee(feeSend);
-        setLoaded(true);
-      } catch (e) {
-        console.log(e);
-      }
+    setLoaded(false);
+    setStep(2);
+    try {
+      const feeSend = await activeBlockchainAccount.estimateTransferFee(
+        recipientAddress,
+        nftDetail.mint,
+        1,
+        { ...pick(nftDetail, ['contract', 'standard']) },
+      );
+      setFee(feeSend);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoaded(true);
     }
   };
 
