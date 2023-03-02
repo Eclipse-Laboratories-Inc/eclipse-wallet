@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textTransform: 'none',
   },
+  recipientTx: {
+    width: '90%',
+    fontSize: 12,
+  },
 });
 
 const NftsSendPage = ({ params, t }) => {
@@ -360,7 +364,7 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="md" />
 
               <View style={globalStyles.inlineWell}>
-                <GlobalText type="caption" style={{ fontSize: 8 }}>
+                <GlobalText type="caption" style={styles.recipientTx}>
                   {recipientAddress}
                 </GlobalText>
 
