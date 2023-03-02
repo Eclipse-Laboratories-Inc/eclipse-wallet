@@ -152,11 +152,13 @@ const NftsSendPage = ({ params, t }) => {
   };
 
   const savePendingNftSend = async () => {
+    const pendingExpires = new Date().getTime() + 60 * 1000;
     let pendingNfts = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_SEND);
     if (pendingNfts === null) pendingNfts = [];
     pendingNfts.push({
       ...nftDetail,
       pending: true,
+      pendingExpires,
     });
     storage.setItem(STORAGE_KEYS.PENDING_NFTS_SEND, pendingNfts);
   };
