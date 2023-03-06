@@ -51,7 +51,7 @@ const GlobalSendReceive = ({
           title={titleList}
           onPress={goToList}
           disabled={!listedLoaded}
-          key={'send-button'}
+          key={'list-button'}
           style={[globalStyles.button, globalStyles.buttonLeft]}
           touchableStyles={globalStyles.buttonTouchable}
         />

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { View } from 'react-native';
-import get from 'lodash/get';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
@@ -36,11 +35,7 @@ const TrustedAppsPage = ({ t }) => {
     </>
   );
 
-  const [{ activeWallet, config }, { removeTrustedApp }] =
-    useContext(AppContext);
-
-  const address = activeWallet.getReceiveAddress();
-  const trustedApps = get(config, `${address}.trustedApps`, {});
+  const [{ activeTrustedApps }, { removeTrustedApp }] = useContext(AppContext);
 
   return (
     <GlobalLayout>
@@ -50,13 +45,13 @@ const TrustedAppsPage = ({ t }) => {
         <GlobalPadding />
 
         <View style={globalStyles.centered}>
-          {Object.entries(trustedApps).map(([origin, { name, icon }]) => (
+          {Object.entries(activeTrustedApps).map(([origin, { name, icon }]) => (
             <TrustedAppItem
               key={origin}
               name={name}
               icon={icon}
               origin={origin}
-              onRemove={() => removeTrustedApp(address, origin)}
+              onRemove={() => removeTrustedApp(origin)}
             />
           ))}
         </View>

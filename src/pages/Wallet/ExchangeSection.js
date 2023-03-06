@@ -14,7 +14,6 @@ import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import Header from '../../component-library/Layout/Header';
-import { getWalletChain, getBlockchainIcon } from '../../utils/wallet';
 import IconBridge from '../../assets/images/IconBridge.png';
 
 const styles = StyleSheet.create({
@@ -25,8 +24,7 @@ const styles = StyleSheet.create({
 
 const ExchangeSection = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, config }, {}] = useContext(AppContext);
-  const current_blockchain = getWalletChain(activeWallet);
+  const [{ activeBlockchainAccount }, {}] = useContext(AppContext);
   const [optSelected, setOptSelected] = useState(0);
 
   const goToBack = () => {
@@ -40,7 +38,7 @@ const ExchangeSection = ({ t }) => {
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <Header activeWallet={activeWallet} config={config} t={t} />
+        <Header />
         <GlobalBackTitle title={t('swap.swap_tokens')} />
         <GlobalPadding />
         <GlobalText type="body2" color="secondary" center>
@@ -54,7 +52,8 @@ const ExchangeSection = ({ t }) => {
           active={optSelected === 0}
           actions={[
             <AvatarImage
-              url={getBlockchainIcon(current_blockchain)}
+              key="network-icon"
+              url={activeBlockchainAccount.network.icon}
               size={30}
             />,
           ]}
@@ -65,7 +64,9 @@ const ExchangeSection = ({ t }) => {
           onPress={() => setOptSelected(1)}
           title={t('swap.other_blockchain')}
           active={optSelected === 1}
-          actions={[<AvatarImage url={IconBridge} size={30} />]}
+          actions={[
+            <AvatarImage key="bridge-icon" url={IconBridge} size={30} />,
+          ]}
         />
       </GlobalLayout.Header>
 

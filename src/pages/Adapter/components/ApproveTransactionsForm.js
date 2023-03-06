@@ -24,7 +24,8 @@ const ApproveTransactionsForm = ({
   onApprove,
   onReject,
 }) => {
-  const [{ activeWallet, selectedLanguage: language }] = useContext(AppContext);
+  const [{ activeBlockchainAccount, selectedLanguage: language }] =
+    useContext(AppContext);
 
   const [loading, setLoading] = useState(true);
   const [fee, setFee] = useState(null);
@@ -48,7 +49,7 @@ const ApproveTransactionsForm = ({
     setLoading(true);
 
     try {
-      setFee(await activeWallet.estimateTransactionsFee(messages));
+      setFee(await activeBlockchainAccount.estimateTransactionsFee(messages));
     } catch (err) {
       console.error('Failed to get fee for message:', err);
       setFee(null);
@@ -56,14 +57,16 @@ const ApproveTransactionsForm = ({
 
     try {
       const options = { origin, language };
-      setSimulation(await activeWallet.scanTransactions(transactions, options));
+      setSimulation(
+        await activeBlockchainAccount.scanTransactions(transactions, options),
+      );
     } catch (err) {
       console.error('Failed to simulate transactions', err);
       setSimulation(null);
     } finally {
       setLoading(false);
     }
-  }, [transactions, messages, origin, activeWallet, language]);
+  }, [transactions, messages, origin, activeBlockchainAccount, language]);
 
   useEffect(() => {
     scanTransactions();

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { View } from 'react-native';
 
 import { useNavigation, withParams } from '../../routes/hooks';
@@ -15,47 +15,32 @@ import CardButton from '../../component-library/CardButton/CardButton';
 
 import IconEditCircle from '../../assets/images/IconEditCircle.png';
 import { AppContext } from '../../AppProvider';
-import {
-  getShortAddress,
-  getWalletAvatar,
-  getWalletName,
-} from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
 
 const AccountEditPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [{ config }] = useContext(AppContext);
+  const [{ accounts }] = useContext(AppContext);
   const onBack = () => navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
 
+  const account = useMemo(
+    () => accounts.find(({ id }) => id === params.id),
+    [accounts, params.id],
+  );
+
+  const { id } = params;
+
   const goToEditProfile = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, { id });
 
   const goToEditName = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NAME, {
-      address: params.address,
-    });
-
-  const goToAddress = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_ADDRESS, {
-      address: params.address,
-    });
-
-  const goToWalletNotifications = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NOTIFICATIONS, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_NAME, { id });
 
   const goToSeedPhrase = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_SEEDPHRASE, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_SEEDPHRASE, { id });
 
   const goToPrivateKey = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PRIVATEKEY, {
-      address: params.address,
-    });
+    navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PRIVATEKEY, { id });
+
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
@@ -67,9 +52,7 @@ const AccountEditPage = ({ params, t }) => {
         <View style={globalStyles.centered}>
           <View style={globalStyles.floatingTransactionBox}>
             <GlobalImage
-              source={getMediaRemoteUrl(
-                getWalletAvatar(params.address, config),
-              )}
+              source={getMediaRemoteUrl(account.avatar)}
               size="3xl"
               style={globalStyles.bigImage}
               circle
@@ -89,25 +72,8 @@ const AccountEditPage = ({ params, t }) => {
           title={t(`general.name`)}
           actionIcon="right"
           onPress={goToEditName}>
-          <GlobalText type="caption">
-            {getWalletName(params.address, config)}
-          </GlobalText>
+          <GlobalText type="caption">{account.name}</GlobalText>
         </CardButton>
-
-        <CardButton
-          title={t(`general.address`)}
-          actionIcon="right"
-          onPress={goToAddress}>
-          <GlobalText type="caption">
-            {getShortAddress(params.address)}
-          </GlobalText>
-        </CardButton>
-
-        {/* <CardButton
-          title={t(`settings.notifications`)}
-          actionIcon="right"
-          onPress={goToWalletNotifications}
-        /> */}
 
         <CardButton
           title={t(`general.seed_phrase`)}

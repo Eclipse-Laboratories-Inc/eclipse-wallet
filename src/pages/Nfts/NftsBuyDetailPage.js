@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   useAnalyticsEventTracker(SECTIONS_MAP.NFTS_BUY_DETAIL);
   const navigate = useNavigation();
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [loaded, setLoaded] = useState(false);
   const [bidsLoaded, setBidsLoaded] = useState(false);
   const [nftDetail, setNftDetail] = useState({});
@@ -87,10 +87,10 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
   const [isBuyOpen, setIsBuyOpen] = useState(false);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
-        activeWallet.getBalance(),
-        activeWallet.getCollectionItems(id, pageNumber),
+        activeBlockchainAccount.getBalance(),
+        activeBlockchainAccount.getCollectionItems(id, pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -102,7 +102,7 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
         }
         setSolBalance(tks.find(tk => tk.symbol === 'SOL'));
         setLoaded(true);
-        const bids = await activeWallet.getNftsBids();
+        const bids = await activeBlockchainAccount.getNftsBids();
         setBidAmount(
           bids.find(b => b.token_address === nftId)?.market_place_state
             ?.price || null,
@@ -110,7 +110,7 @@ const NftsBuyDetailPage = ({ id, nftId, pageNumber, setIsModalOpen, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, id, nftId, pageNumber, isBidOpen]);
+  }, [activeBlockchainAccount, id, nftId, pageNumber, isBidOpen]);
 
   const attributes = Object.entries(get(nftDetail, 'attributes', []));
   attributes.pop();

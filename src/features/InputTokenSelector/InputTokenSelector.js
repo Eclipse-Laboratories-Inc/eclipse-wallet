@@ -125,9 +125,8 @@ const InputWithTokenSelector = ({
             {featuredTokens && (
               <View style={theme.globalStyles.inline}>
                 {featuredTokens?.map(token => (
-                  <View>
+                  <View key={token.mint || token.address || token.symbol}>
                     <CardButton
-                      key={token.mint || token.address}
                       onPress={() => onSelect(token)}
                       size="sm"
                       icon={<GlobalImage url={token.logo} size="xs" circle />}
@@ -141,7 +140,7 @@ const InputWithTokenSelector = ({
             <GlobalPadding />
             {drawedList.map(token => (
               <CardButton
-                key={token.mint || token.address}
+                key={token.mint || token.address || token.symbol}
                 onPress={() => onSelect(token)}
                 icon={<GlobalImage url={token.logo} size="md" circle />}
                 title={
@@ -154,7 +153,7 @@ const InputWithTokenSelector = ({
                       }`
                     : token.symbol
                 }
-                chip={chips && token.network}
+                chip={chips && token?.network?.toUpperCase()}
               />
             ))}
           </GlobalLayout.Header>

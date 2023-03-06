@@ -10,7 +10,6 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalInput from '../../component-library/Global/GlobalInput';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
-import { getWalletChain } from '../../utils/wallet';
 import InputAddress from '../../features/InputAddress/InputAddress';
 import { isNative } from '../../utils/platform';
 import QRScan from '../../features/QRScan/QRScan';
@@ -18,7 +17,7 @@ import QRScan from '../../features/QRScan/QRScan';
 const AddressBookAddPage = ({ t }) => {
   const navigate = useNavigation();
   const [saving, setSaving] = useState(false);
-  const [{ activeWallet }, { addAddress }] = useContext(AppContext);
+  const [{ networkId }, { addAddress }] = useContext(AppContext);
   const [addressLabel, setAddressLabel] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
   const [validAddress, setValidAddress] = useState(false);
@@ -35,7 +34,8 @@ const AddressBookAddPage = ({ t }) => {
     await addAddress({
       address: recipientAddress,
       name: addressLabel,
-      chain: getWalletChain(activeWallet),
+      domain: recipientName,
+      networkId,
     });
     setSaving(false);
     navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);

@@ -8,7 +8,7 @@ import { AppContext } from '../../../AppProvider';
 import base58 from 'bs58';
 
 const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const payloads = useMemo(
     () =>
@@ -25,7 +25,7 @@ const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
     const signedTransactions = payloads.map((payload, i) => {
       try {
         const transaction = VersionedTransaction.deserialize(payload);
-        transaction.sign([activeWallet.keyPair]);
+        transaction.sign([activeBlockchainAccount.keyPair]);
         return transaction;
       } catch (e) {
         console.error(e);
@@ -35,7 +35,7 @@ const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
 
     if (valid.every(Boolean)) {
       try {
-        const connection = await activeWallet.getConnection();
+        const connection = await activeBlockchainAccount.getConnection();
 
         const options = { minContextSlot: request.minContextSlot };
 
@@ -64,7 +64,7 @@ const SignAndSendTransactionsForm = ({ request, name, icon, origin }) => {
     } else {
       AdapterModule.completeWithInvalidSignatures(valid);
     }
-  }, [request, payloads, activeWallet]);
+  }, [request, payloads, activeBlockchainAccount]);
 
   const onReject = () => AdapterModule.completeWithDecline();
 

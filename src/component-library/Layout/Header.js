@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { getNetworks, getSwitches } from '4m-wallet-adapter';
+import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
+import { ROUTES_MAP as ROUTES_WALLET_MAP } from '../../pages/Wallet/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from '../../pages/Settings/routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import AvatarImage from '../../component-library/Image/AvatarImage';
-import {
-  getWalletName,
-  getShortAddress,
-  getWalletAvatar,
-} from '../../utils/wallet';
-import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
+import { getShortAddress } from '../../utils/wallet';
 import GlobalToast from '../../component-library/Global/GlobalToast';
 import GlobalButton from '../../component-library/Global/GlobalButton';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalImage from '../../component-library/Global/GlobalImage';
 import IconCopy from '../../assets/images/IconCopy.png';
+import IconChangeWallet from '../../assets/images/IconChangeWallet.png';
+import IconQRCodeScanner from '../../assets/images/IconQRCodeScanner.png';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { isExtension, isNative } from '../../utils/platform';
 import clipboard from '../../utils/clipboard.native';
@@ -23,6 +23,7 @@ import storage from '../../utils/storage';
 import { withTranslation } from '../../hooks/useTranslations';
 import QRScan from '../../features/QRScan/QRScan';
 import Tooltip from '../Tooltip/Tooltip';
+import NetworkSelector from '../../pages/Wallet/components/NetworkSelector';
 
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
@@ -40,16 +41,17 @@ const styles = StyleSheet.create({
   },
   walletNameAddress: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'flex-start',
     marginLeft: theme.gutters.paddingSM,
   },
   walletName: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
   },
+  walletAddressActions: {
+    flexDirection: 'row',
+  },
   walletAddress: {
     lineHeight: theme.fontSize.fontSizeNormal + 4,
-    marginLeft: theme.gutters.paddingXS,
   },
   walletActions: {
     flexDirection: 'row',
@@ -58,10 +60,9 @@ const styles = StyleSheet.create({
   narrowBtn: {
     paddingHorizontal: theme.gutters.paddingSM,
   },
-  addressCopyIcon: {
-    marginLeft: theme.gutters.paddingXXS,
-    marginTop: 2,
-    position: 'absolute',
+  addressIcon: {
+    marginLeft: theme.gutters.margin,
+    marginTop: 1,
   },
   appStatus: {
     marginRight: theme.gutters.paddingNormal,
@@ -75,13 +76,23 @@ const styles = StyleSheet.create({
   appDisconnectedStatus: {
     backgroundColor: theme.colors.negativeBright,
   },
+  networkSelector: {
+    marginRight: theme.gutters.paddingXS,
+    minWidth: 120,
+  },
 });
 
-const Header = ({ activeWallet, config, t }) => {
+const Header = ({ isHome, t }) => {
+  const [
+    { activeAccount, activeBlockchainAccount, networkId },
+    { changeNetwork },
+  ] = useContext(AppContext);
+
   const [showToast, setShowToast] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [isConnected, setIsConnected] = useState(null);
   const [hostname, setHostname] = useState(null);
+  const [networks, setNetworks] = useState([]);
 
   const navigate = useNavigation();
 
@@ -106,6 +117,16 @@ const Header = ({ activeWallet, config, t }) => {
     checkConnection();
   }, []);
 
+  useEffect(() => {
+    const load = async () => {
+      const switches = await getSwitches();
+      const allNetworks = await getNetworks();
+      setNetworks(allNetworks.filter(({ id }) => switches[id]?.enable));
+    };
+
+    load();
+  }, []);
+
   const toggleScan = () => {
     setShowScan(!showScan);
   };
@@ -124,8 +145,12 @@ const Header = ({ activeWallet, config, t }) => {
   };
 
   const onCopyAddress = () => {
-    clipboard.copy(activeWallet.getReceiveAddress());
+    clipboard.copy(activeBlockchainAccount.getReceiveAddress());
     setShowToast(true);
+  };
+
+  const onSelectPathIndex = () => {
+    navigate(ROUTES_WALLET_MAP.WALLET_INDEX_PATH);
   };
 
   return (
@@ -134,9 +159,7 @@ const Header = ({ activeWallet, config, t }) => {
         <View style={styles.avatarWalletAddress}>
           <TouchableOpacity onPress={onClickAvatar}>
             <AvatarImage
-              src={getMediaRemoteUrl(
-                getWalletAvatar(activeWallet.getReceiveAddress(), config),
-              )}
+              src={getMediaRemoteUrl(activeAccount.avatar)}
               size={42}
             />
           </TouchableOpacity>
@@ -145,26 +168,47 @@ const Header = ({ activeWallet, config, t }) => {
               type="body2"
               style={styles.walletName}
               numberOfLines={1}>
-              {getWalletName(activeWallet.getReceiveAddress(), config)}
+              {activeAccount.name}
             </GlobalText>
-            <TouchableOpacity onPress={onCopyAddress}>
+            <View style={styles.walletAddressActions}>
               <GlobalText
                 type="caption"
                 color="tertiary"
                 style={styles.walletAddress}
                 numberOfLines={1}>
-                ({getShortAddress(activeWallet.getReceiveAddress())})
+                ({getShortAddress(activeBlockchainAccount.getReceiveAddress())})
+              </GlobalText>
+              <TouchableOpacity onPress={onCopyAddress}>
                 <GlobalImage
                   source={IconCopy}
-                  style={styles.addressCopyIcon}
-                  size="xxxs"
+                  style={styles.addressIcon}
+                  size="xxs"
                 />
-              </GlobalText>
-            </TouchableOpacity>
+              </TouchableOpacity>
+              {isHome &&
+                activeAccount.networksAccounts[networkId].length > 1 && (
+                  <TouchableOpacity onPress={onSelectPathIndex}>
+                    <GlobalImage
+                      source={IconChangeWallet}
+                      style={styles.addressIcon}
+                      size="xxs"
+                    />
+                  </TouchableOpacity>
+                )}
+            </View>
           </View>
         </View>
 
         <View style={styles.walletActions}>
+          {isHome && networks.length > 1 && (
+            <View style={styles.networkSelector}>
+              <NetworkSelector
+                networks={networks}
+                setValue={changeNetwork}
+                value={networkId}
+              />
+            </View>
+          )}
           {/* <GlobalButton
                   type="icon"
                   transparent

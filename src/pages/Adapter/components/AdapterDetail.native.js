@@ -9,10 +9,10 @@ import ApproveConnectionForm from './ApproveConnectionForm';
 import SignMessagesForm from './SignMessagesForm';
 import SignTransactionsForm from './SignTransactionsForm';
 import SignAndSendTransactionsForm from './SignAndSendTransactionsForm';
-import { getDefaultEndpoint } from '../../../utils/wallet';
 
-const AdapterDetail = () => {
-  const [{ activeWallet }, { addTrustedApp }] = useContext(AppContext);
+const AdapterDetail = ({ networks }) => {
+  const [{ activeBlockchainAccount }, { addTrustedApp, changeNetwork }] =
+    useContext(AppContext);
 
   const [request, setRequest] = useState(null);
 
@@ -22,11 +22,7 @@ const AdapterDetail = () => {
     () => request && `${request.identityUri}/${request.iconRelativeUri}`,
     [request],
   );
-  const cluster = useMemo(() => request?.cluster, [request]);
-  const address = useMemo(
-    () => activeWallet.getReceiveAddress(),
-    [activeWallet],
-  );
+  const environment = useMemo(() => request?.cluster, [request]);
 
   useEffect(() => {
     const emitter = new NativeEventEmitter(AdapterModule);
@@ -35,16 +31,21 @@ const AdapterDetail = () => {
   }, []);
 
   useEffect(() => {
-    if (cluster) {
-      activeWallet.setNetwork(cluster);
-    } else if (!activeWallet.networkId) {
-      activeWallet.setNetwork(getDefaultEndpoint('SOLANA'));
+    if (
+      environment &&
+      environment !== activeBlockchainAccount.network.environment
+    ) {
+      const isTarget = network => network.environment === environment;
+      const network = networks.find(isTarget);
+      if (network) {
+        changeNetwork(network.id);
+      }
     }
-  }, [activeWallet, cluster]);
+  }, [networks, activeBlockchainAccount, environment, changeNetwork]);
 
   if (request?.type === 'AuthorizeRequest') {
     const onApprove = async () => {
-      await addTrustedApp(address, origin, { name, icon });
+      await addTrustedApp(origin, { name, icon });
     };
 
     const onReject = () => AdapterModule.completeWithDecline();

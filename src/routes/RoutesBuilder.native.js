@@ -30,16 +30,16 @@ const RoutesBuilder = ({
   ..._
 }) => {
   const navigate = useNavigation();
-  const [{ wallets }] = useContext(AppContext);
+  const [{ accounts }] = useContext(AppContext);
   useEffect(() => {
-    if (requireOnboarding && !wallets.length) {
+    if (requireOnboarding && !accounts.length) {
       navigate(ROUTES_MAP.ONBOARDING);
     }
-  }, [requireOnboarding, navigate, wallets]);
+  }, [requireOnboarding, navigate, accounts]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const Nav = useMemo(() => createFunction[type](), []);
 
-  return !requireOnboarding || (requireOnboarding && wallets.length > 0) ? (
+  return !requireOnboarding || (requireOnboarding && accounts.length > 0) ? (
     <Nav.Navigator
       sceneContainerStyle={styles.sceneStyles}
       screenOptions={{

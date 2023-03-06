@@ -22,13 +22,13 @@ const styles = StyleSheet.create({
 
 const NftOffersMade = ({ isModalOpen, setIsModalOpen, t }) => {
   const [sliderItems, setSliderItems] = useState([]);
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [bidsLoaded, setBidsLoaded] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
-    if (activeWallet) {
-      Promise.resolve(activeWallet.getNftsBids()).then(bids => {
+    if (activeBlockchainAccount) {
+      Promise.resolve(activeBlockchainAccount.getNftsBids()).then(bids => {
         setSliderItems([
           {
             value: bids,
@@ -37,7 +37,7 @@ const NftOffersMade = ({ isModalOpen, setIsModalOpen, t }) => {
         setBidsLoaded(true);
       });
     }
-  }, [activeWallet, isModalOpen]);
+  }, [activeBlockchainAccount, isModalOpen]);
 
   const renderCollection = ({ item }) => {
     const { value } = item;
@@ -45,9 +45,10 @@ const NftOffersMade = ({ isModalOpen, setIsModalOpen, t }) => {
     return (
       <View style={styles.collectionContainer}>
         <GlobalPadding size="xxs" />
-        {value?.slice(0, maxItems).map(item => (
+        {value?.slice(0, maxItems)?.map((collectionItem, i) => (
           <NftOfferMadeItem
-            item={item}
+            key={`offer-collection-item-${i}`}
+            item={collectionItem}
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
           />

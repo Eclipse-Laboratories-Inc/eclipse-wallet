@@ -4,13 +4,7 @@ import { Modal, StyleSheet, View } from 'react-native';
 import theme from '../../component-library/Global/theme';
 import GlobalText from '../../component-library/Global/GlobalText';
 
-const QRScan = ({
-  active,
-  onClose,
-  onRead,
-  title = 'Scan QR Code',
-  chain = 'SOLANA',
-}) => (
+const QRScan = ({ active, onClose, onRead, title = 'Scan QR Code' }) => (
   <Modal animationType="slide" onRequestClose={onClose} visible={active}>
     <View style={styles.mainContainer}>
       <GlobalText>Option Unavailable</GlobalText>

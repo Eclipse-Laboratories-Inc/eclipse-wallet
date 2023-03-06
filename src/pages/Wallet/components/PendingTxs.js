@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { BLOCKCHAINS } from '4m-wallet-adapter';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import CardButtonPendingTx from '../../../component-library/CardButton/CardButtonPendingTx';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
-import { StyleSheet, View } from 'react-native';
 import storage from '../../../utils/storage';
 import STORAGE_KEYS from '../../../utils/storageKeys';
 import { getTransactionImage } from '../../../utils/wallet';
+import { withTranslation } from '../../../hooks/useTranslations';
+import { AppContext } from '../../../AppProvider';
 
 const styles = StyleSheet.create({
   inline: {
@@ -16,9 +19,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export const PendingTxs = ({ activeWallet, translate }) => {
+const PendingTxs = ({ t }) => {
   const [transactions, setTransactions] = useState(null);
-  const isBitcoin = activeWallet.chain === 'bitcoin';
+  const [{ activeAccount }] = useContext(AppContext);
+  const bitcoinAccount = Object.values(activeAccount.networksAccounts)
+    .flat()
+    .filter(Boolean)
+    .find(({ network }) => network.blockchain === BLOCKCHAINS.BITCOIN);
   useEffect(() => {
     const updateStatus = async txs => {
       const dateNow = new Date().getTime();
@@ -27,7 +34,7 @@ export const PendingTxs = ({ activeWallet, translate }) => {
         const newCheck = lastStatus + 5 * 60 * 1000;
         if (newCheck < dateNow && tx.status === 'inProgress') {
           tx.lastStatus = dateNow;
-          const { status } = await activeWallet.getTransaction(txId);
+          const { status } = await bitcoinAccount.getTransaction(txId);
           if (status) {
             tx.status = status === 'completed' ? 'success' : 'fail';
           }
@@ -35,25 +42,24 @@ export const PendingTxs = ({ activeWallet, translate }) => {
       });
     };
     storage.getItem(STORAGE_KEYS.PENDING_TXS).then(async txs => {
-      const dateNow = new Date().getTime();
-      const nonExpiredTxs = txs.filter(tx => tx.expires > dateNow);
-      setInterval(async () => {
-        await updateStatus(nonExpiredTxs);
-        setTransactions(nonExpiredTxs);
-      }, 1000);
+      if (txs) {
+        const dateNow = new Date().getTime();
+        const nonExpiredTxs = txs.filter(tx => tx.expires > dateNow);
+        setInterval(async () => {
+          await updateStatus(nonExpiredTxs);
+          setTransactions(nonExpiredTxs);
+        }, 1000);
+      }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [bitcoinAccount]);
 
   if (transactions) {
     storage.setItem(STORAGE_KEYS.PENDING_TXS, transactions);
   }
 
-  return isBitcoin && transactions && transactions.length > 0 ? (
+  return transactions && transactions.length > 0 ? (
     <>
-      <GlobalCollapse
-        title={translate('wallet.transactions_in_progress')}
-        isOpen>
+      <GlobalCollapse title={t('wallet.transactions_in_progress')} isOpen>
         {transactions.map((transaction, i) => {
           return (
             <CardButtonPendingTx
@@ -79,7 +85,7 @@ export const PendingTxs = ({ activeWallet, translate }) => {
                       key={'amount-action'}
                       type="caption"
                       color="actionMsg">
-                      {translate(`wallet.pending_txs.${transaction.status}`)}
+                      {t(`wallet.pending_txs.${transaction.status}`)}
                     </GlobalText>
                   </View>
                 </View>
@@ -91,3 +97,5 @@ export const PendingTxs = ({ activeWallet, translate }) => {
     </>
   ) : null;
 };
+
+export default withTranslation()(PendingTxs);

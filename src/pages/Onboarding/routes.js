@@ -7,7 +7,6 @@ export const ROUTES_MAP = {
   ONBOARDING_HOME: 'ONBOARDING_HOME',
   ONBOARDING_CREATE: 'ONBOARDING_CREATE',
   ONBOARDING_RECOVER: 'ONBOARDING_RECOVER',
-  ONBOARDING_DERIVED: 'ONBOARDING_DERIVED',
 };
 
 const routes = [
@@ -22,15 +21,15 @@ const routes = [
   {
     key: ROUTES_MAP.ONBOARDING_CREATE,
     name: 'onboardingCreate',
-    path: 'create/:chainCode',
-    route: '/onboarding/create/:chainCode',
+    path: 'create',
+    route: '/onboarding/create',
     Component: CreateWalletPage,
   },
   {
     key: ROUTES_MAP.ONBOARDING_RECOVER,
     name: 'onboardingRecover',
-    path: 'recover/:chainCode',
-    route: '/onboarding/recover/:chainCode',
+    path: 'recover',
+    route: '/onboarding/recover',
     Component: RecoverWalletPage,
   },
   {

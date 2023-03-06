@@ -12,7 +12,6 @@ import { globalStyles } from '../../../component-library/Global/theme';
 import AdapterModule from '../../../native/AdapterModule';
 import { AppContext } from '../../../AppProvider';
 import { DAppCard } from './DAppCard';
-import { getWalletName } from '../../../utils/wallet';
 import { withTranslation } from '../../../hooks/useTranslations';
 import { ActiveWalletCard } from './ActiveWalletCard';
 import IconFailed from '../../../assets/images/IconFailed.png';
@@ -36,7 +35,7 @@ const ApproveConnectionForm = ({
   onApprove,
   onReject,
 }) => {
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
 
   const [scope, setScope] = useState(null);
   const [result, setResult] = useState(null);
@@ -61,12 +60,14 @@ const ApproveConnectionForm = ({
   const connect = useCallback(async () => {
     await onApprove();
 
-    const publicKey = activeWallet.publicKey.toBuffer().toString('base64');
-    const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
+    const publicKey = activeBlockchainAccount.publicKey
+      .toBuffer()
+      .toString('base64');
+    const walletName = activeAccount.name;
     const uri = 'https://salmonwallet.io/adapter';
 
     AdapterModule.completeWithAuthorize(publicKey, walletName, uri, scope);
-  }, [activeWallet, config, onApprove, scope]);
+  }, [activeAccount, activeBlockchainAccount, onApprove, scope]);
 
   return (
     <GlobalLayout fullscreen>

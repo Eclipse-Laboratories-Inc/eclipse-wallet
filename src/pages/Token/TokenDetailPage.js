@@ -1,12 +1,18 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
-import get from 'lodash/get';
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
+import { getSwitches } from '4m-wallet-adapter';
+import { get } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import {
   hiddenValue,
   showAmount,
@@ -15,55 +21,49 @@ import {
   showValue,
 } from '../../utils/amount';
 
-import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import TransactionsListComponent from '../Transactions/TransactionsListComponent';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalSendReceive from '../../component-library/Global/GlobalSendReceive';
 import WalletBalanceCard from '../../component-library/Global/GlobalBalance';
-import { retriveConfig } from '../../utils/wallet';
 
 const TokenDetailPage = ({ params, t }) => {
   const navigate = useNavigation();
-  const [loaded, setloaded] = useState(false);
+  const [loading, setloading] = useState(true);
   const [token, setToken] = useState({});
-  const [{ activeWallet, hiddenBalance, config }, { toggleHideBalance }] =
-    useContext(AppContext);
-
-  const [configs, setConfigs] = useState(null);
+  const [
+    { activeBlockchainAccount, hiddenBalance, activeTokens },
+    { toggleHideBalance },
+  ] = useContext(AppContext);
+  const [switches, setSwitches] = useState(null);
 
   useEffect(() => {
-    retriveConfig().then(chainConfigs =>
-      setConfigs(chainConfigs[activeWallet.chain].sections.token_detail),
+    getSwitches().then(allSwitches =>
+      setSwitches(
+        allSwitches[activeBlockchainAccount.network.id].sections.token_detail,
+      ),
     );
-  }, [activeWallet]);
+  });
 
   const tokensAddresses = useMemo(
-    () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
-      ),
-    [activeWallet, config],
+    () => Object.keys(activeTokens),
+    [activeTokens],
   );
 
-  useEffect(() => {
-    if (activeWallet) {
-      Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
-        ),
-      ]).then(([balance]) => {
-        const tk = (balance.items || []).find(
-          i => i.address === params.tokenId,
-        );
-        setToken(tk || {});
-        setloaded(true);
-      });
+  const load = useCallback(async () => {
+    try {
+      setloading(true);
+      const balance = await activeBlockchainAccount.getBalance(tokensAddresses);
+      setToken(balance?.items?.find(i => i.address === params.tokenId) || {});
+    } finally {
+      setloading(false);
     }
-  }, [activeWallet, params, tokensAddresses]);
+  }, [activeBlockchainAccount, params.tokenId, tokensAddresses]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const goToBack = () => {
     navigate(APP_ROUTES_MAP.WALLET);
@@ -74,50 +74,55 @@ const TokenDetailPage = ({ params, t }) => {
 
   const goToReceive = () => navigate(ROUTES_MAP.TOKEN_RECEIVE);
 
+  const total = useMemo(
+    () =>
+      hiddenBalance
+        ? `${hiddenValue} ${token.symbol}`
+        : `${showValue(token.uiAmount, 6)} ${token.symbol}`,
+    [token, hiddenBalance],
+  );
+
+  const percent = useMemo(
+    () => get(token, 'last24HoursChange.perc', 0),
+    [token],
+  );
+
   return (
     <GlobalLayout fullscreen>
-      {!loaded && <GlobalSkeleton type="TokenDetail" />}
-      {loaded && (
-        <GlobalLayout.Header>
-          <GlobalBackTitle
-            onBack={goToBack}
-            inlineTitle={token.name}
-            inlineAddress={params.tokenId}
-          />
+      <GlobalLayout.Header>
+        <GlobalBackTitle
+          onBack={goToBack}
+          inlineTitle={token.name}
+          inlineAddress={token.type !== 'native' ? token.address : undefined}
+        />
 
-          <WalletBalanceCard
-            total={
-              !hiddenBalance
-                ? `${showValue(token.uiAmount, 6)} ${token.symbol}`
-                : `${hiddenValue} ${token.symbol}`
-            }
-            totalType="headline2"
-            {...{
-              [`${getLabelValue(
-                get(token, 'last24HoursChange.perc', 0),
-              )}Total`]: `${
-                !hiddenBalance
-                  ? showAmount(token.usdBalance)
-                  : `$ ${hiddenValue}`
-              } ${showPercentage(get(token, 'last24HoursChange.perc', 0))}`,
-            }}
-            showBalance={!hiddenBalance}
-            onToggleShow={toggleHideBalance}
-            messages={[]}
-            actions={
-              <GlobalSendReceive
-                goToSend={goToSend}
-                goToReceive={goToReceive}
-                canSend={configs?.features?.send}
-                canReceive={configs?.features?.receive}
-              />
-            }
-          />
-
-          <GlobalPadding size="lg" />
-        </GlobalLayout.Header>
-      )}
-      <TransactionsListComponent t={t} />
+        <WalletBalanceCard
+          loading={loading}
+          total={total}
+          totalType="headline2"
+          {...{
+            [`${getLabelValue(percent)}Total`]: token.usdBalance
+              ? `${
+                  !hiddenBalance
+                    ? showAmount(token.usdBalance)
+                    : `$ ${hiddenValue}`
+                } ${showPercentage(percent)}`
+              : undefined,
+          }}
+          showBalance={!hiddenBalance}
+          onToggleShow={toggleHideBalance}
+          actions={
+            <GlobalSendReceive
+              goToSend={goToSend}
+              goToReceive={goToReceive}
+              canSend={switches?.features?.send}
+              canReceive={switches?.features?.receive}
+            />
+          }
+        />
+        <GlobalPadding size="lg" />
+        <TransactionsListComponent t={t} />
+      </GlobalLayout.Header>
     </GlobalLayout>
   );
 };

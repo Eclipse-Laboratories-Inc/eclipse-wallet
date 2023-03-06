@@ -1,45 +1,41 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { Modal, StyleSheet, View } from 'react-native';
 
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalImage from '../../component-library/Global/GlobalImage';
-import { LOGOS } from '../../utils/wallet';
-import { getMediaRemoteUrl } from '../../utils/media';
+import { AppContext } from '../../AppProvider';
 
-const QRScan = ({
-  active,
-  onClose,
-  onRead,
-  title = 'Scan QR Code',
-  chain = 'SOLANA',
-}) => (
-  <Modal animationType="slide" onRequestClose={onClose} visible={active}>
-    <QRCodeScanner
-      fadeIn={false}
-      onRead={onRead}
-      containerStyle={styles.mainContainer}
-      showMarker
-      markerStyle={styles.marker}
-      topViewStyle={styles.headerContainer}
-      topContent={
-        <View style={styles.titleContainer}>
-          <GlobalBackTitle title={title} onBack={onClose} />
-        </View>
-      }
-      bottomContent={
-        <View style={globalStyles.centered}>
-          <GlobalImage
-            source={getMediaRemoteUrl(LOGOS[chain])}
-            size="xl"
-            circle
-          />
-        </View>
-      }
-    />
-  </Modal>
-);
+const QRScan = ({ active, onClose, onRead, title = 'Scan QR Code' }) => {
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  return (
+    <Modal animationType="slide" onRequestClose={onClose} visible={active}>
+      <QRCodeScanner
+        fadeIn={false}
+        onRead={onRead}
+        containerStyle={styles.mainContainer}
+        showMarker
+        markerStyle={styles.marker}
+        topViewStyle={styles.headerContainer}
+        topContent={
+          <View style={styles.titleContainer}>
+            <GlobalBackTitle title={title} onBack={onClose} />
+          </View>
+        }
+        bottomContent={
+          <View style={globalStyles.centered}>
+            <GlobalImage
+              source={activeBlockchainAccount.network.icon}
+              size="xl"
+              circle
+            />
+          </View>
+        }
+      />
+    </Modal>
+  );
+};
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,

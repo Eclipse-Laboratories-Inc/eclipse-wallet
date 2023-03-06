@@ -26,7 +26,11 @@ export const updatePendingNfts = async nfts => {
   );
   const allPendingSend = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_SEND);
   nfts.forEach(nft => {
-    if (allPendingSend?.find(pNft => pNft.mint === nft.mint))
+    if (
+      allPendingSend?.find(
+        pNft => pNft.mint === nft.mint && pNft.pendingExpires > dateNow,
+      )
+    )
       nft.pending = true;
   });
   return nfts.concat(pendingNftsBuy || []);

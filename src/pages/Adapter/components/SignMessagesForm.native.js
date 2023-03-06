@@ -8,7 +8,7 @@ import { AppContext } from '../../../AppProvider';
 import ApproveMessagesForm from './ApproveMessagesForm';
 
 const SignMessagesForm = ({ request, name, icon, origin }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const payloads = useMemo(
     // eslint-disable-next-line no-undef
@@ -23,10 +23,12 @@ const SignMessagesForm = ({ request, name, icon, origin }) => {
 
   const createSignature = useCallback(
     payload => {
-      const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
+      const secretKey = bs58.decode(
+        activeBlockchainAccount.retrieveSecurePrivateKey(),
+      );
       return nacl.sign.detached(payload, secretKey);
     },
-    [activeWallet],
+    [activeBlockchainAccount],
   );
 
   const onApprove = useCallback(() => {

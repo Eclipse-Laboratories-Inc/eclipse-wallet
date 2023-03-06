@@ -6,7 +6,6 @@ import GlobalCollapse from '../../component-library/Global/GlobalCollapse';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import theme from '../../component-library/Global/theme';
 import { AppContext } from '../../AppProvider';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 import { ROUTES_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 
@@ -23,21 +22,25 @@ const TransactionsListComponent = ({ t }) => {
   const onDetail = id => navigate(ROUTES_MAP.TRANSACTIONS_DETAIL, { id });
   const onViewAll = () => navigate(ROUTES_MAP.TRANSACTIONS_LIST);
 
-  const [{ activeWallet, selectedEndpoints }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
   const [transactions, setTransactions] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    cache(
-      `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-      CACHE_TYPES.TRANSACTIONS,
-      () => activeWallet.getRecentTransactions({ pageSize }),
-    )
-      .then(({ data }) => {
+    const load = async () => {
+      try {
+        setLoaded(false);
+        const { data } = await activeBlockchainAccount.getRecentTransactions({
+          pageSize,
+        });
         setTransactions(data);
-      })
-      .finally(() => setLoaded(true));
-  }, [activeWallet, selectedEndpoints]);
+      } finally {
+        setLoaded(true);
+      }
+    };
+
+    load();
+  }, [activeBlockchainAccount]);
 
   return (
     <GlobalCollapse

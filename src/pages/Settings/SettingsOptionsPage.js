@@ -7,11 +7,7 @@ import { ROUTES_MAP as ONBOARDING_ROUTES_MAP } from '../Onboarding/routes';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';
 import { useNavigation } from '../../routes/hooks';
 import useUserConfig from '../../hooks/useUserConfig';
-import {
-  getWalletChain,
-  getWalletName,
-  getWalletAvatar,
-} from '../../utils/wallet';
+
 import packageInfo from '../../../package.json';
 
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -20,13 +16,13 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import CardButton from '../../component-library/CardButton/CardButton';
 import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
-import CardButtonWallet from '../../component-library/CardButton/CardButtonWallet';
 import SimpleDialog from '../../component-library/Dialog/SimpleDialog';
 import SecureDialog from '../../component-library/Dialog/SecureDialog';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import stash from '../../utils/stash';
+import CardButtonAccount from '../../component-library/CardButton/CardButtonAccount';
 
 const styles = StyleSheet.create({
   appVersion: {
@@ -41,18 +37,14 @@ const styles = StyleSheet.create({
 const SettingsOptionsPage = ({ t }) => {
   const navigate = useNavigation();
   const [
-    { activeWallet, config, selectedEndpoints, selectedLanguage, requiredLock },
-    { logout, removeWallet, checkPassword },
+    { activeAccount, selectedLanguage, requiredLock },
+    { logout, removeAccount, checkPassword },
   ] = useContext(AppContext);
   const [showSingleDialog, setShowSingleDialog] = useState(false);
   const [showAllDialog, setShowAllDialog] = useState(false);
-  const walletName = getWalletName(activeWallet.getReceiveAddress(), config);
   const { version } = packageInfo;
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SETTINGS);
-  const { explorer } = useUserConfig(
-    getWalletChain(activeWallet),
-    activeWallet.networkId,
-  );
+  const { explorer } = useUserConfig();
 
   const toggleSingleDialog = () => {
     setShowSingleDialog(!showSingleDialog);
@@ -67,7 +59,7 @@ const SettingsOptionsPage = ({ t }) => {
   };
 
   const handleRemove = async password => {
-    await removeWallet(activeWallet.getReceiveAddress(), password);
+    await removeAccount(activeAccount.id, password);
     toggleSingleDialog();
     trackEvent(EVENTS_MAP.LOGOUT_WALLET);
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_SELECT);
@@ -81,9 +73,6 @@ const SettingsOptionsPage = ({ t }) => {
 
   const goToLanguages = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGELANGUAGE);
-
-  const goToNetwork = () =>
-    navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGENETWORK);
 
   const goToExplorer = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_CHANGEEXPLORER);
@@ -104,12 +93,9 @@ const SettingsOptionsPage = ({ t }) => {
       <GlobalLayout.Header>
         <GlobalBackTitle title={t('settings.title')} />
 
-        {activeWallet && (
-          <CardButtonWallet
-            title={getWalletName(activeWallet.getReceiveAddress(), config)}
-            address={activeWallet.getReceiveAddress()}
-            chain={getWalletChain(activeWallet)}
-            image={getWalletAvatar(activeWallet.getReceiveAddress(), config)}
+        {activeAccount && (
+          <CardButtonAccount
+            account={activeAccount}
             onPress={goToAccounts}
             actionIcon="right"
             selected
@@ -133,16 +119,6 @@ const SettingsOptionsPage = ({ t }) => {
             {t(`settings.languages.${selectedLanguage}`)}
           </GlobalText>
         </CardButton>
-
-        <CardButton
-          title={t(`settings.change_network`)}
-          actionIcon="right"
-          onPress={goToNetwork}>
-          <GlobalText type="caption">
-            {selectedEndpoints[getWalletChain(activeWallet)]}
-          </GlobalText>
-        </CardButton>
-
         <CardButton
           title={t(`settings.select_explorer`)}
           actionIcon="right"
@@ -203,7 +179,7 @@ const SettingsOptionsPage = ({ t }) => {
             Are your sure?
           </GlobalText>
         }
-        btn1Title={`${t('actions.remove')} ${walletName}`}
+        btn1Title={`${t('actions.remove')} ${activeAccount.name}`}
         btn2Title={t('actions.cancel')}
         onClose={toggleSingleDialog}
         isOpen={showSingleDialog}

@@ -6,10 +6,8 @@ import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import { getWalletName, getTransactionImage } from '../../utils/wallet';
+import { getTransactionImage } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -20,10 +18,10 @@ import GlobalPadding from '../../component-library/Global/GlobalPadding';
 import GlobalText from '../../component-library/Global/GlobalText';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 
-import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP } from '../../utils/tracking';
+import { formatCurrency } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -56,14 +54,12 @@ const NftsBurnPage = ({ params, t }) => {
   const [burnTransaction, setBurnTransaction] = useState();
   const [transactionId, setTransactionId] = useState(null);
   const [burnFee, setBurnFee] = useState(null);
-  const [{ activeWallet, config }] = useContext(AppContext);
-  const { explorer } = useUserConfig(
-    getWalletChain(activeWallet, activeWallet.networkId),
-  );
-  const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
+  const [{ activeAccount, activeBlockchainAccount }] = useContext(AppContext);
+  const { explorer } = useUserConfig();
+  useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   const openTransaction = async () => {
-    const url = `${explorer.url}/tx/${transactionId}`;
+    const url = `${explorer.url}/${transactionId}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -73,18 +69,12 @@ const NftsBurnPage = ({ params, t }) => {
   };
 
   useEffect(() => {
-    if (activeWallet) {
-      cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}-${
-          params.id
-        }`,
-        CACHE_TYPES.SINGLE_NFT,
-        () => activeWallet.getNft(params.id),
-      ).then(nft => {
+    if (activeBlockchainAccount) {
+      activeBlockchainAccount.getNft(params.id).then(nft => {
         if (nft) {
           setNftDetail(nft ?? {});
         } else {
-          activeWallet.getAllNftsGrouped().then(nfts => {
+          activeBlockchainAccount.getAllNftsGrouped().then(nfts => {
             setNftDetail(nfts.find(n => n.mint === params.id) ?? {});
           });
         }
@@ -92,20 +82,24 @@ const NftsBurnPage = ({ params, t }) => {
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeBlockchainAccount, params.id]);
 
   useEffect(() => {
-    if (activeWallet && nftDetail && Object.keys(nftDetail).length > 0) {
-      activeWallet.createNftBurnTx(nftDetail).then(tx => {
+    if (
+      activeBlockchainAccount &&
+      nftDetail &&
+      Object.keys(nftDetail).length > 0
+    ) {
+      activeBlockchainAccount.createNftBurnTx(nftDetail).then(tx => {
         setBurnTransaction(tx);
-        activeWallet
+        activeBlockchainAccount
           .estimateTransactionsFee([Message.from(tx.serializeMessage())])
           .then(fee => setBurnFee(fee));
       });
 
       setLoaded(true);
     }
-  }, [activeWallet, nftDetail]);
+  }, [activeBlockchainAccount, nftDetail]);
 
   const goToBack = () => {
     if (step === 1) {
@@ -126,12 +120,15 @@ const NftsBurnPage = ({ params, t }) => {
     try {
       setStep(3);
       setStatus('burning');
-      const txId = await activeWallet.confirmNftBurn(burnTransaction);
+      const txId = await activeBlockchainAccount.confirmNftBurn(
+        burnTransaction,
+      );
 
       setTransactionId(txId);
       setStatus('success');
     } catch (error) {
       console.log(error);
+      setTransactionId(error.transactionId);
       setStatus('fail');
     }
   };
@@ -143,11 +140,8 @@ const NftsBurnPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -178,7 +172,10 @@ const NftsBurnPage = ({ params, t }) => {
                 Network Fee
               </GlobalText>
               <GlobalText type="body2">
-                {burnFee / TOKEN_DECIMALS.SOLANA} SOL
+                {formatCurrency(
+                  burnFee,
+                  activeBlockchainAccount.network.currency,
+                )}
               </GlobalText>
             </View>
           )}
@@ -209,11 +206,8 @@ const NftsBurnPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -236,7 +230,10 @@ const NftsBurnPage = ({ params, t }) => {
                     Network Fee
                   </GlobalText>
                   <GlobalText type="body2">
-                    {burnFee / TOKEN_DECIMALS.SOLANA} SOL
+                    {formatCurrency(
+                      burnFee,
+                      activeBlockchainAccount.network.currency,
+                    )}
                   </GlobalText>
                 </View>
               )}
@@ -258,16 +255,18 @@ const NftsBurnPage = ({ params, t }) => {
               <GlobalPadding />
               <GlobalText type="headline2">Burning</GlobalText>
               <GlobalPadding />
-              <View style={globalStyles.inlineCentered}>
-                <GlobalButton
-                  type="text"
-                  wide
-                  textStyle={styles.viewTxLink}
-                  title={t(`general.open_explorer`)}
-                  readonly={false}
-                  onPress={() => openTransaction(transactionId)}
-                />
-              </View>
+              {transactionId && (
+                <View style={globalStyles.inlineCentered}>
+                  <GlobalButton
+                    type="text"
+                    wide
+                    textStyle={styles.viewTxLink}
+                    title={t(`general.open_explorer`)}
+                    readonly={false}
+                    onPress={() => openTransaction()}
+                  />
+                </View>
+              )}
             </View>
           </GlobalLayout.Header>
           <GlobalLayout.Footer>

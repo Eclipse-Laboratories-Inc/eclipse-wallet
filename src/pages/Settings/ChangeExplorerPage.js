@@ -1,7 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { AppContext } from '../../AppProvider';
-import { getWalletChain } from '../../utils/wallet';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
@@ -14,12 +12,7 @@ import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 const ChangeExplorerPage = ({ t }) => {
   const navigate = useNavigation();
 
-  const [{ activeWallet }] = useContext(AppContext);
-  const chain = getWalletChain(activeWallet);
-  const { explorer, explorers, changeExplorer } = useUserConfig(
-    chain,
-    activeWallet.networkId,
-  );
+  const { explorer, explorers, changeExplorer } = useUserConfig();
 
   const onSelect = value => {
     changeExplorer(value);

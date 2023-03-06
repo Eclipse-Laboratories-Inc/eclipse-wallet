@@ -1,19 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
-import pick from 'lodash/pick';
+import { BLOCKCHAINS } from '4m-wallet-adapter';
+import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import {
-  getTransactionImage,
-  TRANSACTION_STATUS,
-  getWalletName,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import useToken from '../../hooks/useToken';
-import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -31,9 +27,8 @@ import IconExpandMoreAccent1 from '../../assets/images/IconExpandMoreAccent1.png
 import InputAddress from '../../features/InputAddress/InputAddress';
 import QRScan from '../../features/QRScan/QRScan';
 import { isNative } from '../../utils/platform';
-import { showValue } from '../../utils/amount';
+import { formatCurrency, showValue } from '../../utils/amount';
 import clipboard from '../../utils/clipboard.native';
-import { getWalletChain } from '../../utils/wallet';
 
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
@@ -63,6 +58,9 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textTransform: 'none',
   },
+  recipientTx: {
+    width: '90%',
+  },
 });
 
 const TokenSendPage = ({ params, t }) => {
@@ -70,8 +68,15 @@ const TokenSendPage = ({ params, t }) => {
   const navigate = useNavigation();
   const { token, loaded } = useToken({ tokenId: params.tokenId });
   const [step, setStep] = useState(params.toAddress ? 2 : 1);
-  const [{ activeWallet, wallets, addressBook, config }] =
-    useContext(AppContext);
+  const [
+    {
+      accounts,
+      activeAccount,
+      activeBlockchainAccount,
+      networkId,
+      addressBook,
+    },
+  ] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [sending, setSending] = useState(false);
@@ -85,12 +90,11 @@ const TokenSendPage = ({ params, t }) => {
     params.toAddress || '',
   );
   const [recipientAmount, setRecipientAmount] = useState('');
-  const current_blockchain = getWalletChain(activeWallet);
-  const isBitcoin = current_blockchain === 'BITCOIN';
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
+  const isBitcoin = useMemo(
+    () => activeBlockchainAccount.network.blockchain === BLOCKCHAINS.BITCOIN,
+    [activeBlockchainAccount],
   );
+  const { explorer } = useUserConfig();
 
   const zeroAmount = recipientAmount && parseFloat(recipientAmount) <= 0;
   const validAmount =
@@ -106,7 +110,7 @@ const TokenSendPage = ({ params, t }) => {
     if (step === 4) {
       navigate(APP_ROUTES_MAP.WALLET);
     } else if (step === 1) {
-      navigate(TOKEN_ROUTES_MAP.TOKEN_SELECT, { action: 'send' });
+      navigate(APP_ROUTES_MAP.WALLET);
     }
     setStep(step - 1);
   };
@@ -114,7 +118,7 @@ const TokenSendPage = ({ params, t }) => {
   const onNext = async () => {
     if (step === 2) {
       if (!addressEmpty) {
-        const feeSend = await activeWallet.estimateTransferFee(
+        const feeSend = await activeBlockchainAccount.estimateTransferFee(
           recipientAddress,
           token.address,
           recipientAmount,
@@ -131,7 +135,7 @@ const TokenSendPage = ({ params, t }) => {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(4);
       const { txId, executableTx } =
-        await activeWallet.createTransferTransaction(
+        await activeBlockchainAccount.createTransferTransaction(
           recipientAddress,
           token.address,
           recipientAmount,
@@ -139,11 +143,13 @@ const TokenSendPage = ({ params, t }) => {
         );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(
+      await activeBlockchainAccount.confirmTransferTransaction(
         isBitcoin ? executableTx : txId,
       );
       setStatus(TRANSACTION_STATUS.SUCCESS);
-      isBitcoin && savePendingTx(txId, token.symbol, recipientAmount);
+      if (isBitcoin) {
+        savePendingTx(txId, token.symbol, recipientAmount);
+      }
       trackEvent(EVENTS_MAP.TOKEN_SEND_COMPLETED);
       setSending(false);
     } catch (e) {
@@ -163,7 +169,7 @@ const TokenSendPage = ({ params, t }) => {
     setShowScan(false);
   };
 
-  const recipient = recipientName ? recipientName : recipientAddress;
+  const recipient = recipientName || recipientAddress;
 
   const openTransaction = async () => {
     const url = `${explorer.url}/${transactionId}`;
@@ -176,15 +182,14 @@ const TokenSendPage = ({ params, t }) => {
   };
 
   const savePendingTx = async (txId, tokenSymbol, amount) => {
-    console.log(activeWallet.chain);
-    if (activeWallet.chain === 'bitcoin') {
+    if (isBitcoin) {
       const lastStatus = new Date().getTime();
       const expires = new Date().getTime() + 24 * 60 * 60 * 1000;
       let transactions = await storage.getItem(STORAGE_KEYS.PENDING_TXS);
       if (transactions === null) transactions = [];
       transactions.push({
-        account: activeWallet.publicKey,
-        chain: activeWallet.chain,
+        account: activeBlockchainAccount.publicKey,
+        chain: activeBlockchainAccount.network.blockchain,
         txId,
         recipient,
         tokenSymbol,
@@ -210,8 +215,8 @@ const TokenSendPage = ({ params, t }) => {
               />
 
               <CardButtonWallet
-                title={t('token.send.from', { name: token.name })}
-                address={activeWallet.getReceiveAddress()}
+                title={t('token.send.from', { name: activeAccount.name })}
+                address={activeBlockchainAccount.getReceiveAddress()}
                 image={token.logo}
                 imageSize="md"
                 buttonStyle={styles.buttonStyle}
@@ -234,7 +239,7 @@ const TokenSendPage = ({ params, t }) => {
                 onQR={toggleScan}
               />
 
-              {wallets.length > 0 && (
+              {accounts.length > 0 && (
                 <>
                   <GlobalPadding />
 
@@ -243,19 +248,31 @@ const TokenSendPage = ({ params, t }) => {
                     titleStyle={styles.titleStyle}
                     isOpen
                     hideCollapse>
-                    {wallets.map(wallet => (
-                      <CardButtonWallet
-                        key={wallet.address}
-                        title={getWalletName(wallet.address, config)}
-                        address={wallet.address}
-                        chain={wallet.chain}
-                        imageSize="md"
-                        onPress={() => setInputAddress(wallet.address)}
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
+                    {accounts.flatMap(account =>
+                      account.networksAccounts[networkId]
+                        .filter(
+                          blockchainAccount =>
+                            blockchainAccount.getReceiveAddress() !==
+                            activeBlockchainAccount.getReceiveAddress(),
+                        )
+                        .map(blockchainAccount => (
+                          <CardButtonWallet
+                            key={blockchainAccount.getReceiveAddress()}
+                            title={account.name}
+                            address={blockchainAccount.getReceiveAddress()}
+                            image={blockchainAccount.network.icon}
+                            imageSize="md"
+                            onPress={() =>
+                              setInputAddress(
+                                blockchainAccount.getReceiveAddress(),
+                              )
+                            }
+                            buttonStyle={globalStyles.addressBookItem}
+                            touchableStyles={globalStyles.addressBookTouchable}
+                            transparent
+                          />
+                        )),
+                    )}
                   </GlobalCollapse>
                 </>
               )}
@@ -269,19 +286,28 @@ const TokenSendPage = ({ params, t }) => {
                     titleStyle={styles.titleStyle}
                     isOpen
                     hideCollapse>
-                    {addressBook.map(addressBookItem => (
-                      <CardButtonWallet
-                        key={addressBookItem.address}
-                        title={addressBookItem.name}
-                        address={addressBookItem.address}
-                        chain={addressBookItem.chain}
-                        imageSize="md"
-                        onPress={() => setInputAddress(addressBookItem.address)}
-                        buttonStyle={globalStyles.addressBookItem}
-                        touchableStyles={globalStyles.addressBookTouchable}
-                        transparent
-                      />
-                    ))}
+                    {addressBook
+                      .filter(
+                        addressBookItem =>
+                          addressBookItem.address !==
+                            activeBlockchainAccount.getReceiveAddress() &&
+                          addressBookItem.network.id === networkId,
+                      )
+                      .map(addressBookItem => (
+                        <CardButtonWallet
+                          key={addressBookItem.address}
+                          title={addressBookItem.name}
+                          address={addressBookItem.address}
+                          image={addressBookItem.network.icon}
+                          imageSize="md"
+                          onPress={() =>
+                            setInputAddress(addressBookItem.address)
+                          }
+                          buttonStyle={globalStyles.addressBookItem}
+                          touchableStyles={globalStyles.addressBookTouchable}
+                          transparent
+                        />
+                      ))}
                   </GlobalCollapse>
                 </>
               )}
@@ -353,9 +379,11 @@ const TokenSendPage = ({ params, t }) => {
 
               <GlobalPadding />
 
-              <GlobalText type="subtitle2" center>
-                {showValue(recipientAmount * token.usdPrice, 6)} USD
-              </GlobalText>
+              {token.usdPrice && (
+                <GlobalText type="subtitle2" center>
+                  {showValue(recipientAmount * token.usdPrice, 6)} USD
+                </GlobalText>
+              )}
               <GlobalPadding size="md" />
             </GlobalLayout.Header>
 
@@ -412,7 +440,9 @@ const TokenSendPage = ({ params, t }) => {
                 <GlobalPadding size="md" />
 
                 <View style={globalStyles.inlineWell}>
-                  <GlobalText type="caption">{recipient}</GlobalText>
+                  <GlobalText type="caption" style={styles.recipientTx}>
+                    {recipient}
+                  </GlobalText>
 
                   <GlobalButton
                     onPress={() => clipboard.copy(recipient)}
@@ -427,8 +457,10 @@ const TokenSendPage = ({ params, t }) => {
                     </GlobalText>
 
                     <GlobalText type="body2">
-                      {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
-                      {DEFAULT_SYMBOL[current_blockchain]}
+                      {formatCurrency(
+                        fee,
+                        activeBlockchainAccount.network.currency,
+                      )}
                     </GlobalText>
                   </View>
                 )}
@@ -499,14 +531,16 @@ const TokenSendPage = ({ params, t }) => {
             <GlobalLayout.Footer>
               {status === 'success' || status === 'fail' ? (
                 <>
-                  <GlobalButton
-                    type="primary"
-                    wide
-                    title={t(`token.send.goto_explorer`)}
-                    onPress={openTransaction}
-                    style={globalStyles.button}
-                    touchableStyles={globalStyles.buttonTouchable}
-                  />
+                  {transactionId && (
+                    <GlobalButton
+                      type="primary"
+                      wide
+                      title={t(`token.send.goto_explorer`)}
+                      onPress={openTransaction}
+                      style={globalStyles.button}
+                      touchableStyles={globalStyles.buttonTouchable}
+                    />
+                  )}
 
                   <GlobalPadding size="md" />
 

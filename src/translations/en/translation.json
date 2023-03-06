@@ -66,17 +66,19 @@
     "help_support": "Help & Support",
     "app_version": "Version v{{version}}",
     "wallets": {
-      "your_wallets": "Your Wallets",
-      "my_wallets": "My Wallets",
-      "add_new_wallet": "Add New Wallet",
-      "remove_wallet": "Remove Wallet",
-      "remove_all_wallets": "Remove All Wallets",
-      "remove_all_wallets_description": "You're about to disconnect all your wallets. Keep in mind that you will need your seed phrases or private keys to connect them again.",
-      "remove_wallet_description": "You're about to remove this wallet. Keep in mind that, to use it again, you will need to re-select it from derivables, or use your seed phrase.",
-      "edit_wallet": "Edit Wallet",
+      "your_wallets": "Your Accounts",
+      "my_wallets": "My Blockchain Accounts",
+      "add_new_wallet": "Add New Account",
+      "remove_wallet": "Remove Account",
+      "remove_all_wallets": "Remove All Accounts",
+      "remove_all_wallets_description": "You're about to disconnect all your accounts. Keep in mind that you will need your seed phrases or private keys to connect them again.",
+      "remove_wallet_description": "You're about to remove this account. Keep in mind that, to use it again, you will need to use your seed phrase.",
+      "edit_wallet": "Edit Account",
       "edit_name": "Edit Name",
-      "edit_name_disclaimer": "Keep in mind that this name works locally for you to easily identify your wallet. None of this data is reflected on the blockchain.",
-      "edit_address": "Edit Wallet",
+      "edit_name_disclaimer": "Keep in mind that this name works locally for you to easily identify your account. None of this data is reflected on the blockchain.",
+      "show_seed_phrase_description": "",
+      "show_private_key_description": "",
+      "select_network": "Select Network",
       "tap_to_reveal": "Tap to Reveal",
       "set_profile_picture": "Set Profile Picture",
       "select_nft": "Select NFT",
@@ -84,8 +86,7 @@
       "no_avatars_found": "No Avatars found",
       "upload_photo": "Upload Photo",
       "select_nft_to_profile": "Select NFT to Profile",
-      "full_nft_description": "Full NFT Description",
-      "wallet_address": "Wallet address"
+      "full_nft_description": "Full NFT Description"
     },
     "addressbook": {
       "add": "Add Address",
@@ -93,7 +94,8 @@
       "edit": "Edit Address",
       "save": "Save Address",
       "label": "Label",
-      "empty": "Looks empty in here.\nAdd your first contact clicking the button."
+      "empty": "Looks empty in here.\nAdd your first contact clicking the button.",
+      "remove_confirmation": ""
     },
     "languages": {
       "title": "Language",
@@ -112,7 +114,7 @@
     },
     "receive": {
       "title": "Receive",
-      "warning": "This address is for tokens on the {{chain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
+      "warning": "This address is for tokens on the {{blockchain}} blockchain. Please, do not send any other tokens as it may result in funds loss."
     },
     "send": {
       "address": {
@@ -140,7 +142,6 @@
       "transaction_swapping": "Swapping",
       "transaction_warning": "Warning",
       "transaction_fail": "Transaction failed.\nPlease try again later.",
-      "swap_step": "step {{current}} of {{total}}",
       "goto_explorer": "Go to Explorer",
       "view_transaction": "View Transaction",
       "empty_account_fee": "It is not possible to estimate the fee because the destination account is empty"
@@ -157,11 +158,12 @@
     "forgotten": "Forgotten password",
     "clear": "Clear data",
     "clear_confirm": "I UNDERSTAND, DISCONNECT ALL",
-    "forgot_content": "Salmon does not store any information of your account. That includes your password. If you forgot it, you will need to disconnect all your wallets. Keep in mind that to re-import them you will need your seedphrase or private key.\n\nAre you sure you want to proceed?",
+    "forgot_content": "Salmon does not store any information of your account. That includes your password. If you forgot it, you will need to disconnect all your accounts. Keep in mind that to re-import them you will need your seedphrase or private key.\n\nAre you sure you want to proceed?",
     "buttonChecking": "Checking...",
     "buttonUnlock": "Unlock"
   },
   "wallet": {
+    "name_template": "Account #{{number}}",
     "transactions_in_progress": "Transactions In Progress",
     "swaps_in_progress": "Swaps In Progress",
     "my_tokens": "My Tokens",
@@ -169,14 +171,19 @@
     "my_nfts": "My NFTs",
     "nfts": "NFTs",
     "copied": "Copied to clipboard!",
-    "create_wallet": "Create Wallet",
-    "recover_wallet": "Recover Wallet",
+    "create_wallet": "Create Account",
+    "recover_wallet": "Recover Account",
     "select_token": "Select Token",
     "new_token": "Add custom token",
     "is_coming_soon": "is coming soon",
+    "select_derivable_account": "Select derivable account",
+    "prices_issue": "We are having issues to get prices",
+    "load_error": "We are having issues to load data",
+    "not_available_title": "Not available",
+    "not_available_msg": "This feature is not available for BTC",
     "create": {
       "messageTitle": "Keep your seed phrase safe!",
-      "messageBody": "You will need these words to restore your wallet if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your wallet. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
+      "messageBody": "You will need these words to restore your account if your browser's storage is cleared or your device is damaged or lost. \n\n Never share your seed phrase (or your private keys) with anyone or enter it into any form, as it provides full control of your account. \n\n Salmon Team will never ask for your recovery phrase or private keys.",
       "your_seed_phrase": "Your Seed Phrase",
       "your_seed_phrase_body": "Make sure you save the following words in a safe place. Also, keep in mind that the position of each word is important.",
       "copy_key": "Copy Seed Phrase",
@@ -193,13 +200,14 @@
       "choose_a_password_body": "You will need it to unlock your wallet",
       "passwordNew": "New password",
       "passwordRepeat": "Repeat password",
-      "i_accept_terms_conditions": "By tapping the Create Wallet button \nI accept the Terms & Conditions",
+      "i_accept_terms_conditions": "By tapping the Create Account button \nI accept the Terms & Conditions",
       "passwordChecking": "Checking...",
       "success_message": "Congratulations!",
-      "success_message_body": "Your wallet is now ready",
-      "go_to_my_wallet": "Go to my Wallet!",
-      "select_derivable": "Select Derivable",
+      "success_message_body": "Your account is now ready",
+      "go_to_my_wallet": "Go to my Account!",
+      "check_derivables": "Check Derivables",
       "derivable_accounts": "Derivable Accounts",
+      "no_derivable_accounts": "No derivable accounts with balance found",
       "derivable_info_icon": "ⓘ  What is a derivable?",
       "derivable_info": "What is a derivable?",
       "derivable_description": "Derivables are \"sub accounts\" that are born from the same seed phrase. Using cryptography, the seed phrase it combined with a derivation path to create these different accounts. It allows the generation of as many accounts as you wish to have under the same seed phrase.",
@@ -208,16 +216,14 @@
       "skip": "Skip"
     },
     "recover": {
-      "messageTitle": "Recover Existing Wallet",
-      "messageBody": "Recover your wallet using your 12/24 words seed phrase.",
+      "messageTitle": "Recover Existing Account",
+      "messageBody": "Recover your account using your 12/24 words seed phrase.",
       "pasteSeed": "Paste your seed phrase",
-      "i_accept_terms_conditions": "By tapping the Recover Wallet button \nI accept the Terms & Conditions"
+      "i_accept_terms_conditions": "By tapping the Recover Account button \nI accept the Terms & Conditions"
     },
     "onboarding": {
-      "titleOnboarded": "Add New Wallet",
+      "titleOnboarded": "Add New Account",
       "titleWelcome": "Welcome",
-      "select_blockchain": "Select Blockchain",
-      "select_blockchain_text": "Keep in mind that the wallet you are about to create will only work in that particular blockchain.\nYou can add other blockchains later from this same menu.",
       "title1": "Welcome to Salmon!",
       "content1": "Your all-in-one & open-source wallet\nfor the crypto space",
       "title2": "Keep the control\nof your tokens",
@@ -356,6 +362,8 @@
   "bridge": {
     "preview": "Bridge Preview",
     "less_than_minimal": "Minimum amount: {{min}} {{symbol}}",
+    "bridge": "Bridge",
+    "no_wallet_found": "No wallet found for {{chain}} blockchain",
     "provider_error": "Bridge provider not available.\nPlease try again later.",
     "recipient_type": "Recipient wallet:",
     "you_pay": "You Pay",

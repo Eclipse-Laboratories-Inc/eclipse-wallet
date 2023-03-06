@@ -32,8 +32,8 @@ const AddressBookPage = ({ t }) => {
     setToRemove(item);
     setShowRemoveDialog(!showRemoveDialog);
   };
-  const handleRemoveWallet = async item => {
-    await removeAddress(item);
+  const handleRemoveWallet = async ({ address }) => {
+    await removeAddress(address);
     setShowRemoveDialog(!showRemoveDialog);
   };
   return (
@@ -57,7 +57,7 @@ const AddressBookPage = ({ t }) => {
                   : null
               }
               address={addressBookItem.address}
-              chain={addressBookItem.chain}
+              image={addressBookItem.network.icon}
               imageSize="md"
               onPress={() => onEditAddressBook(addressBookItem)}
               onTertiaryPress={() => toggleRemoveDialog(addressBookItem)}
@@ -76,8 +76,7 @@ const AddressBookPage = ({ t }) => {
               action={() => handleRemoveWallet(toRemove)}
               text={
                 <GlobalText center type="body1">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt.
+                  {t('settings.addressbook.remove_confirmation')}
                 </GlobalText>
               }
             />

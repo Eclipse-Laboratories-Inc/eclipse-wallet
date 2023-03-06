@@ -1,35 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../../AppProvider';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import GlobalNftList from '../../../component-library/Global/GlobalNftList';
 import { useNavigation } from '../../../routes/hooks';
-import { cache, CACHE_TYPES } from '../../../utils/cache';
+import { withTranslation } from '../../../hooks/useTranslations';
 import { isMoreThanOne, updatePendingNfts } from '../../../utils/nfts';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from '../../../pages/Wallet/routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from '../../../pages/Nfts/routes';
 
-export const MyNfts = ({ activeWallet, whenLoading, translate }) => {
+const MyNfts = ({ t }) => {
   const navigate = useNavigation();
-  const [nftsList, setNftsList] = useState(null);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+  const [nftsList, setNftsList] = useState([]);
   const [listedInfo, setListedInfo] = useState([]);
 
   useEffect(() => {
-    Promise.resolve(
-      cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS,
-        () => activeWallet.getAllNftsGrouped(),
-      ),
-    ).then(async nfts => {
-      setNftsList(await updatePendingNfts(nfts));
-      whenLoading(false);
-      const listed = await activeWallet.getListedNfts();
-      setListedInfo(listed);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeWallet]);
+    const load = async () => {
+      try {
+        setLoading(true);
+        const nfts = await activeBlockchainAccount.getAllNftsGrouped();
+        setNftsList(await updatePendingNfts(nfts));
+        const listed = await activeBlockchainAccount.getListedNfts();
+        setListedInfo(listed);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const goToNFTs = token =>
+    load();
+  }, [activeBlockchainAccount]);
+
+  const goToNFTs = token => {
     navigate(WALLET_ROUTES_MAP.WALLET_NFTS, { tokenId: token.address });
+  };
 
   const onNftClick = nft => {
     if (!nft.pending) {
@@ -44,18 +50,15 @@ export const MyNfts = ({ activeWallet, whenLoading, translate }) => {
   };
 
   return (
-    <>
-      <GlobalCollapse
-        title={translate('wallet.my_nfts')}
-        viewAllAction={goToNFTs}
-        isOpen>
-        <GlobalNftList
-          nonFungibleTokens={nftsList}
-          listedInfo={listedInfo}
-          onClick={onNftClick}
-          t={translate}
-        />
-      </GlobalCollapse>
-    </>
+    <GlobalCollapse title={t('wallet.my_nfts')} viewAllAction={goToNFTs} isOpen>
+      <GlobalNftList
+        loading={loading}
+        nonFungibleTokens={nftsList}
+        listedInfo={listedInfo}
+        onClick={onNftClick}
+      />
+    </GlobalCollapse>
   );
 };
+
+export default withTranslation()(MyNfts);

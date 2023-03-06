@@ -9,12 +9,13 @@ import { getNftListedInfo } from '../../utils/nfts';
 
 const GlobalNftList = ({
   columns,
+  loading,
   nonFungibleTokens,
   listedInfo,
   onClick,
   t,
 }) => {
-  if (nonFungibleTokens === null) return <GlobalSkeleton type="NftList" />;
+  if (loading) return <GlobalSkeleton type="NftList" />;
   if (nonFungibleTokens.length === 0) return <Empty t={t} />;
   return (
     <List

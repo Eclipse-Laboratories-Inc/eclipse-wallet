@@ -24,6 +24,20 @@ const EXPLORERS = {
     testnet: SOLANA_EXPLORERS,
     devnet: SOLANA_EXPLORERS,
   },
+  ETHEREUM: {
+    mainnet: {
+      ETHERSCAN: {
+        name: 'Etherscan',
+        url: 'https://etherscan.io/tx',
+      },
+    },
+    goerli: {
+      ETHERSCAN: {
+        name: 'Etherscan',
+        url: 'https://goerli.etherscan.io/tx',
+      },
+    },
+  },
   NEAR: {
     mainnet: {
       NEAR_EXPLORER: {
@@ -39,9 +53,17 @@ const EXPLORERS = {
     },
   },
   BITCOIN: {
-    BLOCKCYPHER: {
-      name: 'Blockcypher',
-      url: 'https://live.blockcypher.com/btc-testnet/tx',
+    mainnet: {
+      BLOCKCYPHER: {
+        name: 'Blockcypher',
+        url: 'https://live.blockcypher.com/btc/tx',
+      },
+    },
+    testnet: {
+      BLOCKCYPHER: {
+        name: 'Blockcypher',
+        url: 'https://live.blockcypher.com/btc-testnet/tx',
+      },
     },
   },
 };
@@ -50,7 +72,7 @@ const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   NEAR: 'NEAR_EXPLORER',
   ETHEREUM: 'ETHERSCAN',
-  BITCOIN: 'ETHERSCAN',
+  BITCOIN: 'BLOCKCYPHER',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };

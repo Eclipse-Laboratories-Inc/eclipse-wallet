@@ -1,19 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
+import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation, withParams } from '../../routes/hooks';
 import { ROUTES_MAP as APP_ROUTES_MAP } from '../../routes/app-routes';
 import { ROUTES_MAP as NFTS_ROUTES_MAP } from './routes';
 import { withTranslation } from '../../hooks/useTranslations';
-import { cache, CACHE_TYPES } from '../../utils/cache';
-import {
-  getTransactionImage,
-  getWalletName,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS, DEFAULT_SYMBOL } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -34,10 +29,10 @@ import clipboard from '../../utils/clipboard.native';
 import storage from '../../utils/storage';
 import STORAGE_KEYS from '../../utils/storageKeys';
 
-import { getWalletChain } from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import useUserConfig from '../../hooks/useUserConfig';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
+import { formatCurrency } from '../../utils/amount';
 
 const styles = StyleSheet.create({
   mediumSizeImage: {
@@ -59,6 +54,10 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     textTransform: 'none',
   },
+  recipientTx: {
+    width: '90%',
+    fontSize: 12,
+  },
 });
 
 const NftsSendPage = ({ params, t }) => {
@@ -70,29 +69,28 @@ const NftsSendPage = ({ params, t }) => {
   const [nftDetail, setNftDetail] = useState({});
   const [transactionId, setTransactionId] = useState();
   const [fee, setFee] = useState(null);
-  const [{ activeWallet, wallets, config, addressBook }] =
-    useContext(AppContext);
+  const [
+    {
+      accounts,
+      activeAccount,
+      activeBlockchainAccount,
+      networkId,
+      addressBook,
+    },
+  ] = useContext(AppContext);
   const [validAddress, setValidAddress] = useState(false);
   const [recipientAddress, setRecipientAddress] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [inputAddress, setInputAddress] = useState('');
-  const current_blockchain = getWalletChain(activeWallet);
-  const { explorer } = useUserConfig(
-    current_blockchain,
-    activeWallet.networkId,
-  );
+  const { explorer } = useUserConfig();
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
   useEffect(() => {
-    if (activeWallet) {
-      cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeWallet.getAllNfts(),
-      ).then(nfts => {
+    if (activeBlockchainAccount) {
+      activeBlockchainAccount.getAllNfts().then(nfts => {
         const nft = nfts.find(n => n.mint === params.id);
         if (nft) {
           setNftDetail(nft);
@@ -100,10 +98,12 @@ const NftsSendPage = ({ params, t }) => {
         setLoaded(true);
       });
     }
-  }, [activeWallet, params.id]);
+  }, [activeBlockchainAccount, params.id]);
 
   const goToBack = () => {
-    if (step === 3) {
+    if (step === 1) {
+      navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
+    } else if (step === 3) {
       navigate(APP_ROUTES_MAP.WALLET);
     } else {
       setStep(step - 1);
@@ -114,20 +114,20 @@ const NftsSendPage = ({ params, t }) => {
     navigate(NFTS_ROUTES_MAP.NFTS_DETAIL, { id: params.id });
 
   const onNext = async () => {
-    if (!addressEmpty) {
-      setLoaded(false);
-      setStep(2);
-      try {
-        const feeSend = await activeWallet.estimateTransferFee(
-          recipientAddress,
-          nftDetail.mint,
-          1,
-        );
-        setFee(feeSend);
-        setLoaded(true);
-      } catch (e) {
-        console.log(e);
-      }
+    setLoaded(false);
+    setStep(2);
+    try {
+      const feeSend = await activeBlockchainAccount.estimateTransferFee(
+        recipientAddress,
+        nftDetail.mint,
+        1,
+        { ...pick(nftDetail, ['contract', 'standard']) },
+      );
+      setFee(feeSend);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoaded(true);
     }
   };
 
@@ -136,16 +136,16 @@ const NftsSendPage = ({ params, t }) => {
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
-      const { txId } = await activeWallet.createTransferTransaction(
+      const { txId } = await activeBlockchainAccount.createTransferTransaction(
         recipientAddress,
         nftDetail.mint,
         1,
-        { isNft: true, contractId: nftDetail.contractId },
+        { ...pick(nftDetail, ['contract', 'standard']) },
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      await activeWallet.confirmTransferTransaction(txId);
       savePendingNftSend();
+      await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
       setSending(false);
@@ -159,11 +159,13 @@ const NftsSendPage = ({ params, t }) => {
   };
 
   const savePendingNftSend = async () => {
+    const pendingExpires = new Date().getTime() + 60 * 1000;
     let pendingNfts = await storage.getItem(STORAGE_KEYS.PENDING_NFTS_SEND);
     if (pendingNfts === null) pendingNfts = [];
     pendingNfts.push({
       ...nftDetail,
       pending: true,
+      pendingExpires,
     });
     storage.setItem(STORAGE_KEYS.PENDING_NFTS_SEND, pendingNfts);
   };
@@ -194,11 +196,8 @@ const NftsSendPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeBlockchainAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -232,7 +231,7 @@ const NftsSendPage = ({ params, t }) => {
               onQR={toggleScan}
             />
 
-            {wallets.length > 0 && (
+            {accounts.length > 0 && (
               <>
                 <GlobalPadding />
 
@@ -241,19 +240,31 @@ const NftsSendPage = ({ params, t }) => {
                   titleStyle={styles.titleStyle}
                   isOpen
                   hideCollapse>
-                  {wallets.map(wallet => (
-                    <CardButtonWallet
-                      key={wallet.address}
-                      title={getWalletName(wallet.address, config)}
-                      address={wallet.address}
-                      chain={wallet.chain}
-                      imageSize="md"
-                      onPress={() => setInputAddress(wallet.address)}
-                      buttonStyle={globalStyles.addressBookItem}
-                      touchableStyles={globalStyles.addressBookTouchable}
-                      transparent
-                    />
-                  ))}
+                  {accounts.flatMap(account =>
+                    account.networksAccounts[networkId]
+                      .filter(
+                        blockchainAccount =>
+                          blockchainAccount.getReceiveAddress() !==
+                          activeBlockchainAccount.getReceiveAddress(),
+                      )
+                      .map(blockchainAccount => (
+                        <CardButtonWallet
+                          key={blockchainAccount.getReceiveAddress()}
+                          title={account.name}
+                          address={blockchainAccount.getReceiveAddress()}
+                          image={blockchainAccount.network.icon}
+                          imageSize="md"
+                          onPress={() =>
+                            setInputAddress(
+                              blockchainAccount.getReceiveAddress(),
+                            )
+                          }
+                          buttonStyle={globalStyles.addressBookItem}
+                          touchableStyles={globalStyles.addressBookTouchable}
+                          transparent
+                        />
+                      )),
+                  )}
                 </GlobalCollapse>
               </>
             )}
@@ -267,19 +278,26 @@ const NftsSendPage = ({ params, t }) => {
                   titleStyle={styles.titleStyle}
                   isOpen
                   hideCollapse>
-                  {addressBook.map(addressBookItem => (
-                    <CardButtonWallet
-                      key={addressBookItem.address}
-                      title={addressBookItem.name}
-                      address={addressBookItem.address}
-                      chain={addressBookItem.chain}
-                      imageSize="md"
-                      onPress={() => setInputAddress(addressBookItem.address)}
-                      buttonStyle={globalStyles.addressBookItem}
-                      touchableStyles={globalStyles.addressBookTouchable}
-                      transparent
-                    />
-                  ))}
+                  {addressBook
+                    .filter(
+                      addressBookItem =>
+                        addressBookItem.address !==
+                          activeBlockchainAccount.getReceiveAddress() &&
+                        addressBookItem.network.id === networkId,
+                    )
+                    .map(addressBookItem => (
+                      <CardButtonWallet
+                        key={addressBookItem.address}
+                        title={addressBookItem.name}
+                        address={addressBookItem.address}
+                        image={addressBookItem.network.icon}
+                        imageSize="md"
+                        onPress={() => setInputAddress(addressBookItem.address)}
+                        buttonStyle={globalStyles.addressBookItem}
+                        touchableStyles={globalStyles.addressBookTouchable}
+                        transparent
+                      />
+                    ))}
                 </GlobalCollapse>
               </>
             )}
@@ -316,11 +334,8 @@ const NftsSendPage = ({ params, t }) => {
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -352,7 +367,7 @@ const NftsSendPage = ({ params, t }) => {
               <GlobalPadding size="md" />
 
               <View style={globalStyles.inlineWell}>
-                <GlobalText type="caption" style={{ fontSize: 8 }}>
+                <GlobalText type="caption" style={styles.recipientTx}>
                   {recipientAddress}
                 </GlobalText>
 
@@ -368,8 +383,10 @@ const NftsSendPage = ({ params, t }) => {
                     Network Fee
                   </GlobalText>
                   <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS[current_blockchain]}{' '}
-                    {DEFAULT_SYMBOL[current_blockchain]}
+                    {formatCurrency(
+                      fee,
+                      activeBlockchainAccount.network.currency,
+                    )}
                   </GlobalText>
                 </View>
               )}
@@ -434,13 +451,6 @@ const NftsSendPage = ({ params, t }) => {
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}
-              {/* {(status === 'success' || status === 'fail') && (
-                  <GlobalText type="body1" center>
-                    3 lines max Excepteur sint occaecat cupidatat non proident,
-                    sunt ?
-                  </GlobalText>
-                )} */}
-
               <GlobalPadding size="4xl" />
             </View>
           </GlobalLayout.Header>
@@ -448,14 +458,16 @@ const NftsSendPage = ({ params, t }) => {
           <GlobalLayout.Footer>
             {status === 'success' || status === 'fail' ? (
               <>
-                <GlobalButton
-                  type="primary"
-                  wide
-                  title={t(`token.send.goto_explorer`)}
-                  onPress={openTransaction}
-                  style={globalStyles.button}
-                  touchableStyles={globalStyles.buttonTouchable}
-                />
+                {transactionId && (
+                  <GlobalButton
+                    type="primary"
+                    wide
+                    title={t(`token.send.goto_explorer`)}
+                    onPress={openTransaction}
+                    style={globalStyles.button}
+                    touchableStyles={globalStyles.buttonTouchable}
+                  />
+                )}
 
                 <GlobalPadding size="md" />
 
@@ -469,20 +481,24 @@ const NftsSendPage = ({ params, t }) => {
                 />
               </>
             ) : (
-              <GlobalButton
-                type="text"
-                wide
-                textStyle={
-                  status === 'creating' ? styles.creatingTx : styles.viewTxLink
-                }
-                title={
-                  status === 'creating'
-                    ? t(`token.send.transaction_creating`)
-                    : t(`token.send.view_transaction`)
-                }
-                readonly={status === 'creating'}
-                onPress={openTransaction}
-              />
+              transactionId && (
+                <GlobalButton
+                  type="text"
+                  wide
+                  textStyle={
+                    status === 'creating'
+                      ? styles.creatingTx
+                      : styles.viewTxLink
+                  }
+                  title={
+                    status === 'creating'
+                      ? t(`token.send.transaction_creating`)
+                      : t(`token.send.view_transaction`)
+                  }
+                  readonly={status === 'creating'}
+                  onPress={openTransaction}
+                />
+              )
             )}
           </GlobalLayout.Footer>
         </>

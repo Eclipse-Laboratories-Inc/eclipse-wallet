@@ -7,36 +7,39 @@ import { withTranslation } from '../../hooks/useTranslations';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
 import GlobalNftList from '../../component-library/Global/GlobalNftList';
-import { cache, CACHE_TYPES } from '../../utils/cache';
 
 import { AppContext } from '../../AppProvider';
 
 const AccountEditProfileNftsPage = ({ params, t }) => {
-  const [{ activeWallet }] = useContext(AppContext);
-  const [nfts, setNfts] = useState(null);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
+  const [loading, setLoading] = useState(true);
+  const [nfts, setNfts] = useState([]);
 
   const navigate = useNavigation();
   useEffect(() => {
-    if (activeWallet) {
-      cache(
-        `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-        CACHE_TYPES.NFTS_ALL,
-        () => activeWallet.getAllNfts(),
-      ).then(result => {
-        console.log(result);
-        setNfts(result);
-      });
-    }
-  }, [activeWallet]);
+    const load = async () => {
+      if (activeBlockchainAccount) {
+        try {
+          setLoading(true);
+          const result = await activeBlockchainAccount.getAllNfts();
+          setNfts(result);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+  }, [activeBlockchainAccount]);
 
   const onBack = () =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE, {
-      address: params.address,
+      id: params.id,
     });
   const onClick = nft =>
     navigate(ROUTES_SETTINGS_MAP.SETTINGS_ACCOUNT_EDIT_PROFILE_NFTS_DETAIL, {
-      address: nft.mint,
-      id: nft.mint,
+      id: params.id,
+      mint: nft.mint,
     });
   return (
     <GlobalLayout>
@@ -45,7 +48,11 @@ const AccountEditProfileNftsPage = ({ params, t }) => {
           onBack={onBack}
           title={t(`settings.wallets.set_profile_picture`)}
         />
-        <GlobalNftList nonFungibleTokens={nfts} onClick={onClick} />
+        <GlobalNftList
+          loading={loading}
+          nonFungibleTokens={nfts}
+          onClick={onClick}
+        />
       </GlobalLayout.Header>
     </GlobalLayout>
   );

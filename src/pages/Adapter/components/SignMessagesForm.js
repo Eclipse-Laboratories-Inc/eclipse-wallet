@@ -21,7 +21,7 @@ const SignMessagesForm = ({
   onReject,
   onError,
 }) => {
-  const [{ activeWallet }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const data = useMemo(() => {
     if (!(request.params.data instanceof Uint8Array)) {
@@ -39,19 +39,21 @@ const SignMessagesForm = ({
   );
 
   const createSignature = useCallback(() => {
-    const secretKey = bs58.decode(activeWallet.retrieveSecurePrivateKey());
+    const secretKey = bs58.decode(
+      activeBlockchainAccount.retrieveSecurePrivateKey(),
+    );
     return bs58.encode(nacl.sign.detached(data, secretKey));
-  }, [activeWallet, data]);
+  }, [activeBlockchainAccount, data]);
 
   const getMessage = useCallback(
     () => ({
       result: {
         signature: createSignature(data),
-        publicKey: activeWallet.publicKey.toBase58(),
+        publicKey: activeBlockchainAccount.publicKey.toBase58(),
       },
       id: request.id,
     }),
-    [request, activeWallet, data, createSignature],
+    [request, activeBlockchainAccount, data, createSignature],
   );
 
   const onAccept = useCallback(() => {

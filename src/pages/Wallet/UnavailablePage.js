@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { AppContext } from '../../AppProvider';
+import React from 'react';
 import { withTranslation } from '../../hooks/useTranslations';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
 import GlobalBackTitle from '../../component-library/Global/GlobalBackTitle';
@@ -8,17 +7,15 @@ import GlobalText from '../../component-library/Global/GlobalText';
 import Header from '../../component-library/Layout/Header';
 
 const UnavailablePage = ({ t }) => {
-  const [{ activeWallet, config }] = useContext(AppContext);
-
   return (
     <GlobalLayout>
       <GlobalLayout.Header>
-        <Header activeWallet={activeWallet} config={config} t={t} />
-        <GlobalBackTitle title="Not available" />
+        <Header />
+        <GlobalBackTitle title={t('wallet.not_available_title')} />
 
         <GlobalPadding />
         <GlobalText type={'body1'} center>
-          Not available
+          {t('wallet.not_available_msg')}
         </GlobalText>
       </GlobalLayout.Header>
     </GlobalLayout>

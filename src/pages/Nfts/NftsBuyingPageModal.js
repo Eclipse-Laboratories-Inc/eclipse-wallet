@@ -4,13 +4,8 @@ import { StyleSheet, View, Linking } from 'react-native';
 import { AppContext } from '../../AppProvider';
 import { withParams } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
-import {
-  getTransactionImage,
-  getWalletName,
-  TRANSACTION_STATUS,
-} from '../../utils/wallet';
+import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
 import { getMediaRemoteUrl } from '../../utils/media';
-import { TOKEN_DECIMALS } from '../Transactions/constants';
 
 import theme, { globalStyles } from '../../component-library/Global/theme';
 import GlobalLayout from '../../component-library/Global/GlobalLayout';
@@ -77,15 +72,15 @@ const NftsBuyingPageModal = ({
   const [solBalance, setSolBalance] = useState(null);
   const [price, setPrice] = useState(null);
   const [fee, setFee] = useState(5000);
-  const [{ activeWallet, config }] = useContext(AppContext);
+  const [{ activeBlockchainAccount }] = useContext(AppContext);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_BUY);
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       Promise.all([
-        activeWallet.getBalance(),
-        activeWallet.getCollectionItems(id, pageNumber),
+        activeBlockchainAccount.getBalance(),
+        activeBlockchainAccount.getCollectionItems(id, pageNumber),
       ]).then(async ([balance, nfts]) => {
         const tks = balance.items || [];
         const nft = nfts.market_place_snapshots.find(
@@ -99,10 +94,10 @@ const NftsBuyingPageModal = ({
         setLoaded(true);
       });
     }
-  }, [activeWallet, id, nftId, pageNumber]);
+  }, [activeBlockchainAccount, id, nftId, pageNumber]);
 
   const insufficientFunds =
-    solBalance?.uiAmount < price * 0.01 + price + fee / TOKEN_DECIMALS.SOLANA;
+    solBalance?.uiAmount < price * 0.01 + price + fee / 1000000000;
 
   const goToBack = () => {
     setIsModalOpen(false);
@@ -118,14 +113,14 @@ const NftsBuyingPageModal = ({
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(2);
-      const txId = await activeWallet.buyNft(
+      const txId = await activeBlockchainAccount.buyNft(
         nftDetail.token_address,
         price,
         nftDetail.lowest_listing_mpa?.marketplace_program_id,
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.BUYING);
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeBlockchainAccount.confirmTransferTransaction(txId);
       savePendingNftBuy();
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_BUY_COMPLETED);
@@ -168,7 +163,7 @@ const NftsBuyingPageModal = ({
   };
 
   const openMarketplace = async () => {
-    const url = `https://hyperspace.xyz/account/${activeWallet.getReceiveAddress()}`;
+    const url = `https://hyperspace.xyz/account/${activeBlockchainAccount.getReceiveAddress()}`;
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -184,11 +179,8 @@ const NftsBuyingPageModal = ({
           <GlobalLayout.Header>
             <GlobalBackTitle
               onBack={goToBack}
-              inlineTitle={getWalletName(
-                activeWallet.getReceiveAddress(),
-                config,
-              )}
-              inlineAddress={activeWallet.getReceiveAddress()}
+              inlineTitle={activeBlockchainAccount.name}
+              inlineAddress={activeBlockchainAccount.getReceiveAddress()}
             />
 
             <GlobalText type="headline2" center>
@@ -278,9 +270,7 @@ const NftsBuyingPageModal = ({
                   <GlobalText type="caption" color="tertiary">
                     {t('adapter.detail.transaction.fee')}
                   </GlobalText>
-                  <GlobalText type="body2">
-                    {fee / TOKEN_DECIMALS.SOLANA} SOL
-                  </GlobalText>
+                  <GlobalText type="body2">{fee / 1000000000} SOL</GlobalText>
                 </View>
               )}
               {/* {addressEmpty && (

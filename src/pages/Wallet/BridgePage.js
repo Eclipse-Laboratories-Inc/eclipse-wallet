@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import pick from 'lodash/pick';
 
@@ -20,20 +19,23 @@ import CardButtonWallet from '../../component-library/CardButton/CardButtonWalle
 import GlobalAlert from '../../component-library/Global/GlobalAlert';
 import InputWithTokenSelector from '../../features/InputTokenSelector';
 import { getTransactionImage, TRANSACTION_STATUS } from '../../utils/wallet';
-import { cache, CACHE_TYPES, invalidate } from '../../utils/cache';
+import { CACHE_TYPES, invalidate } from '../../utils/cache';
 import { getMediaRemoteUrl } from '../../utils/media';
 import { showValue } from '../../utils/amount';
+import {
+  getBridgeSupportedTokens,
+  getBridgeAvailableTokens,
+  getBridgeFeaturedTokens,
+  getBridgeEstimatedAmount,
+  getBridgeMinimalAmount,
+  createBridgeExchange,
+} from '4m-wallet-adapter';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import BasicRadios from '../../component-library/Radios/BasicRadios';
 import IconSwapAccent1 from '../../assets/images/IconSwapAccent1.png';
 import IconSpinner from '../../assets/images/IconTransactionSending.gif';
 
-import {
-  getWalletChain,
-  getBlockchainIcon,
-  getWalletName,
-} from '../../utils/wallet';
 import useAnalyticsEventTracker from '../../hooks/useAnalyticsEventTracker';
 import { SECTIONS_MAP, EVENTS_MAP } from '../../utils/tracking';
 import GlobalInputWithButton from '../../component-library/Global/GlobalInputWithButton';
@@ -58,14 +60,14 @@ const styles = StyleSheet.create({
     marginRight: theme.gutters.paddingXS,
     marginTop: theme.gutters.paddingXXS,
   },
+  bigDetailItem: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
 });
 
 const BigDetailItem = ({ title, amount, symbol, logo, t }) => (
-  <View
-    style={[
-      globalStyles.inlineWell,
-      { flexDirection: 'column', alignItems: 'flex-start' },
-    ]}>
+  <View style={[globalStyles.inlineWell, styles.bigDetailItem]}>
     <GlobalText type="body1" color="secondary">
       {title}
     </GlobalText>
@@ -125,27 +127,40 @@ const GlobalButtonTimer = React.memo(function ({
   );
 });
 
-const mergeStealthExTokenData = (bsupp, tks) => {
+const mergeStealthExTokenData = (bsupp, tks, network) => {
+  const smbl = network.currency.symbol.toLowerCase();
   const isMatch = (tok1, tok2) =>
     tok1.symbol === tok2.symbol.toLowerCase() ||
-    tok1.symbol === tok2.symbol.slice(0, 3).concat('sol').toLowerCase() ||
-    tok1.symbol === tok2.symbol.slice(0, 4).concat('sol').toLowerCase();
+    tok1.symbol === tok2.symbol.slice(0, 3).concat(smbl).toLowerCase() ||
+    tok1.symbol === tok2.symbol.slice(0, 4).concat(smbl).toLowerCase();
   return bsupp
-    .filter(el => {
-      return tks.find(element => {
-        return isMatch(el, element);
-      });
-    })
+    .filter(
+      tok =>
+        tok.network.split(' ')[0] === network.name.toUpperCase() ||
+        tok.network === 'MAINNET' ||
+        tok.network === smbl ||
+        tok.network === smbl.toUpperCase(),
+    )
+    .filter(el => tks?.find(element => isMatch(el, element)))
     .map(el => ({
       ...tks.find(element => isMatch(el, element)),
       ...el,
+      blockchain: network.blockchain,
     }));
 };
 
 const BridgePage = ({ t }) => {
   const navigate = useNavigation();
-  const [{ activeWallet, wallets, hiddenValue, config }, { importTokens }] =
-    useContext(AppContext);
+  const [
+    {
+      accounts,
+      activeAccount,
+      activeBlockchainAccount,
+      hiddenValue,
+      activeTokens,
+    },
+    { changeNetwork },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [ready, setReady] = useState(false);
@@ -158,7 +173,7 @@ const BridgePage = ({ t }) => {
   const [outToken, setOutToken] = useState(null);
   const [status, setStatus] = useState();
   const [recipientAddress, setRecipientAddress] = useState('');
-  const [recipientType, setRecipientType] = useState('');
+  const [recipientType, setRecipientType] = useState('own');
   const [validAddress, setValidAddress] = useState(false);
   const [addressEmpty, setAddressEmpty] = useState(false);
   const [checkingAddress, setCheckingAddress] = useState(false);
@@ -166,14 +181,28 @@ const BridgePage = ({ t }) => {
   const [minimalAmount, setMinimalAmount] = useState(null);
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.SWAP);
-  const current_blockchain = getWalletChain(activeWallet);
+  const current_blockchain = activeBlockchainAccount.network.blockchain;
+  const current_symbol = activeBlockchainAccount.network.currency.symbol;
 
   const tokensAddresses = useMemo(
+    () => Object.keys(activeTokens),
+    [activeTokens],
+  );
+
+  const recipientAccounts = useMemo(
     () =>
-      Object.keys(
-        get(config, `${activeWallet?.getReceiveAddress()}.tokens`, {}),
+      accounts.filter(
+        account =>
+          account.networksAccounts[
+            `${
+              outToken?.network === 'MAINNET'
+                ? outToken?.name?.toLowerCase().split(' ')[0]
+                : outToken?.network?.toLowerCase() ||
+                  outToken?.name?.toLowerCase().split(' ')[0]
+            }-mainnet`
+          ],
       ),
-    [activeWallet, config],
+    [accounts, outToken?.name, outToken?.network],
   );
 
   const RECIPIENT_OPTIONS = [
@@ -182,35 +211,53 @@ const BridgePage = ({ t }) => {
   ];
 
   useEffect(() => {
-    if (activeWallet) {
+    if (activeBlockchainAccount) {
       invalidate(CACHE_TYPES.BRIDGE_SUPPORTED);
       Promise.all([
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BALANCE,
-          () => activeWallet.getBalance(tokensAddresses),
-        ),
-        cache(
-          `${activeWallet.networkId}-${activeWallet.getReceiveAddress()}`,
-          CACHE_TYPES.BRIDGE_SUPPORTED,
-          () => activeWallet.getBridgeSupportedTokens(),
-        ),
-        activeWallet.getBridgeFeaturedTokens('sol'),
-        activeWallet.getBridgeAvailableTokens('sol'),
+        Object.values(activeAccount.networksAccounts)
+          .filter(accts => accts[0].network.id.includes('mainnet'))
+          .flatMap(async accts => ({
+            network: accts[0].network,
+            tokens: await accts[0].getBalance(),
+          })),
+        getBridgeSupportedTokens(),
+        getBridgeFeaturedTokens(current_symbol.toLowerCase()),
+        getBridgeAvailableTokens(current_symbol.toLowerCase()),
       ])
         .then(([balance, bsupp, ftks, avtks]) => {
-          const tks = balance.items || [];
-          const tksSupp = mergeStealthExTokenData(bsupp, tks);
-          setTokens(tksSupp);
-          setInToken(tks.length ? tks[0] : null);
-          setOutToken(ftks.length ? ftks[0] : null);
-          setFeaturedTokens(ftks);
-          setAvailableTokens(avtks);
-          setReady(true);
+          Promise.all(balance).then(bal => {
+            const tksSupp = bal
+              .map(ntwBlc =>
+                mergeStealthExTokenData(
+                  bsupp,
+                  ntwBlc.tokens.items,
+                  ntwBlc.network,
+                ),
+              )
+              .flat(1);
+            setTokens(tksSupp);
+            setInToken(
+              tksSupp.length
+                ? tksSupp.filter(
+                    tok => tok.symbol === current_symbol.toLowerCase(),
+                  )[0]
+                : null,
+            );
+            setOutToken(ftks.length ? ftks[0] : null);
+            setFeaturedTokens(ftks);
+            setAvailableTokens(avtks);
+            setReady(true);
+          });
         })
         .catch(e => setProviderError(true));
     }
-  }, [activeWallet, tokensAddresses, providerError]);
+  }, [
+    activeBlockchainAccount,
+    tokensAddresses,
+    providerError,
+    current_symbol,
+    activeAccount.networksAccounts,
+  ]);
 
   const [inAmount, setInAmount] = useState(null);
   const [outAmount, setOutAmount] = useState('--');
@@ -222,8 +269,8 @@ const BridgePage = ({ t }) => {
   const onChangeInToken = token => {
     setInToken(token);
     Promise.all([
-      activeWallet.getBridgeFeaturedTokens(token.symbol.toLowerCase()),
-      activeWallet.getBridgeAvailableTokens(token.symbol.toLowerCase()),
+      getBridgeFeaturedTokens(token.symbol.toLowerCase()),
+      getBridgeAvailableTokens(token.symbol.toLowerCase()),
     ]).then(([ftks, avtks]) => {
       setFeaturedTokens(ftks);
       setAvailableTokens(avtks);
@@ -233,7 +280,7 @@ const BridgePage = ({ t }) => {
   const onRefreshEstimate = () => {
     if (Number(inAmount) > 0 && outToken) {
       Promise.resolve(
-        activeWallet.getBridgeEstimatedAmount(
+        getBridgeEstimatedAmount(
           inToken.symbol.toLowerCase(),
           outToken.symbol,
           inAmount,
@@ -248,24 +295,21 @@ const BridgePage = ({ t }) => {
 
   const debounceIn = useMemo(
     () =>
-      debounce((inAmount, inToken, outToken) => {
+      debounce((inAmt, inTkn, outTkn) => {
         Promise.all([
-          activeWallet.getBridgeEstimatedAmount(
-            inToken.symbol.toLowerCase(),
-            outToken.symbol,
-            inAmount,
+          getBridgeEstimatedAmount(
+            inTkn.symbol.toLowerCase(),
+            outTkn.symbol,
+            inAmt,
           ),
-          activeWallet.getBridgeMinimalAmount(
-            inToken.symbol.toLowerCase(),
-            outToken.symbol,
-          ),
+          getBridgeMinimalAmount(inTkn.symbol.toLowerCase(), outTkn.symbol),
         ]).then(([estAmount, minAmount]) => {
-          setOutAmount(parseFloat(inAmount) >= minAmount ? estAmount : '--');
+          setOutAmount(parseFloat(inAmt) >= minAmount ? estAmount : '--');
           setMinimalAmount(minAmount);
           setProcessingOutAmount(false);
         });
       }, 500),
-    [activeWallet],
+    [],
   );
 
   useEffect(() => {
@@ -277,7 +321,7 @@ const BridgePage = ({ t }) => {
       setOutAmount('--');
       setProcessingOutAmount(false);
     }
-  }, [activeWallet, debounceIn, inAmount, inToken, outToken]);
+  }, [activeBlockchainAccount, debounceIn, inAmount, inToken, outToken]);
 
   useEffect(() => {
     setError(false);
@@ -298,23 +342,24 @@ const BridgePage = ({ t }) => {
   const onConfirm = async () => {
     setError(false);
     setProcessing(true);
+    changeNetwork(`${inToken?.blockchain}-mainnet`);
     try {
       setStatus(TRANSACTION_STATUS.CREATING);
       setStep(3);
       setStatus(TRANSACTION_STATUS.BRIDGING);
-      const exDet = await activeWallet.createBridgeExchange(
+      const exDet = await createBridgeExchange(
         inToken.symbol.toLowerCase(),
         outToken.symbol,
         inAmount,
         recipientAddress,
       );
-      const { txId } = await activeWallet.createTransferTransaction(
+      const { txId } = await activeBlockchainAccount.createTransferTransaction(
         exDet?.address_from,
         inToken.address,
         exDet?.expected_amount,
         { ...pick(inToken, 'decimals') },
       );
-      await activeWallet.confirmTransferTransaction(txId);
+      await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.BRIDGE_SUCCESS);
       savePendingTx(exDet);
       trackEvent(EVENTS_MAP.BRIDGE_COMPLETED);
@@ -331,7 +376,7 @@ const BridgePage = ({ t }) => {
     }
   };
 
-  const getStatusColor = status => {
+  const statusColor = useMemo(() => {
     switch (status) {
       case 'success':
         return 'positive';
@@ -340,7 +385,7 @@ const BridgePage = ({ t }) => {
       default:
         return 'primary';
     }
-  };
+  }, [status]);
 
   const validateAddress = useMemo(
     () =>
@@ -363,7 +408,7 @@ const BridgePage = ({ t }) => {
         }
       }, 500),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeWallet],
+    [activeBlockchainAccount],
   );
   useEffect(() => {
     setResult();
@@ -382,8 +427,8 @@ const BridgePage = ({ t }) => {
     let transactions = await storage.getItem(STORAGE_KEYS.PENDING_BRIDGE_TXS);
     if (transactions === null) transactions = [];
     transactions.push({
-      account: activeWallet.publicKey,
-      chain: activeWallet.chain,
+      account: activeBlockchainAccount.publicKey,
+      chain: activeBlockchainAccount.chain,
       lastStatus,
       expires,
       ...exDet,
@@ -396,8 +441,8 @@ const BridgePage = ({ t }) => {
       {step === 1 &&
         (providerError ? (
           <GlobalLayout.Header>
-            <Header activeWallet={activeWallet} config={config} t={t} />
-            <GlobalBackTitle title={t('actions.bridge')} />
+            <Header />
+            <GlobalBackTitle title={t('bridge.bridge')} />
             <GlobalPadding size="4xl" />
             <GlobalPadding size="4xl" />
             <GlobalPadding size="4xl" />
@@ -418,8 +463,8 @@ const BridgePage = ({ t }) => {
         ) : (
           <>
             <GlobalLayout.Header>
-              <Header activeWallet={activeWallet} config={config} t={t} />
-              <GlobalBackTitle title={t('actions.bridge')} />
+              <Header />
+              <GlobalBackTitle title={t('bridge.bridge')} />
               <GlobalPadding />
               {ready && tokens.length && (
                 <>
@@ -433,7 +478,7 @@ const BridgePage = ({ t }) => {
                   <GlobalPadding size="xs" />
 
                   <InputWithTokenSelector
-                    value={inAmount}
+                    value={inAmount || ''}
                     setValue={setInAmount}
                     placeholder={t('swap.enter_amount')}
                     title={inToken.symbol.toUpperCase()}
@@ -497,7 +542,7 @@ const BridgePage = ({ t }) => {
                   <GlobalPadding size="xs" />
 
                   <InputWithTokenSelector
-                    value={outAmount}
+                    value={outAmount || '--'}
                     setValue={setOutAmount}
                     title={outToken ? outToken.symbol.toUpperCase() : '--'}
                     description={outToken.network || outToken.name}
@@ -549,13 +594,13 @@ const BridgePage = ({ t }) => {
               title={t('bridge.you_pay')}
               amount={inAmount}
               symbol={inToken.symbol.toUpperCase()}
-              logo={inToken.logo || getBlockchainIcon(current_blockchain)}
+              logo={inToken.logo || current_blockchain.network.icon}
             />
             <BigDetailItem
               title={t('swap.you_receive')}
               amount={outAmount}
               symbol={outToken.symbol.toUpperCase()}
-              logo={outToken.logo || getBlockchainIcon(current_blockchain)}
+              logo={outToken.logo || current_blockchain.network.icon}
             />
             <GlobalPadding size="lg" />
             <BasicRadios
@@ -595,44 +640,68 @@ const BridgePage = ({ t }) => {
                 />
               </>
             )}
-            {wallets.length > 0 && recipientType === 'own' && (
-              <>
-                <GlobalPadding size="xxs" />
-                <GlobalCollapse
-                  title={t('settings.wallets.my_wallets')}
-                  titleStyle={styles.titleStyle}
-                  isOpen
-                  hideCollapse>
-                  {wallets.map(
-                    wallet =>
-                      (wallet.chain === outToken.network.toUpperCase() ||
-                        wallet.chain ===
-                          outToken.name.toUpperCase().split(' ')[0]) && (
+            {recipientType === 'own' &&
+              (recipientAccounts.length > 0 ? (
+                <>
+                  <GlobalPadding size="xxs" />
+                  <GlobalCollapse
+                    title={t('settings.wallets.my_wallets')}
+                    titleStyle={styles.titleStyle}
+                    isOpen
+                    hideCollapse>
+                    {recipientAccounts.flatMap(account =>
+                      account.networksAccounts[
+                        `${
+                          outToken?.network === 'MAINNET'
+                            ? outToken?.name?.toLowerCase().split(' ')[0]
+                            : outToken?.network?.toLowerCase() ||
+                              outToken?.name?.toLowerCase().split(' ')[0]
+                        }-mainnet`
+                      ]?.map(blockchainAccount => (
                         <CardButtonWallet
-                          key={wallet.address}
-                          title={getWalletName(wallet.address, config)}
-                          address={wallet.address}
-                          chain={wallet.chain}
+                          key={blockchainAccount.getReceiveAddress()}
+                          title={account.name}
+                          address={blockchainAccount.getReceiveAddress()}
+                          image={blockchainAccount.network.icon}
                           imageSize="md"
-                          onPress={() => setRecipientAddress(wallet.address)}
+                          selected={
+                            blockchainAccount.getReceiveAddress() ===
+                            recipientAddress
+                          }
+                          onPress={() =>
+                            setRecipientAddress(
+                              blockchainAccount.getReceiveAddress(),
+                            )
+                          }
                           buttonStyle={globalStyles.addressBookItem}
                           touchableStyles={globalStyles.addressBookTouchable}
                           transparent
                         />
-                      ),
-                  )}
-                </GlobalCollapse>
-                <GlobalPadding size="md" />
-                <GlobalAlert
-                  type="warning"
-                  noIcon
-                  text={t('bridge.own_wallet_alert', {
-                    from: inToken.network || inToken.name,
-                    to: outToken.network || outToken.name,
-                  })}
-                />
-              </>
-            )}
+                      )),
+                    )}
+                  </GlobalCollapse>
+                  <GlobalPadding size="md" />
+                  <GlobalAlert
+                    type="warning"
+                    noIcon
+                    text={t('bridge.own_wallet_alert', {
+                      from: inToken.network || inToken.name,
+                      to: outToken.network || outToken.name,
+                    })}
+                  />
+                </>
+              ) : (
+                <>
+                  <GlobalPadding size="xl" />
+                  <GlobalAlert
+                    type="warning"
+                    noIcon
+                    text={t('bridge.no_wallet_found', {
+                      chain: outToken.network || outToken.name,
+                    })}
+                  />
+                </>
+              ))}
             {result && result.type !== 'SUCCESS' && (
               <>
                 <GlobalPadding size="sm" />
@@ -675,7 +744,7 @@ const BridgePage = ({ t }) => {
             <View style={globalStyles.centeredSmall}>
               <View style={styles.symbolContainer}>
                 <GlobalImage
-                  source={inToken.logo || getBlockchainIcon(current_blockchain)}
+                  source={inToken.logo || current_blockchain.network.icon}
                   size="xl"
                   circle
                 />
@@ -686,9 +755,7 @@ const BridgePage = ({ t }) => {
                   circle
                 />
                 <GlobalImage
-                  source={
-                    outToken.logo || getBlockchainIcon(current_blockchain)
-                  }
+                  source={outToken.logo || current_blockchain.network.icon}
                   size="xl"
                   circle
                 />
@@ -696,10 +763,7 @@ const BridgePage = ({ t }) => {
               <GlobalPadding size="lg" />
               <GlobalPadding size="xl" />
               {status !== 'creating' && (
-                <GlobalText
-                  type={'body2'}
-                  color={getStatusColor(status)}
-                  center>
+                <GlobalText type={'body2'} color={statusColor} center>
                   {t(`token.send.transaction_${status}`)}
                 </GlobalText>
               )}

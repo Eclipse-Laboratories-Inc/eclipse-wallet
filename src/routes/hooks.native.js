@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { globalRoutes } from './app-routes';
 import { getRoute } from './utils';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 export const useNavigation = () => {
   const navigation = useContext(NavigationContext);
