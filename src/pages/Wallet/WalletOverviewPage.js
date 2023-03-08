@@ -13,7 +13,11 @@ import TokenList from '../../features/TokenList/TokenList';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as TOKEN_ROUTES_MAP } from '../../pages/Token/routes';
 import { ROUTES_MAP as WALLET_ROUTES_MAP } from './routes';
-import { getListedTokens, getNonListedTokens } from '../../utils/wallet';
+import {
+  mergeImportedTokens,
+  getListedTokens,
+  getNonListedTokens,
+} from '../../utils/wallet';
 import { CACHE_TYPES, invalidate } from '../../utils/cache';
 import {
   hiddenValue,
@@ -31,19 +35,22 @@ import Header from '../../component-library/Layout/Header';
 import MyNfts from './components/MyNfts';
 import PendingTxs from './components/PendingTxs';
 import PendingBridgeTxs from './components/PendingBridgeTxs';
+import ImportTokenModal from './components/ImportTokenModal';
 
 const WalletOverviewPage = ({ cfgs, t }) => {
   const navigate = useNavigation();
   const [
     { activeBlockchainAccount, networkId, activeTokens, hiddenBalance },
-    { toggleHideBalance },
+    { toggleHideBalance, importTokens },
   ] = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [totalBalance, setTotalBalance] = useState({});
   const [tokenList, setTokenList] = useState([]);
   const [nonListedTokenList, setNonListedTokenList] = useState([]);
+  const [availableTokens, setAvailableTokens] = useState([]);
   const [error, setError] = useState(null);
   const [switches, setSwitches] = useState(null);
+  const allowsImported = switches?.features.import_tokens;
 
   useEffect(() => {
     const loadSwitches = async () => {
@@ -66,7 +73,13 @@ const WalletOverviewPage = ({ cfgs, t }) => {
       const tokensAddresses = Object.keys(activeTokens);
       const balance = await activeBlockchainAccount.getBalance(tokensAddresses);
       setTotalBalance(balance);
-      setTokenList(getListedTokens(balance));
+      setTokenList(
+        allowsImported
+          ? mergeImportedTokens(balance.items, activeTokens)
+          : getListedTokens(balance),
+      );
+      allowsImported &&
+        setAvailableTokens(await activeBlockchainAccount.getAvailableTokens());
       setNonListedTokenList(getNonListedTokens(balance, []));
     } catch (e) {
       console.log(e);
@@ -74,7 +87,7 @@ const WalletOverviewPage = ({ cfgs, t }) => {
     } finally {
       setLoading(false);
     }
-  }, [activeBlockchainAccount, activeTokens]);
+  }, [activeBlockchainAccount, activeTokens, allowsImported]);
 
   useEffect(() => {
     load();
@@ -94,6 +107,11 @@ const WalletOverviewPage = ({ cfgs, t }) => {
 
   const goToTokenDetail = ({ address }) => {
     navigate(TOKEN_ROUTES_MAP.TOKEN_DETAIL, { tokenId: address });
+  };
+
+  const onImport = async token => {
+    await importTokens(networkId, [{ imported: true, ...token }]);
+    onRefresh();
   };
 
   const total = useMemo(
@@ -169,6 +187,9 @@ const WalletOverviewPage = ({ cfgs, t }) => {
             />
           </GlobalCollapse>
         ) : null}
+        {allowsImported && (
+          <ImportTokenModal tokens={availableTokens} onChange={onImport} />
+        )}
         {switches?.features.nfts && (
           <>
             <GlobalPadding />
