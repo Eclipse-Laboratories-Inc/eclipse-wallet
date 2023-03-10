@@ -105,7 +105,7 @@
   "scripts": {
     "start:web": "react-scripts start",
     "start:web:main": "REACT_APP_SALMON_ENV=main react-scripts start",
-    "start:web:prod": "REACT_APP_SALMON_ENV=prod react-scripts start",
+    "start:web:prod": "REACT_APP_SALMON_ENV=production react-scripts start",
     "build": "react-scripts build",
     "build:develop": "REACT_APP_SALMON_ENV=development npm run build",
     "build:main": "REACT_APP_SALMON_ENV=main npm run build",
