@@ -90,3 +90,15 @@ export const getNonListedTokens = (balance, nfts) =>
 
 export const getListedTokens = balance =>
   balance.items?.filter(tok => tok.name);
+
+export const mergeImportedTokens = (tokens, activeTokens) =>
+  tokens.filter(token => {
+    if (token.amount > 0 || token.address === 'eth') {
+      return true;
+    }
+    const importedToken = activeTokens[token.address];
+    if (importedToken && importedToken.imported) {
+      return true;
+    }
+    return false;
+  });

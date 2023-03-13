@@ -25,6 +25,9 @@ import QRScan from '../../features/QRScan/QRScan';
 import Tooltip from '../Tooltip/Tooltip';
 import NetworkSelector from '../../pages/Wallet/components/NetworkSelector';
 
+import WhitelistBackground from '../../assets/images/WhitelistBackground.png';
+import IconWhitelist from '../../assets/images/IconWhitelist.png';
+
 const styles = StyleSheet.create({
   avatarWalletAddressActions: {
     flexDirection: 'row',
@@ -38,6 +41,24 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  avatarWhitelistBorder: {
+    position: 'absolute',
+    left: -3,
+    top: -3,
+  },
+  whitelistBadgeIcon: {
+    position: 'absolute',
+    left: 28,
+    top: 28,
+  },
+  whitelistBadgeText: {
+    color: 'white',
+    position: 'absolute',
+    left: 30,
+    top: 32,
+    fontSize: 7,
+    fontWeight: 'bold',
   },
   walletNameAddress: {
     flex: 1,
@@ -84,7 +105,7 @@ const styles = StyleSheet.create({
 
 const Header = ({ isHome, t }) => {
   const [
-    { activeAccount, activeBlockchainAccount, networkId },
+    { activeAccount, activeBlockchainAccount, networkId, whitelisted },
     { changeNetwork },
   ] = useContext(AppContext);
 
@@ -158,10 +179,27 @@ const Header = ({ isHome, t }) => {
       <View style={styles.avatarWalletAddressActions}>
         <View style={styles.avatarWalletAddress}>
           <TouchableOpacity onPress={onClickAvatar}>
+            {whitelisted && (
+              <GlobalImage
+                source={WhitelistBackground}
+                size="md"
+                style={styles.avatarWhitelistBorder}
+              />
+            )}
             <AvatarImage
               src={getMediaRemoteUrl(activeAccount.avatar)}
               size={42}
             />
+            {whitelisted && (
+              <>
+                <GlobalImage
+                  source={IconWhitelist}
+                  size="xxs"
+                  style={styles.whitelistBadgeIcon}
+                />
+                <GlobalText style={styles.whitelistBadgeText}>WL</GlobalText>
+              </>
+            )}
           </TouchableOpacity>
           <View style={styles.walletNameAddress}>
             <GlobalText

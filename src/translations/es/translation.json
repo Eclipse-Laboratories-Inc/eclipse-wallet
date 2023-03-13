@@ -164,6 +164,7 @@
     "load_error": "Estamos teniendo problemas para recuperar los datos",
     "not_available_title": "No disponible",
     "not_available_msg": "Esta funcionalidad no está disponible para BTC",
+    "import_tokens": "Importar tokens",
     "create": {
       "messageTitle": "¡Guarda tu seed-phrase!",
       "messageBody": "Necesitarás estas palabras para restaurar tu Cuenta si cambias o borras los datos de tu navegador, o si su dispositivo se daña o se pierde. \n\n Nunca compartas tu seed-phrase (o tus claves privadas) con nadie, ni la ingreses en ningún formulario, ya que proporcionan control total de tu Cuenta. \n\n El equipo de Salmon nunca te pedirá tu seed-phrase o claves privadas.",
