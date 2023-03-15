@@ -39,7 +39,7 @@ const GlobalAvatarList = ({ onClick }) => {
               style={styles.touchable}>
               <View key={id} style={styles.image}>
                 <Image
-                  source={`http://static.salmonwallet.io/avatar/${id}.png`}
+                  source={`https://static.salmonwallet.io/avatar/${id}.png`}
                   resizeMode="contain"
                   style={styles.block}
                   onLoad={() => {

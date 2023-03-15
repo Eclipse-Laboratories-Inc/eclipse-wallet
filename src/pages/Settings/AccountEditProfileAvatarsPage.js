@@ -21,7 +21,7 @@ const AccountEditProfileAvatarsPage = ({ params, t }) => {
     });
   const onClick = id => {
     editAccount(params.id, {
-      avatar: `http://static.salmonwallet.io/avatar/${id}.png`,
+      avatar: `https://static.salmonwallet.io/avatar/${id}.png`,
     });
     navigate(ROUTES_WALLET_MAP.WALLET_OVERVIEW);
   };
