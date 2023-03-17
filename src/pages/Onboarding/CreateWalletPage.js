@@ -1,7 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { random as randomNumber } from 'lodash';
-import { AccountFactory } from '4m-wallet-adapter';
+import {
+  AccountFactory,
+  getNetworks,
+  getTopTokensByPlatform,
+  BLOCKCHAINS,
+  PLATFORMS,
+} from '4m-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
@@ -206,8 +212,10 @@ const ValidateSeed = ({ account, onComplete, onBack, t }) => {
 const CreateWalletPage = ({ t }) => {
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.CREATE_WALLET);
   const navigate = useNavigation();
-  const [{ counter, requiredLock, isAdapter }, { addAccount, checkPassword }] =
-    useContext(AppContext);
+  const [
+    { counter, requiredLock, isAdapter },
+    { addAccount, checkPassword, importTokens },
+  ] = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [account, setAccount] = useState(null);
   const [waiting, setWaiting] = useState(false);
@@ -230,7 +238,20 @@ const CreateWalletPage = ({ t }) => {
 
   const handleOnPasswordComplete = async password => {
     setWaiting(true);
-
+    try {
+      const networks = (await getNetworks()).filter(
+        ({ blockchain, environment }) =>
+          blockchain === BLOCKCHAINS.ETHEREUM && environment === 'mainnet',
+      );
+      if (networks.length > 0) {
+        const tokens = await getTopTokensByPlatform(PLATFORMS.ETHEREUM);
+        for (const network of networks) {
+          await importTokens(network.id, tokens);
+        }
+      }
+    } catch (e) {
+      console.error('Could not import tokens', e);
+    }
     await addAccount(account, password);
     trackEvent(EVENTS_MAP.PASSWORD_COMPLETED);
     setStep(5);
