@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AccountFactory, getNetworks, getPathIndex } from '4m-wallet-adapter';
 import { mapValues, merge, omit } from 'lodash';
+import http from 'axios';
 
 import CachedBlockchainAccount from '../accounts/CachedBlockchainAccount';
 import { invertBy } from '../utils/object';
@@ -8,6 +9,7 @@ import { lock, unlock } from '../utils/password';
 import stash from '../utils/stash';
 import storage from '../utils/storage';
 import STORAGE_KEYS from '../utils/storageKeys';
+import { SALMON_API_URL } from '4m-wallet-adapter/constants/environment';
 
 const getDefaultPathIndex = (account, networkId) => {
   return account.networksAccounts[networkId]?.findIndex(Boolean) || 0;
@@ -44,6 +46,7 @@ const useAccounts = () => {
   const [pathIndex, setPathIndex] = useState(0);
   const [trustedApps, setTrustedApps] = useState({});
   const [tokens, setTokens] = useState({});
+  const [whitelisted, setWhitelisted] = useState(false);
 
   const runUpgrades = useCallback(async password => {
     const storedWallets = await storage.getItem(STORAGE_KEYS.WALLETS);
@@ -323,6 +326,26 @@ const useAccounts = () => {
     }
   }, [activeBlockchainAccount]);
 
+  useEffect(() => {
+    const checkWhitelist = async () => {
+      setWhitelisted(false);
+      if (activeBlockchainAccount) {
+        try {
+          const address = activeBlockchainAccount.getReceiveAddress();
+          const url = `${SALMON_API_URL}/v1/${networkId}/account/${address}/info`;
+          const { data } = await http.get(url);
+          if (data?.whitelisted) {
+            setWhitelisted(true);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
+
+    checkWhitelist();
+  }, [activeBlockchainAccount, networkId]);
+
   const {
     COUNTER,
     ACCOUNTS,
@@ -530,6 +553,7 @@ const useAccounts = () => {
       activeBlockchainAccount,
       activeTrustedApps,
       activeTokens,
+      whitelisted,
     },
     {
       checkPassword,
