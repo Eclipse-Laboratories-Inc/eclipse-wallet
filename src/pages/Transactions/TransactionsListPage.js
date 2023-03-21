@@ -21,6 +21,9 @@ import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
 
 const styles = StyleSheet.create({
+  header: {
+    marginLeft: theme.gutters.paddingLG + 4,
+  },
   titleStyle: {
     marginTop: theme.gutters.paddingNormal,
     marginLeft: theme.gutters.paddingSM,
@@ -107,7 +110,9 @@ const TransactionsListPage = ({ t }) => {
   return (
     <>
       <View style={styles.titleStyle}>
-        <Header />
+        <View style={styles.header}>
+          <Header />
+        </View>
         <GlobalBackTitle title={t('transactions.your_transactions')} />
       </View>
       <GlobalLayout>
