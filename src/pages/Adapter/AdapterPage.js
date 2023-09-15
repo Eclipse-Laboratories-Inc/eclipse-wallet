@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { BLOCKCHAINS, getNetworks, getSwitches } from '4m-wallet-adapter';
+import { BLOCKCHAINS, getNetworks, getSwitches } from 'eclipse-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import AdapterSelect from './components/AdapterSelect';

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { getNetworks } from '4m-wallet-adapter';
+import { getNetworks } from 'eclipse-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { ROUTES_MAP as ROUTES_SETTINGS_MAP } from './routes';

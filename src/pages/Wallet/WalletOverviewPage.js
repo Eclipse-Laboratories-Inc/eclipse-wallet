@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { getSwitches } from '4m-wallet-adapter';
+import { getSwitches } from 'eclipse-wallet-adapter';
 import { get, isNil } from 'lodash';
 
 import { AppContext } from '../../AppProvider';

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { formatAmount } from '4m-wallet-adapter';
+import { formatAmount } from 'eclipse-wallet-adapter';
 
 import theme from '../Global/theme';
 import GlobalImage from '../Global/GlobalImage';

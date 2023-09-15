@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountFactory, getNetworks, getPathIndex } from '4m-wallet-adapter';
+import { AccountFactory, getNetworks, getPathIndex } from 'eclipse-wallet-adapter';
 import { mapValues, merge, omit } from 'lodash';
 import http from 'axios';
 
@@ -9,7 +9,7 @@ import { lock, unlock } from '../utils/password';
 import stash from '../utils/stash';
 import storage from '../utils/storage';
 import STORAGE_KEYS from '../utils/storageKeys';
-import { SALMON_API_URL } from '4m-wallet-adapter/constants/environment';
+import { SALMON_API_URL } from 'eclipse-wallet-adapter/constants/environment';
 
 const getDefaultPathIndex = (account, networkId) => {
   return account.networksAccounts[networkId]?.findIndex(Boolean) || 0;

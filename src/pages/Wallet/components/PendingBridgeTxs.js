@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getBridgeTransaction } from '4m-wallet-adapter';
+import { getBridgeTransaction } from 'eclipse-wallet-adapter';
 import { withTranslation } from '../../../hooks/useTranslations';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import CardButtonPendingTx from '../../../component-library/CardButton/CardButtonPendingTx';

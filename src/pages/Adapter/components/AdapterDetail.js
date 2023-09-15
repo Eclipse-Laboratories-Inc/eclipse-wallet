@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { getMetadata } from '4m-wallet-adapter';
+import { getMetadata } from 'eclipse-wallet-adapter';
 
 import GlobalSkeleton from '../../../component-library/Global/GlobalSkeleton';
 

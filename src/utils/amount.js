@@ -1,5 +1,5 @@
 import { round, isNil } from 'lodash';
-import { formatAmount } from '4m-wallet-adapter';
+import { formatAmount } from 'eclipse-wallet-adapter';
 
 export const showAmount = (amount, decimals = 2) =>
   !isNil(amount) ? `$${round(amount, decimals).toFixed(decimals)}` : '-';

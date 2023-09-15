@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BLOCKCHAINS, NetworkAccountFactory } from '4m-wallet-adapter';
+import { BLOCKCHAINS, NetworkAccountFactory } from 'eclipse-wallet-adapter';
 
 import AvatarImage from '../../component-library/Image/AvatarImage';
 import CardButton from '../../component-library/CardButton/CardButton';

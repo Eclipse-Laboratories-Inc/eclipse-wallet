@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import theme from '../../component-library/Global/theme';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import { getNetworks, getSwitches } from '4m-wallet-adapter';
+import { getNetworks, getSwitches } from 'eclipse-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { ROUTES_MAP as ROUTES_WALLET_MAP } from '../../pages/Wallet/routes';

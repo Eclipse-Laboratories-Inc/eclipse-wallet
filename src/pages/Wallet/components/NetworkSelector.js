@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BLOCKCHAINS } from '4m-wallet-adapter';
+import { BLOCKCHAINS } from 'eclipse-wallet-adapter';
 import theme, { globalStyles } from '../../../component-library/Global/theme';
 import BasicSelect from '../../../component-library/Selects/BasicSelect';
 import GlobalText from '../../../component-library/Global/GlobalText';

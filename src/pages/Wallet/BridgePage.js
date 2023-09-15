@@ -29,7 +29,7 @@ import {
   getBridgeEstimatedAmount,
   getBridgeMinimalAmount,
   createBridgeExchange,
-} from '4m-wallet-adapter';
+} from 'eclipse-wallet-adapter';
 import Header from '../../component-library/Layout/Header';
 import GlobalSkeleton from '../../component-library/Global/GlobalSkeleton';
 import BasicRadios from '../../component-library/Radios/BasicRadios';

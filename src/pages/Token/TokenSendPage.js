@@ -1,6 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { StyleSheet, View, Linking } from 'react-native';
-import { BLOCKCHAINS } from '4m-wallet-adapter';
+import { BLOCKCHAINS } from 'eclipse-wallet-adapter';
 import { pick } from 'lodash';
 
 import { AppContext } from '../../AppProvider';

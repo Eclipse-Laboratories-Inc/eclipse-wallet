@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getNetwork, getNetworks } from '4m-wallet-adapter';
+import { getNetwork, getNetworks } from 'eclipse-wallet-adapter';
 import storage from '../utils/storage';
 import STORAGE_KEYS from '../utils/storageKeys';
 

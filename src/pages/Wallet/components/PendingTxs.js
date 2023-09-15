@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { BLOCKCHAINS } from '4m-wallet-adapter';
+import { BLOCKCHAINS } from 'eclipse-wallet-adapter';
 import GlobalCollapse from '../../../component-library/Global/GlobalCollapse';
 import CardButtonPendingTx from '../../../component-library/CardButton/CardButtonPendingTx';
 import GlobalText from '../../../component-library/Global/GlobalText';

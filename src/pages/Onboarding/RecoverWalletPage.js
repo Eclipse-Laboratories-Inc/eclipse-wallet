@@ -6,7 +6,7 @@ import {
   getTopTokensByPlatform,
   BLOCKCHAINS,
   PLATFORMS,
-} from '4m-wallet-adapter';
+} from 'eclipse-wallet-adapter';
 
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Linking, View } from 'react-native';
-import { BLOCKCHAINS, formatAmount } from '4m-wallet-adapter';
+import { BLOCKCHAINS, formatAmount } from 'eclipse-wallet-adapter';
 import { AppContext } from '../../AppProvider';
 import { useNavigation } from '../../routes/hooks';
 import { withTranslation } from '../../hooks/useTranslations';
