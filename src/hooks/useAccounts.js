@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AccountFactory, getNetworks, getPathIndex } from 'eclipse-wallet-adapter';
+import {
+  AccountFactory,
+  getNetworks,
+  getPathIndex,
+} from 'eclipse-wallet-adapter';
 import { mapValues, merge, omit } from 'lodash';
 import http from 'axios';
 
