@@ -57,7 +57,6 @@ const TokenSelectPage = ({ params, t }) => {
     } else {
       setDrawedList(filteredTokens);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredTokens]);
 
   const tokensAddresses = useMemo(

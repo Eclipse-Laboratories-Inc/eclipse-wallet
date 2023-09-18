@@ -407,7 +407,6 @@ const BridgePage = ({ t }) => {
           }
         }
       }, 500),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeBlockchainAccount],
   );
   useEffect(() => {
@@ -417,7 +416,6 @@ const BridgePage = ({ t }) => {
     } else {
       setValidAddress(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recipientAddress]);
 
   const savePendingTx = async exDet => {

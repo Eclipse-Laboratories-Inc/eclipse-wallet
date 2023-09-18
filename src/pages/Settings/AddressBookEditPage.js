@@ -36,7 +36,6 @@ const AddressBookEditPage = ({ params, t }) => {
       setRecipientAddress(address.address);
       setAddressLabel(address.name);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.addressbook]);
   const isValid = addressLabel && validAddress;
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);

@@ -36,7 +36,6 @@ const RoutesBuilder = ({
       navigate(ROUTES_MAP.ONBOARDING);
     }
   }, [requireOnboarding, navigate, accounts]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const Nav = useMemo(() => createFunction[type](), []);
 
   return !requireOnboarding || (requireOnboarding && accounts.length > 0) ? (

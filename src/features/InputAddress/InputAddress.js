@@ -86,7 +86,6 @@ const InputAddress = ({
           }
         }
       }, 500),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeBlockchainAccount],
   );
   useEffect(() => {
@@ -96,7 +95,6 @@ const InputAddress = ({
     } else {
       setValidAddress(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
   return (
