@@ -12,10 +12,7 @@ const ENDPOINTS = {
   ETHEREUM: {
     MAIN: 'mainnet',
     TEST: 'goerli',
-  },
-  BITCOIN: {
-    MAIN: 'mainnet',
-  },
+  }  
 };
 
 export default ENDPOINTS;

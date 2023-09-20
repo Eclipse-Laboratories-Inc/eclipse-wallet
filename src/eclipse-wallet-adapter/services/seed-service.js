@@ -1,7 +1,6 @@
 'use strict';
 
 const bip39 = require('bip39');
-const bip32 = require('bip32');
 const { Keypair } = require('@solana/web3.js');
 const { derivePath } = require('ed25519-hd-key');
 
@@ -21,14 +20,8 @@ async function generateKeyPair(mnemonic, path) {
   return Keypair.fromSeed(derivePath(path, seed.toString('hex')).key);
 }
 
-async function generateChild(mnemonic, path) {
-  const seed = await mnemonicToSeed(mnemonic);
-  const root = bip32.fromSeed(seed);
-  return root.derivePath(path);
-}
 
 module.exports = {
   generateMnemonic,
   generateKeyPair,
-  generateChild,
 };

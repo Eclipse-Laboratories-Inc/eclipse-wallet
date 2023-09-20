@@ -52,27 +52,13 @@ const EXPLORERS = {
       },
     },
   },
-  BITCOIN: {
-    mainnet: {
-      BLOCKCYPHER: {
-        name: 'Blockcypher',
-        url: 'https://live.blockcypher.com/btc/tx',
-      },
-    },
-    testnet: {
-      BLOCKCYPHER: {
-        name: 'Blockcypher',
-        url: 'https://live.blockcypher.com/btc-testnet/tx',
-      },
-    },
-  },
+ 
 };
 
 const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   NEAR: 'NEAR_EXPLORER',
   ETHEREUM: 'ETHERSCAN',
-  BITCOIN: 'BLOCKCYPHER',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };

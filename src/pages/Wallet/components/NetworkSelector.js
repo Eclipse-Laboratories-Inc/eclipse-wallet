@@ -38,8 +38,6 @@ const styles = StyleSheet.create({
 
 const getNetworkIcon = ({ blockchain }) => {
   switch (blockchain) {
-    case BLOCKCHAINS.BITCOIN:
-      return IconBitcoinVector;
     case BLOCKCHAINS.ETHEREUM:
       return IconEthereumVector;
     case BLOCKCHAINS.SOLANA:

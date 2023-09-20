@@ -1,15 +1,12 @@
 'use strict';
 
-const { create: createBitcoin } = require('./bitcoin-account-factory');
 const { create: createEthereum } = require('./ethereum-account-factory');
 const { create: createNear } = require('./near-account-factory');
 const { create: createSolana } = require('./solana-account-factory');
-const { BITCOIN, ETHEREUM, NEAR, SOLANA } = require('../constants/blockchains');
+const {  ETHEREUM, NEAR, SOLANA } = require('../constants/blockchains');
 
 const create = async ({ network, mnemonic, index = 0 }) => {
   switch (network.blockchain) {
-    case BITCOIN:
-      return createBitcoin({ network, mnemonic, index });
     case ETHEREUM:
       return createEthereum({ network, mnemonic, index });
     case NEAR:
