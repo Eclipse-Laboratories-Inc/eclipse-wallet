@@ -33,6 +33,8 @@
     "keen-slider": "^6.8.3",
     "metro-config": "^0.72.2",
     "moment": "^2.29.4",
+    "near-api-js": "^2.1.4",
+    "near-seed-phrase": "^0.2.0",
     "patch-package": "^6.4.7",
     "postcss-normalize": "^10.0.1",
     "process": "^0.11.10",

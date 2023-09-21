@@ -1,10 +1,9 @@
 const { PublicKey } = require('@solana/web3.js');
 
 const SOL_DECIMALS = 6;
-const SOL_SYMBOL = 'SOL';
-const SOL_NAME = 'Solana';
-const SOL_LOGO =
-  'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png';
+const SOL_SYMBOL = 'ETH';
+const SOL_NAME = 'Eclipse';
+const SOL_LOGO = 'https://i.imgur.com/y0JEPfQ.png';
 const SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
 
 const USDC_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
