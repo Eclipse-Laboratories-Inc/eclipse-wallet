@@ -5,7 +5,7 @@ const networkData = [
     id: 'solana-devnet',
     blockchain: 'solana',
     environment: 'devnet',
-    name: 'Eclipse Mainnet',
+    name: 'Eclipse Devnet',
     icon: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
     currency: {
       symbol: 'ETH',
@@ -13,20 +13,6 @@ const networkData = [
     },
     config: {
       nodeUrl: 'https://staging-rpc.dev.eclipsenetwork.xyz',
-    },
-  },
-  {
-    id: 'solana-testnet',
-    blockchain: 'solana',
-    environment: 'testnet',
-    name: 'Eclipse Testnet',
-    icon: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
-    currency: {
-      symbol: 'ETH',
-      decimals: 9,
-    },
-    config: {
-      nodeUrl: 'https://api.testnet.solana.com',
     },
   },
   {
