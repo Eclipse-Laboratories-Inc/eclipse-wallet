@@ -4,11 +4,6 @@ const ENDPOINTS = {
     TEST: 'testnet',
     DEV: 'devnet',
   },
-  NEAR: {
-    MAIN: 'mainnet',
-    TEST: 'testnet',
-    DEV: 'devnet',
-  },
   ETHEREUM: {
     MAIN: 'mainnet',
     TEST: 'goerli',

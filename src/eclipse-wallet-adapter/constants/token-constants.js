@@ -8,7 +8,6 @@ const SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
 
 const USDC_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
-const NEAR_NAME = 'Near';
 
 const BTC_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png';
 
@@ -26,7 +25,6 @@ module.exports = {
   SOL_ADDRESS,
   TOKEN_PROGRAM_ID,
   USDC_ADDRESS,
-  NEAR_NAME,
   BTC_LOGO,
   ETH_ADDRESS,
   ME_PROGRAM_ID

@@ -6,7 +6,6 @@ import BasicSelect from '../../../component-library/Selects/BasicSelect';
 import GlobalText from '../../../component-library/Global/GlobalText';
 import GlobalImage from '../../../component-library/Global/GlobalImage';
 import IconSolanaVector from '../../../assets/images/IconSolanaVector.png';
-import IconNearVector from '../../../assets/images/IconNearVector.png';
 import IconEthereumVector from '../../../assets/images/IconEthereumVector.png';
 import IconBitcoinVector from '../../../assets/images/IconBitcoinVector.png';
 import IconSalmon from '../../../assets/images/IconSalmon.png';
@@ -42,8 +41,6 @@ const getNetworkIcon = ({ blockchain }) => {
       return IconEthereumVector;
     case BLOCKCHAINS.SOLANA:
       return IconSolanaVector;
-    case BLOCKCHAINS.NEAR:
-      return IconNearVector;
     default:
       return IconSalmon;
   }

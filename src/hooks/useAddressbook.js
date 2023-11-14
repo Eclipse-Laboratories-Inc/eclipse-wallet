@@ -39,7 +39,7 @@ const useAddressbook = () => {
           .filter(({ networkId }) => !!networkId);
 
         await storage.setItem(STORAGE_KEYS.ADDRESS_BOOK, newAddressBook);
-        await storage.removeItem(STORAGE_KEYS.ADDRESS);
+        await storage.removeItem(STORAGE_KEYS.ADDRESS)
       }
 
       const networks = await getNetworks();

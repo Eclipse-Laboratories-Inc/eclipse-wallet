@@ -38,26 +38,11 @@ const EXPLORERS = {
       },
     },
   },
-  NEAR: {
-    mainnet: {
-      NEAR_EXPLORER: {
-        name: 'Near Explorer',
-        url: 'https://explorer.near.org/transactions',
-      },
-    },
-    testnet: {
-      NEAR_EXPLORER: {
-        name: 'Near Explorer',
-        url: 'https://explorer.testnet.near.org/transactions',
-      },
-    },
-  },
  
 };
 
 const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
-  NEAR: 'NEAR_EXPLORER',
   ETHEREUM: 'ETHERSCAN',
 };
 

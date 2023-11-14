@@ -8,7 +8,6 @@
 const BTC = 0;
 const TESTNET = 1;
 const ETH = 60;
-const NEAR = 397;
 const SOL = 501;
 
-module.exports = { BTC, TESTNET, ETH, NEAR, SOL };
+module.exports = { BTC, TESTNET, ETH, SOL };

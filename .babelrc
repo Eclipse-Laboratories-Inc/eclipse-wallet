@@ -1,5 +1,19 @@
 {
   "plugins": [
-    "react-native-reanimated/plugin"
-  ]
+    "react-native-reanimated/plugin",
+    "@babel/plugin-transform-class-properties",
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "eclipse-wallet-adapter": "./src/eclipse-wallet-adapter/"
+        }
+      }
+    ]
+  ],
+  "presets": [
+    "@babel/preset-env", "@babel/preset-react", "@babel/preset-flow", "@babel/preset-typescript",["module:metro-react-native-babel-preset", {
+      "unstable_disableES6Transforms": true
+    }]]
 }
