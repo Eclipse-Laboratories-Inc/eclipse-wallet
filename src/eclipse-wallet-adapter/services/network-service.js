@@ -16,6 +16,20 @@ const networkData = [
     },
   },
   {
+    id: 'solana-testnet',
+    blockchain: 'solana',
+    environment: 'devnet',
+    name: 'Eclipse Testnet',
+    icon: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
+    currency: {
+      symbol: 'ETH',
+      decimals: 9,
+    },
+    config: {
+      nodeUrl: 'https://testnet.dev.eclipsenetwork.xyz',
+    },
+  },
+  {
     id: 'ethereum-mainnet',
     blockchain: 'ethereum',
     environment: 'mainnet',
