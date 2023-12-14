@@ -236,7 +236,7 @@
     "pending_txs": {
       "inProgress": "In Progress",
       "fail": "Failed",
-      "success": "Succeded"
+      "success": "Succeeded"
     }
   },
   "adapter": {
