@@ -30,7 +30,7 @@ const AddressBookAddPage = ({ t }) => {
   const onBack = () => navigate(ROUTES_MAP.SETTINGS_ADDRESSBOOK);
   const onSave = async () => {
     setSaving(true);
-    // check valid address and non existant
+    // check valid address and non existent
     await addAddress({
       address: recipientAddress,
       name: addressLabel,
