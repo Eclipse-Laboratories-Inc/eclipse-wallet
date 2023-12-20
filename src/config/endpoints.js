@@ -7,6 +7,10 @@ const ENDPOINTS = {
   ETHEREUM: {
     MAIN: 'mainnet',
     TEST: 'goerli',
+  },  
+  ECLIPSE: {
+    DEV: 'testnet.dev2',
+    TEST: 'testnet.dev2',
   }  
 };
 

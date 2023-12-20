@@ -19,7 +19,7 @@ const AdapterPage = () => {
       if (loading) {
         const switches = await getSwitches();
         const isEnabled = ({ id }) => switches[id]?.enable;
-        const isSolana = ({ blockchain }) => blockchain === BLOCKCHAINS.SOLANA;
+        const isSolana = ({ blockchain }) => [BLOCKCHAINS.SOLANA, BLOCKCHAINS.ECLIPSE].includes(blockchain);
         const solanaNetworks = (await getNetworks())
           .filter(isSolana)
           .filter(isEnabled);

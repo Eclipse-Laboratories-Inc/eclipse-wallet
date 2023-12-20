@@ -2,8 +2,8 @@ let promise;
 
 const networkData = [
   {
-    id: 'solana-devnet',
-    blockchain: 'solana',
+    id: 'eclipse-devnet',
+    blockchain: 'eclipse',
     environment: 'devnet',
     name: 'Eclipse Devnet',
     icon: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
@@ -16,8 +16,8 @@ const networkData = [
     },
   },
   {
-    id: 'solana-testnet',
-    blockchain: 'solana',
+    id: 'eclipse-testnet',
+    blockchain: 'eclipse',
     environment: 'devnet',
     name: 'Eclipse Testnet',
     icon: 'https://assets-cdn.trustwallet.com/blockchains/solana/info/logo.png',
