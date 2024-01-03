@@ -81,7 +81,7 @@ const NftsDetailPage = ({ params, t }) => {
         if (nft) {
           setNftDetail(nft);
         }
-        if (activeBlockchainAccount.network.blockchain === BLOCKCHAINS.SOLANA) {
+        if ([BLOCKCHAINS.SOLANA, BLOCKCHAINS.ECLIPSE].includes(activeBlockchainAccount.network.blockchain)) {
           const listed = await activeBlockchainAccount.getListedNfts();
           setListedInfo(listed.find(l => l.token_address === params.id));
           setListedLoaded(true);

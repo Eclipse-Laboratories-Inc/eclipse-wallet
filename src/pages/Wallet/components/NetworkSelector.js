@@ -40,6 +40,7 @@ const getNetworkIcon = ({ blockchain }) => {
     case BLOCKCHAINS.ETHEREUM:
       return IconEthereumVector;
     case BLOCKCHAINS.SOLANA:
+    case BLOCKCHAINS.ECLIPSE:
       return IconSolanaVector;
     default:
       return IconSalmon;
