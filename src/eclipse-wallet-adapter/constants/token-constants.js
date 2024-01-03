@@ -4,6 +4,7 @@ const SOL_DECIMALS = 6;
 const SOL_SYMBOL = 'ETH';
 const SOL_NAME = 'Eclipse';
 const SOL_LOGO = 'https://i.imgur.com/y0JEPfQ.png';
+const ETH_LOGO = 'https://assets-cdn.trustwallet.com/blockchains/ethereum/info/logo.png'
 const SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
 
 const USDC_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
@@ -27,5 +28,6 @@ module.exports = {
   USDC_ADDRESS,
   BTC_LOGO,
   ETH_ADDRESS,
+  ETH_LOGO,
   ME_PROGRAM_ID
 };

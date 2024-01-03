@@ -8,16 +8,19 @@ const decorateBalanceList = async (items, tokens) => {
 };
 
 const decorateBalancePrices = async (items, prices) => {
+  const prices_a = [prices].flat(); 
   const result = items.map((item) => {
     const price = item.symbol
-      ? prices?.find((t) => t.id == item.coingeckoId) ||
-        prices?.find((t) => t.symbol.toUpperCase() == item.symbol.toUpperCase())
+      ? prices_a?.find((t) => t.id == item.coingeckoId) ||
+      prices_a?.find((t) => t.symbol.toUpperCase() == item.symbol.toUpperCase())
       : null;
-    const usdBalance = price?.usdPrice ? item.uiAmount * price.usdPrice : null;
+    
+    const usd_price = price?.market_data?.current_price?.usd
+    const usdBalance = usd_price ? item.uiAmount * usd_price : null;
     const last24HoursChange = getLast24HoursChange(price, usdBalance);
     return {
       ...item,
-      usdPrice: price ? price.usdPrice : null,
+      usdPrice: price ? usd_price : null,
       usdBalance,
       last24HoursChange,
     };
@@ -26,11 +29,11 @@ const decorateBalancePrices = async (items, prices) => {
 };
 
 const getLast24HoursChange = (price, usdBalance) => {
-  if (price?.perc24HoursChange === undefined || price?.perc24HoursChange === null) {
+  if (price?.price_change_24h === undefined || price?.price_change_24h === null) {
     return null;
   }
 
-  const perc = price.perc24HoursChange;
+  const perc = price.price_change_24h;
   const prevBalance = (1 - perc / 100) * usdBalance;
   const usd = usdBalance - prevBalance;
   return {

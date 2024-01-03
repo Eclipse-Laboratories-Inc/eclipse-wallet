@@ -11,7 +11,7 @@ switch (salmonEnv) {
     break;
   case 'test':
   case 'local':
-    apiUrl = 'http://localhost:3000/local';
+    apiUrl = 'http://localhost:8083';
     break;
   case 'main':
     apiUrl = 'https://bo0q5g7ie1.execute-api.us-east-1.amazonaws.com/main';
