@@ -129,7 +129,7 @@ const jsonData = {
             }
         }
     },
-    "solana-testnet": {
+    "eclipse-testnet": {
         "enable": true,
         "sections": {
             "overview": {
@@ -171,7 +171,7 @@ const jsonData = {
             }
         }
     },
-    "solana-devnet": {
+    "eclipse-devnet": {
         "enable": true,
         "sections": {
             "overview": {

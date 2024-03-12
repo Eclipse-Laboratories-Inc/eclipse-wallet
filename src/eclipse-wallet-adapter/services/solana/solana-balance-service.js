@@ -5,7 +5,7 @@ const {
   SOL_DECIMALS,
   SOL_SYMBOL,
   SOL_NAME,
-  SOL_LOGO,
+  ETH_LOGO,
   SOL_ADDRESS,
 } = require('../../constants/token-constants');
 const { getLast24HoursChange } = require('../common-balance-service');
@@ -23,7 +23,7 @@ const getSolanaBalance = async (connection, publicKey) => {
     uiAmount: uiAmount,
     symbol: SOL_SYMBOL,
     name: SOL_NAME,
-    logo: SOL_LOGO,
+    logo: ETH_LOGO,
     address: SOL_ADDRESS,
   };
 };

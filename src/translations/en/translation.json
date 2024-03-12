@@ -6,7 +6,7 @@
     "address": "Address",
     "to": "To",
     "name_or_address": "Name or \"{{token}}\" Address",
-    "recipient_s_address": "Recipient´s \"{{token}}\" Address",
+    "recipient_s_address": "Recipient's \"{{token}}\" Address",
     "seed_phrase": "Seed Phrase",
     "private_key": "Private Key",
     "balance": "Balance",

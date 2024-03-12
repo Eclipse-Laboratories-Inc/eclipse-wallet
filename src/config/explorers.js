@@ -17,6 +17,8 @@ const SOLANA_EXPLORERS = {
   },
 };
 
+
+
 const EXPLORERS = {
   SOLANA: {
     mainnet: SOLANA_EXPLORERS,
@@ -24,6 +26,22 @@ const EXPLORERS = {
     testnet: SOLANA_EXPLORERS,
     devnet: SOLANA_EXPLORERS,
   },
+  ECLIPSE: {
+    testnet: {
+      EXPLORER: {
+        name: 'Eclipse Explorer',
+        url: 'https://explorer.dev.eclipsenetwork.xyz/address/9RPEj9p4Xnd9eqEs6gJcWkU6FqbuRWPxqXmRvpasRein?cluster=testnet'
+      }
+    },
+    devnet: {
+      EXPLORER: {
+        name: 'Eclipse Explorer',
+        url: 'https://explorer.dev.eclipsenetwork.xyz/address/9RPEj9p4Xnd9eqEs6gJcWkU6FqbuRWPxqXmRvpasRein?cluster=testnet'
+      }
+    }
+
+  },
+
   ETHEREUM: {
     mainnet: {
       ETHERSCAN: {
@@ -38,12 +56,13 @@ const EXPLORERS = {
       },
     },
   },
- 
+
 };
 
 const DEFAULT_EXPLORERS = {
   SOLANA: 'SOLSCAN',
   ETHEREUM: 'ETHERSCAN',
+  ECLIPSE: 'EXPLORER',
 };
 
 export { EXPLORERS, DEFAULT_EXPLORERS };
