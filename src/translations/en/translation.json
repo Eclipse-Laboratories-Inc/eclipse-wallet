@@ -178,7 +178,7 @@
     "is_coming_soon": "is coming soon",
     "select_derivable_account": "Select derivable account",
     "prices_issue": "We are having issues to get prices",
-    "load_error": "We are having issues to load data",
+    "load_error": "We are having issues loading data",
     "not_available_title": "Not available",
     "not_available_msg": "This feature is not available for BTC",
     "import_tokens": "Import tokens",

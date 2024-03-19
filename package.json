@@ -4,6 +4,7 @@
   "private": true,
   "license": "GPL-3.0-only",
   "dependencies": {
+    "@babel/preset-env": "^7.24.0",
     "@babel/preset-flow": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@bonfida/spl-name-service": "^1.1.1",
@@ -85,6 +86,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/plugin-transform-class-properties": "^7.23.3",
+    "@babel/preset-env": "^7.24.0",
     "@babel/preset-react": "^7.23.3",
     "babel-jest": "^26.6.3",
     "buffer": "^6.0.3",
@@ -116,7 +118,7 @@
     "start:web": "react-app-rewired start",
     "start:web:main": "REACT_APP_SALMON_ENV=main react-app-rewired start",
     "start:web:prod": "REACT_APP_SALMON_ENV=production react-app-rewired start",
-    "build:ios": "react-native bundle --assets-dest='./ios' --entry-file='./src/index.native.js'  --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
+    "build:ios": "react-native bundle --entry-file='./src/index.native.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
     "build": "react-app-rewired build",
     "build:develop": "REACT_APP_SALMON_ENV=development npm run build",
     "build:main": "REACT_APP_SALMON_ENV=main npm run build",

@@ -1,7 +1,7 @@
 {
   "name": "Salmon Wallet",
   "description": "Your all-in-one & open-source wallet for the crypto space.",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "action": {
     "default_popup": "index.html",
     "default_title": "Open the popup"

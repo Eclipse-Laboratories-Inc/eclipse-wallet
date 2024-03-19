@@ -1,7 +1,7 @@
 const SOLANA_EXPLORERS = {
   SOLSCAN: {
     name: 'Solscan',
-    url: 'https://solscan.io/?cluster=custom&customUrl=https%3A%2F%2Fstaging-rpc.dev.eclipsenetwork.xyz/tx',
+    url: 'https://solscan.io/?cluster=custom&customUrl=https%3A%2F%2Fstaging-rpc.dev2.eclipsenetwork.xyz/tx',
   },
   SOLANA_FM: {
     name: 'Solana FM',

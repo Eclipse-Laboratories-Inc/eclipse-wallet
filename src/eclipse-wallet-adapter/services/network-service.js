@@ -12,7 +12,7 @@ const networkData = [
       decimals: 9,
     },
     config: {
-      nodeUrl: 'https://staging-rpc.dev.eclipsenetwork.xyz',
+      nodeUrl: 'https://staging-rpc.dev2.eclipsenetwork.xyz',
     },
   },
   {
@@ -26,7 +26,7 @@ const networkData = [
       decimals: 9,
     },
     config: {
-      nodeUrl: 'https://testnet.dev.eclipsenetwork.xyz',
+      nodeUrl: 'https://testnet.dev2.eclipsenetwork.xyz',
     },
   },
   {
