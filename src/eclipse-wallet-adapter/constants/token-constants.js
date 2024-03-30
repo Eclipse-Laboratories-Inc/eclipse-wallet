@@ -1,7 +1,7 @@
 const { PublicKey } = require('@solana/web3.js');
 
 const SOL_DECIMALS = 6;
-const SOL_SYMBOL = 'ETH';
+const SOL_SYMBOL = 'SOL';
 const SOL_NAME = 'Eclipse';
 const SOL_LOGO = 'https://i.imgur.com/y0JEPfQ.png';
 const SOL_ADDRESS = 'So11111111111111111111111111111111111111112';
