@@ -15,11 +15,11 @@ import useAccounts from './hooks/useAccounts';
 export const AppContext = createContext([]);
 
 const ACTIONS = {
-  SET_LOGGEDIN: 'setLoggedIn',
-  INITIATE_DONE: 'initiateDone',
-  HIDE_BALANCE: 'hideBalance',
-  SHOW_BALANCE: 'showBalance',
-  LOGOUT: 'logout',
+  SET_LOGGEDIN: 'SET_LOGGEDIN',
+  INITIALIZATION_COMPLETE: 'INITIALIZATION_COMPLETE',
+  HIDE_BALANCE: 'HIDE_BALANCE',
+  SHOW_BALANCE: 'SHOW_BALANCE',
+  LOGOUT: 'LOGOUT',
 };
 
 const initialState = {
@@ -32,7 +32,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.SET_LOGGEDIN:
       return { ...state, isLogged: action.value };
-    case ACTIONS.INITIATE_DONE:
+    case ACTIONS.INITIALIZATION_COMPLETE:
       return { ...state, ...action.value, ready: true };
     case ACTIONS.LOGOUT:
       return { ...state, ready: true };
@@ -46,54 +46,33 @@ const reducer = (state, action) => {
 };
 
 const AppProvider = ({ children }) => {
-  const [{ ready: accountsReady, ...accountsState }, accountsActions] =
-    useAccounts();
-
-  const [{ ready: addressReady, ...addressBookState }, addressBookActions] =
-    useAddressbook();
-  const {
-    selected: selectedLanguage,
-    loaded: translationsLoaded,
-    languages,
-    changeLanguage,
-  } = useTranslations();
+  const [{ ready: accountsReady, ...accountsState }, accountsActions] = useAccounts();
+  const [{ ready: addressReady, ...addressBookState }, addressBookActions] = useAddressbook();
+  const { selected: selectedLanguage, loaded: translationsLoaded, languages, changeLanguage } = useTranslations();
   const { ready: runtimeReady, ...runtimeState } = useRuntime();
   const [appState, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
-    if (
-      accountsReady &&
-      !appState.ready &&
-      translationsLoaded &&
-      addressReady &&
-      runtimeReady
-    ) {
+    if (accountsReady && !appState.ready && translationsLoaded && addressReady && runtimeReady) {
       splash.hide();
       dispatch({
-        type: ACTIONS.INITIATE_DONE,
+        type: ACTIONS.INITIALIZATION_COMPLETE,
         value: { isLogged: !isNil(accountsState.activeAccount) },
       });
     }
-  }, [
-    accountsReady,
-    accountsState.activeAccount,
-    appState.ready,
-    translationsLoaded,
-    addressReady,
-    runtimeReady,
-  ]);
+  }, [accountsReady, accountsState.activeAccount, appState.ready, translationsLoaded, addressReady, runtimeReady]);
+
   const logout = async () => {
     await accountsActions.removeAllAccounts();
-    dispatch({
-      type: ACTIONS.LOGOUT,
-    });
+    dispatch({ type: ACTIONS.LOGOUT });
   };
+
   const toggleHideBalance = () => {
     dispatch({
-      type: appState.hiddenBalance
-        ? ACTIONS.SHOW_BALANCE
-        : ACTIONS.HIDE_BALANCE,
+      type: appState.hiddenBalance ? ACTIONS.SHOW_BALANCE : ACTIONS.HIDE_BALANCE,
     });
   };
+
   const appActions = {
     ...accountsActions,
     ...addressBookActions,
@@ -101,6 +80,7 @@ const AppProvider = ({ children }) => {
     logout,
     toggleHideBalance,
   };
+
   const onAppIdle = () => {
     if (accountsState.requiredLock) {
       accountsActions.lockAccounts();
@@ -119,26 +99,30 @@ const AppProvider = ({ children }) => {
           selectedLanguage,
         },
         appActions,
-      ]}>
+      ]}
+    >
       <GlobalError>
-        {!appState.ready && !accountsState.locked && (
+        {!appState.ready && !accountsState.locked ? (
           <ThemeProvider>
             <GlobalSkeleton type="Generic" />
           </ThemeProvider>
-        )}
-        {appState.ready && !accountsState.locked && (
-          <RoutesProvider>
-            <ThemeProvider>
-              <InactivityCheck onIdle={onAppIdle} active>
-                {children}
-              </InactivityCheck>
-            </ThemeProvider>
-          </RoutesProvider>
-        )}
-        {accountsState.locked && (
-          <ThemeProvider>
-            <LockedPage />
-          </ThemeProvider>
+        ) : (
+          <>
+            {appState.ready && !accountsState.locked && (
+              <RoutesProvider>
+                <ThemeProvider>
+                  <InactivityCheck onIdle={onAppIdle} active>
+                    {children}
+                  </InactivityCheck>
+                </ThemeProvider>
+              </RoutesProvider>
+            )}
+            {accountsState.locked && (
+              <ThemeProvider>
+                <LockedPage />
+              </ThemeProvider>
+            )}
+          </>
         )}
       </GlobalError>
     </AppContext.Provider>
