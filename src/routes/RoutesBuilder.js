@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppContext } from '../AppProvider';
 import { getRouteComponent } from './utils';
@@ -9,20 +9,31 @@ const RoutesBuilder = ({
   routes,
   configs,
   entry,
-  requireOnboarding = true,
-  ..._
+  requireOnboarding = true, // Default value for requireOnboarding
 }) => {
   const navigate = useNavigation();
   const [{ accounts }] = useContext(AppContext);
+
+  // Check if onboarding is required and accounts are available
+  const needsOnboarding = requireOnboarding && accounts.length === 0;
+
+  // Navigate to onboarding if required
   useEffect(() => {
-    if (requireOnboarding && !accounts.length) {
+    if (needsOnboarding) {
       navigate(ROUTES_MAP.ONBOARDING);
     }
-  }, [requireOnboarding, navigate, accounts]);
+  }, [needsOnboarding, navigate]);
 
-  const EntryComponent = entry ? getRouteComponent(routes, entry) : null;
+  // Memoized computation of the entry component
+  const EntryComponent = useMemo(
+    () => (entry ? getRouteComponent(routes, entry) : null),
+    [entry, routes]
+  );
 
-  return !requireOnboarding || (requireOnboarding && accounts.length > 0) ? (
+  // Render routes conditionally based on onboarding status
+  if (needsOnboarding) return null;
+
+  return (
     <Routes>
       {EntryComponent && <Route path="/" element={<EntryComponent />} />}
       {routes.map(({ key, name, path, Component }) => (
@@ -33,7 +44,7 @@ const RoutesBuilder = ({
         />
       ))}
     </Routes>
-  ) : null;
+  );
 };
 
 export default RoutesBuilder;
