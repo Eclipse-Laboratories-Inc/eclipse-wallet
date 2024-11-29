@@ -32,7 +32,7 @@ test.skip('ethereum-transfer-token', async () => {
     opts
   );
   expect(result1).toBeDefined();
-  // Back amount to mantain balance
+  // Back amount to maintain balance
   const result2 = await account2.createTransferTransaction(
     account1.getReceiveAddress(),
     TOKEN_NAME,
