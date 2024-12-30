@@ -22,7 +22,7 @@ const WelcomePage = ({ t }) => {
 
   const navigate = useNavigation();
   const [step, setStep] = useState(0);
-  const goToTwitter = () => Linking.openURL(`https://twitter.com/salmonwallet`);
+  const goToTwitter = () => Linking.openURL(`https://x.com/salmonwallet`);
   const nextStep = () => {
     if (step < 2) {
       const currentStep = step + 1;
