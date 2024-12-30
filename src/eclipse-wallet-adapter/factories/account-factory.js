@@ -25,7 +25,7 @@ const create = async ({
   await Promise.all(
     enabledNetworks.map(async (network) => {
       const indexes = pathIndexes[network.id] || [0];
-      networksAccounts[network.id] = await createNetworkAccounts({ network, mnemonic, indexes });
+      networksAccounts[network.id] = await createNetworkAccounts([{ network, mnemonic, indexes }]);
       return networksAccounts[network.id];
     })
   );
