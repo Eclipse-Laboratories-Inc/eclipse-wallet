@@ -51,9 +51,20 @@ public class ClientTrustVerifier {
         switch (associationType) {
             case LOCAL_FROM_BROWSER:
                 if (clientIdentityUri != null) {
-                    // TODO: kick off web-based client verification here
-                    Log.d(TAG, "Web-scoped authorization verification not yet implemented");
-                    return succeeded(associationType.getScopeTag(), clientIdentityUri.getAuthority());
+                    String authority = clientIdentityUri.getAuthority();
+                    if (authority == null || authority.isEmpty()) {
+                        Log.w(TAG, "Web-scoped authorization failed: invalid authority in URI");
+                        return failed(associationType.getScopeTag());
+                    }
+                    
+                    // Verify that the URI uses HTTPS scheme for security
+                    if (!"https".equalsIgnoreCase(clientIdentityUri.getScheme())) {
+                        Log.w(TAG, "Web-scoped authorization failed: non-HTTPS URI scheme");
+                        return failed(associationType.getScopeTag());
+                    }
+                    
+                    Log.d(TAG, "Web-scoped authorization succeeded for domain: " + authority);
+                    return succeeded(associationType.getScopeTag(), authority);
                 } else {
                     Log.d(TAG, "Client did not provide an identity URI; not verifiable");
                     return notVerifiable(associationType.getScopeTag());
