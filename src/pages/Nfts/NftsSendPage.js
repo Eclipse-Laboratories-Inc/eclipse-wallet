@@ -88,17 +88,27 @@ const NftsSendPage = ({ params, t }) => {
 
   const { trackEvent } = useAnalyticsEventTracker(SECTIONS_MAP.NFT_SEND);
 
-  useEffect(() => {
-    if (activeBlockchainAccount) {
-      activeBlockchainAccount.getAllNfts().then(nfts => {
-        const nft = nfts.find(n => n.mint === params.id);
-        if (nft) {
-          setNftDetail(nft);
+ useEffect(() => {
+    const loadNftDetail = async () => {
+      try {
+        if (activeBlockchainAccount) {
+          const nfts = await activeBlockchainAccount.getAllNfts();
+          const nft = nfts.find(n => n.mint === params.id);
+          if (nft) {
+            setNftDetail(nft);
+          } else {
+            Alert.alert(t('nft.error'), t('nft.not_found'));
+          }
         }
+      } catch (error) {
+        console.error('Error fetching NFT detail:', error);
+        Alert.alert(t('nft.error'), t('nft.load_issue'));
+      } finally {
         setLoaded(true);
-      });
-    }
-  }, [activeBlockchainAccount, params.id]);
+      }
+    };
+    loadNftDetail();
+  }, [activeBlockchainAccount, params.id, t]);
 
   const goToBack = () => {
     if (step === 1) {
@@ -124,8 +134,9 @@ const NftsSendPage = ({ params, t }) => {
         { ...pick(nftDetail, ['contract', 'standard']) },
       );
       setFee(feeSend);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('Error estimating fee:', error);
+      Alert.alert(t('nft.error'), t('nft.fee_estimation_fail'));
     } finally {
       setLoaded(true);
     }
@@ -144,16 +155,15 @@ const NftsSendPage = ({ params, t }) => {
       );
       setTransactionId(txId);
       setStatus(TRANSACTION_STATUS.SENDING);
-      savePendingNftSend();
+      await savePendingNftSend(); 
       await activeBlockchainAccount.confirmTransferTransaction(txId);
       setStatus(TRANSACTION_STATUS.SUCCESS);
       trackEvent(EVENTS_MAP.NFT_SEND_COMPLETED);
-      setSending(false);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('Error sending NFT:', error);
       setStatus(TRANSACTION_STATUS.FAIL);
       trackEvent(EVENTS_MAP.NFT_SEND_FAILED);
-      setStep(3);
+    } finally {
       setSending(false);
     }
   };
